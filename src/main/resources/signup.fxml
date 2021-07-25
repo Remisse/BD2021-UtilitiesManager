@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button fx:id="back" layoutX="128.0" layoutY="34.0" mnemonicParsing="false" onAction="#backToHome" text="Torna indietro">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="finish" layoutX="586.0" layoutY="561.0" mnemonicParsing="false" onAction="#doSignup" text="Conferma">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Button>
+      <TextField fx:id="name" layoutX="128.0" layoutY="135.0" />
+      <Label layoutX="128.0" layoutY="99.0" text="Nome">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="surname" layoutX="128.0" layoutY="251.0" />
+      <Label layoutX="128.0" layoutY="215.0" text="Cognome">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="idCode" layoutX="128.0" layoutY="363.0" />
+      <Label layoutX="128.0" layoutY="327.0" text="Codice fiscale">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="vatCode" layoutX="128.0" layoutY="473.0" />
+      <Label layoutX="128.0" layoutY="437.0" text="Partita IVA (opzionale)">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="street" layoutX="410.0" layoutY="136.0" />
+      <Label layoutX="410.0" layoutY="100.0" text="Via">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="municipality" layoutX="410.0" layoutY="252.0" />
+      <Label layoutX="410.0" layoutY="216.0" text="Comune">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="postcode" layoutX="410.0" layoutY="364.0" />
+      <Label layoutX="410.0" layoutY="328.0" text="CAP">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="state" layoutX="410.0" layoutY="474.0" />
+      <Label layoutX="408.0" layoutY="438.0" text="Provincia">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="692.0" layoutY="216.0" text="Data di nascita">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <DatePicker fx:id="birthdate" layoutX="692.0" layoutY="252.0" />
+      <TextField fx:id="email" layoutX="959.0" layoutY="135.0" />
+      <Label layoutX="959.0" layoutY="99.0" text="Indirizzo e-mail">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="959.0" layoutY="215.0" text="Password">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="959.0" layoutY="327.0" text="Conferma password">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="692.0" layoutY="328.0" text="Fascia di reddito">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="streetNo" layoutX="583.0" layoutY="136.0" prefHeight="30.0" prefWidth="60.0" />
+      <Label layoutX="592.0" layoutY="100.0" text="Civico">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="phone" layoutX="692.0" layoutY="135.0" />
+      <Label layoutX="692.0" layoutY="99.0" text="Numero di telefono">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="income" layoutX="692.0" layoutY="364.0" prefWidth="150.0" />
+      <PasswordField fx:id="password" layoutX="959.0" layoutY="252.0" />
+      <PasswordField fx:id="confirmPw" layoutX="959.0" layoutY="364.0" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="571.0" layoutY="36.0" text="Inserisci i tuoi dati">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="156.0" layoutY="100.0" text="Offerta:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="156.0" layoutY="190.0" text="Materia prima:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="156.0" layoutY="282.0" text="Uso:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="156.0" layoutY="373.0" text="Attivazione:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="156.0" layoutY="465.0" text="Immobile:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentClientLabel" layoutX="658.0" layoutY="100.0" text="Attuale intestatario:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextFlow fx:id="premisesFlow" layoutX="291.0" layoutY="465.0" prefHeight="156.0" prefWidth="200.0" />
+      <TextFlow fx:id="currentClientFlow" layoutX="845.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" />
+      <Button fx:id="confirm" layoutX="698.0" layoutY="632.0" mnemonicParsing="false" onAction="#insertSubscription" text="Conferma">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="back" layoutX="483.0" layoutY="632.0" mnemonicParsing="false" onAction="#goBack" text="Indietro">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Label layoutX="512.0" layoutY="39.0" text="Conferma i dati del contratto">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="planText" layoutX="371.0" layoutY="100.0" text="Label">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="utilityText" layoutX="371.0" layoutY="190.0" text="Label">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="useText" layoutX="371.0" layoutY="282.0" text="Label">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="activationText" layoutX="371.0" layoutY="373.0" text="Label">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

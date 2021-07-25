@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <LineChart fx:id="yearlyTrend" layoutX="52.0" layoutY="154.0" prefHeight="317.0" prefWidth="500.0" title="Andamento annuale">
+        <xAxis>
+          <CategoryAxis fx:id="yearlyX" animated="false" label="Mesi" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis fx:id="yearlyY" animated="false" label="Consumi" side="LEFT" />
+        </yAxis>
+      </LineChart>
+      <Label layoutX="540.0" layoutY="38.0" text="Statistiche sui consumi">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="yearSelect" layoutX="241.0" layoutY="480.0" onAction="#onYearSelect" prefWidth="150.0" promptText="Anno..." />
+      <Button fx:id="back" layoutX="52.0" layoutY="599.0" mnemonicParsing="false" onAction="#goBack" text="Torna indietro">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <DatePicker fx:id="dateStart" layoutX="704.0" layoutY="206.0" onAction="#onDateSelect" promptText="Da..." />
+      <DatePicker fx:id="dateEnd" layoutX="930.0" layoutY="206.0" onAction="#onDateSelect" promptText="A..." />
+      <Label layoutX="704.0" layoutY="154.0" text="Scostamento rispetto alla media del tuo comune">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="715.0" layoutY="261.0" prefHeight="61.0" prefWidth="180.0" text="Media dei tuoi consumi" wrapText="true">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="yourAvg" layoutX="784.0" layoutY="327.0" text="N.D.">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="918.0" layoutY="261.0" prefHeight="61.0" prefWidth="227.0" text="Consumi medi nel tuo comune" wrapText="true">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="peopleAvg" layoutX="1010.0" layoutY="327.0" text="N.D.">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

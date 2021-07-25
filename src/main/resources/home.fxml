@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button fx:id="signupButton" alignment="TOP_CENTER" layoutX="951.0" layoutY="379.0" mnemonicParsing="false" onAction="#viewSignupPage" text="Registrati">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Label layoutX="139.0" layoutY="333.0" text="Visualizza il catalogo delle offerte" textAlignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="loginLabel" layoutX="568.0" layoutY="309.0" text="Hai già un account?" textAlignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <TextField fx:id="email" layoutX="562.0" layoutY="363.0" promptText="Indirizzo e-mail">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <PasswordField fx:id="password" layoutX="562.0" layoutY="411.0" promptText="Password">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </PasswordField>
+      <Button fx:id="login" alignment="TOP_CENTER" layoutX="623.0" layoutY="468.0" mnemonicParsing="false" onAction="#doLogin" text="Accedi">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Label fx:id="signupLabel" layoutX="890.0" layoutY="333.0" text="Crea un nuovo account" textAlignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Button alignment="TOP_CENTER" layoutX="227.0" layoutY="379.0" mnemonicParsing="false" onAction="#viewCatalogue" text="Vai al catalogo">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Label fx:id="greeting" alignment="CENTER" layoutX="608.0" layoutY="324.0" text="Ciao, USER" textAlignment="CENTER" visible="false">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Button fx:id="logout" alignment="CENTER" contentDisplay="CENTER" layoutX="605.0" layoutY="426.0" mnemonicParsing="false" onAction="#doLogout" text="Disconnettiti" textAlignment="CENTER" visible="false">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="userArea" alignment="CENTER" contentDisplay="CENTER" layoutX="596.0" layoutY="378.0" mnemonicParsing="false" onAction="#toUserArea" text="Area personale" visible="false">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="584.0" layoutY="68.0" text="Menu principale">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Button fx:id="adminArea" layoutX="578.0" layoutY="211.0" mnemonicParsing="false" onAction="#toAdminArea" text="Area amministratore" visible="false">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
