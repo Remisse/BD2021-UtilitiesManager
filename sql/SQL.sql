@@ -28,7 +28,6 @@ create table bollette (
      Importo decimal(20, 2) not null,
      Consumi decimal(20, 6) not null check (not(Consumi < 0.0)),
      Stimata boolean not null,
-     ParzialeCanoneRai decimal(20, 2) not null check (ParzialeCanoneRai >= 0.0),
      CostoAttivazione decimal(20, 2) not null check (CostoAttivazione >= 0.0),
 	 constraint PK_BOLLETTA primary key (IdContratto, DataEmissione));
 
@@ -42,11 +41,7 @@ create table contatori (
     Matricola varchar(20) default null,
     MateriaPrima varchar(20) not null,
     IdImmobile integer not null,
-    Potenza decimal(10, 4) not null,
-    constraint ELECTR_POWER_REQUIRED check (MateriaPrima in ("Gas", "Acqua") and Potenza = 0.0
-          or (MateriaPrima = "Luce" and Potenza >= 1.5 and Potenza <= 10.0)),
     constraint CODE_LENGTH check(Matricola is null
-          or (MateriaPrima = "Luce" and (length(Matricola) in (14, 15)))
           or (MateriaPrima = "Gas" and length(Matricola) = 14)
           or (MateriaPrima = "Acqua" and length(Matricola) > 0)),
     constraint PK_CONTATORI primary key (NumeroProgressivo),
@@ -60,7 +55,6 @@ create table contratti (
      DataCessazione date,
      NumeroPersone integer not null default 1,
      Contatore integer not null,
-     CodiceAzienda integer,
      CodiceCliente integer not null,
      CodiceOfferta integer not null,
      TipoUso varchar(30) not null,
@@ -102,9 +96,7 @@ create table interruzioni (
 );
 
 create table letture (
-    Fascia1 decimal(20, 6) not null check(Fascia1 >= 0),
-    Fascia2 decimal(20, 6) not null check(Fascia2 >= 0),
-    Fascia3 decimal(20, 6) not null check(Fascia3 >= 0),
+    Consumi decimal(20, 6) not null check(Consumi >= 0),
     Contatore integer not null,
     DataEffettuazione date not null,
     Confermata boolean not null default false,
@@ -123,7 +115,7 @@ create table offerte (
      MateriaPrima varchar(20) not null,
      constraint PK_OFFERTA primary key (Codice));
 
-create table persone_fisiche (
+create table persone (
      CodiceCliente integer not null auto_increment,
      Amministratore boolean not null,
      CodiceFiscale varchar(16) not null,
@@ -140,20 +132,8 @@ create table persone_fisiche (
      Email varchar(40) not null,
      Password varchar(30) not null check(length(Password) >= 8),
      FasciaReddito varchar(30),
-     constraint AK_PERSONA_FISICA unique (Email),
-     constraint PK_PERSONA_FISICA primary key (CodiceCliente));
-
-create table persone_giuridiche (
-     CodiceAzienda integer not null auto_increment,
-     PartitaIVA varchar(11) not null,
-     Via varchar(50) not null,
-     NumCivico varchar(10) not null,
-     CAP integer not null,
-     Comune varchar(30) not null,
-     Provincia varchar(2) not null,
-     FormaGiuridica varchar(50) not null,
-     RagioneSociale varchar(30) not null,
-     constraint PK_PERSONA_GIURIDICA primary key (CodiceAzienda));
+     constraint AK_PERSONA unique (Email),
+     constraint PK_PERSONA primary key (CodiceCliente));
      
 create table redditi (
 	Fascia varchar(30) not null,
@@ -168,7 +148,6 @@ create table tipi_attivazione (
 
 create table tipologie_uso (
      Nome varchar(30) not null,
-     CanoneRAI decimal(20, 2) not null,
      StimaPerPersona decimal(20, 2) not null,
      ScontoReddito boolean not null,
      check(StimaPerPersona >= 0.0),
@@ -186,9 +165,6 @@ create table zone (
 -- ----------
 
 -- Populate materie_prime
-insert into materie_prime
-values("Luce");
-
 insert into materie_prime
 values("Gas");
 
@@ -433,97 +409,6 @@ values("Gas", 30, 4);
 insert into distribuzioni
 values("Gas", 30, 7);
 
--- Luce
-insert into distribuzioni
-values("Luce", 1, 3);
-
-insert into distribuzioni
-values("Luce", 2, 3);
-
-insert into distribuzioni
-values("Luce", 3, 3);
-
-insert into distribuzioni
-values("Luce", 4, 3);
-
-insert into distribuzioni
-values("Luce", 5, 3);
-
-insert into distribuzioni
-values("Luce", 6, 3);
-
-insert into distribuzioni
-values("Luce", 7, 3);
-
-insert into distribuzioni
-values("Luce", 8, 3);
-
-insert into distribuzioni
-values("Luce", 9, 3);
-
-insert into distribuzioni
-values("Luce", 10, 3);
-
-insert into distribuzioni
-values("Luce", 11, 3);
-
-insert into distribuzioni
-values("Luce", 12, 3);
-
-insert into distribuzioni
-values("Luce", 13, 3);
-
-insert into distribuzioni
-values("Luce", 14, 3);
-
-insert into distribuzioni
-values("Luce", 15, 3);
-
-insert into distribuzioni
-values("Luce", 16, 3);
-
-insert into distribuzioni
-values("Luce", 17, 3);
-
-insert into distribuzioni
-values("Luce", 18, 3);
-
-insert into distribuzioni
-values("Luce", 19, 3);
-
-insert into distribuzioni
-values("Luce", 20, 3);
-
-insert into distribuzioni
-values("Luce", 21, 3);
-
-insert into distribuzioni
-values("Luce", 22, 3);
-
-insert into distribuzioni
-values("Luce", 23, 3);
-
-insert into distribuzioni
-values("Luce", 24, 3);
-
-insert into distribuzioni
-values("Luce", 25, 3);
-
-insert into distribuzioni
-values("Luce", 26, 3);
-
-insert into distribuzioni
-values("Luce", 27, 3);
-
-insert into distribuzioni
-values("Luce", 28, 3);
-
-insert into distribuzioni
-values("Luce", 29, 3);
-
-insert into distribuzioni
-values("Luce", 30, 3);
-
 -- Acqua
 insert into distribuzioni
 values("Acqua", 1, 1);
@@ -619,16 +504,10 @@ values("Acqua", 30, 1);
 -- Populate "tipologie_uso"
 
 insert into tipologie_uso
-values("Abitativo residenziale", 90.0, 0.2, true);
+values("Abitativo residenziale", 0.2, true);
 
 insert into tipologie_uso
-values("Abitativo non residenziale", 0.0, 0.7, false);
-
-insert into tipologie_uso
-values("Commerciale", 0.0, 0.1, false);
-
-insert into tipologie_uso
-values("Condominiale", 0.0, 0.5, false);
+values("Abitativo non residenziale", 0.7, false);
 
 
 -- Populate "tipi_attivazione"
@@ -641,22 +520,19 @@ values ("Subentro", 70.0);
 insert into tipi_attivazione
 values ("Voltura", 45.0);
 
-insert into tipi_attivazione
-values ("Cambio offerta", 0.0);
-
 
 -- Populate "redditi"
 insert into redditi
-values ("0 - 5.000", 0.5);
+values ("0 - 5000", 0.5);
 
 insert into redditi
-values ("5.001 - 10.000", 0.7);
+values ("5001 - 10000", 0.7);
 
 insert into redditi
-values ("10.001 - 15.000", 0.95);
+values ("10001 - 15000", 0.95);
 
 insert into redditi
-values ("> 15.000", 1.0);
+values ("> 15000", 1.0);
 
 
 -- Populate "immobili"
@@ -665,30 +541,31 @@ values ('F', "Via Bongo", 69, 1, 47121, 9);
 
 
 -- Populate "contatori"
-insert into contatori (MateriaPrima, Matricola, IdImmobile, Potenza)
-values ("Luce", "38501111111111", 1, 3.0);
+insert into contatori (MateriaPrima, Matricola, IdImmobile)
+values ("Acqua", "385011111111", 1);
 
-insert into contatori (MateriaPrima, Matricola, IdImmobile, Potenza)
-values ("Gas", "83850395028543", 1, 0.0);
+insert into contatori (MateriaPrima, Matricola, IdImmobile)
+values ("Gas", "83850395028543", 1);
 
 
 -- Populate "letture"
 insert into letture
-values (18.0, 11.0, 2.6, 1, date_sub(curdate(), interval 2 month), true);
+values (18.0, 1, date_sub(curdate(), interval 2 month), true);
 
 insert into letture
-values (35.0, 19.0, 5.2, 1, curdate(), true);
+values (35.0, 1, curdate(), true);
 
 
--- Populate "persone_fisiche"
-insert into persone_fisiche
-values (default, false, "MRMMRA55R08B963X", default, "Mario", "Maria Mario", "Via Mario", 64, 47121, "Forlì", "FC", 19551005, "35426324", "longlivecrts@bonobbo.com", "aeo1001012", "10.001 - 15.000");
+-- Populate "persone"
+insert into persone
+values (default, false, "MRMMRA55R08B963X", default, "Mario", "Maria Mario", "Via Mario", 64, 47121, "Forlì", "FC", 19551005, "35426324", "longlivecrts@bonobbo.com", "aeo1001012", "10001 - 15000");
 
-insert into persone_fisiche
-values (default, false, "BRTBBB25T87R762U", default, "Bartolomeo", "Bababbo", "Via delle Vie", 12, 47521, "Cesena", "FC", 19860621, "38275722", "bartolomeo@gmail.com", "uffiuffi", "0 - 5.000");
+insert into persone
+values (default, false, "BRTBBB25T87R762U", default, "Bartolomeo", "Bababbo", "Via delle Vie", 12, 47521, "Cesena", "FC", 19860621, "38275722", "bartolomeo@gmail.com", "uffiuffi", "0 - 5000");
 
-insert into persone_fisiche
-values (default, true, "GAGGUG92F28U275P", default, "Armando", "Armandini", "Viale Vialone", 73, 88100, "Catanzaro", "CZ", 19951030, "292892992", "amministratore@admin.com", "password", "> 15.000");
+insert into persone
+values (default, true, "GAGGUG92F28U275P", default, "Armando", "Armandini", "Viale Vialone", 73, 88100, "Catanzaro", "CZ", 19951030, "292892992", "amministratore@admin.com", "password", "> 15000");
+
 
 -- Populate "offerte" and "compatibilità"
 insert into offerte(Nome, Descrizione, CostoMateriaPrima, MateriaPrima)
@@ -701,7 +578,7 @@ insert into compatibilità
 values (last_insert_id(), "Abitativo non residenziale");
 
 insert into offerte(Nome, Descrizione, CostoMateriaPrima, MateriaPrima)
-values ("Luce divina", "Una generica offerta per la fornitura di luce.", 0.18, "Luce");
+values ("Acqua santa", "Una generica offerta per la fornitura di acqua.", 0.18, "Acqua");
 
 insert into compatibilità
 values (last_insert_id(), "Abitativo residenziale");
@@ -720,16 +597,16 @@ values (date_sub(curdate(), interval 123 day), date_sub(curdate(), interval 4 mo
 
 -- Populate "bollette"
 insert into bollette
-values (1, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 124.64, 31.6, false, 90 * 60.0/360.0, 85.0);
+values (1, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 124.64, 31.6, false, 85.0);
 
 insert into bollette
-values (2, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 133.0, 72.0, true, 0.0, 85.0);
+values (2, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 133.0, 72.0, true, 85.0);
 
 insert into bollette
-values (1, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 19.97, 27.6, false, 90 * 60.0/360.0, 0.0);
+values (1, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 19.97, 27.6, false, 0.0);
 
 insert into bollette
-values (2, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 48.0, 72.0, true, 0.0, 0.0);
+values (2, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 48.0, 72.0, true, 0.0);
 
 -- Foreign keys
 -- ___________________ 
@@ -750,10 +627,7 @@ alter table contatori add constraint FK_INSTALLAZIONE
      foreign key (IdImmobile) references immobili (IdImmobile);
 
 alter table contratti add constraint FK_SOTTOSCRIZIONE
-     foreign key (CodiceCliente) references persone_fisiche (CodiceCliente);
-
-alter table contratti add constraint FK_REFERENZA
-     foreign key (CodiceAzienda) references persone_giuridiche (CodiceAzienda);
+     foreign key (CodiceCliente) references persone (CodiceCliente);
 
 alter table contratti add constraint FK_PROPOSTA
      foreign key (CodiceOfferta) references offerte (Codice);
@@ -788,7 +662,7 @@ alter table letture add constraint FK_EFFETTUAZIONE
 alter table offerte add constraint FK_INTERESSE
      foreign key (MateriaPrima) references materie_prime (Nome);
      
-alter table persone_fisiche add constraint FK_POSSEDIMENTO
+alter table persone add constraint FK_POSSEDIMENTO
 	foreign key (FasciaReddito) references redditi (Fascia) on update cascade;
     
 
