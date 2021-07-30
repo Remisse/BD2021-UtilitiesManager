@@ -1,5 +1,6 @@
 package bdproject.controller.gui;
 
+import bdproject.controller.gui.adminarea.AdminChooseAreaController;
 import bdproject.controller.gui.userarea.UserAreaController;
 import bdproject.model.SessionHolder;
 import bdproject.utils.FXUtils;
@@ -150,6 +151,6 @@ public class HomeController extends AbstractViewController implements Initializa
 
     @FXML
     private void toAdminArea(ActionEvent e) {
-
+        switchTo(AdminChooseAreaController.create(getStage(), getDataSource()));
     }
 }
