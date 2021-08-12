@@ -13,10 +13,9 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     private int peopleNo;
     private double power;
     private Contatori meter;
-    private PersoneFisiche otherClient;
+    private Persone otherClient;
     private Contratti otherSub;
     private Letture measurement;
-    private PersoneGiuridiche firm;
 
     @Override
     public void setClientId(int id) {
@@ -59,7 +58,7 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     }
 
     @Override
-    public void setOtherClient(PersoneFisiche client) {
+    public void setOtherClient(Persone client) {
         otherClient = client;
     }
 
@@ -71,11 +70,6 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     @Override
     public void setMeasurement(Letture m) {
         measurement = m;
-    }
-
-    @Override
-    public void setFirm(PersoneGiuridiche f) {
-        firm = f;
     }
 
     @Override
@@ -119,7 +113,7 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     }
 
     @Override
-    public Optional<PersoneFisiche> getOtherClient() {
+    public Optional<Persone> getOtherClient() {
         return Optional.ofNullable(otherClient);
     }
 
@@ -131,10 +125,5 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     @Override
     public Optional<Letture> getMeasurement() {
         return Optional.ofNullable(measurement);
-    }
-
-    @Override
-    public Optional<PersoneGiuridiche> getFirm() {
-        return Optional.ofNullable(firm);
     }
 }

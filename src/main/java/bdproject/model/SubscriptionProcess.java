@@ -22,13 +22,11 @@ public interface SubscriptionProcess {
 
     void setMeter(Contatori m);
 
-    void setOtherClient(PersoneFisiche client);
+    void setOtherClient(Persone client);
 
     void setOtherSubscription(Contratti sub);
 
     void setMeasurement(Letture m);
-
-    void setFirm(PersoneGiuridiche f);
 
     int getClientId();
 
@@ -46,11 +44,9 @@ public interface SubscriptionProcess {
 
     Optional<Contatori> getMeter();
 
-    Optional<PersoneFisiche> getOtherClient();
+    Optional<Persone> getOtherClient();
 
     Optional<Contratti> getOtherSubscription();
 
     Optional<Letture> getMeasurement();
-
-    Optional<PersoneGiuridiche> getFirm();
 }

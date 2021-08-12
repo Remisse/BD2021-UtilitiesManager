@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static bdproject.Tables.PERSONE_FISICHE;
+import static bdproject.Tables.PERSONE;
 
 public class HomeController extends AbstractViewController implements Initializable {
 
@@ -119,15 +119,15 @@ public class HomeController extends AbstractViewController implements Initializa
         try (Connection conn = getDataSource().getConnection()) {
             DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
 
-            Optional<Record3<Integer, Byte, String>> user = query.select(
-                        PERSONE_FISICHE.CODICECLIENTE,
-                        PERSONE_FISICHE.AMMINISTRATORE,
-                        PERSONE_FISICHE.NOME)
-                    .from(PERSONE_FISICHE)
-                    .where(PERSONE_FISICHE.EMAIL.eq(email.getText()))
-                    .and(PERSONE_FISICHE.PASSWORD.eq(password.getText()))
-                    .fetchOptional();
-            user.ifPresentOrElse(u -> {
+            query.select(
+                        PERSONE.CODICECLIENTE,
+                        PERSONE.AMMINISTRATORE,
+                        PERSONE.NOME)
+                    .from(PERSONE)
+                    .where(PERSONE.EMAIL.eq(email.getText()))
+                    .and(PERSONE.PASSWORD.eq(password.getText()))
+                    .fetchOptional()
+                    .ifPresentOrElse(u -> {
                         SessionHolder.create(u.component1(), u.component2(), u.component3());
                         updateSigninElements();
                     }, () -> FXUtils.showBlockingWarning("Indirizzo e-mail o password errati."));

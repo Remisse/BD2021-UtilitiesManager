@@ -18,7 +18,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,19 +52,9 @@ public class Letture extends TableImpl<LettureRecord> {
     }
 
     /**
-     * The column <code>utenze.letture.Fascia1</code>.
+     * The column <code>utenze.letture.Consumi</code>.
      */
-    public final TableField<LettureRecord, BigDecimal> FASCIA1 = createField(DSL.name("Fascia1"), SQLDataType.DECIMAL(20, 6).nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.letture.Fascia2</code>.
-     */
-    public final TableField<LettureRecord, BigDecimal> FASCIA2 = createField(DSL.name("Fascia2"), SQLDataType.DECIMAL(20, 6).nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.letture.Fascia3</code>.
-     */
-    public final TableField<LettureRecord, BigDecimal> FASCIA3 = createField(DSL.name("Fascia3"), SQLDataType.DECIMAL(20, 6).nullable(false), this, "");
+    public final TableField<LettureRecord, BigDecimal> CONSUMI = createField(DSL.name("Consumi"), SQLDataType.DECIMAL(20, 6).nullable(false), this, "");
 
     /**
      * The column <code>utenze.letture.Contatore</code>.
@@ -141,9 +131,7 @@ public class Letture extends TableImpl<LettureRecord> {
     @Override
     public List<Check<LettureRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("letture_chk_1"), "(`Fascia1` >= 0)", true),
-            Internal.createCheck(this, DSL.name("letture_chk_2"), "(`Fascia2` >= 0)", true),
-            Internal.createCheck(this, DSL.name("letture_chk_3"), "(`Fascia3` >= 0)", true)
+            Internal.createCheck(this, DSL.name("letture_chk_1"), "(`Consumi` >= 0)", true)
         );
     }
 
@@ -174,11 +162,11 @@ public class Letture extends TableImpl<LettureRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<BigDecimal, BigDecimal, BigDecimal, Integer, LocalDate, Byte> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row4<BigDecimal, Integer, LocalDate, Byte> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

@@ -7,7 +7,6 @@ import bdproject.model.Queries;
 import bdproject.view.StringRepresentations;
 import bdproject.tables.pojos.Contratti;
 import bdproject.tables.pojos.Interruzioni;
-import bdproject.tables.pojos.PersoneGiuridiche;
 import bdproject.utils.FXUtils;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -117,36 +116,10 @@ public class SubscriptionDetailsController extends AbstractViewController implem
             setStatus(startDate, endDate, conn);
             setPremisesDetails(conn);
             setInterruptionTable(conn);
-            setFirm(conn);
 
         } catch (SQLException e) {
             e.printStackTrace();
             FXUtils.showError(e.getSQLState() + "\n" + e.getMessage());
-        }
-    }
-
-    private void setFirm(Connection conn) {
-        PersoneGiuridiche firm = Queries.getFirm(subscription, conn);
-        if (firm != null) {
-            formaGiuridica.setText(firm.getFormagiuridica());
-            ragioneSociale.setText(firm.getRagionesociale());
-            vatCode.setText(firm.getPartitaiva());
-            street.setText(firm.getVia());
-            civic.setText(firm.getNumcivico());
-            municipality.setText(firm.getComune());
-            postcode.setText(String.valueOf(firm.getCap()));
-            state.setText(firm.getProvincia());
-        } else {
-            firmLabel.setVisible(false);
-            formaGiuridica.setVisible(false);
-            ragioneSociale.setVisible(false);
-            vatCode.setVisible(false);
-            street.setVisible(false);
-            civic.setVisible(false);
-            municipality.setVisible(false);
-            postcode.setVisible(false);
-            state.setVisible(false);
-            modifyFirm.setVisible(false);
         }
     }
 
@@ -215,46 +188,5 @@ public class SubscriptionDetailsController extends AbstractViewController implem
             e.printStackTrace();
             FXUtils.showError(e.getSQLState());
         }
-    }
-
-    @FXML
-    private void doModifyFirm() {
-        if (firmFieldsValid()) {
-            try (Connection conn = getDataSource().getConnection()) {
-                var firmCode = Queries.getFirm(subscription, conn).getCodiceazienda();
-                var newFirm = new PersoneGiuridiche(
-                        firmCode,
-                        vatCode.getText(),
-                        street.getText(),
-                        civic.getText(),
-                        Integer.parseInt(postcode.getText()),
-                        municipality.getText(),
-                        state.getText(),
-                        formaGiuridica.getText(),
-                        ragioneSociale.getText()
-                );
-                final int successful = Queries.updateFirm(newFirm, conn);
-                if (successful == 1) {
-                    FXUtils.showBlockingWarning("Dati dell'azienda aggiornati.");
-                } else {
-                    FXUtils.showBlockingWarning("Aggiornamento non riuscito.");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } else {
-            FXUtils.showBlockingWarning("Controlla di aver inserito correttamente i nuovi dati.");
-        }
-    }
-
-    private boolean firmFieldsValid() {
-        return formaGiuridica.getText().length() > 0 && formaGiuridica.getText().length() <= FORMA_GIURIDICA_MAX
-                && ragioneSociale.getText().length() > 0 && ragioneSociale.getText().length() <= RAGIONE_SOCIALE_MAX
-                && vatCode.getText().length() > 0 && vatCode.getText().length() <= VAT_CODE_MAX
-                && street.getText().length() > 0 && street.getText().length() <= STREET_MAX
-                && civic. getText().length() > 0 && civic.getText().length() <= CIVIC_MAX
-                && postcode.getText().length() == POSTCODE_LENGTH && Checks.isNumber(postcode.getText())
-                && municipality.getText().length() > 0 && municipality.getText().length() <= MUNICIPALITY_MAX
-                && state.getText().length() == STATE_LENGTH;
     }
 }

@@ -8,7 +8,6 @@ import bdproject.Keys;
 import bdproject.Utenze;
 import bdproject.tables.records.ContatoriRecord;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -70,11 +69,6 @@ public class Contatori extends TableImpl<ContatoriRecord> {
      * The column <code>utenze.contatori.IdImmobile</code>.
      */
     public final TableField<ContatoriRecord, Integer> IDIMMOBILE = createField(DSL.name("IdImmobile"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.contatori.Potenza</code>.
-     */
-    public final TableField<ContatoriRecord, BigDecimal> POTENZA = createField(DSL.name("Potenza"), SQLDataType.DECIMAL(10, 4).nullable(false), this, "");
 
     private Contatori(Name alias, Table<ContatoriRecord> aliased) {
         this(alias, aliased, null);
@@ -154,8 +148,7 @@ public class Contatori extends TableImpl<ContatoriRecord> {
     @Override
     public List<Check<ContatoriRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("CODE_LENGTH"), "((`Matricola` is null) or ((`MateriaPrima` = _utf8mb4\\'Luce\\') and (length(`Matricola`) in (14,15))) or ((`MateriaPrima` = _utf8mb4\\'Gas\\') and (length(`Matricola`) = 14)) or ((`MateriaPrima` = _utf8mb4\\'Acqua\\') and (length(`Matricola`) > 0)))", true),
-            Internal.createCheck(this, DSL.name("ELECTR_POWER_REQUIRED"), "(((`MateriaPrima` in (_utf8mb4\\'Gas\\',_utf8mb4\\'Acqua\\')) and (`Potenza` = 0.0)) or ((`MateriaPrima` = _utf8mb4\\'Luce\\') and (`Potenza` >= 1.5) and (`Potenza` <= 10.0)))", true)
+            Internal.createCheck(this, DSL.name("CODE_LENGTH"), "((`Matricola` is null) or ((`MateriaPrima` = _utf8mb4\\'Gas\\') and (length(`Matricola`) = 14)) or ((`MateriaPrima` = _utf8mb4\\'Acqua\\') and (length(`Matricola`) > 0)))", true)
         );
     }
 
@@ -186,11 +179,11 @@ public class Contatori extends TableImpl<ContatoriRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, String, String, Integer, BigDecimal> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row4<Integer, String, String, Integer> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

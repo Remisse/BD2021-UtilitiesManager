@@ -22,7 +22,6 @@ public class Contratti implements Serializable {
     private final LocalDate datacessazione;
     private final Integer   numeropersone;
     private final Integer   contatore;
-    private final Integer   codiceazienda;
     private final Integer   codicecliente;
     private final Integer   codiceofferta;
     private final String    tipouso;
@@ -35,7 +34,6 @@ public class Contratti implements Serializable {
         this.datacessazione = value.datacessazione;
         this.numeropersone = value.numeropersone;
         this.contatore = value.contatore;
-        this.codiceazienda = value.codiceazienda;
         this.codicecliente = value.codicecliente;
         this.codiceofferta = value.codiceofferta;
         this.tipouso = value.tipouso;
@@ -49,7 +47,6 @@ public class Contratti implements Serializable {
         LocalDate datacessazione,
         Integer   numeropersone,
         Integer   contatore,
-        Integer   codiceazienda,
         Integer   codicecliente,
         Integer   codiceofferta,
         String    tipouso,
@@ -61,7 +58,6 @@ public class Contratti implements Serializable {
         this.datacessazione = datacessazione;
         this.numeropersone = numeropersone;
         this.contatore = contatore;
-        this.codiceazienda = codiceazienda;
         this.codicecliente = codicecliente;
         this.codiceofferta = codiceofferta;
         this.tipouso = tipouso;
@@ -111,13 +107,6 @@ public class Contratti implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.contratti.CodiceAzienda</code>.
-     */
-    public Integer getCodiceazienda() {
-        return this.codiceazienda;
-    }
-
-    /**
      * Getter for <code>utenze.contratti.CodiceCliente</code>.
      */
     public Integer getCodicecliente() {
@@ -155,7 +144,6 @@ public class Contratti implements Serializable {
         sb.append(", ").append(datacessazione);
         sb.append(", ").append(numeropersone);
         sb.append(", ").append(contatore);
-        sb.append(", ").append(codiceazienda);
         sb.append(", ").append(codicecliente);
         sb.append(", ").append(codiceofferta);
         sb.append(", ").append(tipouso);

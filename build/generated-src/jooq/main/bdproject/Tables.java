@@ -15,8 +15,7 @@ import bdproject.tables.Interruzioni;
 import bdproject.tables.Letture;
 import bdproject.tables.MateriePrime;
 import bdproject.tables.Offerte;
-import bdproject.tables.PersoneFisiche;
-import bdproject.tables.PersoneGiuridiche;
+import bdproject.tables.Persone;
 import bdproject.tables.Redditi;
 import bdproject.tables.TipiAttivazione;
 import bdproject.tables.TipologieUso;
@@ -85,14 +84,9 @@ public class Tables {
     public static final Offerte OFFERTE = Offerte.OFFERTE;
 
     /**
-     * The table <code>utenze.persone_fisiche</code>.
+     * The table <code>utenze.persone</code>.
      */
-    public static final PersoneFisiche PERSONE_FISICHE = PersoneFisiche.PERSONE_FISICHE;
-
-    /**
-     * The table <code>utenze.persone_giuridiche</code>.
-     */
-    public static final PersoneGiuridiche PERSONE_GIURIDICHE = PersoneGiuridiche.PERSONE_GIURIDICHE;
+    public static final Persone PERSONE = Persone.PERSONE;
 
     /**
      * The table <code>utenze.redditi</code>.

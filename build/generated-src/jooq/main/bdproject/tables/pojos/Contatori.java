@@ -5,7 +5,6 @@ package bdproject.tables.pojos;
 
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 
 /**
@@ -16,32 +15,28 @@ public class Contatori implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer    numeroprogressivo;
-    private final String     matricola;
-    private final String     materiaprima;
-    private final Integer    idimmobile;
-    private final BigDecimal potenza;
+    private final Integer numeroprogressivo;
+    private final String  matricola;
+    private final String  materiaprima;
+    private final Integer idimmobile;
 
     public Contatori(Contatori value) {
         this.numeroprogressivo = value.numeroprogressivo;
         this.matricola = value.matricola;
         this.materiaprima = value.materiaprima;
         this.idimmobile = value.idimmobile;
-        this.potenza = value.potenza;
     }
 
     public Contatori(
-        Integer    numeroprogressivo,
-        String     matricola,
-        String     materiaprima,
-        Integer    idimmobile,
-        BigDecimal potenza
+        Integer numeroprogressivo,
+        String  matricola,
+        String  materiaprima,
+        Integer idimmobile
     ) {
         this.numeroprogressivo = numeroprogressivo;
         this.matricola = matricola;
         this.materiaprima = materiaprima;
         this.idimmobile = idimmobile;
-        this.potenza = potenza;
     }
 
     /**
@@ -72,13 +67,6 @@ public class Contatori implements Serializable {
         return this.idimmobile;
     }
 
-    /**
-     * Getter for <code>utenze.contatori.Potenza</code>.
-     */
-    public BigDecimal getPotenza() {
-        return this.potenza;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Contatori (");
@@ -87,7 +75,6 @@ public class Contatori implements Serializable {
         sb.append(", ").append(matricola);
         sb.append(", ").append(materiaprima);
         sb.append(", ").append(idimmobile);
-        sb.append(", ").append(potenza);
 
         sb.append(")");
         return sb.toString();

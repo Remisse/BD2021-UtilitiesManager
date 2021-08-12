@@ -15,8 +15,7 @@ import bdproject.tables.Interruzioni;
 import bdproject.tables.Letture;
 import bdproject.tables.MateriePrime;
 import bdproject.tables.Offerte;
-import bdproject.tables.PersoneFisiche;
-import bdproject.tables.PersoneGiuridiche;
+import bdproject.tables.Persone;
 import bdproject.tables.Redditi;
 import bdproject.tables.TipiAttivazione;
 import bdproject.tables.TipologieUso;
@@ -99,14 +98,9 @@ public class Utenze extends SchemaImpl {
     public final Offerte OFFERTE = Offerte.OFFERTE;
 
     /**
-     * The table <code>utenze.persone_fisiche</code>.
+     * The table <code>utenze.persone</code>.
      */
-    public final PersoneFisiche PERSONE_FISICHE = PersoneFisiche.PERSONE_FISICHE;
-
-    /**
-     * The table <code>utenze.persone_giuridiche</code>.
-     */
-    public final PersoneGiuridiche PERSONE_GIURIDICHE = PersoneGiuridiche.PERSONE_GIURIDICHE;
+    public final Persone PERSONE = Persone.PERSONE;
 
     /**
      * The table <code>utenze.redditi</code>.
@@ -155,8 +149,7 @@ public class Utenze extends SchemaImpl {
             Letture.LETTURE,
             MateriePrime.MATERIE_PRIME,
             Offerte.OFFERTE,
-            PersoneFisiche.PERSONE_FISICHE,
-            PersoneGiuridiche.PERSONE_GIURIDICHE,
+            Persone.PERSONE,
             Redditi.REDDITI,
             TipiAttivazione.TIPI_ATTIVAZIONE,
             TipologieUso.TIPOLOGIE_USO,

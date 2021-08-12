@@ -18,7 +18,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row9;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -87,11 +87,6 @@ public class Bollette extends TableImpl<BolletteRecord> {
     public final TableField<BolletteRecord, Byte> STIMATA = createField(DSL.name("Stimata"), SQLDataType.TINYINT.nullable(false), this, "");
 
     /**
-     * The column <code>utenze.bollette.ParzialeCanoneRai</code>.
-     */
-    public final TableField<BolletteRecord, BigDecimal> PARZIALECANONERAI = createField(DSL.name("ParzialeCanoneRai"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
-
-    /**
      * The column <code>utenze.bollette.CostoAttivazione</code>.
      */
     public final TableField<BolletteRecord, BigDecimal> COSTOATTIVAZIONE = createField(DSL.name("CostoAttivazione"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
@@ -157,8 +152,7 @@ public class Bollette extends TableImpl<BolletteRecord> {
     public List<Check<BolletteRecord>> getChecks() {
         return Arrays.asList(
             Internal.createCheck(this, DSL.name("bollette_chk_1"), "(`Consumi` >= 0.0)", true),
-            Internal.createCheck(this, DSL.name("bollette_chk_2"), "(`ParzialeCanoneRai` >= 0.0)", true),
-            Internal.createCheck(this, DSL.name("bollette_chk_3"), "(`CostoAttivazione` >= 0.0)", true)
+            Internal.createCheck(this, DSL.name("bollette_chk_2"), "(`CostoAttivazione` >= 0.0)", true)
         );
     }
 
@@ -189,11 +183,11 @@ public class Bollette extends TableImpl<BolletteRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, LocalDate, LocalDate, LocalDate, BigDecimal, BigDecimal, Byte, BigDecimal, BigDecimal> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row8<Integer, LocalDate, LocalDate, LocalDate, BigDecimal, BigDecimal, Byte, BigDecimal> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

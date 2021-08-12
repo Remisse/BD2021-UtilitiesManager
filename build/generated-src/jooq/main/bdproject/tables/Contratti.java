@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -78,11 +78,6 @@ public class Contratti extends TableImpl<ContrattiRecord> {
      * The column <code>utenze.contratti.Contatore</code>.
      */
     public final TableField<ContrattiRecord, Integer> CONTATORE = createField(DSL.name("Contatore"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.contratti.CodiceAzienda</code>.
-     */
-    public final TableField<ContrattiRecord, Integer> CODICEAZIENDA = createField(DSL.name("CodiceAzienda"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>utenze.contratti.CodiceCliente</code>.
@@ -154,12 +149,11 @@ public class Contratti extends TableImpl<ContrattiRecord> {
 
     @Override
     public List<ForeignKey<ContrattiRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_COLLEGAMENTO, Keys.FK_REFERENZA, Keys.FK_SOTTOSCRIZIONE, Keys.FK_PROPOSTA, Keys.FK_USO, Keys.FK_ATTIVAZIONE_TRAMITE);
+        return Arrays.asList(Keys.FK_COLLEGAMENTO, Keys.FK_SOTTOSCRIZIONE, Keys.FK_PROPOSTA, Keys.FK_USO, Keys.FK_ATTIVAZIONE_TRAMITE);
     }
 
     private transient Contatori _contatori;
-    private transient PersoneGiuridiche _personeGiuridiche;
-    private transient PersoneFisiche _personeFisiche;
+    private transient Persone _persone;
     private transient Offerte _offerte;
     private transient TipologieUso _tipologieUso;
     private transient TipiAttivazione _tipiAttivazione;
@@ -171,18 +165,11 @@ public class Contratti extends TableImpl<ContrattiRecord> {
         return _contatori;
     }
 
-    public PersoneGiuridiche personeGiuridiche() {
-        if (_personeGiuridiche == null)
-            _personeGiuridiche = new PersoneGiuridiche(this, Keys.FK_REFERENZA);
+    public Persone persone() {
+        if (_persone == null)
+            _persone = new Persone(this, Keys.FK_SOTTOSCRIZIONE);
 
-        return _personeGiuridiche;
-    }
-
-    public PersoneFisiche personeFisiche() {
-        if (_personeFisiche == null)
-            _personeFisiche = new PersoneFisiche(this, Keys.FK_SOTTOSCRIZIONE);
-
-        return _personeFisiche;
+        return _persone;
     }
 
     public Offerte offerte() {
@@ -233,11 +220,11 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, Integer, String, String> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row10<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, String, String> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

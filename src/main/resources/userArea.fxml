@@ -76,7 +76,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Button fx:id="payReport" layoutX="996.0" layoutY="380.0" mnemonicParsing="false" onAction="#payReport" text="Paga">
+      <Button fx:id="payReport" layoutX="993.0" layoutY="378.0" mnemonicParsing="false" onAction="#payReport" text="Paga">
          <font>
             <Font size="15.0" />
          </font>
@@ -106,20 +106,18 @@
       <PasswordField fx:id="currentPw" layoutX="598.0" layoutY="498.0" promptText="Password attuale" />
       <PasswordField fx:id="newPw" layoutX="784.0" layoutY="498.0" promptText="Nuova password" />
       <PasswordField fx:id="confirmPw" layoutX="968.0" layoutY="498.0" promptText="Conferma password" />
-      <TextField fx:id="f1" disable="true" layoutX="1074.0" layoutY="132.0" promptText="Fascia 1" />
-      <TextField fx:id="f2" layoutX="1074.0" layoutY="174.0" promptText="Fascia 2" visible="false" />
-      <TextField fx:id="f3" layoutX="1074.0" layoutY="213.0" promptText="Fascia 3" visible="false" />
-      <Button fx:id="addMeasurement" disable="true" layoutX="1117.0" layoutY="252.0" mnemonicParsing="false" onAction="#doAddMeasurement" text="Comunica">
+      <TextField fx:id="consumption" disable="true" layoutX="1074.0" layoutY="132.0" promptText="Consumi" />
+      <Button fx:id="addMeasurement" disable="true" layoutX="1110.0" layoutY="173.0" mnemonicParsing="false" onAction="#doAddMeasurement" text="Comunica">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="1070.0" layoutY="299.0" text="Ultima lettura:">
+      <Label layoutX="1064.0" layoutY="226.0" text="Ultima lettura:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <TextFlow fx:id="lastReading" layoutX="1070.0" layoutY="328.0" prefHeight="85.0" prefWidth="198.0" />
+      <TextFlow fx:id="lastReading" layoutX="1064.0" layoutY="255.0" prefHeight="114.0" prefWidth="198.0" />
       <Button fx:id="consumptionTrend" disable="true" layoutX="84.0" layoutY="252.0" mnemonicParsing="false" onAction="#showConsumptionTrend" text="Statistiche">
          <font>
             <Font size="15.0" />

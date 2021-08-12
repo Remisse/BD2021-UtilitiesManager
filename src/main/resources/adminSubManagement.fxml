@@ -19,11 +19,11 @@
       </Label>
       <TableView fx:id="subsTable" layoutX="233.0" layoutY="148.0" prefHeight="247.0" prefWidth="753.0">
         <columns>
-          <TableColumn prefWidth="114.0" text="Codice cliente" />
-          <TableColumn prefWidth="122.0" text="Codice contratto" />
-            <TableColumn prefWidth="75.0" text="Stato" />
-            <TableColumn prefWidth="112.0" text="Zona" />
-            <TableColumn prefWidth="129.0" text="Codice offerta" />
+          <TableColumn fx:id="clientIdCol" prefWidth="114.0" text="Codice cliente" />
+          <TableColumn fx:id="subIdCol" prefWidth="122.0" text="Codice contratto" />
+            <TableColumn fx:id="statusCol" prefWidth="75.0" text="Stato" />
+            <TableColumn fx:id="zoneCol" prefWidth="112.0" text="Zona" />
+            <TableColumn fx:id="planIdCol" prefWidth="129.0" text="Codice offerta" />
         </columns>
       </TableView>
       <ComboBox fx:id="statusFilter" layoutX="50.0" layoutY="192.0" onAction="#updateSubsTable" prefWidth="150.0" promptText="Stato..." />
@@ -80,8 +80,8 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <CheckBox layoutX="50.0" layoutY="300.0" mnemonicParsing="false" onAction="#updateSubsTable" prefHeight="64.0" prefWidth="150.0" text="Bollette scadute da più di 14 giorni" wrapText="true" />
-      <Button fx:id="interruptButton" layoutX="834.0" layoutY="409.0" mnemonicParsing="false" text="Interrompi fornitura" textFill="#9a0e0e">
+      <CheckBox fx:id="pastDeadlineFilter" layoutX="50.0" layoutY="300.0" mnemonicParsing="false" onAction="#updateSubsTable" prefHeight="64.0" prefWidth="150.0" text="Bollette scadute da più di 14 giorni" wrapText="true" />
+      <Button fx:id="interruptButton" layoutX="822.0" layoutY="409.0" mnemonicParsing="false" text="Interrompi fornitura" textFill="#9a0e0e">
          <font>
             <Font size="15.0" />
          </font>
@@ -122,17 +122,17 @@
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Button layoutX="956.0" layoutY="540.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Modifica">
+      <Button layoutX="947.0" layoutY="540.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="94.0" text="Modifica">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="956.0" layoutY="586.0" mnemonicParsing="false" text="Conferma" textFill="#228600">
+      <Button layoutX="947.0" layoutY="586.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="94.0" text="Conferma" textFill="#228600">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <TextField layoutX="50.0" layoutY="148.0" prefHeight="30.0" prefWidth="152.0" promptText="Codice cliente" />
+      <TextField fx:id="clientIdFilter" layoutX="50.0" layoutY="148.0" prefHeight="30.0" prefWidth="152.0" promptText="Codice cliente" />
       <Label layoutX="1234.0" layoutY="756.0" text="Stime precedenti">
          <font>
             <Font size="15.0" />
@@ -148,12 +148,12 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="956.0" layoutY="633.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="85.0" text="Elimina" textFill="#9a0e0e">
+      <Button layoutX="947.0" layoutY="633.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="94.0" text="Elimina" textFill="#9a0e0e">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="1235.0" layoutY="409.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="75.0" text="Elimina" textFill="#9a0e0e">
+      <Button layoutX="1234.0" layoutY="409.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="75.0" text="Elimina" textFill="#9a0e0e">
          <font>
             <Font size="15.0" />
          </font>

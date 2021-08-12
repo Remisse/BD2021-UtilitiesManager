@@ -46,7 +46,6 @@ public class UserAreaController extends AbstractViewController implements Initia
     private static final int PASSWORD_MAX = 30;
     private static final int PASSWORD_MIN = 8;
     private final Map<String, String> measurementUnit = Map.of(
-            "Luce", "kWh",
             "Gas", "Smc",
             "Acqua", "mc"
     );
@@ -69,8 +68,6 @@ public class UserAreaController extends AbstractViewController implements Initia
     @FXML
     private TableColumn<Bollette, String> activation;
     @FXML
-    private TableColumn<Bollette, String> partialRAI;
-    @FXML
     private ComboBox<Choice<Integer, Contratti>> subscriptionChoice;
     @FXML
     private Button subDetails;
@@ -79,11 +76,7 @@ public class UserAreaController extends AbstractViewController implements Initia
     @FXML
     private Button payReport;
     @FXML
-    private TextField f1;
-    @FXML
-    private TextField f2;
-    @FXML
-    private TextField f3;
+    private TextField consumption;
     @FXML
     private TextFlow lastReading;
     @FXML
@@ -134,7 +127,7 @@ public class UserAreaController extends AbstractViewController implements Initia
 
     private void showFullUsername() {
         try (Connection conn = getDataSource().getConnection()) {
-            final PersoneFisiche client = Queries.getClientRecordFromSession(conn);
+            final Persone client = Queries.getClientRecordFromSession(conn);
             fullName.setText(client.getNome() + " " + client.getCognome());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -143,7 +136,7 @@ public class UserAreaController extends AbstractViewController implements Initia
 
     private void populateUserDetails() {
         try (Connection conn = getDataSource().getConnection()) {
-            final PersoneFisiche client = Queries.getClientRecordFromSession(conn);
+            final Persone client = Queries.getClientRecordFromSession(conn);
 
             street.setText(client.getVia());
             civic.setText(client.getNumcivico());
@@ -162,8 +155,9 @@ public class UserAreaController extends AbstractViewController implements Initia
     private void populateSubscriptionBox() {
         List<Choice<Integer, Contratti>> subs = null;
         try (Connection conn = getDataSource().getConnection()) {
-            subs = Queries.getUserSubscriptions(Queries.getClientRecordFromSession(conn), conn)
+            subs = Queries.getAllSubscriptions(conn)
                     .stream()
+                    .filter(s -> s.getCodicecliente().equals(Queries.getClientRecordFromSession(conn).getCodicecliente()))
                     .map(s -> new ChoiceImpl<>(s.getIdcontratto(), s, (id, sub) -> id.toString()))
                     .collect(Collectors.toList());
             subscriptionChoice.setItems(FXCollections.observableList(subs));
@@ -185,17 +179,8 @@ public class UserAreaController extends AbstractViewController implements Initia
     }
 
     private void toggleMeasurementFields() {
-        f1.setDisable(false);
-        f1.setText("");
-        f2.setText("");
-        f3.setText("");
-        try (Connection conn = getDataSource().getConnection()) {
-            final boolean showF2F3 = Queries.getUtility(subscriptionChoice.getValue().getValue(), conn).getNome().equals("Luce");
-            f2.setVisible(showF2F3);
-            f3.setVisible(showF2F3);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        consumption.setDisable(false);
+        consumption.setText("");
     }
 
     private TipologieUso getUse(final Contratti currentSub) {
@@ -215,8 +200,12 @@ public class UserAreaController extends AbstractViewController implements Initia
 
     private void initializeReportTable() {
         try (Connection conn = getDataSource().getConnection()) {
-            final PersoneFisiche client = Queries.getClientRecordFromSession(conn);
-            if (!Queries.getUserSubscriptions(client, conn).isEmpty()) {
+            final Persone client = Queries.getClientRecordFromSession(conn);
+            final List<Contratti> userSubs = Queries.getAllSubscriptions(conn)
+                    .stream()
+                    .filter(s -> s.getCodicecliente().equals(client.getCodicecliente()))
+                    .collect(Collectors.toList());
+            if (!userSubs.isEmpty()) {
                 publishDate.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDataemissione().format(df_it)));
                 deadline.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDatascadenza().format(df_it)));
                 paid.setCellValueFactory(cellData -> {
@@ -235,7 +224,6 @@ public class UserAreaController extends AbstractViewController implements Initia
                             (report.getStimata() == (byte) 0 ? "" : " (stima)"));
                 });
                 activation.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getCostoattivazione().toString()));
-                partialRAI.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getParzialecanonerai().toString()));
 
                 updateTableItems();
             }
@@ -262,11 +250,9 @@ public class UserAreaController extends AbstractViewController implements Initia
     private void doAddMeasurement() {
         try (Connection conn = getDataSource().getConnection()) {
             if (Checks.isSubscriptionActive(subscriptionChoice.getValue().getValue(), conn)) {
-                if (Checks.isValidMeasurement(f1, f2, f3)) {
+                if (Checks.isValidMeasurement(consumption.getText())) {
                     var measurement = new Letture(
-                            BigDecimal.valueOf(Long.parseLong(f1.getText())),
-                            f2.isVisible() ? BigDecimal.valueOf(Long.parseLong(f2.getText())) : BigDecimal.ZERO,
-                            f3.isVisible() ? BigDecimal.valueOf(Long.parseLong(f3.getText())) : BigDecimal.ZERO,
+                            BigDecimal.valueOf(Long.parseLong(consumption.getText())),
                             reportTable.getSelectionModel().getSelectedItem().getIdcontratto(),
                             LocalDate.now(),
                             (byte) 0
@@ -291,14 +277,12 @@ public class UserAreaController extends AbstractViewController implements Initia
             try (Connection conn = getDataSource().getConnection()) {
                 Optional<Letture> lastMeasurement = Queries.getLastMeasurement(subChoice.getValue(), conn);
                 lastMeasurement.ifPresentOrElse(m -> {
-                    final Text text = new Text("F1: " + m.getFascia1()
-                            + "\nF2: " + m.getFascia2()
-                            + "\nF3: " + m.getFascia3()
+                    final Text text = new Text("Consumi: " + m.getConsumi()
                             + "\nData: " + m.getDataeffettuazione().format(df_it)
                             + "\nConfermata: " + (m.getConfermata() == 1 ? "Sì" : "No"));
                     lastReading.getChildren().clear();
                     lastReading.getChildren().add(text);
-                    }, () -> {
+                }, () -> {
                     lastReading.getChildren().clear();
                     lastReading.getChildren().add(new Text("N.D."));
                 });
@@ -325,14 +309,13 @@ public class UserAreaController extends AbstractViewController implements Initia
             FXUtils.showBlockingWarning("La bolletta selezionata risulta già pagata.");
         } else {
             try (Connection conn = getDataSource().getConnection()) {
-                DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-                query.update(BOLLETTE)
-                        .set(BOLLETTE.DATAPAGAMENTO, LocalDate.now())
-                        .where(BOLLETTE.IDCONTRATTO.eq(report.getIdcontratto()))
-                        .and(BOLLETTE.DATAEMISSIONE.eq(report.getDataemissione()))
-                        .execute();
-                FXUtils.showBlockingWarning("Pagamento effettuato con successo.");
-                updateTableItems();
+                final int outcome = Queries.payReport(report.getIdcontratto(), report.getDataemissione(), conn);
+                if (outcome == 1) {
+                    FXUtils.showBlockingWarning("Pagamento effettuato con successo.");
+                    updateTableItems();
+                } else {
+                    FXUtils.showError("Impossibile procedere al pagamento.");
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
                 FXUtils.showError("Impossibile procedere al pagamento.");
@@ -351,7 +334,7 @@ public class UserAreaController extends AbstractViewController implements Initia
             FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i nuovi dati.");
         } else {
             try (Connection conn = getDataSource().getConnection()) {
-                final PersoneFisiche client = Queries.getClientRecordFromSession(conn);
+                final Persone client = Queries.getClientRecordFromSession(conn);
                 int successful;
                 if (email.getText().equals(client.getEmail())) {
                     successful = Queries.updateClientNoEmail(client, conn);
@@ -398,7 +381,7 @@ public class UserAreaController extends AbstractViewController implements Initia
     }
 
     private boolean isPasswordValid() {
-        PersoneFisiche client = null;
+        Persone client = null;
         try (Connection conn = getDataSource().getConnection()) {
             client = Queries.getClientRecordFromSession(conn);
         } catch (SQLException e) {

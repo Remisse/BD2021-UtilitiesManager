@@ -1,85 +1,84 @@
 package bdproject.model;
 
 import bdproject.tables.pojos.*;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
+import javax.annotation.concurrent.Immutable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Connection;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import static bdproject.Tables.BOLLETTE;
-import static bdproject.tables.Contatori.CONTATORI;
-import static bdproject.tables.Contratti.CONTRATTI;
-import static bdproject.tables.Immobili.IMMOBILI;
-import static bdproject.tables.Interruzioni.INTERRUZIONI;
-import static bdproject.tables.Letture.LETTURE;
-import static bdproject.tables.MateriePrime.MATERIE_PRIME;
-import static bdproject.tables.Offerte.OFFERTE;
-import static bdproject.tables.PersoneFisiche.PERSONE_FISICHE;
-import static bdproject.tables.PersoneGiuridiche.PERSONE_GIURIDICHE;
-import static bdproject.tables.Redditi.REDDITI;
-import static bdproject.tables.Zone.ZONE;
+import static bdproject.Tables.PERSONE;
+import static bdproject.Tables.CONTATORI;
+import static bdproject.Tables.CONTRATTI;
+import static bdproject.Tables.IMMOBILI;
+import static bdproject.Tables.INTERRUZIONI;
+import static bdproject.Tables.LETTURE;
+import static bdproject.Tables.MATERIE_PRIME;
+import static bdproject.Tables.OFFERTE;
+import static bdproject.Tables.REDDITI;
+import static bdproject.Tables.ZONE;
 import static org.jooq.impl.DSL.*;
 
 public class Queries {
 
     private Queries() {}
 
-    public static PersoneFisiche getClientRecordFromSession(final Connection conn) {
+    public static Persone getClientRecordFromSession(final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         return query.select()
-                .from(PERSONE_FISICHE)
-                .where(PERSONE_FISICHE.CODICECLIENTE.eq(SessionHolder.get().orElseThrow().getUserId()))
-                .fetchOneInto(PersoneFisiche.class);
+                .from(PERSONE)
+                .where(PERSONE.CODICECLIENTE.eq(SessionHolder.get().orElseThrow().getUserId()))
+                .fetchOneInto(Persone.class);
     }
 
-    public static int updateClientNoEmail(final PersoneFisiche client, final Connection conn) {
+    public static int updateClientNoEmail(final Persone client, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.update(PERSONE_FISICHE)
-                .set(PERSONE_FISICHE.CAP, client.getCap())
-                .set(PERSONE_FISICHE.COMUNE, client.getComune())
-                .set(PERSONE_FISICHE.FASCIAREDDITO, client.getFasciareddito())
-                .set(PERSONE_FISICHE.NUMCIVICO, client.getNumcivico())
-                .set(PERSONE_FISICHE.NUMEROTELEFONO, client.getNumerotelefono())
-                .set(PERSONE_FISICHE.PROVINCIA, client.getProvincia())
-                .set(PERSONE_FISICHE.VIA, client.getVia())
-                .set(PERSONE_FISICHE.PASSWORD, client.getPassword())
-                .set(PERSONE_FISICHE.NUMEROTELEFONO, client.getNumerotelefono())
-                .where(PERSONE_FISICHE.CODICECLIENTE.eq(client.getCodicecliente()))
+        return query.update(PERSONE)
+                .set(PERSONE.CAP, client.getCap())
+                .set(PERSONE.COMUNE, client.getComune())
+                .set(PERSONE.FASCIAREDDITO, client.getFasciareddito())
+                .set(PERSONE.NUMCIVICO, client.getNumcivico())
+                .set(PERSONE.NUMEROTELEFONO, client.getNumerotelefono())
+                .set(PERSONE.PROVINCIA, client.getProvincia())
+                .set(PERSONE.VIA, client.getVia())
+                .set(PERSONE.PASSWORD, client.getPassword())
+                .set(PERSONE.NUMEROTELEFONO, client.getNumerotelefono())
+                .where(PERSONE.CODICECLIENTE.eq(client.getCodicecliente()))
                 .execute();
     }
 
-    public static int updateClientAndEmail(final PersoneFisiche client, final Connection conn) {
+    public static int updateClientAndEmail(final Persone client, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.update(PERSONE_FISICHE)
-                .set(PERSONE_FISICHE.EMAIL, client.getEmail())
-                .set(PERSONE_FISICHE.CAP, client.getCap())
-                .set(PERSONE_FISICHE.COMUNE, client.getComune())
-                .set(PERSONE_FISICHE.FASCIAREDDITO, client.getFasciareddito())
-                .set(PERSONE_FISICHE.NUMCIVICO, client.getNumcivico())
-                .set(PERSONE_FISICHE.NUMEROTELEFONO, client.getNumerotelefono())
-                .set(PERSONE_FISICHE.PROVINCIA, client.getProvincia())
-                .set(PERSONE_FISICHE.VIA, client.getVia())
-                .set(PERSONE_FISICHE.PASSWORD, client.getPassword())
-                .set(PERSONE_FISICHE.NUMEROTELEFONO, client.getNumerotelefono())
-                .where(PERSONE_FISICHE.CODICECLIENTE.eq(client.getCodicecliente()))
+        return query.update(PERSONE)
+                .set(PERSONE.EMAIL, client.getEmail())
+                .set(PERSONE.CAP, client.getCap())
+                .set(PERSONE.COMUNE, client.getComune())
+                .set(PERSONE.FASCIAREDDITO, client.getFasciareddito())
+                .set(PERSONE.NUMCIVICO, client.getNumcivico())
+                .set(PERSONE.NUMEROTELEFONO, client.getNumerotelefono())
+                .set(PERSONE.PROVINCIA, client.getProvincia())
+                .set(PERSONE.VIA, client.getVia())
+                .set(PERSONE.PASSWORD, client.getPassword())
+                .set(PERSONE.NUMEROTELEFONO, client.getNumerotelefono())
+                .where(PERSONE.CODICECLIENTE.eq(client.getCodicecliente()))
                 .execute();
     }
 
     public static void insertMeasurement(final Letture m, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         query.insertInto(LETTURE)
-                .values(m.getFascia1(), m.getFascia2(), m.getFascia3(), m.getContatore(), m.getDataeffettuazione(), m.getConfermata())
+                .values(m.getConsumi(), m.getContatore(), m.getDataeffettuazione(), m.getConfermata())
                 .onDuplicateKeyUpdate()
-                .set(LETTURE.FASCIA1, m.getFascia1())
-                .set(LETTURE.FASCIA2, m.getFascia2())
-                .set(LETTURE.FASCIA3, m.getFascia3())
+                .set(LETTURE.CONSUMI, m.getConsumi())
                 .execute();
     }
 
@@ -146,9 +145,9 @@ public class Queries {
                     .fetchOneInto(TipiAttivazione.class);
 
             Redditi income = query.select(REDDITI.asterisk())
-                    .from(REDDITI, PERSONE_FISICHE)
-                    .where(PERSONE_FISICHE.CODICECLIENTE.eq(sub.getCodicecliente()))
-                    .and(PERSONE_FISICHE.FASCIAREDDITO.eq(REDDITI.FASCIA))
+                    .from(REDDITI, PERSONE)
+                    .where(PERSONE.CODICECLIENTE.eq(sub.getCodicecliente()))
+                    .and(PERSONE.FASCIAREDDITO.eq(REDDITI.FASCIA))
                     .fetchOneInto(Redditi.class);
 */
             // ([CanoneRAI * GiorniTrascorsi/360] + ConsumiBimestre * CostoOfferta + [CostoAttivazione]) * ScontoReddito
@@ -195,57 +194,26 @@ public class Queries {
                 .execute();
     }
 
-    public static void updateMeter(final Contatori meter, final BigDecimal power, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        if (power.compareTo(BigDecimal.ZERO) > 0) {
-            query.update(CONTATORI)
-                    .set(CONTATORI.POTENZA, power)
-                    .where(CONTATORI.NUMEROPROGRESSIVO.eq(meter.getNumeroprogressivo()))
-                    .execute();
-        }
-    }
-
     public static void insertSubscription(final SubscriptionProcess process, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        if (process.getFirm().isPresent()) {
-            query.insertInto(CONTRATTI)
-                    .columns(CONTRATTI.CODICECLIENTE, CONTRATTI.DATARICHIESTA, CONTRATTI.CODICEOFFERTA,
-                            CONTRATTI.CODICEAZIENDA, CONTRATTI.CONTATORE, CONTRATTI.TIPOUSO, CONTRATTI.NOMEATTIVAZIONE,
-                            CONTRATTI.NUMEROPERSONE)
-                    .select(select(
-                                value(process.getClientId()),
-                                value(LocalDate.now()),
-                                value(process.getPlan().orElseThrow().getCodice()),
-                                value(process.getFirm().orElseThrow().getCodiceazienda()),
-                                value(process.getMeter().orElseThrow().getNumeroprogressivo()),
-                                value(process.getUse().orElseThrow()),
-                                value(process.getActivationMethod().orElseThrow().getNome()),
-                                value(process.getPeopleNo())
-                            )
-                            .from(CONTRATTI)
-                            .whereNotExists(selectFrom(CONTRATTI)
-                                            .where(CONTRATTI.CONTATORE.eq(process.getMeter().get().getNumeroprogressivo()))
-                                            .and(CONTRATTI.DATACESSAZIONE.isNull()))
-                    ).execute();
-        } else {
-            query.insertInto(CONTRATTI)
-                    .columns(CONTRATTI.CODICECLIENTE, CONTRATTI.DATARICHIESTA, CONTRATTI.CODICEOFFERTA,
-                            CONTRATTI.CONTATORE, CONTRATTI.TIPOUSO, CONTRATTI.NOMEATTIVAZIONE, CONTRATTI.NUMEROPERSONE)
-                    .select(select(
-                            value(process.getClientId()),
-                            value(LocalDate.now()),
-                            value(process.getPlan().orElseThrow().getCodice()),
-                            value(process.getMeter().orElseThrow().getNumeroprogressivo()),
-                            value(process.getUse().orElseThrow()),
-                            value(process.getActivationMethod().orElseThrow().getNome()),
-                            value(process.getPeopleNo())
-                            )
-                                    .from(CONTRATTI)
-                                    .whereNotExists(selectFrom(CONTRATTI)
-                                            .where(CONTRATTI.CONTATORE.eq(process.getMeter().get().getNumeroprogressivo()))
-                                            .and(CONTRATTI.DATACESSAZIONE.isNull()))
-                    ).execute();
-        }
+        query.insertInto(CONTRATTI)
+            .columns(CONTRATTI.CODICECLIENTE, CONTRATTI.DATARICHIESTA, CONTRATTI.CODICEOFFERTA,
+                    CONTRATTI.CONTATORE, CONTRATTI.TIPOUSO, CONTRATTI.NOMEATTIVAZIONE, CONTRATTI.NUMEROPERSONE)
+            .select(
+                select(
+                    value(process.getClientId()),
+                    value(LocalDate.now()),
+                    value(process.getPlan().orElseThrow().getCodice()),
+                    value(process.getMeter().orElseThrow().getNumeroprogressivo()),
+                    value(process.getUse().orElseThrow()),
+                    value(process.getActivationMethod().orElseThrow().getNome()),
+                    value(process.getPeopleNo()))
+                .from(CONTRATTI)
+                .whereNotExists(
+                    selectFrom(CONTRATTI)
+                    .where(CONTRATTI.CONTATORE.eq(process.getMeter().get().getNumeroprogressivo()))
+                    .and(CONTRATTI.DATACESSAZIONE.isNull())))
+            .execute();
     }
 
     public static MateriePrime getUtility(final Contratti currentSub, final Connection conn) {
@@ -275,15 +243,8 @@ public class Queries {
                 .fetchOneInto(Immobili.class);
     }
 
-    public static PersoneGiuridiche getFirm(final Contratti sub, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.select()
-                .from(PERSONE_GIURIDICHE)
-                .where(PERSONE_GIURIDICHE.CODICEAZIENDA.eq(sub.getCodiceazienda()))
-                .fetchOneInto(PersoneGiuridiche.class);
-    }
-
     public static List<Interruzioni> getInterruptions(final Contratti sub, final Connection conn) {
+        Objects.requireNonNull(sub);
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         return query.select()
                 .from(INTERRUZIONI)
@@ -292,16 +253,20 @@ public class Queries {
     }
 
     public static Optional<Interruzioni> getLastInterruption(final Contratti sub, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.select()
-                .from(INTERRUZIONI)
-                .where(INTERRUZIONI.IDCONTRATTO.eq(sub.getIdcontratto()))
-                .orderBy(INTERRUZIONI.DATAINTERRUZIONE)
-                .limit(1)
-                .fetchOptionalInto(Interruzioni.class);
+        if (sub != null) {
+            DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+            return query.select()
+                    .from(INTERRUZIONI)
+                    .where(INTERRUZIONI.IDCONTRATTO.eq(sub.getIdcontratto()))
+                    .orderBy(INTERRUZIONI.DATAINTERRUZIONE)
+                    .limit(1)
+                    .fetchOptionalInto(Interruzioni.class);
+        }
+        return Optional.empty();
     }
 
     public static boolean hasOngoingInterruption(final Contratti sub, final Connection conn) {
+        Objects.requireNonNull(sub);
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         var interruption = getLastInterruption(sub, conn);
         return interruption.isPresent() && interruption.get().getDatariattivazione() == null;
@@ -315,23 +280,15 @@ public class Queries {
                 .fetchInto(Bollette.class);
     }
 
+    public static Optional<Bollette> getLastReport(final Contratti sub, final Connection conn) {
+        return getReports(sub, conn)
+                .stream()
+                .max(Comparator.comparing(Bollette::getDataemissione));
+    }
+
     public static boolean allReportsPaid(final Contratti sub, final Connection conn) {
         return getReports(sub, conn).stream()
                 .allMatch(r -> r.getDatapagamento() != null);
-    }
-
-    public static int updateFirm(final PersoneGiuridiche firm, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.update(PERSONE_GIURIDICHE)
-                .set(PERSONE_GIURIDICHE.CAP, firm.getCap())
-                .set(PERSONE_GIURIDICHE.COMUNE, firm.getComune())
-                .set(PERSONE_GIURIDICHE.FORMAGIURIDICA, firm.getFormagiuridica())
-                .set(PERSONE_GIURIDICHE.NUMCIVICO, firm.getNumcivico())
-                .set(PERSONE_GIURIDICHE.PARTITAIVA, firm.getPartitaiva())
-                .set(PERSONE_GIURIDICHE.RAGIONESOCIALE, firm.getRagionesociale())
-                .set(PERSONE_GIURIDICHE.VIA, firm.getVia())
-                .where(PERSONE_GIURIDICHE.CODICEAZIENDA.eq(firm.getCodiceazienda()))
-                .execute();
     }
 
     // From https://stackoverflow.com/a/31882656
@@ -383,19 +340,35 @@ public class Queries {
             .collect(Collectors.toList());
     }
 
-    public static List<Contratti> getUserSubscriptions(final PersoneFisiche user, final Connection conn) {
+    public static List<Contratti> getAllSubscriptions(final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         return query.select()
                 .from(CONTRATTI)
-                .where(CONTRATTI.CODICECLIENTE.eq(user.getCodicecliente()))
                 .fetchInto(Contratti.class);
+    }
+
+    public static Map<Contratti, Bollette> getAllSubscriptionsWithLastReport(final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final var lastSubTable = select(CONTRATTI.IDCONTRATTO, max(BOLLETTE.DATAEMISSIONE).as("DataEmissione"))
+                                    .from(CONTRATTI, BOLLETTE)
+                                    .where(CONTRATTI.IDCONTRATTO.eq(BOLLETTE.IDCONTRATTO))
+                                    .groupBy(CONTRATTI.IDCONTRATTO)
+                                    .asTable();
+        return query.select(CONTRATTI.asterisk(), BOLLETTE.asterisk())
+                .from(CONTRATTI.leftJoin(lastSubTable)
+                        .on(CONTRATTI.IDCONTRATTO.eq(lastSubTable.field(CONTRATTI.IDCONTRATTO)))
+                        .leftJoin(BOLLETTE)
+                        .on(BOLLETTE.IDCONTRATTO.eq(lastSubTable.field(CONTRATTI.IDCONTRATTO))
+                                .and(BOLLETTE.DATAEMISSIONE.eq(Objects.requireNonNull(lastSubTable.field("DataEmissione")).cast(LocalDate.class)))))
+                .fetchMap(Contratti.class, Bollette.class);
     }
 
     public static Zone getZone(final Contratti sub, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         return query.select(ZONE.COMUNE)
                 .from(ZONE, IMMOBILI, CONTATORI)
-                .where(CONTATORI.NUMEROPROGRESSIVO.eq(CONTRATTI.CONTATORE))
+                .where(CONTRATTI.IDCONTRATTO.eq(sub.getIdcontratto()))
+                .and(CONTATORI.NUMEROPROGRESSIVO.eq(CONTRATTI.CONTATORE))
                 .and(IMMOBILI.IDIMMOBILE.eq(CONTATORI.IDIMMOBILE))
                 .and(ZONE.IDZONA.eq(ZONE.IDZONA))
                 .fetchOneInto(Zone.class);
@@ -417,5 +390,14 @@ public class Queries {
                 .from(T)
                 .fetchInto(BigDecimal.class);
         return averageBigDecimal(sum);
+    }
+
+    public static int payReport(final int subId, final LocalDate reportDate, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.update(BOLLETTE)
+                .set(BOLLETTE.DATAPAGAMENTO, LocalDate.now())
+                .where(BOLLETTE.IDCONTRATTO.eq(subId))
+                .and(BOLLETTE.DATAEMISSIONE.eq(reportDate))
+                .execute();
     }
 }

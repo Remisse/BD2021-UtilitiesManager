@@ -14,13 +14,8 @@ public class Checks {
         return s.codePoints().allMatch(Character::isDigit);
     }
 
-    public static boolean isValidMeasurement(final TextField f1, final TextField f2, final TextField f3) {
-        final boolean f1Pass = f1.getText().length() != 0 && isNumber(f1.getText());
-        final boolean f2Pass = !f2.isVisible()
-                || (f2.isVisible() && f2.getText().length() != 0 && isNumber(f2.getText()));
-        final boolean f3Pass = !f3.isVisible()
-                || (f3.isVisible() && f3.getText().length() != 0 && isNumber(f3.getText()));
-        return f1Pass && f2Pass && f3Pass;
+    public static boolean isValidMeasurement(final String consumption) {
+        return consumption.length() != 0 && isNumber(consumption);
     }
 
     public static boolean requiresPeopleNumber(final Contratti sub) {

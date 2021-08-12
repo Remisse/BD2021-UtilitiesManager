@@ -24,7 +24,6 @@ public class Bollette implements Serializable {
     private final BigDecimal importo;
     private final BigDecimal consumi;
     private final Byte       stimata;
-    private final BigDecimal parzialecanonerai;
     private final BigDecimal costoattivazione;
 
     public Bollette(Bollette value) {
@@ -35,7 +34,6 @@ public class Bollette implements Serializable {
         this.importo = value.importo;
         this.consumi = value.consumi;
         this.stimata = value.stimata;
-        this.parzialecanonerai = value.parzialecanonerai;
         this.costoattivazione = value.costoattivazione;
     }
 
@@ -47,7 +45,6 @@ public class Bollette implements Serializable {
         BigDecimal importo,
         BigDecimal consumi,
         Byte       stimata,
-        BigDecimal parzialecanonerai,
         BigDecimal costoattivazione
     ) {
         this.idcontratto = idcontratto;
@@ -57,7 +54,6 @@ public class Bollette implements Serializable {
         this.importo = importo;
         this.consumi = consumi;
         this.stimata = stimata;
-        this.parzialecanonerai = parzialecanonerai;
         this.costoattivazione = costoattivazione;
     }
 
@@ -111,13 +107,6 @@ public class Bollette implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.bollette.ParzialeCanoneRai</code>.
-     */
-    public BigDecimal getParzialecanonerai() {
-        return this.parzialecanonerai;
-    }
-
-    /**
      * Getter for <code>utenze.bollette.CostoAttivazione</code>.
      */
     public BigDecimal getCostoattivazione() {
@@ -135,7 +124,6 @@ public class Bollette implements Serializable {
         sb.append(", ").append(importo);
         sb.append(", ").append(consumi);
         sb.append(", ").append(stimata);
-        sb.append(", ").append(parzialecanonerai);
         sb.append(", ").append(costoattivazione);
 
         sb.append(")");

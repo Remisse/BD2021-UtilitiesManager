@@ -66,9 +66,6 @@ public class SubscriptionConfirmationController extends AbstractViewController i
 
     }
 
-    private void initCommercial() {
-
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -137,14 +134,19 @@ public class SubscriptionConfirmationController extends AbstractViewController i
             if (b == ButtonType.YES) {
                 final String activ = process.getActivationMethod().orElseThrow().getNome();
                 try (Connection conn = getDataSource().getConnection()) {
-                    if (activ.equals("Voltura")) {
-                        insertIfChange(conn);
-                    } else if (activ.equals("Subentro")) {
-                        insertIfSubentro(conn);
-                    } else if (activ.equals("Nuova attivazione")) {
-                        insertIfNewActivation(conn);
-                    } else {
-                        FXUtils.showError("Nessun metodo di attivazione trovato. Qualcosa non ha funzionato.");
+                    switch (activ) {
+                        case "Voltura":
+                            insertIfChange(conn);
+                            break;
+                        case "Subentro":
+                            insertIfSubentro(conn);
+                            break;
+                        case "Nuova attivazione":
+                            insertIfNewActivation(conn);
+                            break;
+                        default:
+                            FXUtils.showError("Nessun metodo di attivazione trovato. Qualcosa non ha funzionato.");
+                            break;
                     }
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
@@ -157,13 +159,11 @@ public class SubscriptionConfirmationController extends AbstractViewController i
      * Proper order is fundamental:
      * 1) insert measurement
      * 2) cease existing subscription
-     * 3) update meter power, if necessary
-     * 4) create new subscription
+     * 3) create new subscription
      */
     private void insertIfChange(Connection conn) {
         Queries.insertMeasurement(process.getMeasurement().orElseThrow(), conn);
         Queries.ceaseSubscription(process.getOtherSubscription().orElseThrow(), conn);
-        Queries.updateMeter(process.getMeter().orElseThrow(), BigDecimal.valueOf(process.getPowerRequested()), conn);
         Queries.insertSubscription(process, conn);
     }
 

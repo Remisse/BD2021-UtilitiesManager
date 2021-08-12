@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -54,11 +54,6 @@ public class TipologieUso extends TableImpl<TipologieUsoRecord> {
      * The column <code>utenze.tipologie_uso.Nome</code>.
      */
     public final TableField<TipologieUsoRecord, String> NOME = createField(DSL.name("Nome"), SQLDataType.VARCHAR(30).nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.tipologie_uso.CanoneRAI</code>.
-     */
-    public final TableField<TipologieUsoRecord, BigDecimal> CANONERAI = createField(DSL.name("CanoneRAI"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
 
     /**
      * The column <code>utenze.tipologie_uso.StimaPerPersona</code>.
@@ -147,11 +142,11 @@ public class TipologieUso extends TableImpl<TipologieUsoRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<String, BigDecimal, BigDecimal, Byte> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row3<String, BigDecimal, Byte> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

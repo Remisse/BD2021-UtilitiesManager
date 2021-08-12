@@ -1,10 +1,7 @@
 package bdproject.controller.gui;
 
-import bdproject.controller.Choice;
-import bdproject.controller.ChoiceImpl;
 import bdproject.utils.FXUtils;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,7 +9,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.apache.commons.validator.routines.IBANValidator;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
@@ -96,11 +92,11 @@ public class SignupController extends AbstractViewController implements Initiali
             try (Connection conn = getDataSource().getConnection()) {
                 DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
                 var existing = create.select()
-                        .from(PERSONE_FISICHE)
-                        .where(PERSONE_FISICHE.EMAIL.eq(email.getText()))
+                        .from(PERSONE)
+                        .where(PERSONE.EMAIL.eq(email.getText()))
                         .fetchOptional();
                 if (existing.isEmpty()) {
-                    int insertion = create.insertInto(PERSONE_FISICHE)
+                    int insertion = create.insertInto(PERSONE)
                             .values(
                                     defaultValue(),
                                     idCode.getText(),

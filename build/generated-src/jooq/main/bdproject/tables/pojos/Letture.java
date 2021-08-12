@@ -17,57 +17,35 @@ public class Letture implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final BigDecimal fascia1;
-    private final BigDecimal fascia2;
-    private final BigDecimal fascia3;
+    private final BigDecimal consumi;
     private final Integer    contatore;
     private final LocalDate  dataeffettuazione;
     private final Byte       confermata;
 
     public Letture(Letture value) {
-        this.fascia1 = value.fascia1;
-        this.fascia2 = value.fascia2;
-        this.fascia3 = value.fascia3;
+        this.consumi = value.consumi;
         this.contatore = value.contatore;
         this.dataeffettuazione = value.dataeffettuazione;
         this.confermata = value.confermata;
     }
 
     public Letture(
-        BigDecimal fascia1,
-        BigDecimal fascia2,
-        BigDecimal fascia3,
+        BigDecimal consumi,
         Integer    contatore,
         LocalDate  dataeffettuazione,
         Byte       confermata
     ) {
-        this.fascia1 = fascia1;
-        this.fascia2 = fascia2;
-        this.fascia3 = fascia3;
+        this.consumi = consumi;
         this.contatore = contatore;
         this.dataeffettuazione = dataeffettuazione;
         this.confermata = confermata;
     }
 
     /**
-     * Getter for <code>utenze.letture.Fascia1</code>.
+     * Getter for <code>utenze.letture.Consumi</code>.
      */
-    public BigDecimal getFascia1() {
-        return this.fascia1;
-    }
-
-    /**
-     * Getter for <code>utenze.letture.Fascia2</code>.
-     */
-    public BigDecimal getFascia2() {
-        return this.fascia2;
-    }
-
-    /**
-     * Getter for <code>utenze.letture.Fascia3</code>.
-     */
-    public BigDecimal getFascia3() {
-        return this.fascia3;
+    public BigDecimal getConsumi() {
+        return this.consumi;
     }
 
     /**
@@ -95,9 +73,7 @@ public class Letture implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Letture (");
 
-        sb.append(fascia1);
-        sb.append(", ").append(fascia2);
-        sb.append(", ").append(fascia3);
+        sb.append(consumi);
         sb.append(", ").append(contatore);
         sb.append(", ").append(dataeffettuazione);
         sb.append(", ").append(confermata);

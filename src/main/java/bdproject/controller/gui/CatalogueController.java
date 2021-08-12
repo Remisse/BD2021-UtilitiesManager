@@ -50,7 +50,6 @@ public class CatalogueController extends AbstractViewController implements Initi
 
     private SubscriptionProcess process;
     private final Map<String, String> measurementUnit = Map.of(
-            "Luce", "€/kWh",
             "Gas", "€/Smc",
             "Acqua", "€/mc"
     );
@@ -99,8 +98,7 @@ public class CatalogueController extends AbstractViewController implements Initi
                 .and(OFFERTE.ATTIVA.eq((byte) 1))
                 .and(COMPATIBILITÀ.TIPOUSO.eq(uses.getValue()))
                 .and(OFFERTE.CODICE.eq(COMPATIBILITÀ.CODICEOFFERTA))
-                .fetchStreamInto(Offerte.class)
-                .collect(Collectors.toList());
+                .fetchInto(Offerte.class);
 
         table.setItems(FXCollections.observableList(plans));
     }

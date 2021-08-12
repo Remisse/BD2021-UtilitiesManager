@@ -4,11 +4,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -47,13 +45,13 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="interruptionTable" layoutX="936.0" layoutY="153.0" prefHeight="200.0" prefWidth="271.0">
+      <TableView fx:id="interruptionTable" layoutX="911.0" layoutY="206.0" prefHeight="242.0" prefWidth="307.0">
         <columns>
           <TableColumn fx:id="interruptionDate" prefWidth="131.0" text="Interrotto il" />
           <TableColumn fx:id="reactivationDate" minWidth="0.0" prefWidth="138.0" text="Riattivato il" />
         </columns>
       </TableView>
-      <Label layoutX="974.0" layoutY="106.0" text="Storico delle interruzioni">
+      <Label layoutX="911.0" layoutY="170.0" text="Storico delle interruzioni">
          <font>
             <Font size="18.0" />
          </font>
@@ -74,30 +72,12 @@
          </font>
       </Button>
       <TextFlow fx:id="planDetails" layoutX="53.0" layoutY="197.0" prefHeight="69.0" prefWidth="244.0" />
-      <Label layoutX="568.0" layoutY="170.0" text="Dati dell'immobile">
+      <Label layoutX="503.0" layoutY="170.0" text="Dati dell'immobile">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="firmLabel" layoutX="576.0" layoutY="410.0" text="Dati dell'azienda">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <TextFlow fx:id="premisesDetails" layoutX="508.0" layoutY="197.0" prefHeight="200.0" prefWidth="262.0" />
-      <TextField fx:id="formaGiuridica" layoutX="459.0" layoutY="444.0" promptText="Forma giuridica" />
-      <TextField fx:id="ragioneSociale" layoutX="459.0" layoutY="482.0" promptText="Ragione sociale" />
-      <TextField fx:id="vatCode" layoutX="459.0" layoutY="520.0" promptText="Partita IVA" />
-      <TextField fx:id="street" layoutX="649.0" layoutY="444.0" promptText="Via" />
-      <TextField fx:id="civic" layoutX="649.0" layoutY="482.0" promptText="Numero civico" />
-      <TextField fx:id="municipality" layoutX="649.0" layoutY="520.0" promptText="Comune" />
-      <TextField fx:id="postcode" layoutX="649.0" layoutY="559.0" promptText="CAP" />
-      <TextField fx:id="state" layoutX="649.0" layoutY="596.0" promptText="Provincia" />
-      <Button fx:id="modifyFirm" layoutX="858.0" layoutY="520.0" mnemonicParsing="false" onAction="#doModifyFirm" text="Modifica azienda">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
+      <TextFlow fx:id="premisesDetails" layoutX="503.0" layoutY="206.0" prefHeight="242.0" prefWidth="339.0" />
       <Label fx:id="peopleNo" layoutX="376.0" layoutY="267.0" text="Label">
          <font>
             <Font size="18.0" />

@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -116,26 +115,15 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="peopleNoLabel" layoutX="620.0" layoutY="155.0" text="NumeroPersone">
+            <Label fx:id="peopleNoLabel" layoutX="620.0" layoutY="290.0" text="NumeroPersone">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="powerLabel" layoutX="620.0" layoutY="289.0" text="Potenza richiesta">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <TextField fx:id="peopleNoField" layoutX="620.0" layoutY="192.0" />
-            <Slider fx:id="powerSlider" blockIncrement="0.1" layoutX="617.0" layoutY="327.0" majorTickUnit="0.1" max="10.0" min="3.0" onDragDetected="#updatePowerChosen" prefHeight="17.0" prefWidth="173.0" snapToTicks="true" />
+            <TextField fx:id="peopleNoField" layoutX="620.0" layoutY="333.0" />
             <Label fx:id="powerLabel1" layoutX="620.0" layoutY="360.0">
                <font>
                   <Font size="16.0" />
-               </font>
-            </Label>
-            <Label fx:id="powerChosen" layoutX="681.0" layoutY="360.0" text="Label" textFill="#3e8049">
-               <font>
-                  <Font name="System Bold" size="18.0" />
                </font>
             </Label>
          </children>

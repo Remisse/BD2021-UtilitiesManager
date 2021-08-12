@@ -67,19 +67,19 @@
       <Separator orientation="VERTICAL" prefHeight="200.0" />
       <AnchorPane prefHeight="720.0" prefWidth="1080.0">
          <children>
-            <TextField fx:id="meterId" layoutX="394.0" layoutY="220.0" onKeyTyped="#updateElements" promptText="Matricola" />
-            <Label fx:id="meterIdLabel" layoutX="348.0" layoutY="169.0" text="Inserisci la matricola del contatore">
+            <TextField fx:id="meterId" layoutX="387.0" layoutY="263.0" onKeyTyped="#updateElements" promptText="Matricola" />
+            <Label fx:id="meterIdLabel" layoutX="325.0" layoutY="213.0" text="Inserisci la matricola del contatore">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="clientIdField" layoutX="394.0" layoutY="330.0" onKeyTyped="#updateElements" promptText="Codice cliente" />
-            <Label fx:id="clientIdLabel" layoutX="295.0" layoutY="285.0" text="Inserisci il codice cliente dell'attuale intestatario">
+            <TextField fx:id="clientIdField" layoutX="387.0" layoutY="373.0" onKeyTyped="#updateElements" promptText="Codice cliente" />
+            <Label fx:id="clientIdLabel" layoutX="288.0" layoutY="328.0" text="Inserisci il codice cliente dell'attuale intestatario">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="322.0" layoutY="72.0" text="Dati per l'attivazione tramite voltura">
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="302.0" layoutY="69.0" text="Dati per l'attivazione tramite voltura">
                <font>
                   <Font size="20.0" />
                </font>
@@ -89,14 +89,12 @@
                   <Font size="16.0" />
                </font>
             </Button>
-            <Label fx:id="measurementLabel" layoutX="274.0" layoutY="391.0" text="Inserisci la lettura del contatore (senza cifre decimali)">
+            <Label fx:id="measurementLabel" layoutX="267.0" layoutY="434.0" text="Inserisci la lettura del contatore (senza cifre decimali)">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="f1" layoutX="397.0" layoutY="439.0" promptText="Fascia 1" />
-            <TextField fx:id="f2" layoutX="397.0" layoutY="483.0" promptText="Fascia 2" />
-            <TextField fx:id="f3" layoutX="397.0" layoutY="526.0" promptText="Fascia 3" />
+            <TextField fx:id="consumption" layoutX="390.0" layoutY="482.0" promptText="Consumi" />
          </children>
       </AnchorPane>
    </children>
