@@ -1,6 +1,7 @@
 package bdproject.view;
 
 import bdproject.tables.pojos.Immobili;
+import bdproject.tables.pojos.Persone;
 import bdproject.tables.pojos.Zone;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -14,6 +15,20 @@ public class StringRepresentations {
 
     private StringRepresentations() {}
 
+    public static String clientToString(final Persone client) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(client.getNome())
+                .append(" ")
+                .append(client.getCognome())
+                .append("\nCodice cliente: ")
+                .append(client.getCodicecliente())
+                .append("\n")
+                .append(client.getCodicefiscale())
+                .append("\n")
+                .append(client.getEmail());
+        return builder.toString();
+    }
+
     public static String premisesToString(final Immobili premises, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         final Zone zone = query.select()
@@ -25,7 +40,7 @@ public class StringRepresentations {
         builder.append(premises.getTipo().equals("F") ? "Fabbricato"
                                                       : premises.getTipo().equals("T") ? "Terreno"
                        : "Non definito")
-                .append("\n ")
+                .append("\n\n")
                 .append(premises.getVia())
                 .append(" ")
                 .append(premises.getNumcivico())

@@ -15,7 +15,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="54.0" layoutY="170.0" text="Offerta:">
+      <Label layoutX="53.0" layoutY="230.0" text="Offerta:">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -25,17 +25,17 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="peopleNoName" layoutX="54.0" layoutY="267.0" text="NumeroPersone:">
+      <Label fx:id="peopleNoName" layoutX="54.0" layoutY="352.0" text="NumeroPersone:">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Label layoutX="54.0" layoutY="326.0" text="Data di inizio della fornitura:">
+      <Label layoutX="54.0" layoutY="411.0" text="Data di inizio della fornitura:">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Label layoutX="53.0" layoutY="381.0" text="Data di cessazione della fornitura:">
+      <Label layoutX="53.0" layoutY="466.0" text="Data di cessazione della fornitura:">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -71,47 +71,53 @@
             <Font name="System Bold" size="16.0" />
          </font>
       </Button>
-      <TextFlow fx:id="planDetails" layoutX="53.0" layoutY="197.0" prefHeight="69.0" prefWidth="244.0" />
+      <TextFlow fx:id="planDetails" layoutX="54.0" layoutY="258.0" prefHeight="69.0" prefWidth="244.0" />
       <Label layoutX="503.0" layoutY="170.0" text="Dati dell'immobile">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
       <TextFlow fx:id="premisesDetails" layoutX="503.0" layoutY="206.0" prefHeight="242.0" prefWidth="339.0" />
-      <Label fx:id="peopleNo" layoutX="376.0" layoutY="267.0" text="Label">
+      <Label fx:id="peopleNo" layoutX="376.0" layoutY="352.0" text="Label">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="subStartDate" layoutX="376.0" layoutY="326.0" text="Label">
+      <Label fx:id="subStartDate" layoutX="376.0" layoutY="411.0" text="Label">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="subEndDate" layoutX="376.0" layoutY="381.0" text="Label">
+      <Label fx:id="subEndDate" layoutX="376.0" layoutY="466.0" text="Label">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="55.0" layoutY="437.0" text="Tipo di utilizzo:">
+      <Label layoutX="55.0" layoutY="522.0" text="Tipo di utilizzo:">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="use" layoutX="376.0" layoutY="437.0" text="Label">
+      <Label fx:id="use" layoutX="376.0" layoutY="522.0" text="Label">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="53.0" layoutY="499.0" text="Tipo di attivazione:">
+      <Label layoutX="53.0" layoutY="584.0" text="Tipo di attivazione:">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="activation" layoutX="376.0" layoutY="499.0" text="Label">
+      <Label fx:id="activation" layoutX="376.0" layoutY="584.0" text="Label">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
+      <Label layoutX="53.0" layoutY="93.0" text="Intestatario:">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <TextFlow fx:id="clientDetails" layoutX="54.0" layoutY="122.0" prefHeight="69.0" prefWidth="244.0" />
    </children>
 </AnchorPane>

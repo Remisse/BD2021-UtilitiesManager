@@ -21,7 +21,6 @@
         <columns>
           <TableColumn fx:id="clientIdCol" prefWidth="114.0" text="Codice cliente" />
           <TableColumn fx:id="subIdCol" prefWidth="122.0" text="Codice contratto" />
-            <TableColumn fx:id="statusCol" prefWidth="75.0" text="Stato" />
             <TableColumn fx:id="zoneCol" prefWidth="112.0" text="Zona" />
             <TableColumn fx:id="planIdCol" prefWidth="129.0" text="Codice offerta" />
         </columns>
@@ -32,7 +31,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button fx:id="back" layoutX="50.0" layoutY="27.0" mnemonicParsing="false" text="Torna indietro">
+      <Button fx:id="back" layoutX="50.0" layoutY="27.0" mnemonicParsing="false" onAction="#goBack" text="Torna indietro">
          <font>
             <Font size="15.0" />
          </font>
@@ -107,7 +106,7 @@
             <Font size="15.0" />
          </font>
       </CheckBox>
-      <Button fx:id="subInfo" layoutX="405.0" layoutY="409.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="152.0" text="Dettagli contratto">
+      <Button fx:id="subInfo" layoutX="405.0" layoutY="409.0" mnemonicParsing="false" onAction="#showSubDetails" prefHeight="31.0" prefWidth="152.0" text="Dettagli contratto">
          <font>
             <Font size="15.0" />
          </font>

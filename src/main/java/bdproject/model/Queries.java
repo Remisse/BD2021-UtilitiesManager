@@ -7,6 +7,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 
 import javax.annotation.concurrent.Immutable;
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Connection;
@@ -253,21 +254,17 @@ public class Queries {
     }
 
     public static Optional<Interruzioni> getLastInterruption(final Contratti sub, final Connection conn) {
-        if (sub != null) {
-            DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-            return query.select()
-                    .from(INTERRUZIONI)
-                    .where(INTERRUZIONI.IDCONTRATTO.eq(sub.getIdcontratto()))
-                    .orderBy(INTERRUZIONI.DATAINTERRUZIONE)
-                    .limit(1)
-                    .fetchOptionalInto(Interruzioni.class);
-        }
-        return Optional.empty();
+        Objects.requireNonNull(sub);
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.select()
+                .from(INTERRUZIONI)
+                .where(INTERRUZIONI.IDCONTRATTO.eq(sub.getIdcontratto()))
+                .orderBy(INTERRUZIONI.DATAINTERRUZIONE.desc())
+                .limit(1)
+                .fetchOptionalInto(Interruzioni.class);
     }
 
     public static boolean hasOngoingInterruption(final Contratti sub, final Connection conn) {
-        Objects.requireNonNull(sub);
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         var interruption = getLastInterruption(sub, conn);
         return interruption.isPresent() && interruption.get().getDatariattivazione() == null;
     }
@@ -347,9 +344,9 @@ public class Queries {
                 .fetchInto(Contratti.class);
     }
 
-    public static Map<Contratti, Bollette> getAllSubscriptionsWithLastReport(final Connection conn) {
+    public static Map<Contratti, Bollette> getAllSubscriptionsAndLastReport(final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        final var lastSubTable = select(CONTRATTI.IDCONTRATTO, max(BOLLETTE.DATAEMISSIONE).as("DataEmissione"))
+        final var lastSubTable = query.select(CONTRATTI.IDCONTRATTO, max(BOLLETTE.DATAEMISSIONE).as(BOLLETTE.DATAEMISSIONE))
                                     .from(CONTRATTI, BOLLETTE)
                                     .where(CONTRATTI.IDCONTRATTO.eq(BOLLETTE.IDCONTRATTO))
                                     .groupBy(CONTRATTI.IDCONTRATTO)
@@ -359,19 +356,48 @@ public class Queries {
                         .on(CONTRATTI.IDCONTRATTO.eq(lastSubTable.field(CONTRATTI.IDCONTRATTO)))
                         .leftJoin(BOLLETTE)
                         .on(BOLLETTE.IDCONTRATTO.eq(lastSubTable.field(CONTRATTI.IDCONTRATTO))
-                                .and(BOLLETTE.DATAEMISSIONE.eq(Objects.requireNonNull(lastSubTable.field("DataEmissione")).cast(LocalDate.class)))))
-                .fetchMap(Contratti.class, Bollette.class);
+                                .and(BOLLETTE.DATAEMISSIONE.eq(lastSubTable.field(BOLLETTE.DATAEMISSIONE)))))
+                .stream()
+                .collect(Collectors.toMap(
+                        r -> new Contratti(
+                                r.get(CONTRATTI.IDCONTRATTO),
+                                r.get(CONTRATTI.DATARICHIESTA),
+                                r.get(CONTRATTI.DATAINIZIO),
+                                r.get(CONTRATTI.DATACESSAZIONE),
+                                r.get(CONTRATTI.NUMEROPERSONE),
+                                r.get(CONTRATTI.CONTATORE),
+                                r.get(CONTRATTI.CODICECLIENTE),
+                                r.get(CONTRATTI.CODICEOFFERTA),
+                                r.get(CONTRATTI.TIPOUSO),
+                                r.get(CONTRATTI.NOMEATTIVAZIONE)),
+                        r -> new Bollette(
+                                r.get(BOLLETTE.IDCONTRATTO),
+                                r.get(BOLLETTE.DATAEMISSIONE),
+                                r.get(BOLLETTE.DATASCADENZA),
+                                r.get(BOLLETTE.DATAPAGAMENTO),
+                                r.get(BOLLETTE.IMPORTO),
+                                r.get(BOLLETTE.CONSUMI),
+                                r.get(BOLLETTE.STIMATA),
+                                r.get(BOLLETTE.COSTOATTIVAZIONE)))
+                );
     }
 
-    public static Zone getZone(final Contratti sub, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.select(ZONE.COMUNE)
-                .from(ZONE, IMMOBILI, CONTATORI)
-                .where(CONTRATTI.IDCONTRATTO.eq(sub.getIdcontratto()))
-                .and(CONTATORI.NUMEROPROGRESSIVO.eq(CONTRATTI.CONTATORE))
-                .and(IMMOBILI.IDIMMOBILE.eq(CONTATORI.IDIMMOBILE))
-                .and(ZONE.IDZONA.eq(ZONE.IDZONA))
-                .fetchOneInto(Zone.class);
+    public static Optional<Zone> getZone(final Contratti sub, final DataSource dataSource) {
+        Objects.requireNonNull(sub);
+        Zone zone = null;
+
+        try (final Connection conn = dataSource.getConnection()) {
+            DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+            zone = query.select(ZONE.asterisk())
+                    .from(ZONE, IMMOBILI, CONTATORI)
+                    .where(CONTATORI.NUMEROPROGRESSIVO.eq(sub.getContatore()))
+                    .and(IMMOBILI.IDIMMOBILE.eq(CONTATORI.IDIMMOBILE))
+                    .and(ZONE.IDZONA.eq(IMMOBILI.IDZONA))
+                    .fetchOneInto(Zone.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Optional.ofNullable(zone);
     }
 
     public static BigDecimal avgConsumptionFromSub(final Contratti sub, final LocalDate start, final LocalDate end,
@@ -399,5 +425,21 @@ public class Queries {
                 .where(BOLLETTE.IDCONTRATTO.eq(subId))
                 .and(BOLLETTE.DATAEMISSIONE.eq(reportDate))
                 .execute();
+    }
+
+    public static Optional<Contratti> fetchSubById(final int id, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.select()
+                .from(CONTRATTI)
+                .where(CONTRATTI.IDCONTRATTO.eq(id))
+                .fetchOptionalInto(Contratti.class);
+    }
+
+    public static Optional<Persone> fetchClientById(final int id, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.select()
+                .from(PERSONE)
+                .where(PERSONE.CODICECLIENTE.eq(id))
+                .fetchOptionalInto(Persone.class);
     }
 }

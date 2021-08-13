@@ -4,6 +4,7 @@ import bdproject.controller.Choice;
 import bdproject.controller.ChoiceImpl;
 import bdproject.controller.gui.AbstractViewController;
 import bdproject.controller.gui.HomeController;
+import bdproject.controller.gui.AbstractSubscriptionDetailsController;
 import bdproject.controller.gui.ViewController;
 import bdproject.controller.Checks;
 import bdproject.model.Queries;
@@ -14,7 +15,6 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
@@ -297,7 +297,7 @@ public class UserAreaController extends AbstractViewController implements Initia
 
     @FXML
     private void showSubDetails() {
-        switchTo(SubscriptionDetailsController.create(getStage(), getDataSource(), subscriptionChoice.getValue().getValue()));
+        switchTo(UserSubDetailsController.create(getStage(), getDataSource(), subscriptionChoice.getValue().getValue()));
     }
 
     @FXML

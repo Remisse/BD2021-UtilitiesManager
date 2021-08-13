@@ -78,7 +78,7 @@ public class ConsumptionStatsController extends AbstractViewController implement
 
     private void updateAverages(final Connection conn) {
         if (startDate.getValue() != null && endDate.getValue() != null) {
-            final Zone zone = Queries.getZone(subscription, conn);
+            final Zone zone = Queries.getZone(subscription, getDataSource()).orElseThrow();
             final String utility = Queries.getUtility(subscription, conn).getNome();
             peopleAvg.setText(Queries.avgConsumptionPerZone(
                     zone,
