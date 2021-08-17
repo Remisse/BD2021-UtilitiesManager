@@ -82,7 +82,6 @@ create table immobili (
      NumCivico varchar(10) not null,
      Interno varchar(10),
      IdZona integer not null,
-     CAP integer not null,
      check((Tipo = 'F') or (Tipo = 'T' and Interno is null)),
      constraint IDIMMOBILE primary key (IdImmobile),
      constraint IDIMMOBILE_2 unique (Via, NumCivico, Interno, IdZona));
@@ -157,6 +156,7 @@ create table zone (
      IdZona integer not null auto_increment,
      Comune varchar(50) not null,
      Provincia varchar(2) not null,
+     CAP varchar(5) not null check (length(CAP) = 5),
      constraint PK_ZONA primary key (IdZona),
      constraint AK_ZONA unique (Comune, Provincia));
 
@@ -173,95 +173,95 @@ values("Acqua");
 
 
 -- Populate zone
-insert into zone(Comune, Provincia)
-values("Bagno di Romagna", "FC"); -- 1
+insert into zone(Comune, CAP, Provincia)
+values("Bagno di Romagna", "47021", "FC"); -- 1
 
-insert into zone(Comune, Provincia)
-values("Bertinoro", "FC"); -- 2
+insert into zone(Comune, CAP, Provincia)
+values("Bertinoro", "47032", "FC"); -- 2
 
-insert into zone(Comune, Provincia)
-values("Borghi", "FC"); -- 3
+insert into zone(Comune, CAP, Provincia)
+values("Borghi", "47030", "FC"); -- 3
 
-insert into zone(Comune, Provincia)
-values("Castrocaro Terme e Terra del Sole", "FC"); -- 4
+insert into zone(Comune, CAP, Provincia)
+values("Castrocaro Terme e Terra del Sole", "47011", "FC"); -- 4
 
-insert into zone(Comune, Provincia)
-values("Cesena", "FC"); -- 5
+insert into zone(Comune, CAP, Provincia)
+values("Cesena", "47521", "FC"); -- 5
 
-insert into zone(Comune, Provincia)
-values("Cesenatico", "FC"); -- 6
+insert into zone(Comune, CAP, Provincia)
+values("Cesenatico", "47042", "FC"); -- 6
 
-insert into zone(Comune, Provincia)
-values("Civitella di Romagna", "FC"); -- 7
+insert into zone(Comune, CAP, Provincia)
+values("Civitella di Romagna", "47012", "FC"); -- 7
 
-insert into zone(Comune, Provincia)
-values("Dovadola", "FC"); -- 8
+insert into zone(Comune, CAP, Provincia)
+values("Dovadola", "47013", "FC"); -- 8
 
-insert into zone(Comune, Provincia)
-values("Forlì", "FC"); -- 9
+insert into zone(Comune, CAP, Provincia)
+values("Forlì", "47121", "FC"); -- 9
 
-insert into zone(Comune, Provincia)
-values("Forlimpopoli", "FC"); -- 10
+insert into zone(Comune, CAP, Provincia)
+values("Forlimpopoli", "47034", "FC"); -- 10
 
-insert into zone(Comune, Provincia)
-values("Galeata", "FC"); -- 11
+insert into zone(Comune, CAP, Provincia)
+values("Galeata", "47010", "FC"); -- 11
 
-insert into zone(Comune, Provincia)
-values("Gambettola", "FC"); -- 12
+insert into zone(Comune, CAP, Provincia)
+values("Gambettola", "47035", "FC"); -- 12
 
-insert into zone(Comune, Provincia)
-values("Gatteo", "FC"); -- 13
+insert into zone(Comune, CAP, Provincia)
+values("Gatteo", "47043", "FC"); -- 13
 
-insert into zone(Comune, Provincia)
-values("Longiano", "FC"); -- 14
+insert into zone(Comune, CAP, Provincia)
+values("Longiano", "47020", "FC"); -- 14
 
-insert into zone(Comune, Provincia)
-values("Meldola", "FC"); -- 15
+insert into zone(Comune, CAP, Provincia)
+values("Meldola", "47014", "FC"); -- 15
 
-insert into zone(Comune, Provincia)
-values("Mercato Saraceno", "FC"); -- 16
+insert into zone(Comune, CAP, Provincia)
+values("Mercato Saraceno", "47025", "FC"); -- 16
 
-insert into zone(Comune, Provincia)
-values("Modigliana", "FC"); -- 17
+insert into zone(Comune, CAP, Provincia)
+values("Modigliana", "47015", "FC"); -- 17
 
-insert into zone(Comune, Provincia)
-values("Montiano", "FC"); -- 18
+insert into zone(Comune, CAP, Provincia)
+values("Montiano", "47020", "FC"); -- 18
 
-insert into zone(Comune, Provincia)
-values("Portico e San Benedetto", "FC"); -- 19
+insert into zone(Comune, CAP, Provincia)
+values("Portico e San Benedetto", "47010", "FC"); -- 19
 
-insert into zone(Comune, Provincia)
-values("Predappio", "FC"); -- 20
+insert into zone(Comune, CAP, Provincia)
+values("Predappio", "47016", "FC"); -- 20
 
-insert into zone(Comune, Provincia)
-values("Premilcuore", "FC"); -- 21
+insert into zone(Comune, CAP, Provincia)
+values("Premilcuore", "47010", "FC"); -- 21
 
-insert into zone(Comune, Provincia)
-values("Rocca San Casciano", "FC"); -- 22
+insert into zone(Comune, CAP, Provincia)
+values("Rocca San Casciano", "47017", "FC"); -- 22
 
-insert into zone(Comune, Provincia)
-values("Roncofreddo", "FC"); -- 23
+insert into zone(Comune, CAP, Provincia)
+values("Roncofreddo", "47020", "FC"); -- 23
 
-insert into zone(Comune, Provincia)
-values("San Mauro Pascoli", "FC"); -- 24
+insert into zone(Comune, CAP, Provincia)
+values("San Mauro Pascoli", "47030", "FC"); -- 24
 
-insert into zone(Comune, Provincia)
-values("Santa Sofia", "FC"); -- 25
+insert into zone(Comune, CAP, Provincia)
+values("Santa Sofia", "47018", "FC"); -- 25
 
-insert into zone(Comune, Provincia)
-values("Sarsina", "FC"); -- 26
+insert into zone(Comune, CAP, Provincia)
+values("Sarsina", "47027", "FC"); -- 26
 
-insert into zone(Comune, Provincia)
-values("Savignano sul Rubicone", "FC"); -- 27
+insert into zone(Comune, CAP, Provincia)
+values("Savignano sul Rubicone", "47039", "FC"); -- 27
 
-insert into zone(Comune, Provincia)
-values("Sogliano al Rubicone", "FC"); -- 28
+insert into zone(Comune, CAP, Provincia)
+values("Sogliano al Rubicone", "47030", "FC"); -- 28
 
-insert into zone(Comune, Provincia)
-values("Tredozio", "FC"); -- 29
+insert into zone(Comune, CAP, Provincia)
+values("Tredozio", "47019", "FC"); -- 29
 
-insert into zone(Comune, Provincia)
-values("Verghereto", "FC"); -- 30
+insert into zone(Comune, CAP, Provincia)
+values("Verghereto", "47028", "FC"); -- 30
 
 
 -- Populate distributori
@@ -536,8 +536,11 @@ values ("> 15000", 1.0);
 
 
 -- Populate "immobili"
-insert into immobili (Tipo, Via, NumCivico, Interno, CAP, IdZona)
-values ('F', "Via Bongo", 69, 1, 47121, 9);
+insert into immobili (Tipo, Via, NumCivico, Interno, IdZona)
+values ('F', "Via Bongo", 69, 1, 9);
+
+insert into immobili (Tipo, Via, NumCivico, Interno, IdZona)
+values ('F', "Via Roma", 11, null, 5);
 
 
 -- Populate "contatori"
@@ -546,6 +549,9 @@ values ("Acqua", "385011111111", 1);
 
 insert into contatori (MateriaPrima, Matricola, IdImmobile)
 values ("Gas", "83850395028543", 1);
+
+insert into contatori (MateriaPrima, Matricola, IdImmobile)
+values ("Gas", "19287488822211", 2);
 
 
 -- Populate "letture"
@@ -593,6 +599,9 @@ values (date_sub(curdate(), interval 123 day), date_sub(curdate(), interval 4 mo
 
 insert into contratti(DataRichiesta, DataInizio, Contatore, CodiceCliente, CodiceOfferta, TipoUso, NomeAttivazione, NumeroPersone)
 values (date_sub(curdate(), interval 123 day), date_sub(curdate(), interval 4 month), 2, 1, 1, "Abitativo residenziale", "Nuova attivazione", default);
+
+insert into contratti(DataRichiesta, DataInizio, Contatore, CodiceCliente, CodiceOfferta, TipoUso, NomeAttivazione, NumeroPersone)
+values (date_sub(curdate(), interval 2 day), null, 3, 2, 1, "Abitativo residenziale", "Subentro", 2);
 
 
 -- Populate "bollette"
