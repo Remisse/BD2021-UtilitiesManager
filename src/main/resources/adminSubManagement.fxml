@@ -25,7 +25,7 @@
             <TableColumn fx:id="planIdCol" prefWidth="129.0" text="Codice offerta" />
         </columns>
       </TableView>
-      <ComboBox fx:id="statusFilter" layoutX="50.0" layoutY="192.0" onAction="#updateSubsTable" prefWidth="150.0" promptText="Stato..." />
+      <ComboBox fx:id="statusFilter" layoutX="50.0" layoutY="192.0" onAction="#doRefreshSubs" prefWidth="150.0" promptText="Stato..." />
       <Label layoutX="712.0" layoutY="28.0" text="Gestione dei contratti">
          <font>
             <Font size="20.0" />
@@ -41,13 +41,13 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <CheckBox fx:id="lastReportFilter" layoutX="50.0" layoutY="236.0" mnemonicParsing="false" onAction="#updateSubsTable" prefHeight="64.0" prefWidth="150.0" text="Ultima bolletta emessa più di due mesi fa" wrapText="true" />
+      <CheckBox fx:id="lastReportFilter" layoutX="50.0" layoutY="236.0" mnemonicParsing="false" onAction="#doRefreshSubs" prefHeight="64.0" prefWidth="150.0" text="Ultima bolletta emessa più di due mesi fa" wrapText="true" />
       <TableView fx:id="requestTable" layoutX="1053.0" layoutY="148.0" prefHeight="247.0" prefWidth="475.0">
          <columns>
-            <TableColumn prefWidth="118.0" text="Codice cliente" />
-            <TableColumn prefWidth="115.0" text="Codice contratto" />
-            <TableColumn prefWidth="105.0" text="Data richiesta" />
-            <TableColumn prefWidth="136.0" text="Tipo attivazione" />
+            <TableColumn fx:id="reqClientIdCol" prefWidth="118.0" text="Codice cliente" />
+            <TableColumn fx:id="reqSubIdCol" prefWidth="115.0" text="Codice contratto" />
+            <TableColumn fx:id="reqRequestDateCol" prefWidth="105.0" text="Data richiesta" />
+            <TableColumn fx:id="reqActivationCol" prefWidth="136.0" text="Tipo attivazione" />
          </columns>
       </TableView>
       <Label layoutX="1053.0" layoutY="106.0" text="Richieste di attivazione">
@@ -55,7 +55,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Button fx:id="reviewRequest" layoutX="1053.0" layoutY="409.0" mnemonicParsing="false" text="Esamina">
+      <Button fx:id="reviewRequest" layoutX="1053.0" layoutY="409.0" mnemonicParsing="false" onAction="#doReviewRequest" prefHeight="31.0" prefWidth="79.0" text="Esamina">
          <font>
             <Font size="15.0" />
          </font>
@@ -79,8 +79,8 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <CheckBox fx:id="pastDeadlineFilter" layoutX="50.0" layoutY="300.0" mnemonicParsing="false" onAction="#updateSubsTable" prefHeight="64.0" prefWidth="150.0" text="Bollette scadute da più di 14 giorni" wrapText="true" />
-      <Button fx:id="interruptButton" layoutX="822.0" layoutY="409.0" mnemonicParsing="false" text="Interrompi fornitura" textFill="#9a0e0e">
+      <CheckBox fx:id="pastDeadlineFilter" layoutX="50.0" layoutY="300.0" mnemonicParsing="false" onAction="#doRefreshSubs" prefHeight="64.0" prefWidth="150.0" text="Bollette scadute da più di 14 giorni" wrapText="true" />
+      <Button fx:id="interruptButton" layoutX="839.0" layoutY="409.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="147.0" text="Interrompi fornitura" textFill="#9a0e0e">
          <font>
             <Font size="15.0" />
          </font>
@@ -96,17 +96,12 @@
             <TableColumn prefWidth="105.0" text="Pagata" />
          </columns>
       </TableView>
-      <Button fx:id="clientInfo" layoutX="233.0" layoutY="409.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="152.0" text="Dettagli cliente">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
       <CheckBox fx:id="estimatedCheckbox" layoutX="1054.0" layoutY="728.0" mnemonicParsing="false" text="Stimata">
          <font>
             <Font size="15.0" />
          </font>
       </CheckBox>
-      <Button fx:id="subInfo" layoutX="405.0" layoutY="409.0" mnemonicParsing="false" onAction="#showSubDetails" prefHeight="31.0" prefWidth="152.0" text="Dettagli contratto">
+      <Button fx:id="subInfo" layoutX="233.0" layoutY="409.0" mnemonicParsing="false" onAction="#showSubDetails" prefHeight="31.0" prefWidth="152.0" text="Dettagli contratto">
          <font>
             <Font size="15.0" />
          </font>
@@ -131,7 +126,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <TextField fx:id="clientIdFilter" layoutX="50.0" layoutY="148.0" prefHeight="30.0" prefWidth="152.0" promptText="Codice cliente" />
+      <TextField fx:id="clientIdFilter" layoutX="50.0" layoutY="148.0" onAction="#doRefreshSubs" onKeyTyped="#doRefreshSubs" prefHeight="30.0" prefWidth="152.0" promptText="Codice cliente" />
       <Label layoutX="1234.0" layoutY="756.0" text="Stime precedenti">
          <font>
             <Font size="15.0" />
@@ -152,7 +147,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="1234.0" layoutY="409.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="75.0" text="Elimina" textFill="#9a0e0e">
+      <Button fx:id="deleteRequest" layoutX="1234.0" layoutY="409.0" mnemonicParsing="false" onAction="#doDeleteRequest" prefHeight="31.0" prefWidth="75.0" text="Elimina" textFill="#9a0e0e">
          <font>
             <Font size="15.0" />
          </font>
@@ -167,7 +162,12 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="reviewRequest1" layoutX="1144.0" layoutY="409.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="75.0" text="Attiva" textFill="#228600">
+      <Button fx:id="activateSub" layoutX="1144.0" layoutY="409.0" mnemonicParsing="false" onAction="#doActivateSub" prefHeight="31.0" prefWidth="75.0" text="Attiva" textFill="#228600">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="refreshRequests" layoutX="1443.0" layoutY="409.0" mnemonicParsing="false" onAction="#doRefreshRequests" prefHeight="31.0" prefWidth="85.0" text="Aggiorna">
          <font>
             <Font size="15.0" />
          </font>

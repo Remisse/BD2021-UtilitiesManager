@@ -15,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import org.checkerframework.common.value.qual.MinLenFieldInvariant;
 
 import javax.sql.DataSource;
 import java.net.URL;
@@ -83,10 +84,6 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
 
     protected abstract void setOther();
 
-    protected Button getEndSubscription() {
-        return endSubscription;
-    }
-
     protected Contratti getSubscription() {
         return subscription;
     }
@@ -140,6 +137,13 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
     private void goBack() {
         switchTo(getBackController());
     }
+
+    @FXML
+    private void doEndSubscription() {
+        abstractDoEndSubscription();
+    }
+
+    protected abstract void abstractDoEndSubscription();
 
     protected abstract ViewController getBackController();
 }

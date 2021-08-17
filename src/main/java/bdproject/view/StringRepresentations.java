@@ -15,6 +15,10 @@ public class StringRepresentations {
 
     private StringRepresentations() {}
 
+    public static String getGenericError() {
+        return "Impossibile soddisfare la richiesta.";
+    }
+
     public static String clientToString(final Persone client) {
         StringBuilder builder = new StringBuilder();
         builder.append(client.getNome())
@@ -48,7 +52,7 @@ public class StringRepresentations {
                 .append("\n")
                 .append(zone.getComune())
                 .append("\n")
-                .append(premises.getCap())
+                .append(zone.getCap())
                 .append("\n")
                 .append(zone.getProvincia());
         return builder.toString();

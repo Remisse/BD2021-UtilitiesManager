@@ -11,18 +11,20 @@ import bdproject.tables.records.ZoneRecord;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -62,6 +64,11 @@ public class Zone extends TableImpl<ZoneRecord> {
      * The column <code>utenze.zone.Provincia</code>.
      */
     public final TableField<ZoneRecord, String> PROVINCIA = createField(DSL.name("Provincia"), SQLDataType.VARCHAR(2).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.zone.CAP</code>.
+     */
+    public final TableField<ZoneRecord, String> CAP = createField(DSL.name("CAP"), SQLDataType.VARCHAR(5).nullable(false), this, "");
 
     private Zone(Name alias, Table<ZoneRecord> aliased) {
         this(alias, aliased, null);
@@ -117,6 +124,13 @@ public class Zone extends TableImpl<ZoneRecord> {
     }
 
     @Override
+    public List<Check<ZoneRecord>> getChecks() {
+        return Arrays.asList(
+            Internal.createCheck(this, DSL.name("zone_chk_1"), "(length(`CAP`) = 5)", true)
+        );
+    }
+
+    @Override
     public Zone as(String alias) {
         return new Zone(DSL.name(alias), this);
     }
@@ -143,11 +157,11 @@ public class Zone extends TableImpl<ZoneRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Integer, String, String> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Integer, String, String, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

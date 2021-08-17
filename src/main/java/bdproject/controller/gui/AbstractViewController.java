@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import javax.sql.DataSource;
+import javax.swing.text.View;
 import java.io.IOException;
 
 public abstract class AbstractViewController implements ViewController {
@@ -21,8 +22,7 @@ public abstract class AbstractViewController implements ViewController {
         this.fxml = fxml;
     }
 
-    @Override
-    public void switchTo(ViewController controller) {
+    private Scene createNewScene(ViewController controller) {
         final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource(controller.getFxml()));
         loader.setController(controller);
         Pane pane = null;
@@ -32,7 +32,20 @@ public abstract class AbstractViewController implements ViewController {
             FXUtils.showError(e.getMessage());
         }
         assert pane != null;
-        stage.setScene(new Scene(pane));
+        return new Scene(pane);
+    }
+
+    @Override
+    public void switchTo(ViewController controller) {
+        stage.setScene(createNewScene(controller));
+        stage.show();
+    }
+
+    @Override
+    public void createSubWindow(ViewController controller) {
+        Stage subStage = new Stage();
+        subStage.setScene(createNewScene(controller));
+        subStage.show();
     }
 
     protected Stage getStage() {

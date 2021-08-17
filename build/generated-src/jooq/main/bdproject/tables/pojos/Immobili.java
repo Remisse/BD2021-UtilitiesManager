@@ -21,7 +21,6 @@ public class Immobili implements Serializable {
     private final String  numcivico;
     private final String  interno;
     private final Integer idzona;
-    private final Integer cap;
 
     public Immobili(Immobili value) {
         this.idimmobile = value.idimmobile;
@@ -30,7 +29,6 @@ public class Immobili implements Serializable {
         this.numcivico = value.numcivico;
         this.interno = value.interno;
         this.idzona = value.idzona;
-        this.cap = value.cap;
     }
 
     public Immobili(
@@ -39,8 +37,7 @@ public class Immobili implements Serializable {
         String  via,
         String  numcivico,
         String  interno,
-        Integer idzona,
-        Integer cap
+        Integer idzona
     ) {
         this.idimmobile = idimmobile;
         this.tipo = tipo;
@@ -48,7 +45,6 @@ public class Immobili implements Serializable {
         this.numcivico = numcivico;
         this.interno = interno;
         this.idzona = idzona;
-        this.cap = cap;
     }
 
     /**
@@ -93,13 +89,6 @@ public class Immobili implements Serializable {
         return this.idzona;
     }
 
-    /**
-     * Getter for <code>utenze.immobili.CAP</code>.
-     */
-    public Integer getCap() {
-        return this.cap;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Immobili (");
@@ -110,7 +99,6 @@ public class Immobili implements Serializable {
         sb.append(", ").append(numcivico);
         sb.append(", ").append(interno);
         sb.append(", ").append(idzona);
-        sb.append(", ").append(cap);
 
         sb.append(")");
         return sb.toString();

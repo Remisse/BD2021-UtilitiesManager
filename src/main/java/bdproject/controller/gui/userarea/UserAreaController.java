@@ -49,7 +49,7 @@ public class UserAreaController extends AbstractViewController implements Initia
             "Gas", "Smc",
             "Acqua", "mc"
     );
-    private final DateTimeFormatter df_it = DateTimeFormatter.ofPattern("MM/dd/yyyy").withLocale(Locale.ITALIAN);
+    private final DateTimeFormatter df_it = DateTimeFormatter.ofPattern("dd/MM/yyyy").withLocale(Locale.ITALIAN);
     private final DecimalFormat decimal = new DecimalFormat("#,###.000");
     @FXML
     private Label fullName;

@@ -51,7 +51,7 @@
           <TableColumn fx:id="reactivationDate" minWidth="0.0" prefWidth="138.0" text="Riattivato il" />
         </columns>
       </TableView>
-      <Label layoutX="911.0" layoutY="170.0" text="Storico delle interruzioni">
+      <Label fx:id="interruptionLabel" layoutX="911.0" layoutY="170.0" text="Storico delle interruzioni">
          <font>
             <Font size="18.0" />
          </font>

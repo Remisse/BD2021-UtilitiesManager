@@ -123,14 +123,14 @@ public class HomeController extends AbstractViewController implements Initializa
                         PERSONE.CODICECLIENTE,
                         PERSONE.AMMINISTRATORE,
                         PERSONE.NOME)
-                    .from(PERSONE)
-                    .where(PERSONE.EMAIL.eq(email.getText()))
-                    .and(PERSONE.PASSWORD.eq(password.getText()))
-                    .fetchOptional()
-                    .ifPresentOrElse(u -> {
-                        SessionHolder.create(u.component1(), u.component2(), u.component3());
-                        updateSigninElements();
-                    }, () -> FXUtils.showBlockingWarning("Indirizzo e-mail o password errati."));
+                .from(PERSONE)
+                .where(PERSONE.EMAIL.eq(email.getText()))
+                .and(PERSONE.PASSWORD.eq(password.getText()))
+                .fetchOptional()
+                .ifPresentOrElse(u -> {
+                    SessionHolder.create(u.component1(), u.component2(), u.component3());
+                    updateSigninElements();
+                }, () -> FXUtils.showBlockingWarning("Indirizzo e-mail o password errati."));
 
         } catch (SQLException | NoSuchElementException e) {
             FXUtils.showError(e.getMessage());

@@ -382,6 +382,14 @@ public class Queries {
                 );
     }
 
+    public static List<Contratti> getSubscriptionRequests(final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.select()
+                .from(CONTRATTI)
+                .where(CONTRATTI.DATAINIZIO.isNull())
+                .fetchInto(Contratti.class);
+    }
+
     public static Optional<Zone> getZone(final Contratti sub, final DataSource dataSource) {
         Objects.requireNonNull(sub);
         Zone zone = null;
@@ -441,5 +449,20 @@ public class Queries {
                 .from(PERSONE)
                 .where(PERSONE.CODICECLIENTE.eq(id))
                 .fetchOptionalInto(Persone.class);
+    }
+
+    public static int activateSub(final int subId, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.update(CONTRATTI)
+                .set(CONTRATTI.DATAINIZIO, LocalDate.now())
+                .where(CONTRATTI.IDCONTRATTO.eq(subId))
+                .execute();
+    }
+
+    public static int deleteRequest(final int subId, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.delete(CONTRATTI)
+                .where(CONTRATTI.IDCONTRATTO.eq(subId))
+                .execute();
     }
 }

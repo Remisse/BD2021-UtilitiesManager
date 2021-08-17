@@ -18,21 +18,25 @@ public class Zone implements Serializable {
     private final Integer idzona;
     private final String  comune;
     private final String  provincia;
+    private final String  cap;
 
     public Zone(Zone value) {
         this.idzona = value.idzona;
         this.comune = value.comune;
         this.provincia = value.provincia;
+        this.cap = value.cap;
     }
 
     public Zone(
         Integer idzona,
         String  comune,
-        String  provincia
+        String  provincia,
+        String  cap
     ) {
         this.idzona = idzona;
         this.comune = comune;
         this.provincia = provincia;
+        this.cap = cap;
     }
 
     /**
@@ -56,6 +60,13 @@ public class Zone implements Serializable {
         return this.provincia;
     }
 
+    /**
+     * Getter for <code>utenze.zone.CAP</code>.
+     */
+    public String getCap() {
+        return this.cap;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Zone (");
@@ -63,6 +74,7 @@ public class Zone implements Serializable {
         sb.append(idzona);
         sb.append(", ").append(comune);
         sb.append(", ").append(provincia);
+        sb.append(", ").append(cap);
 
         sb.append(")");
         return sb.toString();

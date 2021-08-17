@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -79,11 +79,6 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
      * The column <code>utenze.immobili.IdZona</code>.
      */
     public final TableField<ImmobiliRecord, Integer> IDZONA = createField(DSL.name("IdZona"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.immobili.CAP</code>.
-     */
-    public final TableField<ImmobiliRecord, Integer> CAP = createField(DSL.name("CAP"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Immobili(Name alias, Table<ImmobiliRecord> aliased) {
         this(alias, aliased, null);
@@ -187,11 +182,11 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, String, String, Integer, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row6<Integer, String, String, String, String, Integer> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

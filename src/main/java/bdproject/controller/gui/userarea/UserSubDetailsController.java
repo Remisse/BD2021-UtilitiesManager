@@ -35,8 +35,8 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
         return UserAreaController.create(getStage(), getDataSource());
     }
 
-    @FXML
-    private void doEndSubscription() {
+    @Override
+    protected void abstractDoEndSubscription() {
         final Contratti subscription = getSubscription();
 
         try (Connection conn = getDataSource().getConnection()) {
