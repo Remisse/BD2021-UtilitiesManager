@@ -1,12 +1,9 @@
 package bdproject.model;
 
 import bdproject.tables.pojos.*;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
-import javax.annotation.concurrent.Immutable;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -204,15 +201,15 @@ public class Queries {
                 select(
                     value(process.getClientId()),
                     value(LocalDate.now()),
-                    value(process.getPlan().orElseThrow().getCodice()),
-                    value(process.getMeter().orElseThrow().getNumeroprogressivo()),
-                    value(process.getUse().orElseThrow()),
-                    value(process.getActivationMethod().orElseThrow().getNome()),
-                    value(process.getPeopleNo()))
+                    value(process.plan().orElseThrow().getCodice()),
+                    value(process.meter().orElseThrow().getNumeroprogressivo()),
+                    value(process.usage().orElseThrow()),
+                    value(process.activation().orElseThrow().getNome()),
+                    value(process.peopleNo()))
                 .from(CONTRATTI)
                 .whereNotExists(
                     selectFrom(CONTRATTI)
-                    .where(CONTRATTI.CONTATORE.eq(process.getMeter().get().getNumeroprogressivo()))
+                    .where(CONTRATTI.CONTATORE.eq(process.meter().orElseThrow().getNumeroprogressivo()))
                     .and(CONTRATTI.DATACESSAZIONE.isNull())))
             .execute();
     }

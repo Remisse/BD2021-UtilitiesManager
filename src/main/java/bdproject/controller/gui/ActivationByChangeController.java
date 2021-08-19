@@ -66,10 +66,10 @@ public class ActivationByChangeController extends AbstractViewController impleme
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        planLabel.setText(process.getPlan().orElseThrow().getNome());
-        utilityLabel.setText(process.getPlan().orElseThrow().getMateriaprima());
-        useLabel.setText(process.getUse().orElseThrow());
-        methodChosen.setText(process.getActivationMethod().orElseThrow().getNome());
+        planLabel.setText(process.plan().orElseThrow().getNome());
+        utilityLabel.setText(process.plan().orElseThrow().getMateriaprima());
+        useLabel.setText(process.usage().orElseThrow());
+        methodChosen.setText(process.activation().orElseThrow().getNome());
     }
 
     @FXML
@@ -84,7 +84,7 @@ public class ActivationByChangeController extends AbstractViewController impleme
             var meter = query.select()
                     .from(CONTATORI)
                     .where(CONTATORI.MATRICOLA.eq(meterId.getText()))
-                    .and(CONTATORI.MATERIAPRIMA.eq(process.getPlan().orElseThrow().getMateriaprima()))
+                    .and(CONTATORI.MATERIAPRIMA.eq(process.plan().orElseThrow().getMateriaprima()))
                     .fetchOptionalInto(Contatori.class);
             var client = query.select()
                     .from(PERSONE)

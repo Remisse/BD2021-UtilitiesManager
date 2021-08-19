@@ -3,6 +3,9 @@ package bdproject.utils;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public class FXUtils {
 
     private FXUtils() {}
@@ -27,5 +30,17 @@ public class FXUtils {
 
     public static void showError(String message) {
         showBlocking(Alert.AlertType.ERROR, message);
+    }
+
+    public static void showYesNoDialog(final String text, final Runnable yesAction) {
+        Alert alert = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                text,
+                ButtonType.YES, ButtonType.NO);
+        alert.showAndWait().ifPresent(b -> {
+            if (b == ButtonType.YES) {
+                yesAction.run();
+            }
+        });
     }
 }

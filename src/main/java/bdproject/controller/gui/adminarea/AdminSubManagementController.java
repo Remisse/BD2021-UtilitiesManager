@@ -117,14 +117,14 @@ public class AdminSubManagementController extends AbstractViewController impleme
                     .filter(p -> statuses.get(statusChoice).test(p.getKey(), conn))
                     .filter(p -> clientId == NO_CLIENT || p.getKey().getCodicecliente().equals(clientId))
                     .filter(p -> !lastReportFilter.isSelected()
-                            || p.getValue() == null
-                            || p.getValue().getDataemissione().isBefore(
-                                    LocalDate.now().minus(Period.ofMonths(REPORT_PERIOD_MONTHS))))
+                            || (p.getValue().getDataemissione() != null
+                                && p.getValue().getDataemissione().isBefore(LocalDate.now().minus(Period.ofMonths(
+                                        REPORT_PERIOD_MONTHS)))))
                     .filter(p -> !pastDeadlineFilter.isSelected()
-                            || (p.getValue() != null
+                            || (p.getValue().getDatascadenza() != null
                                 && p.getValue().getDatapagamento() == null
-                                && p.getValue().getDatascadenza().isBefore(
-                                        LocalDate.now().minus(Period.ofDays(DEADLINE_DAYS)))))
+                                && p.getValue().getDatascadenza().isBefore(LocalDate.now().minus(Period.ofDays(
+                                        DEADLINE_DAYS)))))
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -165,14 +165,16 @@ public class AdminSubManagementController extends AbstractViewController impleme
     private void doActivateSub() {
         final var selectedRequest = requestTable.getSelectionModel().getSelectedItem();
         if (selectedRequest != null) {
-            try (Connection conn = getDataSource().getConnection()) {
-                Queries.activateSub(selectedRequest.getIdcontratto(), conn);
-                FXUtils.showBlockingWarning("Contratto attivato.");
-                refreshAll();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                FXUtils.showError(StringRepresentations.getGenericError());
-            }
+            FXUtils.showYesNoDialog("Vuoi davvero attivare questa fornitura?", () -> {
+                try (Connection conn = getDataSource().getConnection()) {
+                    Queries.activateSub(selectedRequest.getIdcontratto(), conn);
+                    FXUtils.showBlockingWarning("Contratto attivato.");
+                    refreshAll();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    FXUtils.showError(StringRepresentations.getGenericError());
+                }
+            });
         }
     }
 
@@ -180,14 +182,16 @@ public class AdminSubManagementController extends AbstractViewController impleme
     private void doDeleteRequest() {
         final var selectedRequest = requestTable.getSelectionModel().getSelectedItem();
         if (selectedRequest != null) {
-            try (Connection conn = getDataSource().getConnection()) {
-                Queries.deleteRequest(selectedRequest.getIdcontratto(), conn);
-                FXUtils.showBlockingWarning("Richiesta eliminata.");
-                refreshAll();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                FXUtils.showError(StringRepresentations.getGenericError());
-            }
+            FXUtils.showYesNoDialog("Vuoi davvero eliminare definitivamente questa richiesta?", () -> {
+                try (Connection conn = getDataSource().getConnection()) {
+                    Queries.deleteRequest(selectedRequest.getIdcontratto(), conn);
+                    FXUtils.showBlockingWarning("Richiesta eliminata.");
+                    refreshAll();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    FXUtils.showError(StringRepresentations.getGenericError());
+                }
+            });
         }
     }
 

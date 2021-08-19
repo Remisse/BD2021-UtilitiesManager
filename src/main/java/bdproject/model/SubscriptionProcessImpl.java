@@ -78,52 +78,52 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     }
 
     @Override
-    public Optional<Immobili> getPremises() {
+    public Optional<Immobili> premises() {
         return Optional.ofNullable(premises);
     }
 
     @Override
-    public Optional<Offerte> getPlan() {
+    public Optional<Offerte> plan() {
         return Optional.ofNullable(plan);
     }
 
     @Override
-    public Optional<TipiAttivazione> getActivationMethod() {
+    public Optional<TipiAttivazione> activation() {
         return Optional.ofNullable(activationMethod);
     }
 
     @Override
-    public Optional<String> getUse() {
+    public Optional<String> usage() {
         return Optional.ofNullable(use);
     }
 
     @Override
-    public int getPeopleNo() {
+    public int peopleNo() {
         return peopleNo;
     }
 
     @Override
-    public double getPowerRequested() {
+    public double powerRequested() {
         return power;
     }
 
     @Override
-    public Optional<Contatori> getMeter() {
+    public Optional<Contatori> meter() {
         return Optional.ofNullable(meter);
     }
 
     @Override
-    public Optional<Persone> getOtherClient() {
+    public Optional<Persone> otherClient() {
         return Optional.ofNullable(otherClient);
     }
 
     @Override
-    public Optional<Contratti> getOtherSubscription() {
+    public Optional<Contratti> otherSubscription() {
         return Optional.ofNullable(otherSub);
     }
 
     @Override
-    public Optional<Letture> getMeasurement() {
+    public Optional<Letture> measurement() {
         return Optional.ofNullable(measurement);
     }
 }

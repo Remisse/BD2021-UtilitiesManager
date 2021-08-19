@@ -30,23 +30,23 @@ public interface SubscriptionProcess {
 
     int getClientId();
 
-    Optional<Immobili> getPremises();
+    Optional<Immobili> premises();
 
-    Optional<Offerte> getPlan();
+    Optional<Offerte> plan();
 
-    Optional<TipiAttivazione> getActivationMethod();
+    Optional<TipiAttivazione> activation();
 
-    Optional<String> getUse();
+    Optional<String> usage();
 
-    int getPeopleNo();
+    int peopleNo();
 
-    double getPowerRequested();
+    double powerRequested();
 
-    Optional<Contatori> getMeter();
+    Optional<Contatori> meter();
 
-    Optional<Persone> getOtherClient();
+    Optional<Persone> otherClient();
 
-    Optional<Contratti> getOtherSubscription();
+    Optional<Contratti> otherSubscription();
 
-    Optional<Letture> getMeasurement();
+    Optional<Letture> measurement();
 }

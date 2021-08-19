@@ -2,7 +2,6 @@ package bdproject.controller.gui;
 
 import bdproject.model.Queries;
 import bdproject.model.SubscriptionProcess;
-import bdproject.tables.pojos.Contratti;
 import bdproject.tables.pojos.Immobili;
 import bdproject.tables.pojos.Zone;
 import bdproject.utils.FXUtils;
@@ -17,7 +16,6 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -69,12 +67,12 @@ public class SubscriptionConfirmationController extends AbstractViewController i
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        planText.setText(process.getPlan().orElseThrow().getNome());
-        utilityText.setText(process.getPlan().orElseThrow().getMateriaprima());
-        useText.setText(process.getUse().orElseThrow());
-        activationText.setText(process.getActivationMethod().orElseThrow().getNome());
+        planText.setText(process.plan().orElseThrow().getNome());
+        utilityText.setText(process.plan().orElseThrow().getMateriaprima());
+        useText.setText(process.usage().orElseThrow());
+        activationText.setText(process.activation().orElseThrow().getNome());
 
-        final Immobili premises = process.getPremises().orElseThrow();
+        final Immobili premises = process.premises().orElseThrow();
         Zone zone = null;
         try (Connection conn = getDataSource().getConnection()) {
             DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
@@ -93,7 +91,7 @@ public class SubscriptionConfirmationController extends AbstractViewController i
                 + (premises.getInterno() == null ? "" : "\nInterno: " + premises.getInterno())
                 + "\nComune: " + zone.getComune()));
 
-        process.getOtherClient().ifPresentOrElse(c ->  {
+        process.otherClient().ifPresentOrElse(c ->  {
             currentClientFlow.getChildren().add(new Text("Codice cliente: " + c.getCodicecliente()
                     + "\nNome: " + c.getNome()
                     + "\nCognome: " + c.getCognome()));
@@ -103,7 +101,7 @@ public class SubscriptionConfirmationController extends AbstractViewController i
     }
 
     private void toggleElements() {
-        process.getOtherClient().ifPresentOrElse(c ->  {
+        process.otherClient().ifPresentOrElse(c ->  {
             currentClientLabel.setVisible(true);
             currentClientFlow.setVisible(true);
         }, () -> {
@@ -114,7 +112,7 @@ public class SubscriptionConfirmationController extends AbstractViewController i
 
     @FXML
     private void goBack() {
-        final String activ = process.getActivationMethod().orElseThrow().getNome();
+        final String activ = process.activation().orElseThrow().getNome();
         if (activ.equals("Voltura")) {
             switchTo(ActivationByChangeController.create(getStage(), getDataSource(), process));
         } else if (activ.equals("Subentro")) {
@@ -132,7 +130,7 @@ public class SubscriptionConfirmationController extends AbstractViewController i
                 ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(b -> {
             if (b == ButtonType.YES) {
-                final String activ = process.getActivationMethod().orElseThrow().getNome();
+                final String activ = process.activation().orElseThrow().getNome();
                 try (Connection conn = getDataSource().getConnection()) {
                     switch (activ) {
                         case "Voltura":
@@ -162,8 +160,8 @@ public class SubscriptionConfirmationController extends AbstractViewController i
      * 3) create new subscription
      */
     private void insertIfChange(Connection conn) {
-        Queries.insertMeasurement(process.getMeasurement().orElseThrow(), conn);
-        Queries.ceaseSubscription(process.getOtherSubscription().orElseThrow(), conn);
+        Queries.insertMeasurement(process.measurement().orElseThrow(), conn);
+        Queries.ceaseSubscription(process.otherSubscription().orElseThrow(), conn);
         Queries.insertSubscription(process, conn);
     }
 

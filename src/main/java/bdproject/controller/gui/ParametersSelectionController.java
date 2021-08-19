@@ -71,26 +71,26 @@ public class ParametersSelectionController extends AbstractViewController implem
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        planLabel.setText(process.getPlan().orElseThrow().getNome());
-        utilityLabel.setText(process.getPlan().orElseThrow().getMateriaprima());
-        useLabel.setText(process.getUse().orElseThrow());
+        planLabel.setText(process.plan().orElseThrow().getNome());
+        utilityLabel.setText(process.plan().orElseThrow().getMateriaprima());
+        useLabel.setText(process.usage().orElseThrow());
 
-        if (process.getUse().orElseThrow().equals("Commerciale")) {
+        if (process.usage().orElseThrow().equals("Commerciale")) {
             peopleNoLabel.setText("Numero di dipendenti");
-        } else if (process.getUse().orElseThrow().equals("Abitativo residenziale")) {
+        } else if (process.usage().orElseThrow().equals("Abitativo residenziale")) {
             peopleNoLabel.setText("N. componenti del nucleo familiare");
         } else {
             peopleNoLabel.setVisible(false);
             peopleNoField.setVisible(false);
         }
-        peopleNoField.setText(String.valueOf(process.getPeopleNo()));
+        peopleNoField.setText(String.valueOf(process.peopleNo()));
 
         if (!requiresPower()) {
             powerLabel.setVisible(false);
             powerSlider.setVisible(false);
             powerChosen.setVisible(false);
         } else {
-            powerSlider.setValue(process.getPowerRequested());
+            powerSlider.setValue(process.powerRequested());
             updatePowerChosen();
         }
 
@@ -110,12 +110,12 @@ public class ParametersSelectionController extends AbstractViewController implem
     }
 
     private boolean requiresPeopleNo() {
-        final String use = process.getUse().orElseThrow();
+        final String use = process.usage().orElseThrow();
         return use.equals("Commerciale") || use.equals("Abitativo residenziale");
     }
 
     private boolean requiresPower() {
-        final String utility = process.getPlan().orElseThrow().getMateriaprima();
+        final String utility = process.plan().orElseThrow().getMateriaprima();
         return utility.equals("Luce");
     }
 
