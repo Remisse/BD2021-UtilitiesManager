@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -51,6 +51,11 @@ public class Interruzioni extends TableImpl<InterruzioniRecord> {
     }
 
     /**
+     * The column <code>utenze.interruzioni.IdContratto</code>.
+     */
+    public final TableField<InterruzioniRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
      * The column <code>utenze.interruzioni.DataInterruzione</code>.
      */
     public final TableField<InterruzioniRecord, LocalDate> DATAINTERRUZIONE = createField(DSL.name("DataInterruzione"), SQLDataType.LOCALDATE.nullable(false), this, "");
@@ -61,9 +66,9 @@ public class Interruzioni extends TableImpl<InterruzioniRecord> {
     public final TableField<InterruzioniRecord, LocalDate> DATARIATTIVAZIONE = createField(DSL.name("DataRiattivazione"), SQLDataType.LOCALDATE, this, "");
 
     /**
-     * The column <code>utenze.interruzioni.IdContratto</code>.
+     * The column <code>utenze.interruzioni.Descrizione</code>.
      */
-    public final TableField<InterruzioniRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<InterruzioniRecord, String> DESCRIZIONE = createField(DSL.name("Descrizione"), SQLDataType.VARCHAR(1000).nullable(false), this, "");
 
     private Interruzioni(Name alias, Table<InterruzioniRecord> aliased) {
         this(alias, aliased, null);
@@ -125,7 +130,7 @@ public class Interruzioni extends TableImpl<InterruzioniRecord> {
     @Override
     public List<Check<InterruzioniRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("interruzioni_chk_1"), "(`DataRiattivazione` >= `DataInterruzione`)", true)
+            Internal.createCheck(this, DSL.name("interruzioni_chk_1"), "((`DataRiattivazione` is null) or (`DataRiattivazione` >= `DataInterruzione`))", true)
         );
     }
 
@@ -156,11 +161,11 @@ public class Interruzioni extends TableImpl<InterruzioniRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<LocalDate, LocalDate, Integer> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Integer, LocalDate, LocalDate, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

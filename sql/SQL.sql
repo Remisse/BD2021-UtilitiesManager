@@ -41,9 +41,6 @@ create table contatori (
     Matricola varchar(20) default null,
     MateriaPrima varchar(20) not null,
     IdImmobile integer not null,
-    constraint CODE_LENGTH check(Matricola is null
-          or (MateriaPrima = "Gas" and length(Matricola) = 14)
-          or (MateriaPrima = "Acqua" and length(Matricola) > 0)),
     constraint PK_CONTATORI primary key (NumeroProgressivo),
     constraint AK_CONTATORI unique (Matricola),
     constraint AK2_CONTATORI unique (IdImmobile, MateriaPrima));
@@ -87,10 +84,11 @@ create table immobili (
      constraint IDIMMOBILE_2 unique (Via, NumCivico, Interno, IdZona));
      
 create table interruzioni (
-	 DataInterruzione date not null,
-     DataRiattivazione date,
      IdContratto integer not null,
-     check (DataRiattivazione >= DataInterruzione),
+	 DataInterruzione date not null,
+     DataRiattivazione date default null,
+     Descrizione varchar(1000) not null,
+     check (DataRiattivazione is null or DataRiattivazione >= DataInterruzione),
      constraint PK_INTERRUZIONI primary key (DataInterruzione, IdContratto)
 );
 
@@ -109,7 +107,7 @@ create table offerte (
      Codice integer not null auto_increment,
      Nome varchar(20) not null,
      Descrizione varchar(1000) not null,
-     CostoMateriaPrima decimal(10,4) not null check(CostoMateriaPrima > 0.0),
+     CostoMateriaPrima decimal(10, 4) not null check(CostoMateriaPrima > 0.0),
      Attiva boolean not null default true,
      MateriaPrima varchar(20) not null,
      constraint PK_OFFERTA primary key (Codice));
@@ -564,10 +562,10 @@ values (35.0, 1, curdate(), true);
 
 -- Populate "persone"
 insert into persone
-values (default, false, "MRMMRA55R08B963X", default, "Mario", "Maria Mario", "Via Mario", 64, 47121, "Forlì", "FC", 19551005, "35426324", "longlivecrts@bonobbo.com", "aeo1001012", "10001 - 15000");
+values (default, false, "MRMMRA55R08B963X", default, "Mario", "Maria Mario", "Via Mario", 64, 47121, "Forlì", "FC", 19551005, "35426324", "trallallero@boh.it", "ucciucci", "10001 - 15000");
 
 insert into persone
-values (default, false, "BRTBBB25T87R762U", default, "Bartolomeo", "Bababbo", "Via delle Vie", 12, 47521, "Cesena", "FC", 19860621, "38275722", "bartolomeo@gmail.com", "uffiuffi", "0 - 5000");
+values (default, false, "BRTBBB25T87R762U", default, "Bartolomeo", "Bartolucci", "Via delle Vie", 12, 47521, "Cesena", "FC", 19860621, "38275722", "bartolomeo@gmail.com", "uffiuffi", "0 - 5000");
 
 insert into persone
 values (default, true, "GAGGUG92F28U275P", default, "Armando", "Armandini", "Viale Vialone", 73, 88100, "Catanzaro", "CZ", 19951030, "292892992", "amministratore@admin.com", "password", "> 15000");

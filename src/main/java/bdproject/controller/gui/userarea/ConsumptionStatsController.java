@@ -7,6 +7,7 @@ import bdproject.tables.pojos.Bollette;
 import bdproject.tables.pojos.Contratti;
 import bdproject.tables.pojos.Zone;
 import bdproject.utils.FXUtils;
+import bdproject.utils.LocaleUtils;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,7 +36,6 @@ public class ConsumptionStatsController extends AbstractViewController implement
 
     private static final String FXML_FILE = "consumptionTrend.fxml";
     private final Contratti subscription;
-    private final DateTimeFormatter month_it = DateTimeFormatter.ofPattern("MMMM").withLocale(Locale.ITALIAN);
     @FXML
     private Button back;
     @FXML
@@ -105,12 +105,15 @@ public class ConsumptionStatsController extends AbstractViewController implement
 
     @FXML
     private void onYearSelect() {
+        final DateTimeFormatter month_it = LocaleUtils.getItLongMonthFormatter();
         try (Connection conn = getDataSource().getConnection()) {
             final var reports = Queries.getReports(subscription, conn);
             XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
             for (Bollette report : reports) {
                 if (report.getConsumi() != null) {
-                    series.getData().add(new XYChart.Data<>(report.getDataemissione().format(month_it), report.getConsumi()));
+                    series.getData().add(new XYChart.Data<>(
+                            report.getDataemissione().format(month_it),
+                            report.getConsumi()));
                 }
             }
             yearlyTrend.getData().clear();

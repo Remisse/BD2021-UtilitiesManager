@@ -1,14 +1,20 @@
 package bdproject.view;
 
+import bdproject.model.Queries;
 import bdproject.tables.pojos.Immobili;
 import bdproject.tables.pojos.Persone;
+import bdproject.tables.pojos.Redditi;
 import bdproject.tables.pojos.Zone;
+import bdproject.utils.LocaleUtils;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 import java.sql.Connection;
+import java.util.Optional;
 
+import static bdproject.Tables.PERSONE;
+import static bdproject.Tables.REDDITI;
 import static bdproject.tables.Zone.ZONE;
 
 public class StringRepresentations {
@@ -19,17 +25,25 @@ public class StringRepresentations {
         return "Impossibile soddisfare la richiesta.";
     }
 
-    public static String clientToString(final Persone client) {
+    public static String clientToString(final int clientId, final Connection conn) {
+        final Optional<Persone> client = Queries.fetchClientById(clientId, conn);
+        final Redditi income = Queries.getClientIncomeBracket(clientId, conn);
+
         StringBuilder builder = new StringBuilder();
-        builder.append(client.getNome())
+        client.ifPresent(c -> builder.append(c.getNome())
                 .append(" ")
-                .append(client.getCognome())
+                .append(c.getCognome())
+                .append("\nData di nascita: ")
+                .append(LocaleUtils.getItDateFormatter().format(c.getDatanascita()))
+                .append("\n")
+                .append(c.getCodicefiscale())
                 .append("\nCodice cliente: ")
-                .append(client.getCodicecliente())
+                .append(c.getCodicecliente())
                 .append("\n")
-                .append(client.getCodicefiscale())
-                .append("\n")
-                .append(client.getEmail());
+                .append(c.getEmail())
+                .append("\nReddito: ")
+                .append(income.getFascia())
+        );
         return builder.toString();
     }
 

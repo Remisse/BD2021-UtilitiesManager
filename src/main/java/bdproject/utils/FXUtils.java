@@ -10,33 +10,30 @@ public class FXUtils {
 
     private FXUtils() {}
 
-    private static void showBlocking(Alert.AlertType type, String message) {
+    private static void showBlocking(final Alert.AlertType type, final String message) {
         Alert alert = new Alert(type, message, ButtonType.CLOSE);
         alert.showAndWait();
     }
 
-    private static void showNonblocking(Alert.AlertType type, String message) {
+    private static void showNonblocking(final Alert.AlertType type, final String message) {
         Alert alert = new Alert(type, message, ButtonType.CLOSE);
         alert.show();
     }
 
-    public static void showBlockingWarning(String message) {
+    public static void showBlockingWarning(final String message) {
         showBlocking(Alert.AlertType.NONE, message);
     }
 
-    public static void showNonblockingWarning(String message) {
+    public static void showNonblockingWarning(final String message) {
         showNonblocking(Alert.AlertType.NONE, message);
     }
 
-    public static void showError(String message) {
+    public static void showError(final String message) {
         showBlocking(Alert.AlertType.ERROR, message);
     }
 
-    public static void showYesNoDialog(final String text, final Runnable yesAction) {
-        Alert alert = new Alert(
-                Alert.AlertType.CONFIRMATION,
-                text,
-                ButtonType.YES, ButtonType.NO);
+    public static void showConfirmationDialog(final String text, final Runnable yesAction) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, text, ButtonType.YES, ButtonType.NO);
         alert.showAndWait().ifPresent(b -> {
             if (b == ButtonType.YES) {
                 yesAction.run();

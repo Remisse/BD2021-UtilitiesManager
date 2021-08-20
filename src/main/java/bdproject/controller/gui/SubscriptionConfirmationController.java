@@ -5,6 +5,7 @@ import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.Immobili;
 import bdproject.tables.pojos.Zone;
 import bdproject.utils.FXUtils;
+import bdproject.view.StringRepresentations;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -19,6 +20,7 @@ import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import static bdproject.tables.Immobili.IMMOBILI;
@@ -29,6 +31,7 @@ public class SubscriptionConfirmationController extends AbstractViewController i
 
     private static final String FXML = "subConfirmation.fxml";
     private final SubscriptionProcess process;
+    private final Map<String, Runnable> typeAction;
 
     @FXML
     private Label planText;
@@ -53,6 +56,11 @@ public class SubscriptionConfirmationController extends AbstractViewController i
             final SubscriptionProcess process) {
         super(stage, dataSource, FXML);
         this.process = process;
+        this.typeAction = Map.of(
+                "Voltura", () -> ActivationByChangeController.create(getStage(), getDataSource(), process),
+                "Subentro", () -> {},
+                "Nuova attivazione", () -> {}
+        );
     }
 
     public static ViewController create(final Stage stage, final DataSource dataSource,
@@ -73,29 +81,15 @@ public class SubscriptionConfirmationController extends AbstractViewController i
         activationText.setText(process.activation().orElseThrow().getNome());
 
         final Immobili premises = process.premises().orElseThrow();
-        Zone zone = null;
         try (Connection conn = getDataSource().getConnection()) {
-            DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-            zone = query.select(ZONE.asterisk())
-                    .from(ZONE, IMMOBILI)
-                    .where(ZONE.IDZONA.eq(IMMOBILI.IDZONA))
-                    .fetchOneInto(Zone.class);
+            premisesFlow.getChildren().add(new Text(StringRepresentations.premisesToString(premises, conn)));
+            process.otherClient().ifPresentOrElse(
+                    c -> currentClientFlow.getChildren().add(new Text(StringRepresentations.clientToString(
+                            c.getCodicecliente(), conn))),
+                    () -> currentClientFlow.getChildren().add(new Text("")));
         } catch (SQLException e) {
             FXUtils.showError(e.getMessage());
         }
-
-        assert zone != null;
-        premisesFlow.getChildren().add(new Text("Tipo: " + premises.getTipo()
-                + "\nVia: " + premises.getVia()
-                + "\nNumero civico: " + premises.getNumcivico()
-                + (premises.getInterno() == null ? "" : "\nInterno: " + premises.getInterno())
-                + "\nComune: " + zone.getComune()));
-
-        process.otherClient().ifPresentOrElse(c ->  {
-            currentClientFlow.getChildren().add(new Text("Codice cliente: " + c.getCodicecliente()
-                    + "\nNome: " + c.getNome()
-                    + "\nCognome: " + c.getCognome()));
-        }, () -> currentClientFlow.getChildren().add(new Text("")));
 
         toggleElements();
     }
@@ -112,43 +106,30 @@ public class SubscriptionConfirmationController extends AbstractViewController i
 
     @FXML
     private void goBack() {
-        final String activ = process.activation().orElseThrow().getNome();
-        if (activ.equals("Voltura")) {
-            switchTo(ActivationByChangeController.create(getStage(), getDataSource(), process));
-        } else if (activ.equals("Subentro")) {
-
-        } else {
-
-        }
+        typeAction.get(process.activation().orElseThrow().getNome()).run();
     }
 
     @FXML
     private void insertSubscription() {
-        Alert alert = new Alert(
-                Alert.AlertType.CONFIRMATION,
-                "Stai per stipulare un contratto di fornitura. Vuoi continuare?",
-                ButtonType.YES, ButtonType.NO);
-        alert.showAndWait().ifPresent(b -> {
-            if (b == ButtonType.YES) {
-                final String activ = process.activation().orElseThrow().getNome();
-                try (Connection conn = getDataSource().getConnection()) {
-                    switch (activ) {
-                        case "Voltura":
-                            insertIfChange(conn);
-                            break;
-                        case "Subentro":
-                            insertIfSubentro(conn);
-                            break;
-                        case "Nuova attivazione":
-                            insertIfNewActivation(conn);
-                            break;
-                        default:
-                            FXUtils.showError("Nessun metodo di attivazione trovato. Qualcosa non ha funzionato.");
-                            break;
-                    }
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+        FXUtils.showConfirmationDialog("Stai per stipulare un contratto di fornitura. Vuoi continuare?", () -> {
+            final String type = process.activation().orElseThrow().getNome();
+            try (Connection conn = getDataSource().getConnection()) {
+                switch (type) {
+                    case "Voltura":
+                        insertIfChange(conn);
+                        break;
+                    case "Subentro":
+                        insertIfSubentro(conn);
+                        break;
+                    case "Nuova attivazione":
+                        insertIfNewActivation(conn);
+                        break;
+                    default:
+                        FXUtils.showError("Nessun metodo di attivazione trovato. Qualcosa non ha funzionato.");
+                        break;
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         });
     }
