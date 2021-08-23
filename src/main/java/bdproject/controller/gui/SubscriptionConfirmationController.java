@@ -3,7 +3,6 @@ package bdproject.controller.gui;
 import bdproject.model.Queries;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.Immobili;
-import bdproject.tables.pojos.Zone;
 import bdproject.utils.FXUtils;
 import bdproject.view.StringRepresentations;
 import javafx.fxml.FXML;
@@ -12,9 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.net.URL;
@@ -22,10 +18,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.ResourceBundle;
-
-import static bdproject.tables.Immobili.IMMOBILI;
-import static bdproject.tables.Zone.ZONE;
-import static org.jooq.impl.DSL.defaultValue;
 
 public class SubscriptionConfirmationController extends AbstractViewController implements Initializable {
 

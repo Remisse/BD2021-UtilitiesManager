@@ -1,5 +1,6 @@
 package bdproject.controller.gui.adminarea;
 
+import bdproject.controller.Checks;
 import bdproject.controller.gui.AbstractViewController;
 import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
@@ -41,6 +42,7 @@ public class AdminSubManagementController extends AbstractViewController impleme
             "Interrotto", (s, c) -> s.getDatacessazione() == null && Queries.hasOngoingInterruption(s, c),
             "Cessato", (s, c) -> s.getDatacessazione() != null
     );
+    private byte[] reportFile = null;
 
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
 
@@ -75,12 +77,10 @@ public class AdminSubManagementController extends AbstractViewController impleme
     @FXML private TableColumn<Bollette, String> repPublishDateCol;
     @FXML private TableColumn<Bollette, String> repDeadlineCol;
     @FXML private TableColumn<Bollette, String> repPaidDateCol;
-    @FXML private TableColumn<Bollette, String> repEstimatedCol;
-    @FXML private TableColumn<Bollette, String> repConsumptionCol;
-    @FXML private TableColumn<Bollette, String> repActivationCostCol;
+    @FXML private TableColumn<Bollette, String> repCostCol;
 
-    @FXML private Button publishReport;
-
+    @FXML private TextField finalCostField;
+    @FXML private Label reportFileStatus;
 
     private AdminSubManagementController(Stage stage, DataSource dataSource) {
         super(stage, dataSource, FXML_FILE);
@@ -333,9 +333,7 @@ public class AdminSubManagementController extends AbstractViewController impleme
         repPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDataemissione())));
         repDeadlineCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatascadenza())));
         repPaidDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatapagamento())));
-        repEstimatedCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStimata() == 1 ? "Sì" : "No"));
-        repConsumptionCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getConsumi().toString()));
-        repActivationCostCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCostoattivazione().toString()));
+        repCostCol.setCellValueFactory(c -> new SimpleStringProperty("€ " + c.getValue().getImporto()));
     }
 
     private void doRefreshReports() {
@@ -351,6 +349,66 @@ public class AdminSubManagementController extends AbstractViewController impleme
         } else {
             reportsTable.setItems(FXCollections.emptyObservableList());
         }
+    }
+
+    @FXML
+    private void doDeleteReport() {
+        final Bollette report = reportsTable.getSelectionModel().getSelectedItem();
+        if (report != null) {
+            try (Connection conn = getDataSource().getConnection()) {
+                final int result = Queries.deleteReport(report.getIdcontratto(), report.getDataemissione(), conn);
+                if (result != 0) {
+                    FXUtils.showBlockingWarning("Bolletta eliminata.");
+                } else {
+                    FXUtils.showBlockingWarning("Impossibile eliminare la bolletta.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                FXUtils.showBlockingWarning("Seleziona una bolletta.");
+            }
+        }
+    }
+
+    /**
+     * Mock implementation.
+     */
+    @FXML
+    private void loadReportFile() {
+        reportFile = new byte[] {'T', 'E', 'S', 'T'};
+        reportFileStatus.setText("caricato");
+    }
+
+    @FXML
+    private void doPublishReport() {
+        if (canPublishReport()) {
+            final Contratti sub = subsTable.getSelectionModel().getSelectedItem();
+            try (final Connection conn = getDataSource().getConnection()) {
+                final int result = Queries.publishReport(
+                        sub.getIdcontratto(),
+                        1,
+                        BigDecimal.valueOf(Long.parseLong(finalCostField.getText())),
+                        reportFile,
+                        conn);
+                if (result != 0) {
+                    FXUtils.showBlockingWarning("Bolletta emessa.");
+                    clearReportData();
+                } else {
+                    FXUtils.showBlockingWarning("Impossibile emettere la bolletta.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                FXUtils.showBlockingWarning(StringRepresentations.getGenericError());
+            }
+        }
+    }
+
+    private void clearReportData() {
+        reportFile = null;
+        finalCostField.setText("");
+    }
+
+    private boolean canPublishReport() {
+        return Checks.isNumber(finalCostField.toString()) && reportFile != null;
     }
 
     private void refreshAll() {

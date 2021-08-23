@@ -17,16 +17,16 @@
           <CategoryAxis fx:id="yearlyX" animated="false" label="Mesi" side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis fx:id="yearlyY" animated="false" label="Consumi" side="LEFT" />
+          <NumberAxis fx:id="yearlyY" animated="false" label="Importi" side="LEFT" />
         </yAxis>
       </LineChart>
-      <Label layoutX="540.0" layoutY="38.0" text="Statistiche sui consumi">
+      <Label layoutX="585.0" layoutY="39.0" text="Statistiche">
          <font>
-            <Font size="20.0" />
+            <Font size="24.0" />
          </font>
       </Label>
       <ComboBox fx:id="yearSelect" layoutX="241.0" layoutY="480.0" onAction="#onYearSelect" prefWidth="150.0" promptText="Anno..." />
-      <Button fx:id="back" layoutX="52.0" layoutY="599.0" mnemonicParsing="false" onAction="#goBack" text="Torna indietro">
+      <Button fx:id="back" layoutX="52.0" layoutY="39.0" mnemonicParsing="false" onAction="#goBack" text="Torna indietro">
          <font>
             <Font size="15.0" />
          </font>
@@ -38,7 +38,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label layoutX="715.0" layoutY="261.0" prefHeight="61.0" prefWidth="180.0" text="Media dei tuoi consumi" wrapText="true">
+      <Label layoutX="715.0" layoutY="261.0" prefHeight="61.0" prefWidth="180.0" text="Media delle tue bollette" wrapText="true">
          <font>
             <Font size="16.0" />
          </font>
@@ -48,7 +48,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="918.0" layoutY="261.0" prefHeight="61.0" prefWidth="227.0" text="Consumi medi nel tuo comune" wrapText="true">
+      <Label layoutX="918.0" layoutY="261.0" prefHeight="61.0" prefWidth="227.0" text="Media del tuo comune" wrapText="true">
          <font>
             <Font size="16.0" />
          </font>

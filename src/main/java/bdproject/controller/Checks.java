@@ -2,7 +2,6 @@ package bdproject.controller;
 
 import bdproject.model.Queries;
 import bdproject.tables.pojos.Contratti;
-import javafx.scene.control.TextField;
 
 import java.sql.Connection;
 

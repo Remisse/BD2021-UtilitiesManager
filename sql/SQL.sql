@@ -26,9 +26,7 @@ create table bollette (
      DataScadenza date not null,
      DataPagamento date default null,
      Importo decimal(20, 2) not null,
-     Consumi decimal(20, 6) not null check (not(Consumi < 0.0)),
-     Stimata boolean not null,
-     CostoAttivazione decimal(20, 2) not null check (CostoAttivazione >= 0.0),
+     DettaglioBolletta mediumblob,
 	 constraint PK_BOLLETTA primary key (IdContratto, DataEmissione));
 
 create table compatibilità (
@@ -604,16 +602,16 @@ values (date_sub(curdate(), interval 2 day), null, 3, 2, 1, "Abitativo residenzi
 
 -- Populate "bollette"
 insert into bollette
-values (1, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 124.64, 31.6, false, 85.0);
+values (1, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 124.64, null);
 
 insert into bollette
-values (2, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 133.0, 72.0, true, 85.0);
+values (2, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 133.0, null);
 
 insert into bollette
-values (1, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 19.97, 27.6, false, 0.0);
+values (1, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 19.97, null);
 
 insert into bollette
-values (2, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 48.0, 72.0, true, 0.0);
+values (2, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 48.0, null);
 
 -- Foreign keys
 -- ___________________ 

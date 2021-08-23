@@ -110,10 +110,10 @@ public class ConsumptionStatsController extends AbstractViewController implement
             final var reports = Queries.getReports(subscription, conn);
             XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
             for (Bollette report : reports) {
-                if (report.getConsumi() != null) {
+                if (report.getImporto() != null) {
                     series.getData().add(new XYChart.Data<>(
                             report.getDataemissione().format(month_it),
-                            report.getConsumi()));
+                            report.getImporto()));
                 }
             }
             yearlyTrend.getData().clear();

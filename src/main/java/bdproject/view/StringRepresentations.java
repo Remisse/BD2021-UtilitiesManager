@@ -1,6 +1,7 @@
 package bdproject.view;
 
 import bdproject.model.Queries;
+import bdproject.tables.Distributori;
 import bdproject.tables.pojos.Immobili;
 import bdproject.tables.pojos.Persone;
 import bdproject.tables.pojos.Redditi;

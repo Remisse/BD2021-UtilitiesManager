@@ -13,19 +13,17 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
-import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -77,19 +75,9 @@ public class Bollette extends TableImpl<BolletteRecord> {
     public final TableField<BolletteRecord, BigDecimal> IMPORTO = createField(DSL.name("Importo"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.bollette.Consumi</code>.
+     * The column <code>utenze.bollette.DettaglioBolletta</code>.
      */
-    public final TableField<BolletteRecord, BigDecimal> CONSUMI = createField(DSL.name("Consumi"), SQLDataType.DECIMAL(20, 6).nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.bollette.Stimata</code>.
-     */
-    public final TableField<BolletteRecord, Byte> STIMATA = createField(DSL.name("Stimata"), SQLDataType.TINYINT.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.bollette.CostoAttivazione</code>.
-     */
-    public final TableField<BolletteRecord, BigDecimal> COSTOATTIVAZIONE = createField(DSL.name("CostoAttivazione"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
+    public final TableField<BolletteRecord, byte[]> DETTAGLIOBOLLETTA = createField(DSL.name("DettaglioBolletta"), SQLDataType.BLOB, this, "");
 
     private Bollette(Name alias, Table<BolletteRecord> aliased) {
         this(alias, aliased, null);
@@ -149,14 +137,6 @@ public class Bollette extends TableImpl<BolletteRecord> {
     }
 
     @Override
-    public List<Check<BolletteRecord>> getChecks() {
-        return Arrays.asList(
-            Internal.createCheck(this, DSL.name("bollette_chk_1"), "(`Consumi` >= 0.0)", true),
-            Internal.createCheck(this, DSL.name("bollette_chk_2"), "(`CostoAttivazione` >= 0.0)", true)
-        );
-    }
-
-    @Override
     public Bollette as(String alias) {
         return new Bollette(DSL.name(alias), this);
     }
@@ -183,11 +163,11 @@ public class Bollette extends TableImpl<BolletteRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, LocalDate, LocalDate, LocalDate, BigDecimal, BigDecimal, Byte, BigDecimal> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row6<Integer, LocalDate, LocalDate, LocalDate, BigDecimal, byte[]> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

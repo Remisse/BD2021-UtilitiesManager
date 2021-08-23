@@ -22,9 +22,7 @@ public class Bollette implements Serializable {
     private final LocalDate  datascadenza;
     private final LocalDate  datapagamento;
     private final BigDecimal importo;
-    private final BigDecimal consumi;
-    private final Byte       stimata;
-    private final BigDecimal costoattivazione;
+    private final byte[]     dettagliobolletta;
 
     public Bollette(Bollette value) {
         this.idcontratto = value.idcontratto;
@@ -32,9 +30,7 @@ public class Bollette implements Serializable {
         this.datascadenza = value.datascadenza;
         this.datapagamento = value.datapagamento;
         this.importo = value.importo;
-        this.consumi = value.consumi;
-        this.stimata = value.stimata;
-        this.costoattivazione = value.costoattivazione;
+        this.dettagliobolletta = value.dettagliobolletta;
     }
 
     public Bollette(
@@ -43,18 +39,14 @@ public class Bollette implements Serializable {
         LocalDate  datascadenza,
         LocalDate  datapagamento,
         BigDecimal importo,
-        BigDecimal consumi,
-        Byte       stimata,
-        BigDecimal costoattivazione
+        byte[]     dettagliobolletta
     ) {
         this.idcontratto = idcontratto;
         this.dataemissione = dataemissione;
         this.datascadenza = datascadenza;
         this.datapagamento = datapagamento;
         this.importo = importo;
-        this.consumi = consumi;
-        this.stimata = stimata;
-        this.costoattivazione = costoattivazione;
+        this.dettagliobolletta = dettagliobolletta;
     }
 
     /**
@@ -93,24 +85,10 @@ public class Bollette implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.bollette.Consumi</code>.
+     * Getter for <code>utenze.bollette.DettaglioBolletta</code>.
      */
-    public BigDecimal getConsumi() {
-        return this.consumi;
-    }
-
-    /**
-     * Getter for <code>utenze.bollette.Stimata</code>.
-     */
-    public Byte getStimata() {
-        return this.stimata;
-    }
-
-    /**
-     * Getter for <code>utenze.bollette.CostoAttivazione</code>.
-     */
-    public BigDecimal getCostoattivazione() {
-        return this.costoattivazione;
+    public byte[] getDettagliobolletta() {
+        return this.dettagliobolletta;
     }
 
     @Override
@@ -122,9 +100,7 @@ public class Bollette implements Serializable {
         sb.append(", ").append(datascadenza);
         sb.append(", ").append(datapagamento);
         sb.append(", ").append(importo);
-        sb.append(", ").append(consumi);
-        sb.append(", ").append(stimata);
-        sb.append(", ").append(costoattivazione);
+        sb.append(", ").append("[binary...]");
 
         sb.append(")");
         return sb.toString();

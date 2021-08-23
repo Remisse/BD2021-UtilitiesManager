@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -319,7 +320,7 @@ public class Queries {
         final bdproject.tables.Immobili I = IMMOBILI;
 
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        final Table<Record2<Integer, BigDecimal>> T = table(query.select(M1.NUMEROPROGRESSIVO, sum(B1.CONSUMI).as("SommaConsumi"))
+        final Table<Record2<Integer, BigDecimal>> T = table(query.select(M1.NUMEROPROGRESSIVO, sum(B1.IMPORTO).as("SommaImporti"))
                 .from(B1, C1, M1)
                 .where(B1.IDCONTRATTO.eq(C1.IDCONTRATTO))
                 .and(C1.CONTATORE.eq(M1.NUMEROPROGRESSIVO))
@@ -332,7 +333,7 @@ public class Queries {
                 .and(B1.DATAEMISSIONE.lessOrEqual(end))
                 .groupBy(M1.NUMEROPROGRESSIVO)).as("T");
 
-        final var sums = query.select(T.field("SommaConsumi"))
+        final var sums = query.select(T.field("SommaImporti"))
                 .from(T)
                 .fetchInto(BigDecimal.class);
 
@@ -387,9 +388,7 @@ public class Queries {
                                 r.get(BOLLETTE.DATASCADENZA),
                                 r.get(BOLLETTE.DATAPAGAMENTO),
                                 r.get(BOLLETTE.IMPORTO),
-                                r.get(BOLLETTE.CONSUMI),
-                                r.get(BOLLETTE.STIMATA),
-                                r.get(BOLLETTE.COSTOATTIVAZIONE)))
+                                r.get(BOLLETTE.DETTAGLIOBOLLETTA)))
                 );
     }
 
@@ -424,14 +423,14 @@ public class Queries {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         final bdproject.tables.Bollette B1 = BOLLETTE;
         final bdproject.tables.Contratti C1 = CONTRATTI;
-        final Table<Record1<BigDecimal>> T = table(query.select(sum(B1.CONSUMI).as("SommaConsumi"))
+        final Table<Record1<BigDecimal>> T = table(query.select(sum(B1.IMPORTO).as("SommaImporti"))
                 .from(B1, C1)
                 .where(C1.IDCONTRATTO.eq(sub.getIdcontratto()))
                 .and(B1.IDCONTRATTO.eq(C1.IDCONTRATTO))
                 .and(B1.DATAEMISSIONE.greaterOrEqual(start))
                 .and(B1.DATAEMISSIONE.lessOrEqual(end)));
 
-        final var sum = query.select(T.field("SommaConsumi"))
+        final var sum = query.select(T.field("SommaImporti"))
                 .from(T)
                 .fetchInto(BigDecimal.class);
         return averageBigDecimal(sum);
@@ -525,5 +524,46 @@ public class Queries {
                 .and(LETTURE.DATAEFFETTUAZIONE.eq(measurementDate))
                 .and(LETTURE.CONFERMATA.eq((byte) 0))
                 .execute();
+    }
+
+    public static int deleteReport(final int subId, final LocalDate publishDate, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.delete(BOLLETTE)
+                .where(BOLLETTE.IDCONTRATTO.eq(subId))
+                .and(BOLLETTE.DATAEMISSIONE.eq(publishDate))
+                .and(BOLLETTE.DATAPAGAMENTO.isNull())
+                .execute();
+    }
+
+    public static int publishReport(final int subId, final int monthsToDeadline, final BigDecimal finalCost,
+                                    final byte[] reportFile, final Connection conn) {
+        Objects.requireNonNull(finalCost);
+        Objects.requireNonNull(reportFile);
+
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.insertInto(BOLLETTE)
+                .columns(BOLLETTE.IDCONTRATTO, BOLLETTE.DATAEMISSIONE, BOLLETTE.DATASCADENZA, BOLLETTE.IMPORTO,
+                        BOLLETTE.DETTAGLIOBOLLETTA)
+                .select(query.select(
+                            val(subId),
+                            val(LocalDate.now()),
+                            val(LocalDate.now().plus(Period.ofMonths(monthsToDeadline))),
+                            val(finalCost),
+                            val(reportFile))
+                        .from(CONTRATTI)
+                        .where(CONTRATTI.IDCONTRATTO.eq(subId))
+                        .and(CONTRATTI.DATAINIZIO.isNotNull())
+                        .and(CONTRATTI.DATACESSAZIONE.isNull()))
+                .execute();
+    }
+
+    public static List<Distributori> findDistributor(final Contratti sub, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.select(DISTRIBUTORI.asterisk())
+                .from(DISTRIBUTORI, DISTRIBUZIONI)
+                .where(DISTRIBUTORI.ID.eq(DISTRIBUZIONI.IDDISTRIBUTORE))
+                .and(DISTRIBUZIONI.IDZONA.eq(zoneId))
+                .and(DISTRIBUZIONI.MATERIAPRIMA.eq(utility))
+                .fetchInto(Distributori.class);
     }
 }

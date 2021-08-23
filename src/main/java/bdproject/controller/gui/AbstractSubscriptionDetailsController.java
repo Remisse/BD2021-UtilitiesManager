@@ -2,7 +2,7 @@ package bdproject.controller.gui;
 
 import bdproject.controller.Checks;
 import bdproject.model.Queries;
-import bdproject.tables.pojos.Persone;
+import bdproject.tables.pojos.Distributori;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringRepresentations;
 import bdproject.tables.pojos.Contratti;
@@ -13,11 +13,9 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import org.checkerframework.common.value.qual.MinLenFieldInvariant;
 
 import javax.sql.DataSource;
 import java.net.URL;
@@ -25,9 +23,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public abstract class AbstractSubscriptionDetailsController extends AbstractViewController implements Initializable {
@@ -43,6 +41,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
     @FXML private TextFlow clientDetails;
     @FXML private TextFlow planDetails;
     @FXML private TextFlow premisesDetails;
+
     @FXML private Label peopleNoName;
     @FXML private Label peopleNo;
     @FXML private Label subStartDate;
@@ -50,10 +49,17 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
     @FXML private Label subState;
     @FXML private Label use;
     @FXML private Label activation;
+
     @FXML private TableView<Interruzioni> interruptionTable;
     @FXML private TableColumn<Interruzioni, String> interruptionDate;
     @FXML private TableColumn<Interruzioni, String> reactivationDate;
     @FXML private TableColumn<Interruzioni, String> interruptionDescription;
+
+    @FXML private Label distributorLabel;
+    @FXML private TableView<Distributori> distributorTable;
+    @FXML private TableColumn<Distributori, String> distributorNameCol;
+    @FXML private TableColumn<Distributori, String> distributorPhoneCol;
+    @FXML private TableColumn<Distributori, String> distributorEmailCol;
 
     protected AbstractSubscriptionDetailsController(final Stage stage, final DataSource dataSource, final Contratti subscription) {
         super(stage, dataSource, FXML_FILE);
@@ -76,6 +82,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
             setPeopleNo();
             setStatus(startDate, endDate, conn);
             setPremisesDetails(conn);
+            setDistributorTable(conn);
             setInterruptionTable(conn);
             setOther();
 
@@ -84,6 +91,22 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
             FXUtils.showError(e.getSQLState() + "\n" + e.getMessage());
         }
     }
+
+    private void setDistributorTable(final Connection conn) {
+        if (showDistributorTable()) {
+            distributorEmailCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEmailcontatto()));
+            distributorNameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNome()));
+            distributorPhoneCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNumerocontatto()));
+
+            List<Distributori> distributors = Queries.findDistributor(Queries.zon)
+
+        } else {
+            distributorLabel.setVisible(false);
+            distributorTable.setVisible(false);
+        }
+    }
+
+    protected abstract boolean showDistributorTable();
 
     protected abstract void setOther();
 
