@@ -7,7 +7,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import javax.sql.DataSource;
-import javax.swing.text.View;
 import java.io.IOException;
 
 public abstract class AbstractViewController implements ViewController {
@@ -31,7 +30,9 @@ public abstract class AbstractViewController implements ViewController {
         } catch (IOException e) {
             FXUtils.showError(e.getMessage());
         }
-        assert pane != null;
+        if (pane == null) {
+            throw new IllegalStateException("Pane should not be null!");
+        }
         return new Scene(pane);
     }
 

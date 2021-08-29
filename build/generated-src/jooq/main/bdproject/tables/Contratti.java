@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -55,14 +55,14 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     public final TableField<ContrattiRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>utenze.contratti.DataRichiesta</code>.
+     * The column <code>utenze.contratti.NumeroRichiesta</code>.
      */
-    public final TableField<ContrattiRecord, LocalDate> DATARICHIESTA = createField(DSL.name("DataRichiesta"), SQLDataType.LOCALDATE.nullable(false), this, "");
+    public final TableField<ContrattiRecord, Integer> NUMERORICHIESTA = createField(DSL.name("NumeroRichiesta"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>utenze.contratti.DataInizio</code>.
      */
-    public final TableField<ContrattiRecord, LocalDate> DATAINIZIO = createField(DSL.name("DataInizio"), SQLDataType.LOCALDATE, this, "");
+    public final TableField<ContrattiRecord, LocalDate> DATAINIZIO = createField(DSL.name("DataInizio"), SQLDataType.LOCALDATE.nullable(false), this, "");
 
     /**
      * The column <code>utenze.contratti.DataCessazione</code>.
@@ -70,34 +70,9 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     public final TableField<ContrattiRecord, LocalDate> DATACESSAZIONE = createField(DSL.name("DataCessazione"), SQLDataType.LOCALDATE, this, "");
 
     /**
-     * The column <code>utenze.contratti.NumeroPersone</code>.
+     * The column <code>utenze.contratti.DataUltimaBolletta</code>.
      */
-    public final TableField<ContrattiRecord, Integer> NUMEROPERSONE = createField(DSL.name("NumeroPersone"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("1", SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>utenze.contratti.Contatore</code>.
-     */
-    public final TableField<ContrattiRecord, Integer> CONTATORE = createField(DSL.name("Contatore"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.contratti.CodiceCliente</code>.
-     */
-    public final TableField<ContrattiRecord, Integer> CODICECLIENTE = createField(DSL.name("CodiceCliente"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.contratti.CodiceOfferta</code>.
-     */
-    public final TableField<ContrattiRecord, Integer> CODICEOFFERTA = createField(DSL.name("CodiceOfferta"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.contratti.TipoUso</code>.
-     */
-    public final TableField<ContrattiRecord, String> TIPOUSO = createField(DSL.name("TipoUso"), SQLDataType.VARCHAR(30).nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.contratti.NomeAttivazione</code>.
-     */
-    public final TableField<ContrattiRecord, String> NOMEATTIVAZIONE = createField(DSL.name("NomeAttivazione"), SQLDataType.VARCHAR(20).nullable(false), this, "");
+    public final TableField<ContrattiRecord, LocalDate> DATAULTIMABOLLETTA = createField(DSL.name("DataUltimaBolletta"), SQLDataType.LOCALDATE, this, "");
 
     private Contratti(Name alias, Table<ContrattiRecord> aliased) {
         this(alias, aliased, null);
@@ -148,49 +123,22 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     }
 
     @Override
+    public List<UniqueKey<ContrattiRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.KEY_CONTRATTI_AK_CONTRATTO);
+    }
+
+    @Override
     public List<ForeignKey<ContrattiRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_COLLEGAMENTO, Keys.FK_SOTTOSCRIZIONE, Keys.FK_PROPOSTA, Keys.FK_USO, Keys.FK_ATTIVAZIONE_TRAMITE);
+        return Arrays.asList(Keys.FK_DEFINIZIONE);
     }
 
-    private transient Contatori _contatori;
-    private transient Persone _persone;
-    private transient Offerte _offerte;
-    private transient TipologieUso _tipologieUso;
-    private transient TipiAttivazione _tipiAttivazione;
+    private transient RichiesteAttivazione _richiesteAttivazione;
 
-    public Contatori contatori() {
-        if (_contatori == null)
-            _contatori = new Contatori(this, Keys.FK_COLLEGAMENTO);
+    public RichiesteAttivazione richiesteAttivazione() {
+        if (_richiesteAttivazione == null)
+            _richiesteAttivazione = new RichiesteAttivazione(this, Keys.FK_DEFINIZIONE);
 
-        return _contatori;
-    }
-
-    public Persone persone() {
-        if (_persone == null)
-            _persone = new Persone(this, Keys.FK_SOTTOSCRIZIONE);
-
-        return _persone;
-    }
-
-    public Offerte offerte() {
-        if (_offerte == null)
-            _offerte = new Offerte(this, Keys.FK_PROPOSTA);
-
-        return _offerte;
-    }
-
-    public TipologieUso tipologieUso() {
-        if (_tipologieUso == null)
-            _tipologieUso = new TipologieUso(this, Keys.FK_USO);
-
-        return _tipologieUso;
-    }
-
-    public TipiAttivazione tipiAttivazione() {
-        if (_tipiAttivazione == null)
-            _tipiAttivazione = new TipiAttivazione(this, Keys.FK_ATTIVAZIONE_TRAMITE);
-
-        return _tipiAttivazione;
+        return _richiesteAttivazione;
     }
 
     @Override
@@ -220,11 +168,11 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, String, String> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row5<Integer, Integer, LocalDate, LocalDate, LocalDate> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

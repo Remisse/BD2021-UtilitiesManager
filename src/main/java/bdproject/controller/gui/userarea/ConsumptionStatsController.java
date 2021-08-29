@@ -3,9 +3,9 @@ package bdproject.controller.gui.userarea;
 import bdproject.controller.gui.AbstractViewController;
 import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
+import bdproject.tables.pojos.ContrattiDettagliati;
 import bdproject.tables.pojos.Bollette;
-import bdproject.tables.pojos.Contratti;
-import bdproject.tables.pojos.Zone;
+import bdproject.tables.pojos.Immobili;
 import bdproject.utils.FXUtils;
 import bdproject.utils.LocaleUtils;
 import javafx.collections.FXCollections;
@@ -29,13 +29,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class ConsumptionStatsController extends AbstractViewController implements Initializable {
 
     private static final String FXML_FILE = "consumptionTrend.fxml";
-    private final Contratti subscription;
+    private final ContrattiDettagliati subscription;
     @FXML
     private Button back;
     @FXML
@@ -51,12 +50,14 @@ public class ConsumptionStatsController extends AbstractViewController implement
     @FXML
     private DatePicker endDate;
 
-    private ConsumptionStatsController(final Stage stage, final DataSource dataSource, final Contratti subscription) {
+    private ConsumptionStatsController(final Stage stage, final DataSource dataSource,
+            final ContrattiDettagliati subscription) {
         super(stage, dataSource, FXML_FILE);
         this.subscription = subscription;
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource, final Contratti subscription) {
+    public static ViewController create(final Stage stage, final DataSource dataSource,
+            final ContrattiDettagliati subscription) {
         return new ConsumptionStatsController(stage, dataSource, subscription);
     }
 
@@ -78,15 +79,16 @@ public class ConsumptionStatsController extends AbstractViewController implement
 
     private void updateAverages(final Connection conn) {
         if (startDate.getValue() != null && endDate.getValue() != null) {
-            final Zone zone = Queries.getZone(subscription, getDataSource()).orElseThrow();
-            final String utility = Queries.getUtility(subscription, conn).getNome();
+            final Immobili premises = Queries.fetchPremisesFromSubscription(subscription, getDataSource());
+            final String utility = Queries.fetchUtilityFromSubscription(subscription, conn).getNome();
             peopleAvg.setText(Queries.avgConsumptionPerZone(
-                    zone,
+                    premises,
                     utility,
                     startDate.getValue(),
                     endDate.getValue(),
                     conn).toString());
-            yourAvg.setText(Queries.avgConsumptionFromSub(subscription, startDate.getValue(), endDate.getValue(), conn).toString());
+            yourAvg.setText(Queries.avgConsumptionFromSub(subscription, startDate.getValue(), endDate.getValue(), conn)
+                    .toString());
         } else {
             peopleAvg.setText("N.D.");
             yourAvg.setText("N.D.");
@@ -107,7 +109,7 @@ public class ConsumptionStatsController extends AbstractViewController implement
     private void onYearSelect() {
         final DateTimeFormatter month_it = LocaleUtils.getItLongMonthFormatter();
         try (Connection conn = getDataSource().getConnection()) {
-            final var reports = Queries.getReports(subscription, conn);
+            final var reports = Queries.fetchSubscriptionReports(subscription, conn);
             XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
             for (Bollette report : reports) {
                 if (report.getImporto() != null) {

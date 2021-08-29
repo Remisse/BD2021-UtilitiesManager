@@ -39,12 +39,6 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="vatCode" layoutX="128.0" layoutY="473.0" />
-      <Label layoutX="128.0" layoutY="437.0" text="Partita IVA (opzionale)">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
       <TextField fx:id="street" layoutX="410.0" layoutY="136.0" />
       <Label layoutX="410.0" layoutY="100.0" text="Via">
          <font>
@@ -63,18 +57,18 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="state" layoutX="410.0" layoutY="474.0" />
-      <Label layoutX="408.0" layoutY="438.0" text="Provincia">
+      <TextField fx:id="province" layoutX="410.0" layoutY="474.0" prefHeight="30.0" prefWidth="43.0" />
+      <Label layoutX="410.0" layoutY="438.0" text="Provincia (lunghezza: 2)">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="692.0" layoutY="216.0" text="Data di nascita">
+      <Label layoutX="133.0" layoutY="438.0" text="Data di nascita">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <DatePicker fx:id="birthdate" layoutX="692.0" layoutY="252.0" />
+      <DatePicker fx:id="birthdate" layoutX="128.0" layoutY="474.0" />
       <TextField fx:id="email" layoutX="959.0" layoutY="135.0" />
       <Label layoutX="959.0" layoutY="99.0" text="Indirizzo e-mail">
          <font>
@@ -91,7 +85,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="692.0" layoutY="328.0" text="Fascia di reddito">
+      <Label layoutX="692.0" layoutY="216.0" text="Fascia di reddito">
          <font>
             <Font size="16.0" />
          </font>
@@ -108,7 +102,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <ComboBox fx:id="income" layoutX="692.0" layoutY="364.0" prefWidth="150.0" />
+      <ComboBox fx:id="income" layoutX="694.0" layoutY="251.0" prefWidth="150.0" />
       <PasswordField fx:id="password" layoutX="959.0" layoutY="252.0" />
       <PasswordField fx:id="confirmPw" layoutX="959.0" layoutY="364.0" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="571.0" layoutY="36.0" text="Inserisci i tuoi dati">

@@ -5,37 +5,39 @@ package bdproject;
 
 
 import bdproject.tables.Bollette;
+import bdproject.tables.Clienti;
 import bdproject.tables.Compatibilità;
 import bdproject.tables.Contatori;
 import bdproject.tables.Contratti;
-import bdproject.tables.Distributori;
-import bdproject.tables.Distribuzioni;
 import bdproject.tables.Immobili;
 import bdproject.tables.Interruzioni;
 import bdproject.tables.Letture;
 import bdproject.tables.MateriePrime;
 import bdproject.tables.Offerte;
+import bdproject.tables.Operatori;
 import bdproject.tables.Persone;
 import bdproject.tables.Redditi;
+import bdproject.tables.RichiesteAttivazione;
+import bdproject.tables.RichiesteCessazione;
 import bdproject.tables.TipiAttivazione;
 import bdproject.tables.TipologieUso;
-import bdproject.tables.Zone;
 import bdproject.tables.records.BolletteRecord;
+import bdproject.tables.records.ClientiRecord;
 import bdproject.tables.records.CompatibilitàRecord;
 import bdproject.tables.records.ContatoriRecord;
 import bdproject.tables.records.ContrattiRecord;
-import bdproject.tables.records.DistributoriRecord;
-import bdproject.tables.records.DistribuzioniRecord;
 import bdproject.tables.records.ImmobiliRecord;
 import bdproject.tables.records.InterruzioniRecord;
 import bdproject.tables.records.LettureRecord;
 import bdproject.tables.records.MateriePrimeRecord;
 import bdproject.tables.records.OfferteRecord;
+import bdproject.tables.records.OperatoriRecord;
 import bdproject.tables.records.PersoneRecord;
 import bdproject.tables.records.RedditiRecord;
+import bdproject.tables.records.RichiesteAttivazioneRecord;
+import bdproject.tables.records.RichiesteCessazioneRecord;
 import bdproject.tables.records.TipiAttivazioneRecord;
 import bdproject.tables.records.TipologieUsoRecord;
-import bdproject.tables.records.ZoneRecord;
 
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
@@ -56,48 +58,56 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<BolletteRecord> KEY_BOLLETTE_PRIMARY = Internal.createUniqueKey(Bollette.BOLLETTE, DSL.name("KEY_bollette_PRIMARY"), new TableField[] { Bollette.BOLLETTE.IDCONTRATTO, Bollette.BOLLETTE.DATAEMISSIONE }, true);
-    public static final UniqueKey<CompatibilitàRecord> KEY_COMPATIBILITÀ_PRIMARY = Internal.createUniqueKey(Compatibilità.COMPATIBILITÀ, DSL.name("KEY_compatibilità_PRIMARY"), new TableField[] { Compatibilità.COMPATIBILITÀ.CODICEOFFERTA, Compatibilità.COMPATIBILITÀ.TIPOUSO }, true);
+    public static final UniqueKey<ClientiRecord> KEY_CLIENTI_PRIMARY = Internal.createUniqueKey(Clienti.CLIENTI, DSL.name("KEY_clienti_PRIMARY"), new TableField[] { Clienti.CLIENTI.CODICECLIENTE }, true);
+    public static final UniqueKey<CompatibilitàRecord> KEY_COMPATIBILITÀ_PRIMARY = Internal.createUniqueKey(Compatibilità.COMPATIBILITÀ, DSL.name("KEY_compatibilità_PRIMARY"), new TableField[] { Compatibilità.COMPATIBILITÀ.CODICEOFFERTA, Compatibilità.COMPATIBILITÀ.USO }, true);
     public static final UniqueKey<ContatoriRecord> KEY_CONTATORI_AK2_CONTATORI = Internal.createUniqueKey(Contatori.CONTATORI, DSL.name("KEY_contatori_AK2_CONTATORI"), new TableField[] { Contatori.CONTATORI.IDIMMOBILE, Contatori.CONTATORI.MATERIAPRIMA }, true);
     public static final UniqueKey<ContatoriRecord> KEY_CONTATORI_AK_CONTATORI = Internal.createUniqueKey(Contatori.CONTATORI, DSL.name("KEY_contatori_AK_CONTATORI"), new TableField[] { Contatori.CONTATORI.MATRICOLA }, true);
     public static final UniqueKey<ContatoriRecord> KEY_CONTATORI_PRIMARY = Internal.createUniqueKey(Contatori.CONTATORI, DSL.name("KEY_contatori_PRIMARY"), new TableField[] { Contatori.CONTATORI.NUMEROPROGRESSIVO }, true);
+    public static final UniqueKey<ContrattiRecord> KEY_CONTRATTI_AK_CONTRATTO = Internal.createUniqueKey(Contratti.CONTRATTI, DSL.name("KEY_contratti_AK_CONTRATTO"), new TableField[] { Contratti.CONTRATTI.NUMERORICHIESTA }, true);
     public static final UniqueKey<ContrattiRecord> KEY_CONTRATTI_PRIMARY = Internal.createUniqueKey(Contratti.CONTRATTI, DSL.name("KEY_contratti_PRIMARY"), new TableField[] { Contratti.CONTRATTI.IDCONTRATTO }, true);
-    public static final UniqueKey<DistributoriRecord> KEY_DISTRIBUTORI_AK_DISTRIBUTORE = Internal.createUniqueKey(Distributori.DISTRIBUTORI, DSL.name("KEY_distributori_AK_DISTRIBUTORE"), new TableField[] { Distributori.DISTRIBUTORI.NOME }, true);
-    public static final UniqueKey<DistributoriRecord> KEY_DISTRIBUTORI_PRIMARY = Internal.createUniqueKey(Distributori.DISTRIBUTORI, DSL.name("KEY_distributori_PRIMARY"), new TableField[] { Distributori.DISTRIBUTORI.ID }, true);
-    public static final UniqueKey<DistribuzioniRecord> KEY_DISTRIBUZIONI_PRIMARY = Internal.createUniqueKey(Distribuzioni.DISTRIBUZIONI, DSL.name("KEY_distribuzioni_PRIMARY"), new TableField[] { Distribuzioni.DISTRIBUZIONI.MATERIAPRIMA, Distribuzioni.DISTRIBUZIONI.IDZONA, Distribuzioni.DISTRIBUZIONI.IDDISTRIBUTORE }, true);
-    public static final UniqueKey<ImmobiliRecord> KEY_IMMOBILI_IDIMMOBILE_2 = Internal.createUniqueKey(Immobili.IMMOBILI, DSL.name("KEY_immobili_IDIMMOBILE_2"), new TableField[] { Immobili.IMMOBILI.VIA, Immobili.IMMOBILI.NUMCIVICO, Immobili.IMMOBILI.INTERNO, Immobili.IMMOBILI.IDZONA }, true);
+    public static final UniqueKey<ImmobiliRecord> KEY_IMMOBILI_IDIMMOBILE_2 = Internal.createUniqueKey(Immobili.IMMOBILI, DSL.name("KEY_immobili_IDIMMOBILE_2"), new TableField[] { Immobili.IMMOBILI.VIA, Immobili.IMMOBILI.NUMCIVICO, Immobili.IMMOBILI.INTERNO, Immobili.IMMOBILI.COMUNE, Immobili.IMMOBILI.PROVINCIA }, true);
     public static final UniqueKey<ImmobiliRecord> KEY_IMMOBILI_PRIMARY = Internal.createUniqueKey(Immobili.IMMOBILI, DSL.name("KEY_immobili_PRIMARY"), new TableField[] { Immobili.IMMOBILI.IDIMMOBILE }, true);
     public static final UniqueKey<InterruzioniRecord> KEY_INTERRUZIONI_PRIMARY = Internal.createUniqueKey(Interruzioni.INTERRUZIONI, DSL.name("KEY_interruzioni_PRIMARY"), new TableField[] { Interruzioni.INTERRUZIONI.DATAINTERRUZIONE, Interruzioni.INTERRUZIONI.IDCONTRATTO }, true);
     public static final UniqueKey<LettureRecord> KEY_LETTURE_PRIMARY = Internal.createUniqueKey(Letture.LETTURE, DSL.name("KEY_letture_PRIMARY"), new TableField[] { Letture.LETTURE.CONTATORE, Letture.LETTURE.DATAEFFETTUAZIONE }, true);
     public static final UniqueKey<MateriePrimeRecord> KEY_MATERIE_PRIME_PRIMARY = Internal.createUniqueKey(MateriePrime.MATERIE_PRIME, DSL.name("KEY_materie_prime_PRIMARY"), new TableField[] { MateriePrime.MATERIE_PRIME.NOME }, true);
     public static final UniqueKey<OfferteRecord> KEY_OFFERTE_PRIMARY = Internal.createUniqueKey(Offerte.OFFERTE, DSL.name("KEY_offerte_PRIMARY"), new TableField[] { Offerte.OFFERTE.CODICE }, true);
+    public static final UniqueKey<OperatoriRecord> KEY_OPERATORI_PRIMARY = Internal.createUniqueKey(Operatori.OPERATORI, DSL.name("KEY_operatori_PRIMARY"), new TableField[] { Operatori.OPERATORI.CODICEOPERATORE }, true);
     public static final UniqueKey<PersoneRecord> KEY_PERSONE_AK_PERSONA = Internal.createUniqueKey(Persone.PERSONE, DSL.name("KEY_persone_AK_PERSONA"), new TableField[] { Persone.PERSONE.EMAIL }, true);
-    public static final UniqueKey<PersoneRecord> KEY_PERSONE_PRIMARY = Internal.createUniqueKey(Persone.PERSONE, DSL.name("KEY_persone_PRIMARY"), new TableField[] { Persone.PERSONE.CODICECLIENTE }, true);
+    public static final UniqueKey<PersoneRecord> KEY_PERSONE_PRIMARY = Internal.createUniqueKey(Persone.PERSONE, DSL.name("KEY_persone_PRIMARY"), new TableField[] { Persone.PERSONE.IDENTIFICATIVO }, true);
     public static final UniqueKey<RedditiRecord> KEY_REDDITI_PRIMARY = Internal.createUniqueKey(Redditi.REDDITI, DSL.name("KEY_redditi_PRIMARY"), new TableField[] { Redditi.REDDITI.FASCIA }, true);
-    public static final UniqueKey<TipiAttivazioneRecord> KEY_TIPI_ATTIVAZIONE_PRIMARY = Internal.createUniqueKey(TipiAttivazione.TIPI_ATTIVAZIONE, DSL.name("KEY_tipi_attivazione_PRIMARY"), new TableField[] { TipiAttivazione.TIPI_ATTIVAZIONE.NOME }, true);
-    public static final UniqueKey<TipologieUsoRecord> KEY_TIPOLOGIE_USO_PRIMARY = Internal.createUniqueKey(TipologieUso.TIPOLOGIE_USO, DSL.name("KEY_tipologie_uso_PRIMARY"), new TableField[] { TipologieUso.TIPOLOGIE_USO.NOME }, true);
-    public static final UniqueKey<ZoneRecord> KEY_ZONE_AK_ZONA = Internal.createUniqueKey(Zone.ZONE, DSL.name("KEY_zone_AK_ZONA"), new TableField[] { Zone.ZONE.COMUNE, Zone.ZONE.PROVINCIA }, true);
-    public static final UniqueKey<ZoneRecord> KEY_ZONE_PRIMARY = Internal.createUniqueKey(Zone.ZONE, DSL.name("KEY_zone_PRIMARY"), new TableField[] { Zone.ZONE.IDZONA }, true);
+    public static final UniqueKey<RichiesteAttivazioneRecord> KEY_RICHIESTE_ATTIVAZIONE_PRIMARY = Internal.createUniqueKey(RichiesteAttivazione.RICHIESTE_ATTIVAZIONE, DSL.name("KEY_richieste_attivazione_PRIMARY"), new TableField[] { RichiesteAttivazione.RICHIESTE_ATTIVAZIONE.NUMERO }, true);
+    public static final UniqueKey<RichiesteCessazioneRecord> KEY_RICHIESTE_CESSAZIONE_PRIMARY = Internal.createUniqueKey(RichiesteCessazione.RICHIESTE_CESSAZIONE, DSL.name("KEY_richieste_cessazione_PRIMARY"), new TableField[] { RichiesteCessazione.RICHIESTE_CESSAZIONE.NUMERO }, true);
+    public static final UniqueKey<TipiAttivazioneRecord> KEY_TIPI_ATTIVAZIONE_PRIMARY = Internal.createUniqueKey(TipiAttivazione.TIPI_ATTIVAZIONE, DSL.name("KEY_tipi_attivazione_PRIMARY"), new TableField[] { TipiAttivazione.TIPI_ATTIVAZIONE.CODICE }, true);
+    public static final UniqueKey<TipologieUsoRecord> KEY_TIPOLOGIE_USO_PRIMARY = Internal.createUniqueKey(TipologieUso.TIPOLOGIE_USO, DSL.name("KEY_tipologie_uso_PRIMARY"), new TableField[] { TipologieUso.TIPOLOGIE_USO.CODICE }, true);
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<BolletteRecord, ContrattiRecord> FK_CONTRATTO = Internal.createForeignKey(Bollette.BOLLETTE, DSL.name("FK_CONTRATTO"), new TableField[] { Bollette.BOLLETTE.IDCONTRATTO }, Keys.KEY_CONTRATTI_PRIMARY, new TableField[] { Contratti.CONTRATTI.IDCONTRATTO }, true);
+    public static final ForeignKey<BolletteRecord, OperatoriRecord> FK_EMISSIONE = Internal.createForeignKey(Bollette.BOLLETTE, DSL.name("FK_EMISSIONE"), new TableField[] { Bollette.BOLLETTE.EMESSADA }, Keys.KEY_OPERATORI_PRIMARY, new TableField[] { Operatori.OPERATORI.CODICEOPERATORE }, true);
+    public static final ForeignKey<ClientiRecord, PersoneRecord> FK_CODICECLIENTE = Internal.createForeignKey(Clienti.CLIENTI, DSL.name("FK_CODICECLIENTE"), new TableField[] { Clienti.CLIENTI.CODICECLIENTE }, Keys.KEY_PERSONE_PRIMARY, new TableField[] { Persone.PERSONE.IDENTIFICATIVO }, true);
+    public static final ForeignKey<ClientiRecord, RedditiRecord> FK_POSSEDIMENTO = Internal.createForeignKey(Clienti.CLIENTI, DSL.name("FK_POSSEDIMENTO"), new TableField[] { Clienti.CLIENTI.FASCIAREDDITO }, Keys.KEY_REDDITI_PRIMARY, new TableField[] { Redditi.REDDITI.FASCIA }, true);
     public static final ForeignKey<CompatibilitàRecord, OfferteRecord> FK_OFFERTAUSO = Internal.createForeignKey(Compatibilità.COMPATIBILITÀ, DSL.name("FK_OFFERTAUSO"), new TableField[] { Compatibilità.COMPATIBILITÀ.CODICEOFFERTA }, Keys.KEY_OFFERTE_PRIMARY, new TableField[] { Offerte.OFFERTE.CODICE }, true);
-    public static final ForeignKey<CompatibilitàRecord, TipologieUsoRecord> FK_USOOFFERTA = Internal.createForeignKey(Compatibilità.COMPATIBILITÀ, DSL.name("FK_USOOFFERTA"), new TableField[] { Compatibilità.COMPATIBILITÀ.TIPOUSO }, Keys.KEY_TIPOLOGIE_USO_PRIMARY, new TableField[] { TipologieUso.TIPOLOGIE_USO.NOME }, true);
+    public static final ForeignKey<CompatibilitàRecord, TipologieUsoRecord> FK_USOOFFERTA = Internal.createForeignKey(Compatibilità.COMPATIBILITÀ, DSL.name("FK_USOOFFERTA"), new TableField[] { Compatibilità.COMPATIBILITÀ.USO }, Keys.KEY_TIPOLOGIE_USO_PRIMARY, new TableField[] { TipologieUso.TIPOLOGIE_USO.CODICE }, true);
     public static final ForeignKey<ContatoriRecord, ImmobiliRecord> FK_INSTALLAZIONE = Internal.createForeignKey(Contatori.CONTATORI, DSL.name("FK_INSTALLAZIONE"), new TableField[] { Contatori.CONTATORI.IDIMMOBILE }, Keys.KEY_IMMOBILI_PRIMARY, new TableField[] { Immobili.IMMOBILI.IDIMMOBILE }, true);
     public static final ForeignKey<ContatoriRecord, MateriePrimeRecord> FK_MISURAZIONE = Internal.createForeignKey(Contatori.CONTATORI, DSL.name("FK_MISURAZIONE"), new TableField[] { Contatori.CONTATORI.MATERIAPRIMA }, Keys.KEY_MATERIE_PRIME_PRIMARY, new TableField[] { MateriePrime.MATERIE_PRIME.NOME }, true);
-    public static final ForeignKey<ContrattiRecord, TipiAttivazioneRecord> FK_ATTIVAZIONE_TRAMITE = Internal.createForeignKey(Contratti.CONTRATTI, DSL.name("FK_ATTIVAZIONE_TRAMITE"), new TableField[] { Contratti.CONTRATTI.NOMEATTIVAZIONE }, Keys.KEY_TIPI_ATTIVAZIONE_PRIMARY, new TableField[] { TipiAttivazione.TIPI_ATTIVAZIONE.NOME }, true);
-    public static final ForeignKey<ContrattiRecord, ContatoriRecord> FK_COLLEGAMENTO = Internal.createForeignKey(Contratti.CONTRATTI, DSL.name("FK_COLLEGAMENTO"), new TableField[] { Contratti.CONTRATTI.CONTATORE }, Keys.KEY_CONTATORI_PRIMARY, new TableField[] { Contatori.CONTATORI.NUMEROPROGRESSIVO }, true);
-    public static final ForeignKey<ContrattiRecord, OfferteRecord> FK_PROPOSTA = Internal.createForeignKey(Contratti.CONTRATTI, DSL.name("FK_PROPOSTA"), new TableField[] { Contratti.CONTRATTI.CODICEOFFERTA }, Keys.KEY_OFFERTE_PRIMARY, new TableField[] { Offerte.OFFERTE.CODICE }, true);
-    public static final ForeignKey<ContrattiRecord, PersoneRecord> FK_SOTTOSCRIZIONE = Internal.createForeignKey(Contratti.CONTRATTI, DSL.name("FK_SOTTOSCRIZIONE"), new TableField[] { Contratti.CONTRATTI.CODICECLIENTE }, Keys.KEY_PERSONE_PRIMARY, new TableField[] { Persone.PERSONE.CODICECLIENTE }, true);
-    public static final ForeignKey<ContrattiRecord, TipologieUsoRecord> FK_USO = Internal.createForeignKey(Contratti.CONTRATTI, DSL.name("FK_USO"), new TableField[] { Contratti.CONTRATTI.TIPOUSO }, Keys.KEY_TIPOLOGIE_USO_PRIMARY, new TableField[] { TipologieUso.TIPOLOGIE_USO.NOME }, true);
-    public static final ForeignKey<DistribuzioniRecord, MateriePrimeRecord> FK_DISTRIBUITA = Internal.createForeignKey(Distribuzioni.DISTRIBUZIONI, DSL.name("FK_DISTRIBUITA"), new TableField[] { Distribuzioni.DISTRIBUZIONI.MATERIAPRIMA }, Keys.KEY_MATERIE_PRIME_PRIMARY, new TableField[] { MateriePrime.MATERIE_PRIME.NOME }, true);
-    public static final ForeignKey<DistribuzioniRecord, DistributoriRecord> FK_OPERAZIONE = Internal.createForeignKey(Distribuzioni.DISTRIBUZIONI, DSL.name("FK_OPERAZIONE"), new TableField[] { Distribuzioni.DISTRIBUZIONI.IDDISTRIBUTORE }, Keys.KEY_DISTRIBUTORI_PRIMARY, new TableField[] { Distributori.DISTRIBUTORI.ID }, true);
-    public static final ForeignKey<DistribuzioniRecord, ZoneRecord> FK_RIFERIMENTO = Internal.createForeignKey(Distribuzioni.DISTRIBUZIONI, DSL.name("FK_RIFERIMENTO"), new TableField[] { Distribuzioni.DISTRIBUZIONI.IDZONA }, Keys.KEY_ZONE_PRIMARY, new TableField[] { Zone.ZONE.IDZONA }, true);
-    public static final ForeignKey<ImmobiliRecord, ZoneRecord> FK_UBICAZIONE = Internal.createForeignKey(Immobili.IMMOBILI, DSL.name("FK_UBICAZIONE"), new TableField[] { Immobili.IMMOBILI.IDZONA }, Keys.KEY_ZONE_PRIMARY, new TableField[] { Zone.ZONE.IDZONA }, true);
-    public static final ForeignKey<InterruzioniRecord, ContrattiRecord> FK_ATTINENZA = Internal.createForeignKey(Interruzioni.INTERRUZIONI, DSL.name("FK_ATTINENZA"), new TableField[] { Interruzioni.INTERRUZIONI.IDCONTRATTO }, Keys.KEY_CONTRATTI_PRIMARY, new TableField[] { Contratti.CONTRATTI.IDCONTRATTO }, true);
-    public static final ForeignKey<LettureRecord, ContatoriRecord> FK_EFFETTUAZIONE = Internal.createForeignKey(Letture.LETTURE, DSL.name("FK_EFFETTUAZIONE"), new TableField[] { Letture.LETTURE.CONTATORE }, Keys.KEY_CONTATORI_PRIMARY, new TableField[] { Contatori.CONTATORI.NUMEROPROGRESSIVO }, true);
+    public static final ForeignKey<ContrattiRecord, RichiesteAttivazioneRecord> FK_DEFINIZIONE = Internal.createForeignKey(Contratti.CONTRATTI, DSL.name("FK_DEFINIZIONE"), new TableField[] { Contratti.CONTRATTI.NUMERORICHIESTA }, Keys.KEY_RICHIESTE_ATTIVAZIONE_PRIMARY, new TableField[] { RichiesteAttivazione.RICHIESTE_ATTIVAZIONE.NUMERO }, true);
+    public static final ForeignKey<InterruzioniRecord, OperatoriRecord> FK_ANNULLAMENTO = Internal.createForeignKey(Interruzioni.INTERRUZIONI, DSL.name("FK_ANNULLAMENTO"), new TableField[] { Interruzioni.INTERRUZIONI.ANNULLATADA }, Keys.KEY_OPERATORI_PRIMARY, new TableField[] { Operatori.OPERATORI.CODICEOPERATORE }, true);
+    public static final ForeignKey<InterruzioniRecord, OperatoriRecord> FK_INDETTA = Internal.createForeignKey(Interruzioni.INTERRUZIONI, DSL.name("FK_INDETTA"), new TableField[] { Interruzioni.INTERRUZIONI.INDETTADA }, Keys.KEY_OPERATORI_PRIMARY, new TableField[] { Operatori.OPERATORI.CODICEOPERATORE }, true);
+    public static final ForeignKey<InterruzioniRecord, ContrattiRecord> FK_SUBITA = Internal.createForeignKey(Interruzioni.INTERRUZIONI, DSL.name("FK_SUBITA"), new TableField[] { Interruzioni.INTERRUZIONI.IDCONTRATTO }, Keys.KEY_CONTRATTI_PRIMARY, new TableField[] { Contratti.CONTRATTI.IDCONTRATTO }, true);
+    public static final ForeignKey<LettureRecord, OperatoriRecord> FK_CONFERMA = Internal.createForeignKey(Letture.LETTURE, DSL.name("FK_CONFERMA"), new TableField[] { Letture.LETTURE.OPERATORE }, Keys.KEY_OPERATORI_PRIMARY, new TableField[] { Operatori.OPERATORI.CODICEOPERATORE }, true);
+    public static final ForeignKey<LettureRecord, ContatoriRecord> FK_CORRISPONDENZA = Internal.createForeignKey(Letture.LETTURE, DSL.name("FK_CORRISPONDENZA"), new TableField[] { Letture.LETTURE.CONTATORE }, Keys.KEY_CONTATORI_PRIMARY, new TableField[] { Contatori.CONTATORI.NUMEROPROGRESSIVO }, true);
+    public static final ForeignKey<LettureRecord, ClientiRecord> FK_EFFETTUAZIONE = Internal.createForeignKey(Letture.LETTURE, DSL.name("FK_EFFETTUAZIONE"), new TableField[] { Letture.LETTURE.CLIENTE }, Keys.KEY_CLIENTI_PRIMARY, new TableField[] { Clienti.CLIENTI.CODICECLIENTE }, true);
     public static final ForeignKey<OfferteRecord, MateriePrimeRecord> FK_INTERESSE = Internal.createForeignKey(Offerte.OFFERTE, DSL.name("FK_INTERESSE"), new TableField[] { Offerte.OFFERTE.MATERIAPRIMA }, Keys.KEY_MATERIE_PRIME_PRIMARY, new TableField[] { MateriePrime.MATERIE_PRIME.NOME }, true);
-    public static final ForeignKey<PersoneRecord, RedditiRecord> FK_POSSEDIMENTO = Internal.createForeignKey(Persone.PERSONE, DSL.name("FK_POSSEDIMENTO"), new TableField[] { Persone.PERSONE.FASCIAREDDITO }, Keys.KEY_REDDITI_PRIMARY, new TableField[] { Redditi.REDDITI.FASCIA }, true);
+    public static final ForeignKey<OperatoriRecord, PersoneRecord> FK_DATIANAGRAFICI = Internal.createForeignKey(Operatori.OPERATORI, DSL.name("FK_DATIANAGRAFICI"), new TableField[] { Operatori.OPERATORI.CODICEOPERATORE }, Keys.KEY_PERSONE_PRIMARY, new TableField[] { Persone.PERSONE.IDENTIFICATIVO }, true);
+    public static final ForeignKey<RichiesteAttivazioneRecord, OperatoriRecord> FK_ATTIVAZIONE = Internal.createForeignKey(RichiesteAttivazione.RICHIESTE_ATTIVAZIONE, DSL.name("FK_ATTIVAZIONE"), new TableField[] { RichiesteAttivazione.RICHIESTE_ATTIVAZIONE.OPERATORE }, Keys.KEY_OPERATORI_PRIMARY, new TableField[] { Operatori.OPERATORI.CODICEOPERATORE }, true);
+    public static final ForeignKey<RichiesteAttivazioneRecord, TipiAttivazioneRecord> FK_ATTIVAZIONE_TRAMITE = Internal.createForeignKey(RichiesteAttivazione.RICHIESTE_ATTIVAZIONE, DSL.name("FK_ATTIVAZIONE_TRAMITE"), new TableField[] { RichiesteAttivazione.RICHIESTE_ATTIVAZIONE.ATTIVAZIONE }, Keys.KEY_TIPI_ATTIVAZIONE_PRIMARY, new TableField[] { TipiAttivazione.TIPI_ATTIVAZIONE.CODICE }, true);
+    public static final ForeignKey<RichiesteAttivazioneRecord, ContatoriRecord> FK_COLLEGAMENTO = Internal.createForeignKey(RichiesteAttivazione.RICHIESTE_ATTIVAZIONE, DSL.name("FK_COLLEGAMENTO"), new TableField[] { RichiesteAttivazione.RICHIESTE_ATTIVAZIONE.CONTATORE }, Keys.KEY_CONTATORI_PRIMARY, new TableField[] { Contatori.CONTATORI.NUMEROPROGRESSIVO }, true);
+    public static final ForeignKey<RichiesteAttivazioneRecord, ClientiRecord> FK_RICHIESTA = Internal.createForeignKey(RichiesteAttivazione.RICHIESTE_ATTIVAZIONE, DSL.name("FK_RICHIESTA"), new TableField[] { RichiesteAttivazione.RICHIESTE_ATTIVAZIONE.CLIENTE }, Keys.KEY_CLIENTI_PRIMARY, new TableField[] { Clienti.CLIENTI.CODICECLIENTE }, true);
+    public static final ForeignKey<RichiesteAttivazioneRecord, OfferteRecord> FK_SOTTOSCRIZIONE = Internal.createForeignKey(RichiesteAttivazione.RICHIESTE_ATTIVAZIONE, DSL.name("FK_SOTTOSCRIZIONE"), new TableField[] { RichiesteAttivazione.RICHIESTE_ATTIVAZIONE.OFFERTA }, Keys.KEY_OFFERTE_PRIMARY, new TableField[] { Offerte.OFFERTE.CODICE }, true);
+    public static final ForeignKey<RichiesteAttivazioneRecord, TipologieUsoRecord> FK_USO = Internal.createForeignKey(RichiesteAttivazione.RICHIESTE_ATTIVAZIONE, DSL.name("FK_USO"), new TableField[] { RichiesteAttivazione.RICHIESTE_ATTIVAZIONE.USO }, Keys.KEY_TIPOLOGIE_USO_PRIMARY, new TableField[] { TipologieUso.TIPOLOGIE_USO.CODICE }, true);
+    public static final ForeignKey<RichiesteCessazioneRecord, ClientiRecord> FK_RICHIESTA_CESS = Internal.createForeignKey(RichiesteCessazione.RICHIESTE_CESSAZIONE, DSL.name("FK_RICHIESTA_CESS"), new TableField[] { RichiesteCessazione.RICHIESTE_CESSAZIONE.CLIENTE }, Keys.KEY_CLIENTI_PRIMARY, new TableField[] { Clienti.CLIENTI.CODICECLIENTE }, true);
+    public static final ForeignKey<RichiesteCessazioneRecord, OperatoriRecord> FK_RICHIESTA_ESITO = Internal.createForeignKey(RichiesteCessazione.RICHIESTE_CESSAZIONE, DSL.name("FK_RICHIESTA_ESITO"), new TableField[] { RichiesteCessazione.RICHIESTE_CESSAZIONE.OPERATORE }, Keys.KEY_OPERATORI_PRIMARY, new TableField[] { Operatori.OPERATORI.CODICEOPERATORE }, true);
+    public static final ForeignKey<RichiesteCessazioneRecord, ContrattiRecord> FK_TERMINAZIONE = Internal.createForeignKey(RichiesteCessazione.RICHIESTE_CESSAZIONE, DSL.name("FK_TERMINAZIONE"), new TableField[] { RichiesteCessazione.RICHIESTE_CESSAZIONE.IDCONTRATTO }, Keys.KEY_CONTRATTI_PRIMARY, new TableField[] { Contratti.CONTRATTI.IDCONTRATTO }, true);
 }

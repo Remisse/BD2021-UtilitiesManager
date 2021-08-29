@@ -14,17 +14,15 @@ public interface SubscriptionProcess {
 
     void setActivationMethod(TipiAttivazione method);
 
-    void setUse(String use);
+    void setUse(TipologieUso use);
 
     void setPeopleNo(int n);
 
-    void setPowerRequested(double p);
-
     void setMeter(Contatori m);
 
-    void setOtherClient(Persone client);
+    void setOtherClient(ClientiDettagliati client);
 
-    void setOtherSubscription(Contratti sub);
+    void setOtherSubscription(ContrattiDettagliati sub);
 
     void setMeasurement(Letture m);
 
@@ -36,17 +34,15 @@ public interface SubscriptionProcess {
 
     Optional<TipiAttivazione> activation();
 
-    Optional<String> usage();
+    Optional<TipologieUso> usage();
 
     int peopleNo();
 
-    double powerRequested();
-
     Optional<Contatori> meter();
 
-    Optional<Persone> otherClient();
+    Optional<ClientiDettagliati> otherClient();
 
-    Optional<Contratti> otherSubscription();
+    Optional<ContrattiDettagliati> otherSubscription();
 
     Optional<Letture> measurement();
 }

@@ -4,7 +4,7 @@ public interface Session {
 
     int getUserId();
 
-    boolean isAdmin();
+    boolean isOperator();
 
     String getName();
 }

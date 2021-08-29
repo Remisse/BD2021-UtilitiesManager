@@ -13,17 +13,19 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -77,7 +79,17 @@ public class Bollette extends TableImpl<BolletteRecord> {
     /**
      * The column <code>utenze.bollette.DettaglioBolletta</code>.
      */
-    public final TableField<BolletteRecord, byte[]> DETTAGLIOBOLLETTA = createField(DSL.name("DettaglioBolletta"), SQLDataType.BLOB, this, "");
+    public final TableField<BolletteRecord, byte[]> DETTAGLIOBOLLETTA = createField(DSL.name("DettaglioBolletta"), SQLDataType.BLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.bollette.Stimata</code>.
+     */
+    public final TableField<BolletteRecord, Byte> STIMATA = createField(DSL.name("Stimata"), SQLDataType.TINYINT.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.bollette.EmessaDa</code>.
+     */
+    public final TableField<BolletteRecord, Integer> EMESSADA = createField(DSL.name("EmessaDa"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Bollette(Name alias, Table<BolletteRecord> aliased) {
         this(alias, aliased, null);
@@ -124,16 +136,32 @@ public class Bollette extends TableImpl<BolletteRecord> {
 
     @Override
     public List<ForeignKey<BolletteRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_CONTRATTO);
+        return Arrays.asList(Keys.FK_CONTRATTO, Keys.FK_EMISSIONE);
     }
 
     private transient Contratti _contratti;
+    private transient Operatori _operatori;
 
     public Contratti contratti() {
         if (_contratti == null)
             _contratti = new Contratti(this, Keys.FK_CONTRATTO);
 
         return _contratti;
+    }
+
+    public Operatori operatori() {
+        if (_operatori == null)
+            _operatori = new Operatori(this, Keys.FK_EMISSIONE);
+
+        return _operatori;
+    }
+
+    @Override
+    public List<Check<BolletteRecord>> getChecks() {
+        return Arrays.asList(
+            Internal.createCheck(this, DSL.name("bollette_chk_1"), "(`DataScadenza` > `DataEmissione`)", true),
+            Internal.createCheck(this, DSL.name("bollette_chk_2"), "((`DataPagamento` is null) or (`DataPagamento` >= `DataEmissione`))", true)
+        );
     }
 
     @Override
@@ -163,11 +191,11 @@ public class Bollette extends TableImpl<BolletteRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, LocalDate, LocalDate, LocalDate, BigDecimal, byte[]> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row8<Integer, LocalDate, LocalDate, LocalDate, BigDecimal, byte[], Byte, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

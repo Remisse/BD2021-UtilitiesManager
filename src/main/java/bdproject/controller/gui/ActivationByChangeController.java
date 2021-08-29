@@ -1,6 +1,7 @@
 package bdproject.controller.gui;
 
 import bdproject.controller.Checks;
+import bdproject.model.Queries;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.*;
 import bdproject.utils.FXUtils;
@@ -8,54 +9,35 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
-
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static bdproject.Tables.PERSONE;
-import static bdproject.tables.Contatori.CONTATORI;
-import static bdproject.tables.Contratti.CONTRATTI;
-import static bdproject.tables.Immobili.IMMOBILI;
 
 public class ActivationByChangeController extends AbstractViewController implements Initializable {
 
-    private static final String fxml = "byChange.fxml";
+    private static final String FXML_FILE = "byChange.fxml";
     private final SubscriptionProcess process;
 
-    @FXML
-    private Label planLabel;
-    @FXML
-    private Label utilityLabel;
-    @FXML
-    private Label useLabel;
-    @FXML
-    private Label methodChosen;
-    @FXML
-    private Label meterIdLabel;
-    @FXML
-    private TextField meterId;
-    @FXML
-    private Label clientIdLabel;
-    @FXML
-    private TextField clientIdField;
-    @FXML
-    private Button next;
-    @FXML
-    private Label measurementLabel;
-    @FXML
-    private TextField consumption;
+    @FXML private Label planLabel;
+    @FXML private Label utilityLabel;
+    @FXML private Label useLabel;
+    @FXML private Label methodChosen;
+    @FXML private Label meterIdLabel;
+    @FXML private TextField meterId;
+    @FXML private Label clientIdLabel;
+    @FXML private TextField clientIdField;
+    @FXML private Button next;
+    @FXML private Label measurementLabel;
+    @FXML private TextField consumption;
 
     private ActivationByChangeController(final Stage stage, final DataSource dataSource,
             final SubscriptionProcess process) {
-        super(stage, dataSource, fxml);
+        super(stage, dataSource, FXML_FILE);
         this.process = process;
     }
 
@@ -68,7 +50,7 @@ public class ActivationByChangeController extends AbstractViewController impleme
     public void initialize(URL location, ResourceBundle resources) {
         planLabel.setText(process.plan().orElseThrow().getNome());
         utilityLabel.setText(process.plan().orElseThrow().getMateriaprima());
-        useLabel.setText(process.usage().orElseThrow());
+        useLabel.setText(process.usage().orElseThrow().getNome());
         methodChosen.setText(process.activation().orElseThrow().getNome());
     }
 
@@ -80,41 +62,29 @@ public class ActivationByChangeController extends AbstractViewController impleme
     @FXML
     private void nextScreen() {
         try (Connection conn = getDataSource().getConnection()) {
-            DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-            var meter = query.select()
-                    .from(CONTATORI)
-                    .where(CONTATORI.MATRICOLA.eq(meterId.getText()))
-                    .and(CONTATORI.MATERIAPRIMA.eq(process.plan().orElseThrow().getMateriaprima()))
-                    .fetchOptionalInto(Contatori.class);
-            var client = query.select()
-                    .from(PERSONE)
-                    .where(PERSONE.CODICECLIENTE.eq(Integer.parseInt(clientIdField.getText())))
-                    .fetchOptionalInto(Persone.class);
+            Optional<Contatori> meter = Queries.fetchMeterByIdAndUtility(
+                    meterId.getText(), process.plan().orElseThrow().getMateriaprima(), conn);
+            Optional<ClientiDettagliati> client = Queries.fetchClientById(Integer.parseInt(clientIdField.getText()), conn);
 
             meter.ifPresentOrElse(m -> {
                 client.ifPresentOrElse(c -> {
-                    /* Check if there's an active subscription */
-                    var subscription = query.select()
-                            .from(CONTRATTI)
-                            .where(CONTRATTI.CONTATORE.eq(m.getNumeroprogressivo()))
-                            .and(CONTRATTI.CODICECLIENTE.eq(c.getCodicecliente()))
-                            .and(CONTRATTI.DATAINIZIO.isNotNull())
-                            .and(CONTRATTI.DATACESSAZIONE.isNull())
-                            .fetchOptionalInto(Contratti.class);
+                    /* Find the subscription on which the new one will be based */
+                    Optional<ContrattiDettagliati> subscription = Queries.fetchSubscriptionForChange(
+                            m.getNumeroprogressivo(), c.getIdentificativo(), conn);
 
                     subscription.ifPresentOrElse(s -> {
-                        if (Checks.isValidMeasurement(consumption.getText())) {
-                            var measurement = new Letture(
+                        if (Checks.isValidConsumption(consumption.getText())) {
+                            Letture measurement = new Letture(
                                     BigDecimal.valueOf(Long.parseLong(consumption.getText())),
                                     m.getNumeroprogressivo(),
                                     LocalDate.now(),
-                                    (byte) 0
+                                    (byte) 0,
+                                    null,
+                                    c.getIdentificativo()
                             );
                             process.setMeasurement(measurement);
-                            Immobili premises = query.select()
-                                    .from(IMMOBILI)
-                                    .where(IMMOBILI.IDIMMOBILE.eq(m.getIdimmobile()))
-                                    .fetchOneInto(Immobili.class);
+
+                            Immobili premises = Queries.fetchPremisesById(m.getIdimmobile(), conn).orElseThrow();
                             process.setPremises(premises);
                             process.setMeter(m);
                             process.setOtherClient(c);

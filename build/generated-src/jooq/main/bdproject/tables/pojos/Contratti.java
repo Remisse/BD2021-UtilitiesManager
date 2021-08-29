@@ -17,51 +17,31 @@ public class Contratti implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Integer   idcontratto;
-    private final LocalDate datarichiesta;
+    private final Integer   numerorichiesta;
     private final LocalDate datainizio;
     private final LocalDate datacessazione;
-    private final Integer   numeropersone;
-    private final Integer   contatore;
-    private final Integer   codicecliente;
-    private final Integer   codiceofferta;
-    private final String    tipouso;
-    private final String    nomeattivazione;
+    private final LocalDate dataultimabolletta;
 
     public Contratti(Contratti value) {
         this.idcontratto = value.idcontratto;
-        this.datarichiesta = value.datarichiesta;
+        this.numerorichiesta = value.numerorichiesta;
         this.datainizio = value.datainizio;
         this.datacessazione = value.datacessazione;
-        this.numeropersone = value.numeropersone;
-        this.contatore = value.contatore;
-        this.codicecliente = value.codicecliente;
-        this.codiceofferta = value.codiceofferta;
-        this.tipouso = value.tipouso;
-        this.nomeattivazione = value.nomeattivazione;
+        this.dataultimabolletta = value.dataultimabolletta;
     }
 
     public Contratti(
         Integer   idcontratto,
-        LocalDate datarichiesta,
+        Integer   numerorichiesta,
         LocalDate datainizio,
         LocalDate datacessazione,
-        Integer   numeropersone,
-        Integer   contatore,
-        Integer   codicecliente,
-        Integer   codiceofferta,
-        String    tipouso,
-        String    nomeattivazione
+        LocalDate dataultimabolletta
     ) {
         this.idcontratto = idcontratto;
-        this.datarichiesta = datarichiesta;
+        this.numerorichiesta = numerorichiesta;
         this.datainizio = datainizio;
         this.datacessazione = datacessazione;
-        this.numeropersone = numeropersone;
-        this.contatore = contatore;
-        this.codicecliente = codicecliente;
-        this.codiceofferta = codiceofferta;
-        this.tipouso = tipouso;
-        this.nomeattivazione = nomeattivazione;
+        this.dataultimabolletta = dataultimabolletta;
     }
 
     /**
@@ -72,10 +52,10 @@ public class Contratti implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.contratti.DataRichiesta</code>.
+     * Getter for <code>utenze.contratti.NumeroRichiesta</code>.
      */
-    public LocalDate getDatarichiesta() {
-        return this.datarichiesta;
+    public Integer getNumerorichiesta() {
+        return this.numerorichiesta;
     }
 
     /**
@@ -93,45 +73,10 @@ public class Contratti implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.contratti.NumeroPersone</code>.
+     * Getter for <code>utenze.contratti.DataUltimaBolletta</code>.
      */
-    public Integer getNumeropersone() {
-        return this.numeropersone;
-    }
-
-    /**
-     * Getter for <code>utenze.contratti.Contatore</code>.
-     */
-    public Integer getContatore() {
-        return this.contatore;
-    }
-
-    /**
-     * Getter for <code>utenze.contratti.CodiceCliente</code>.
-     */
-    public Integer getCodicecliente() {
-        return this.codicecliente;
-    }
-
-    /**
-     * Getter for <code>utenze.contratti.CodiceOfferta</code>.
-     */
-    public Integer getCodiceofferta() {
-        return this.codiceofferta;
-    }
-
-    /**
-     * Getter for <code>utenze.contratti.TipoUso</code>.
-     */
-    public String getTipouso() {
-        return this.tipouso;
-    }
-
-    /**
-     * Getter for <code>utenze.contratti.NomeAttivazione</code>.
-     */
-    public String getNomeattivazione() {
-        return this.nomeattivazione;
+    public LocalDate getDataultimabolletta() {
+        return this.dataultimabolletta;
     }
 
     @Override
@@ -139,15 +84,10 @@ public class Contratti implements Serializable {
         StringBuilder sb = new StringBuilder("Contratti (");
 
         sb.append(idcontratto);
-        sb.append(", ").append(datarichiesta);
+        sb.append(", ").append(numerorichiesta);
         sb.append(", ").append(datainizio);
         sb.append(", ").append(datacessazione);
-        sb.append(", ").append(numeropersone);
-        sb.append(", ").append(contatore);
-        sb.append(", ").append(codicecliente);
-        sb.append(", ").append(codiceofferta);
-        sb.append(", ").append(tipouso);
-        sb.append(", ").append(nomeattivazione);
+        sb.append(", ").append(dataultimabolletta);
 
         sb.append(")");
         return sb.toString();

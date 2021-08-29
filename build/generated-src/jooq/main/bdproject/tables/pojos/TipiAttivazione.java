@@ -16,20 +16,31 @@ public class TipiAttivazione implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final Integer    codice;
     private final String     nome;
-    private final BigDecimal costounatantum;
+    private final BigDecimal costo;
 
     public TipiAttivazione(TipiAttivazione value) {
+        this.codice = value.codice;
         this.nome = value.nome;
-        this.costounatantum = value.costounatantum;
+        this.costo = value.costo;
     }
 
     public TipiAttivazione(
+        Integer    codice,
         String     nome,
-        BigDecimal costounatantum
+        BigDecimal costo
     ) {
+        this.codice = codice;
         this.nome = nome;
-        this.costounatantum = costounatantum;
+        this.costo = costo;
+    }
+
+    /**
+     * Getter for <code>utenze.tipi_attivazione.Codice</code>.
+     */
+    public Integer getCodice() {
+        return this.codice;
     }
 
     /**
@@ -40,18 +51,19 @@ public class TipiAttivazione implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.tipi_attivazione.CostoUnaTantum</code>.
+     * Getter for <code>utenze.tipi_attivazione.Costo</code>.
      */
-    public BigDecimal getCostounatantum() {
-        return this.costounatantum;
+    public BigDecimal getCosto() {
+        return this.costo;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TipiAttivazione (");
 
-        sb.append(nome);
-        sb.append(", ").append(costounatantum);
+        sb.append(codice);
+        sb.append(", ").append(nome);
+        sb.append(", ").append(costo);
 
         sb.append(")");
         return sb.toString();

@@ -9,12 +9,11 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     private Immobili premises;
     private Offerte plan;
     private TipiAttivazione activationMethod;
-    private String use;
+    private TipologieUso use;
     private int peopleNo;
-    private double power;
     private Contatori meter;
-    private Persone otherClient;
-    private Contratti otherSub;
+    private ClientiDettagliati otherClient;
+    private ContrattiDettagliati otherSub;
     private Letture measurement;
 
     @Override
@@ -38,7 +37,7 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     }
 
     @Override
-    public void setUse(final String use) {
+    public void setUse(final TipologieUso use) {
         this.use = use;
     }
 
@@ -48,22 +47,17 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     }
 
     @Override
-    public void setPowerRequested(double p) {
-        power = p;
-    }
-
-    @Override
     public void setMeter(Contatori m) {
         meter = m;
     }
 
     @Override
-    public void setOtherClient(Persone client) {
+    public void setOtherClient(ClientiDettagliati client) {
         otherClient = client;
     }
 
     @Override
-    public void setOtherSubscription(Contratti sub) {
+    public void setOtherSubscription(ContrattiDettagliati sub) {
         otherSub = sub;
     }
 
@@ -93,7 +87,7 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     }
 
     @Override
-    public Optional<String> usage() {
+    public Optional<TipologieUso> usage() {
         return Optional.ofNullable(use);
     }
 
@@ -103,22 +97,17 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     }
 
     @Override
-    public double powerRequested() {
-        return power;
-    }
-
-    @Override
     public Optional<Contatori> meter() {
         return Optional.ofNullable(meter);
     }
 
     @Override
-    public Optional<Persone> otherClient() {
+    public Optional<ClientiDettagliati> otherClient() {
         return Optional.ofNullable(otherClient);
     }
 
     @Override
-    public Optional<Contratti> otherSubscription() {
+    public Optional<ContrattiDettagliati> otherSubscription() {
         return Optional.ofNullable(otherSub);
     }
 

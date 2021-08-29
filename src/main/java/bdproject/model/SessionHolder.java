@@ -8,15 +8,15 @@ public class SessionHolder {
 
     private SessionHolder() {}
 
-    public static void create(final int id, final byte admin, final String username) {
+    public static void create(final int id, final boolean isOperator, final String username) {
         if (session != null) {
             throw new IllegalStateException("A session is already active!");
         } else {
-            session = new SessionImpl(id, admin, username);
+            session = new SessionImpl(id, isOperator, username);
         }
     }
 
-    public static Optional<Session> get() {
+    public static Optional<Session> getSession() {
         return Optional.ofNullable(session);
     }
 
@@ -24,16 +24,18 @@ public class SessionHolder {
         session = null;
     }
 
-
+    /**
+     *
+     */
     private static class SessionImpl implements Session {
 
         private final int id;
-        private final byte admin;
+        private final boolean isOperator;
         private final String username;
 
-        public SessionImpl(final int id, final byte admin, final String username) {
+        public SessionImpl(final int id, final boolean isOperator, final String username) {
             this.id = id;
-            this.admin = admin;
+            this.isOperator = isOperator;
             this.username = username;
         }
 
@@ -43,8 +45,8 @@ public class SessionHolder {
         }
 
         @Override
-        public boolean isAdmin() {
-            return admin == (byte) 1;
+        public boolean isOperator() {
+            return isOperator;
         }
 
         @Override

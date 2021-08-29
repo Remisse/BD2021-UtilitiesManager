@@ -2,9 +2,8 @@ package bdproject.controller.gui.adminarea;
 
 import bdproject.controller.gui.AbstractSubscriptionDetailsController;
 import bdproject.controller.gui.ViewController;
-import bdproject.tables.pojos.Contratti;
+import bdproject.tables.pojos.ContrattiDettagliati;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
@@ -15,11 +14,12 @@ public class AdminSubDetailsController extends AbstractSubscriptionDetailsContro
     @FXML private Button back;
     @FXML private Button endSubscription;
 
-    protected AdminSubDetailsController(Stage stage, DataSource dataSource, Contratti subscription) {
+    protected AdminSubDetailsController(Stage stage, DataSource dataSource, ContrattiDettagliati subscription) {
         super(stage, dataSource, subscription);
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource, final Contratti subscription) {
+    public static ViewController create(final Stage stage, final DataSource dataSource,
+            final ContrattiDettagliati subscription) {
         return new AdminSubDetailsController(stage, dataSource, subscription);
     }
 
@@ -30,7 +30,7 @@ public class AdminSubDetailsController extends AbstractSubscriptionDetailsContro
     }
 
     @Override
-    protected void abstractDoEndSubscription() {
+    protected void abstractDoInsertEndRequest() {
     }
 
     @Override

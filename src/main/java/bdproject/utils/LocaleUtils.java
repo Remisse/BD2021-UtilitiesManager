@@ -1,5 +1,6 @@
 package bdproject.utils;
 
+import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Map;
@@ -25,5 +26,9 @@ public class LocaleUtils {
 
     public static Map<String, String> getItUtilitiesUnits() {
         return mUnit;
+    }
+
+    public static DecimalFormat getItDecimalFormat() {
+        return new DecimalFormat("#,###.000");
     }
 }

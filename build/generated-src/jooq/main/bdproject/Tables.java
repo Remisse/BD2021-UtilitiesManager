@@ -5,21 +5,25 @@ package bdproject;
 
 
 import bdproject.tables.Bollette;
+import bdproject.tables.Clienti;
+import bdproject.tables.ClientiDettagliati;
 import bdproject.tables.Compatibilità;
 import bdproject.tables.Contatori;
 import bdproject.tables.Contratti;
-import bdproject.tables.Distributori;
-import bdproject.tables.Distribuzioni;
+import bdproject.tables.ContrattiDettagliati;
 import bdproject.tables.Immobili;
 import bdproject.tables.Interruzioni;
 import bdproject.tables.Letture;
 import bdproject.tables.MateriePrime;
 import bdproject.tables.Offerte;
+import bdproject.tables.Operatori;
+import bdproject.tables.OperatoriDettagliati;
 import bdproject.tables.Persone;
 import bdproject.tables.Redditi;
+import bdproject.tables.RichiesteAttivazione;
+import bdproject.tables.RichiesteCessazione;
 import bdproject.tables.TipiAttivazione;
 import bdproject.tables.TipologieUso;
-import bdproject.tables.Zone;
 
 
 /**
@@ -32,6 +36,16 @@ public class Tables {
      * The table <code>utenze.bollette</code>.
      */
     public static final Bollette BOLLETTE = Bollette.BOLLETTE;
+
+    /**
+     * The table <code>utenze.clienti</code>.
+     */
+    public static final Clienti CLIENTI = Clienti.CLIENTI;
+
+    /**
+     * VIEW
+     */
+    public static final ClientiDettagliati CLIENTI_DETTAGLIATI = ClientiDettagliati.CLIENTI_DETTAGLIATI;
 
     /**
      * The table <code>utenze.compatibilità</code>.
@@ -49,14 +63,9 @@ public class Tables {
     public static final Contratti CONTRATTI = Contratti.CONTRATTI;
 
     /**
-     * The table <code>utenze.distributori</code>.
+     * VIEW
      */
-    public static final Distributori DISTRIBUTORI = Distributori.DISTRIBUTORI;
-
-    /**
-     * The table <code>utenze.distribuzioni</code>.
-     */
-    public static final Distribuzioni DISTRIBUZIONI = Distribuzioni.DISTRIBUZIONI;
+    public static final ContrattiDettagliati CONTRATTI_DETTAGLIATI = ContrattiDettagliati.CONTRATTI_DETTAGLIATI;
 
     /**
      * The table <code>utenze.immobili</code>.
@@ -84,6 +93,16 @@ public class Tables {
     public static final Offerte OFFERTE = Offerte.OFFERTE;
 
     /**
+     * The table <code>utenze.operatori</code>.
+     */
+    public static final Operatori OPERATORI = Operatori.OPERATORI;
+
+    /**
+     * VIEW
+     */
+    public static final OperatoriDettagliati OPERATORI_DETTAGLIATI = OperatoriDettagliati.OPERATORI_DETTAGLIATI;
+
+    /**
      * The table <code>utenze.persone</code>.
      */
     public static final Persone PERSONE = Persone.PERSONE;
@@ -94,6 +113,16 @@ public class Tables {
     public static final Redditi REDDITI = Redditi.REDDITI;
 
     /**
+     * The table <code>utenze.richieste_attivazione</code>.
+     */
+    public static final RichiesteAttivazione RICHIESTE_ATTIVAZIONE = RichiesteAttivazione.RICHIESTE_ATTIVAZIONE;
+
+    /**
+     * The table <code>utenze.richieste_cessazione</code>.
+     */
+    public static final RichiesteCessazione RICHIESTE_CESSAZIONE = RichiesteCessazione.RICHIESTE_CESSAZIONE;
+
+    /**
      * The table <code>utenze.tipi_attivazione</code>.
      */
     public static final TipiAttivazione TIPI_ATTIVAZIONE = TipiAttivazione.TIPI_ATTIVAZIONE;
@@ -102,9 +131,4 @@ public class Tables {
      * The table <code>utenze.tipologie_uso</code>.
      */
     public static final TipologieUso TIPOLOGIE_USO = TipologieUso.TIPOLOGIE_USO;
-
-    /**
-     * The table <code>utenze.zone</code>.
-     */
-    public static final Zone ZONE = Zone.ZONE;
 }

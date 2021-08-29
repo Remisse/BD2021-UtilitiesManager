@@ -53,9 +53,9 @@ public class Compatibilità extends TableImpl<CompatibilitàRecord> {
     public final TableField<CompatibilitàRecord, Integer> CODICEOFFERTA = createField(DSL.name("CodiceOfferta"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>utenze.compatibilità.TipoUso</code>.
+     * The column <code>utenze.compatibilità.Uso</code>.
      */
-    public final TableField<CompatibilitàRecord, String> TIPOUSO = createField(DSL.name("TipoUso"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+    public final TableField<CompatibilitàRecord, Integer> USO = createField(DSL.name("Uso"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Compatibilità(Name alias, Table<CompatibilitàRecord> aliased) {
         this(alias, aliased, null);
@@ -153,7 +153,7 @@ public class Compatibilità extends TableImpl<CompatibilitàRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Integer, String> fieldsRow() {
+    public Row2<Integer, Integer> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 }

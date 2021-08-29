@@ -1,4 +1,4 @@
-val javaFxVersion = "15.0.1"
+val javaFxVersion = "16"
 val fxmodules = listOf("base", "controls", "fxml", "media", "graphics", "swing")
 val platforms = listOf("win", "linux", "mac")
 

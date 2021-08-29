@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row2;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -51,14 +51,19 @@ public class TipiAttivazione extends TableImpl<TipiAttivazioneRecord> {
     }
 
     /**
+     * The column <code>utenze.tipi_attivazione.Codice</code>.
+     */
+    public final TableField<TipiAttivazioneRecord, Integer> CODICE = createField(DSL.name("Codice"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
      * The column <code>utenze.tipi_attivazione.Nome</code>.
      */
     public final TableField<TipiAttivazioneRecord, String> NOME = createField(DSL.name("Nome"), SQLDataType.VARCHAR(20).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.tipi_attivazione.CostoUnaTantum</code>.
+     * The column <code>utenze.tipi_attivazione.Costo</code>.
      */
-    public final TableField<TipiAttivazioneRecord, BigDecimal> COSTOUNATANTUM = createField(DSL.name("CostoUnaTantum"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
+    public final TableField<TipiAttivazioneRecord, BigDecimal> COSTO = createField(DSL.name("Costo"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
 
     private TipiAttivazione(Name alias, Table<TipiAttivazioneRecord> aliased) {
         this(alias, aliased, null);
@@ -106,7 +111,7 @@ public class TipiAttivazione extends TableImpl<TipiAttivazioneRecord> {
     @Override
     public List<Check<TipiAttivazioneRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("tipi_attivazione_chk_1"), "(`CostoUnaTantum` >= 0)", true)
+            Internal.createCheck(this, DSL.name("tipi_attivazione_chk_1"), "(`Costo` >= 0)", true)
         );
     }
 
@@ -137,11 +142,11 @@ public class TipiAttivazione extends TableImpl<TipiAttivazioneRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<String, BigDecimal> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<Integer, String, BigDecimal> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

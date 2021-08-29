@@ -2,7 +2,7 @@ package bdproject.controller;
 
 public interface Choice<T, V> {
 
-    T getId();
+    T getItem();
 
     V getValue();
 }

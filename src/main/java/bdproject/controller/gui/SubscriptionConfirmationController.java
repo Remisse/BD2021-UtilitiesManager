@@ -2,9 +2,8 @@ package bdproject.controller.gui;
 
 import bdproject.model.Queries;
 import bdproject.model.SubscriptionProcess;
-import bdproject.tables.pojos.Immobili;
 import bdproject.utils.FXUtils;
-import bdproject.view.StringRepresentations;
+import bdproject.view.StringUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -50,8 +49,7 @@ public class SubscriptionConfirmationController extends AbstractViewController i
         this.process = process;
         this.typeAction = Map.of(
                 "Voltura", () -> ActivationByChangeController.create(getStage(), getDataSource(), process),
-                "Subentro", () -> {},
-                "Nuova attivazione", () -> {}
+                "Subentro", () -> {}
         );
     }
 
@@ -69,15 +67,14 @@ public class SubscriptionConfirmationController extends AbstractViewController i
     public void initialize(URL location, ResourceBundle resources) {
         planText.setText(process.plan().orElseThrow().getNome());
         utilityText.setText(process.plan().orElseThrow().getMateriaprima());
-        useText.setText(process.usage().orElseThrow());
+        useText.setText(process.usage().orElseThrow().getNome());
         activationText.setText(process.activation().orElseThrow().getNome());
+        premisesFlow.getChildren().add(new Text(StringUtils.premisesToString(process.premises().orElseThrow())));
 
-        final Immobili premises = process.premises().orElseThrow();
         try (Connection conn = getDataSource().getConnection()) {
-            premisesFlow.getChildren().add(new Text(StringRepresentations.premisesToString(premises, conn)));
             process.otherClient().ifPresentOrElse(
-                    c -> currentClientFlow.getChildren().add(new Text(StringRepresentations.clientToString(
-                            c.getCodicecliente(), conn))),
+                    c -> currentClientFlow.getChildren().add(new Text(StringUtils.clientToString(
+                            c.getIdentificativo(), conn))),
                     () -> currentClientFlow.getChildren().add(new Text("")));
         } catch (SQLException e) {
             FXUtils.showError(e.getMessage());
@@ -113,9 +110,6 @@ public class SubscriptionConfirmationController extends AbstractViewController i
                     case "Subentro":
                         insertIfSubentro(conn);
                         break;
-                    case "Nuova attivazione":
-                        insertIfNewActivation(conn);
-                        break;
                     default:
                         FXUtils.showError("Nessun metodo di attivazione trovato. Qualcosa non ha funzionato.");
                         break;
@@ -134,15 +128,11 @@ public class SubscriptionConfirmationController extends AbstractViewController i
      */
     private void insertIfChange(Connection conn) {
         Queries.insertMeasurement(process.measurement().orElseThrow(), conn);
-        Queries.ceaseSubscription(process.otherSubscription().orElseThrow(), conn);
-        Queries.insertSubscription(process, conn);
+        Queries.ceaseSubscription(process.otherSubscription().orElseThrow().getIdcontratto(), conn);
+        Queries.insertActivationRequest(process, conn);
     }
 
     private void insertIfSubentro(Connection conn) {
-
-    }
-
-    private void insertIfNewActivation(Connection conn) {
 
     }
 }

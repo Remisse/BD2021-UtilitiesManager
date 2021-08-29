@@ -4,19 +4,19 @@ import java.util.function.BiFunction;
 
 public class ChoiceImpl<T, V> implements Choice<T, V> {
 
-    private final T id;
+    private final T item;
     private final V value;
     private final BiFunction<T, V, String> toStringStrategy;
 
-    public ChoiceImpl(final T id, final V value, final BiFunction<T, V, String> strategy) {
-        this.id = id;
+    public ChoiceImpl(final T item, final V value, final BiFunction<T, V, String> strategy) {
+        this.item = item;
         this.value = value;
         this.toStringStrategy = strategy;
     }
 
     @Override
-    public T getId() {
-        return id;
+    public T getItem() {
+        return item;
     }
 
     @Override
@@ -25,6 +25,6 @@ public class ChoiceImpl<T, V> implements Choice<T, V> {
     }
 
     public String toString() {
-        return toStringStrategy.apply(id, value);
+        return toStringStrategy.apply(item, value);
     }
 }

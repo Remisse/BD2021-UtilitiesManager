@@ -3,9 +3,9 @@ package bdproject.controller.gui.userarea;
 import bdproject.controller.gui.AbstractSubscriptionDetailsController;
 import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
-import bdproject.tables.pojos.Contratti;
+import bdproject.model.SessionHolder;
+import bdproject.tables.pojos.ContrattiDettagliati;
 import bdproject.utils.FXUtils;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
 
@@ -15,12 +15,13 @@ import java.sql.SQLException;
 
 public class UserSubDetailsController extends AbstractSubscriptionDetailsController implements Initializable {
 
-    protected UserSubDetailsController(Stage stage, DataSource dataSource, Contratti subscription) {
-        super(stage, dataSource, subscription);
+    protected UserSubDetailsController(Stage stage, DataSource dataSource, ContrattiDettagliati detailedSub) {
+        super(stage, dataSource, detailedSub);
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource, final Contratti subscription) {
-        return new UserSubDetailsController(stage, dataSource, subscription);
+    public static ViewController create(final Stage stage, final DataSource dataSource,
+            final ContrattiDettagliati detailedSub) {
+        return new UserSubDetailsController(stage, dataSource, detailedSub);
     }
 
     /**
@@ -36,22 +37,29 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
     }
 
     @Override
-    protected void abstractDoEndSubscription() {
-        final Contratti subscription = getSubscription();
+    protected void abstractDoInsertEndRequest() {
+        final ContrattiDettagliati subscription = getSubscription();
 
         try (Connection conn = getDataSource().getConnection()) {
             if (subscription.getDatacessazione() != null) {
                 FXUtils.showBlockingWarning("Il contratto risulta già cessato.");
             } else if (Queries.hasOngoingInterruption(subscription, conn)) {
                 FXUtils.showBlockingWarning("La fornitura risulta temporaneamente interrotta. Non è attualmente" +
-                        "possibile cessare il contratto.");
+                        "possibile richiedere la cessazione.");
             } else if (!Queries.allReportsPaid(subscription, conn)) {
                 FXUtils.showBlockingWarning("Risultano bollette non pagate. Non è attualmente" +
-                        "possibile cessare il contratto.");
+                        "possibile richiedere la cessazione.");
             } else {
-                Queries.ceaseSubscription(subscription, conn);
-                setStatus(subscription.getDatainizio(), subscription.getDatacessazione(), conn);
-                FXUtils.showBlockingWarning("Contratto cessato.");
+                final int result = Queries.insertEndRequest(
+                        SessionHolder.getSession().orElseThrow().getUserId(),
+                        getSubscription().getIdcontratto(),
+                        conn);
+                if (result == 1) {
+                    setStatus(subscription.getDatainizio(), subscription.getDatacessazione(), conn);
+                    FXUtils.showBlockingWarning("Richiesta di cessazione inviata.");
+                } else {
+                    FXUtils.showBlockingWarning("Impossibile inviare la richiesta.");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,17 +1,21 @@
 package bdproject.controller.gui;
 
+import bdproject.controller.Choice;
+import bdproject.controller.ChoiceImpl;
+import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.model.SubscriptionProcessImpl;
 import bdproject.tables.pojos.Offerte;
+import bdproject.tables.pojos.TipologieUso;
 import bdproject.utils.FXUtils;
+import bdproject.utils.LocaleUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -21,6 +25,7 @@ import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -29,33 +34,21 @@ import static bdproject.Tables.*;
 
 public class CatalogueController extends AbstractViewController implements Initializable {
 
-    private static final String fxml = "catalogue.fxml";
-
-    @FXML
-    private Button back;
-    @FXML
-    private Button activate;
-    @FXML
-    private ComboBox<String> uses;
-    @FXML
-    private ComboBox<String> utilities;
-    @FXML
-    private TableView<Offerte> table;
-    @FXML
-    private TableColumn<Offerte, String> nameColumn;
-    @FXML
-    private TableColumn<Offerte, String> descColumn;
-    @FXML
-    private TableColumn<Offerte, String> costColumn;
-
+    private static final String FXML_FILE = "catalogue.fxml";
     private SubscriptionProcess process;
-    private final Map<String, String> measurementUnit = Map.of(
-            "Gas", "€/Smc",
-            "Acqua", "€/mc"
-    );
+    private final Map<String, String> measurementUnit = LocaleUtils.getItUtilitiesUnits();
+
+    @FXML private Button back;
+    @FXML private Button activate;
+    @FXML private ComboBox<Choice<TipologieUso, String>> uses;
+    @FXML private ComboBox<String> utilities;
+    @FXML private TableView<Offerte> table;
+    @FXML private TableColumn<Offerte, String> nameColumn;
+    @FXML private TableColumn<Offerte, String> descColumn;
+    @FXML private TableColumn<Offerte, String> costColumn;
 
     private CatalogueController(Stage stage, DataSource dataSource) {
-        super(stage, dataSource, fxml);
+        super(stage, dataSource, FXML_FILE);
     }
 
     public static ViewController create(final Stage stage, final DataSource dataSource) {
@@ -73,8 +66,8 @@ public class CatalogueController extends AbstractViewController implements Initi
     }
 
     private void initializePlanTable() {
-        nameColumn.setCellValueFactory(new PropertyValueFactory<Offerte, String>("nome"));
-        descColumn.setCellValueFactory(new PropertyValueFactory<Offerte, String>("descrizione"));
+        nameColumn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNome()));
+        descColumn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDescrizione()));
         costColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getCostomateriaprima()
                         + " "
@@ -84,8 +77,7 @@ public class CatalogueController extends AbstractViewController implements Initi
             populateComboBoxes(conn);
             populatePlanTable(conn);
         } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-            alert.showAndWait();
+            FXUtils.showError(e.getMessage());
         }
     }
 
@@ -96,7 +88,7 @@ public class CatalogueController extends AbstractViewController implements Initi
                 .from(OFFERTE, COMPATIBILITÀ)
                 .where(OFFERTE.MATERIAPRIMA.eq(utilities.getValue()))
                 .and(OFFERTE.ATTIVA.eq((byte) 1))
-                .and(COMPATIBILITÀ.TIPOUSO.eq(uses.getValue()))
+                .and(COMPATIBILITÀ.USO.eq(uses.getValue().getItem().getCodice()))
                 .and(OFFERTE.CODICE.eq(COMPATIBILITÀ.CODICEOFFERTA))
                 .fetchInto(Offerte.class);
 
@@ -113,11 +105,12 @@ public class CatalogueController extends AbstractViewController implements Initi
         utilities.setItems(FXCollections.observableList(utilityRecords.getValues(MATERIE_PRIME.NOME)));
         utilities.setValue(utilityRecords.getValue(0, MATERIE_PRIME.NOME));
 
-        var useRecords = create.select(TIPOLOGIE_USO.NOME)
-                .from(TIPOLOGIE_USO)
-                .fetch();
-        uses.setItems(FXCollections.observableList(useRecords.getValues(TIPOLOGIE_USO.NOME)));
-        uses.setValue(useRecords.getValue(0, TIPOLOGIE_USO.NOME));
+        List<Choice<TipologieUso, String>> useRecords = Queries.fetchAllUsages(conn)
+                .stream()
+                .map(t -> new ChoiceImpl<>(t, t.getNome(), (i, n) -> n))
+                .collect(Collectors.toList());
+        uses.setItems(FXCollections.observableList(useRecords));
+        uses.setValue(useRecords.get(0));
     }
 
     @FXML
@@ -125,8 +118,7 @@ public class CatalogueController extends AbstractViewController implements Initi
         try (Connection conn = getDataSource().getConnection()) {
             populatePlanTable(conn);
         } catch (SQLException ex) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage());
-            alert.showAndWait();
+            FXUtils.showError(ex.getMessage());
         }
     }
 
@@ -134,15 +126,15 @@ public class CatalogueController extends AbstractViewController implements Initi
     private void startSubscriptionProcess(ActionEvent e) {
         if (table.getSelectionModel().getSelectedItem() == null) {
             FXUtils.showBlockingWarning("Non hai selezionato un'offerta.");
-        } else if (SessionHolder.get().isEmpty()) {
-            FXUtils.showBlockingWarning("Per poter sottoscrivere un'offerta, devi prima effettuare l'accesso.");
+        } else if (SessionHolder.getSession().isEmpty()) {
+            FXUtils.showBlockingWarning("Per poter richiedere l'attivazione di un'offerta, devi prima effettuare l'accesso.");
         } else {
             if (process == null) {
                 process = new SubscriptionProcessImpl();
             }
-            process.setClientId(SessionHolder.get().orElseThrow().getUserId());
+            process.setClientId(SessionHolder.getSession().orElseThrow().getUserId());
             process.setPlan(table.getSelectionModel().getSelectedItem());
-            process.setUse(uses.getValue());
+            process.setUse(uses.getValue().getItem());
             switchTo(ParametersSelectionController.create(getStage(), getDataSource(), process));
         }
     }

@@ -20,7 +20,9 @@ public class Immobili implements Serializable {
     private final String  via;
     private final String  numcivico;
     private final String  interno;
-    private final Integer idzona;
+    private final String  comune;
+    private final String  provincia;
+    private final String  cap;
 
     public Immobili(Immobili value) {
         this.idimmobile = value.idimmobile;
@@ -28,7 +30,9 @@ public class Immobili implements Serializable {
         this.via = value.via;
         this.numcivico = value.numcivico;
         this.interno = value.interno;
-        this.idzona = value.idzona;
+        this.comune = value.comune;
+        this.provincia = value.provincia;
+        this.cap = value.cap;
     }
 
     public Immobili(
@@ -37,14 +41,18 @@ public class Immobili implements Serializable {
         String  via,
         String  numcivico,
         String  interno,
-        Integer idzona
+        String  comune,
+        String  provincia,
+        String  cap
     ) {
         this.idimmobile = idimmobile;
         this.tipo = tipo;
         this.via = via;
         this.numcivico = numcivico;
         this.interno = interno;
-        this.idzona = idzona;
+        this.comune = comune;
+        this.provincia = provincia;
+        this.cap = cap;
     }
 
     /**
@@ -83,10 +91,24 @@ public class Immobili implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.immobili.IdZona</code>.
+     * Getter for <code>utenze.immobili.Comune</code>.
      */
-    public Integer getIdzona() {
-        return this.idzona;
+    public String getComune() {
+        return this.comune;
+    }
+
+    /**
+     * Getter for <code>utenze.immobili.Provincia</code>.
+     */
+    public String getProvincia() {
+        return this.provincia;
+    }
+
+    /**
+     * Getter for <code>utenze.immobili.CAP</code>.
+     */
+    public String getCap() {
+        return this.cap;
     }
 
     @Override
@@ -98,7 +120,9 @@ public class Immobili implements Serializable {
         sb.append(", ").append(via);
         sb.append(", ").append(numcivico);
         sb.append(", ").append(interno);
-        sb.append(", ").append(idzona);
+        sb.append(", ").append(comune);
+        sb.append(", ").append(provincia);
+        sb.append(", ").append(cap);
 
         sb.append(")");
         return sb.toString();

@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -76,9 +76,19 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     public final TableField<ImmobiliRecord, String> INTERNO = createField(DSL.name("Interno"), SQLDataType.VARCHAR(10), this, "");
 
     /**
-     * The column <code>utenze.immobili.IdZona</code>.
+     * The column <code>utenze.immobili.Comune</code>.
      */
-    public final TableField<ImmobiliRecord, Integer> IDZONA = createField(DSL.name("IdZona"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<ImmobiliRecord, String> COMUNE = createField(DSL.name("Comune"), SQLDataType.VARCHAR(50).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.immobili.Provincia</code>.
+     */
+    public final TableField<ImmobiliRecord, String> PROVINCIA = createField(DSL.name("Provincia"), SQLDataType.VARCHAR(2).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.immobili.CAP</code>.
+     */
+    public final TableField<ImmobiliRecord, String> CAP = createField(DSL.name("CAP"), SQLDataType.VARCHAR(5).nullable(false), this, "");
 
     private Immobili(Name alias, Table<ImmobiliRecord> aliased) {
         this(alias, aliased, null);
@@ -134,24 +144,11 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     }
 
     @Override
-    public List<ForeignKey<ImmobiliRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_UBICAZIONE);
-    }
-
-    private transient Zone _zone;
-
-    public Zone zone() {
-        if (_zone == null)
-            _zone = new Zone(this, Keys.FK_UBICAZIONE);
-
-        return _zone;
-    }
-
-    @Override
     public List<Check<ImmobiliRecord>> getChecks() {
         return Arrays.asList(
             Internal.createCheck(this, DSL.name("immobili_chk_1"), "(`Tipo` in (_utf8mb4\\'F\\',_utf8mb4\\'T\\'))", true),
-            Internal.createCheck(this, DSL.name("immobili_chk_2"), "((`Tipo` = _utf8mb4\\'F\\') or ((`Tipo` = _utf8mb4\\'T\\') and (`Interno` is null)))", true)
+            Internal.createCheck(this, DSL.name("immobili_chk_2"), "(length(`CAP`) = 5)", true),
+            Internal.createCheck(this, DSL.name("immobili_chk_3"), "((`Tipo` = _utf8mb4\\'F\\') or ((`Tipo` = _utf8mb4\\'T\\') and (`Interno` is null)))", true)
         );
     }
 
@@ -182,11 +179,11 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, String, String, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row8<Integer, String, String, String, String, String, String, String> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

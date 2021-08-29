@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row16;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,24 +52,14 @@ public class Persone extends TableImpl<PersoneRecord> {
     }
 
     /**
-     * The column <code>utenze.persone.CodiceCliente</code>.
+     * The column <code>utenze.persone.Identificativo</code>.
      */
-    public final TableField<PersoneRecord, Integer> CODICECLIENTE = createField(DSL.name("CodiceCliente"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>utenze.persone.Amministratore</code>.
-     */
-    public final TableField<PersoneRecord, Byte> AMMINISTRATORE = createField(DSL.name("Amministratore"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<PersoneRecord, Integer> IDENTIFICATIVO = createField(DSL.name("Identificativo"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>utenze.persone.CodiceFiscale</code>.
      */
     public final TableField<PersoneRecord, String> CODICEFISCALE = createField(DSL.name("CodiceFiscale"), SQLDataType.VARCHAR(16).nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.persone.PartitaIVA</code>.
-     */
-    public final TableField<PersoneRecord, String> PARTITAIVA = createField(DSL.name("PartitaIVA"), SQLDataType.VARCHAR(11), this, "");
 
     /**
      * The column <code>utenze.persone.Nome</code>.
@@ -94,7 +84,7 @@ public class Persone extends TableImpl<PersoneRecord> {
     /**
      * The column <code>utenze.persone.CAP</code>.
      */
-    public final TableField<PersoneRecord, Integer> CAP = createField(DSL.name("CAP"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<PersoneRecord, String> CAP = createField(DSL.name("CAP"), SQLDataType.VARCHAR(5).nullable(false), this, "");
 
     /**
      * The column <code>utenze.persone.Comune</code>.
@@ -125,11 +115,6 @@ public class Persone extends TableImpl<PersoneRecord> {
      * The column <code>utenze.persone.Password</code>.
      */
     public final TableField<PersoneRecord, String> PASSWORD = createField(DSL.name("Password"), SQLDataType.VARCHAR(30).nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.persone.FasciaReddito</code>.
-     */
-    public final TableField<PersoneRecord, String> FASCIAREDDITO = createField(DSL.name("FasciaReddito"), SQLDataType.VARCHAR(30), this, "");
 
     private Persone(Name alias, Table<PersoneRecord> aliased) {
         this(alias, aliased, null);
@@ -185,20 +170,6 @@ public class Persone extends TableImpl<PersoneRecord> {
     }
 
     @Override
-    public List<ForeignKey<PersoneRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_POSSEDIMENTO);
-    }
-
-    private transient Redditi _redditi;
-
-    public Redditi redditi() {
-        if (_redditi == null)
-            _redditi = new Redditi(this, Keys.FK_POSSEDIMENTO);
-
-        return _redditi;
-    }
-
-    @Override
     public List<Check<PersoneRecord>> getChecks() {
         return Arrays.asList(
             Internal.createCheck(this, DSL.name("persone_chk_1"), "(length(`Password`) >= 8)", true)
@@ -232,11 +203,11 @@ public class Persone extends TableImpl<PersoneRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row16 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row16<Integer, Byte, String, String, String, String, String, String, Integer, String, String, LocalDate, String, String, String, String> fieldsRow() {
-        return (Row16) super.fieldsRow();
+    public Row13<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

@@ -16,28 +16,23 @@ public class Persone implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer   codicecliente;
-    private final Byte      amministratore;
+    private final Integer   identificativo;
     private final String    codicefiscale;
-    private final String    partitaiva;
     private final String    nome;
     private final String    cognome;
     private final String    via;
     private final String    numcivico;
-    private final Integer   cap;
+    private final String    cap;
     private final String    comune;
     private final String    provincia;
     private final LocalDate datanascita;
     private final String    numerotelefono;
     private final String    email;
     private final String    password;
-    private final String    fasciareddito;
 
     public Persone(Persone value) {
-        this.codicecliente = value.codicecliente;
-        this.amministratore = value.amministratore;
+        this.identificativo = value.identificativo;
         this.codicefiscale = value.codicefiscale;
-        this.partitaiva = value.partitaiva;
         this.nome = value.nome;
         this.cognome = value.cognome;
         this.via = value.via;
@@ -49,31 +44,25 @@ public class Persone implements Serializable {
         this.numerotelefono = value.numerotelefono;
         this.email = value.email;
         this.password = value.password;
-        this.fasciareddito = value.fasciareddito;
     }
 
     public Persone(
-        Integer   codicecliente,
-        Byte      amministratore,
+        Integer   identificativo,
         String    codicefiscale,
-        String    partitaiva,
         String    nome,
         String    cognome,
         String    via,
         String    numcivico,
-        Integer   cap,
+        String    cap,
         String    comune,
         String    provincia,
         LocalDate datanascita,
         String    numerotelefono,
         String    email,
-        String    password,
-        String    fasciareddito
+        String    password
     ) {
-        this.codicecliente = codicecliente;
-        this.amministratore = amministratore;
+        this.identificativo = identificativo;
         this.codicefiscale = codicefiscale;
-        this.partitaiva = partitaiva;
         this.nome = nome;
         this.cognome = cognome;
         this.via = via;
@@ -85,21 +74,13 @@ public class Persone implements Serializable {
         this.numerotelefono = numerotelefono;
         this.email = email;
         this.password = password;
-        this.fasciareddito = fasciareddito;
     }
 
     /**
-     * Getter for <code>utenze.persone.CodiceCliente</code>.
+     * Getter for <code>utenze.persone.Identificativo</code>.
      */
-    public Integer getCodicecliente() {
-        return this.codicecliente;
-    }
-
-    /**
-     * Getter for <code>utenze.persone.Amministratore</code>.
-     */
-    public Byte getAmministratore() {
-        return this.amministratore;
+    public Integer getIdentificativo() {
+        return this.identificativo;
     }
 
     /**
@@ -107,13 +88,6 @@ public class Persone implements Serializable {
      */
     public String getCodicefiscale() {
         return this.codicefiscale;
-    }
-
-    /**
-     * Getter for <code>utenze.persone.PartitaIVA</code>.
-     */
-    public String getPartitaiva() {
-        return this.partitaiva;
     }
 
     /**
@@ -147,7 +121,7 @@ public class Persone implements Serializable {
     /**
      * Getter for <code>utenze.persone.CAP</code>.
      */
-    public Integer getCap() {
+    public String getCap() {
         return this.cap;
     }
 
@@ -193,21 +167,12 @@ public class Persone implements Serializable {
         return this.password;
     }
 
-    /**
-     * Getter for <code>utenze.persone.FasciaReddito</code>.
-     */
-    public String getFasciareddito() {
-        return this.fasciareddito;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Persone (");
 
-        sb.append(codicecliente);
-        sb.append(", ").append(amministratore);
+        sb.append(identificativo);
         sb.append(", ").append(codicefiscale);
-        sb.append(", ").append(partitaiva);
         sb.append(", ").append(nome);
         sb.append(", ").append(cognome);
         sb.append(", ").append(via);
@@ -219,7 +184,6 @@ public class Persone implements Serializable {
         sb.append(", ").append(numerotelefono);
         sb.append(", ").append(email);
         sb.append(", ").append(password);
-        sb.append(", ").append(fasciareddito);
 
         sb.append(")");
         return sb.toString();

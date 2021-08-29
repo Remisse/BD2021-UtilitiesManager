@@ -1,34 +1,23 @@
 package bdproject.view;
 
 import bdproject.model.Queries;
-import bdproject.tables.Distributori;
+import bdproject.tables.pojos.ClientiDettagliati;
 import bdproject.tables.pojos.Immobili;
-import bdproject.tables.pojos.Persone;
-import bdproject.tables.pojos.Redditi;
-import bdproject.tables.pojos.Zone;
 import bdproject.utils.LocaleUtils;
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 
 import java.sql.Connection;
 import java.util.Optional;
 
-import static bdproject.Tables.PERSONE;
-import static bdproject.Tables.REDDITI;
-import static bdproject.tables.Zone.ZONE;
+public class StringUtils {
 
-public class StringRepresentations {
-
-    private StringRepresentations() {}
+    private StringUtils() {}
 
     public static String getGenericError() {
         return "Impossibile soddisfare la richiesta.";
     }
 
-    public static String clientToString(final int clientId, final Connection conn) {
-        final Optional<Persone> client = Queries.fetchClientById(clientId, conn);
-        final Redditi income = Queries.getClientIncomeBracket(clientId, conn);
+    public static String clientToString(final int personId, final Connection conn) {
+        final Optional<ClientiDettagliati> client = Queries.fetchClientById(personId, conn);
 
         StringBuilder builder = new StringBuilder();
         client.ifPresent(c -> builder.append(c.getNome())
@@ -39,25 +28,19 @@ public class StringRepresentations {
                 .append("\n")
                 .append(c.getCodicefiscale())
                 .append("\nCodice cliente: ")
-                .append(c.getCodicecliente())
+                .append(c.getIdentificativo())
                 .append("\n")
                 .append(c.getEmail())
                 .append("\nReddito: ")
-                .append(income.getFascia())
+                .append(c.getFasciareddito())
         );
         return builder.toString();
     }
 
-    public static String premisesToString(final Immobili premises, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        final Zone zone = query.select()
-                .from(ZONE)
-                .where(ZONE.IDZONA.eq(premises.getIdzona()))
-                .fetchOneInto(Zone.class);
+    public static String premisesToString(final Immobili premises) {
         StringBuilder builder = new StringBuilder();
-        assert zone != null;
         builder.append(premises.getTipo().equals("F") ? "Fabbricato"
-                                                      : premises.getTipo().equals("T") ? "Terreno"
+                       : premises.getTipo().equals("T") ? "Terreno"
                        : "Non definito")
                 .append("\n\n")
                 .append(premises.getVia())
@@ -65,11 +48,15 @@ public class StringRepresentations {
                 .append(premises.getNumcivico())
                 .append(premises.getInterno() != null ? "\nInterno: " + premises.getInterno() : "")
                 .append("\n")
-                .append(zone.getComune())
+                .append(premises.getComune())
                 .append("\n")
-                .append(zone.getCap())
+                .append(premises.getCap())
                 .append("\n")
-                .append(zone.getProvincia());
+                .append(premises.getProvincia());
         return builder.toString();
+    }
+
+    public static String byteToYesNo(final byte value) {
+        return value == 1 ? "Sì" : value == 0 ? "No" : "UNDEFINED";
     }
 }

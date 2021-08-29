@@ -19,25 +19,33 @@ public class Interruzioni implements Serializable {
     private final Integer   idcontratto;
     private final LocalDate datainterruzione;
     private final LocalDate datariattivazione;
-    private final String    descrizione;
+    private final String    motivazione;
+    private final Integer   indettada;
+    private final Integer   annullatada;
 
     public Interruzioni(Interruzioni value) {
         this.idcontratto = value.idcontratto;
         this.datainterruzione = value.datainterruzione;
         this.datariattivazione = value.datariattivazione;
-        this.descrizione = value.descrizione;
+        this.motivazione = value.motivazione;
+        this.indettada = value.indettada;
+        this.annullatada = value.annullatada;
     }
 
     public Interruzioni(
         Integer   idcontratto,
         LocalDate datainterruzione,
         LocalDate datariattivazione,
-        String    descrizione
+        String    motivazione,
+        Integer   indettada,
+        Integer   annullatada
     ) {
         this.idcontratto = idcontratto;
         this.datainterruzione = datainterruzione;
         this.datariattivazione = datariattivazione;
-        this.descrizione = descrizione;
+        this.motivazione = motivazione;
+        this.indettada = indettada;
+        this.annullatada = annullatada;
     }
 
     /**
@@ -62,10 +70,24 @@ public class Interruzioni implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.interruzioni.Descrizione</code>.
+     * Getter for <code>utenze.interruzioni.Motivazione</code>.
      */
-    public String getDescrizione() {
-        return this.descrizione;
+    public String getMotivazione() {
+        return this.motivazione;
+    }
+
+    /**
+     * Getter for <code>utenze.interruzioni.IndettaDa</code>.
+     */
+    public Integer getIndettada() {
+        return this.indettada;
+    }
+
+    /**
+     * Getter for <code>utenze.interruzioni.AnnullataDa</code>.
+     */
+    public Integer getAnnullatada() {
+        return this.annullatada;
     }
 
     @Override
@@ -75,7 +97,9 @@ public class Interruzioni implements Serializable {
         sb.append(idcontratto);
         sb.append(", ").append(datainterruzione);
         sb.append(", ").append(datariattivazione);
-        sb.append(", ").append(descrizione);
+        sb.append(", ").append(motivazione);
+        sb.append(", ").append(indettada);
+        sb.append(", ").append(annullatada);
 
         sb.append(")");
         return sb.toString();

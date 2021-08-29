@@ -45,14 +45,14 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="interruptionTable" layoutX="802.0" layoutY="172.0" prefHeight="179.0" prefWidth="414.0">
+      <TableView fx:id="interruptionTable" layoutX="782.0" layoutY="137.0" prefHeight="259.0" prefWidth="432.0">
         <columns>
           <TableColumn fx:id="interruptionDate" prefWidth="102.0" text="Interrotto il" />
           <TableColumn fx:id="reactivationDate" minWidth="0.0" prefWidth="102.0" text="Riattivato il" />
-            <TableColumn fx:id="interruptionDescription" prefWidth="236.0" text="Note" />
+            <TableColumn fx:id="interruptionDescription" prefWidth="227.0" text="Note" />
         </columns>
       </TableView>
-      <Label fx:id="interruptionLabel" layoutX="802.0" layoutY="122.0" text="Storico delle interruzioni">
+      <Label fx:id="interruptionLabel" layoutX="782.0" layoutY="91.0" text="Storico delle interruzioni">
          <font>
             <Font size="18.0" />
          </font>
@@ -67,7 +67,7 @@
             <Font name="System Bold" size="22.0" />
          </font>
       </Label>
-      <Button fx:id="endSubscription" layoutX="563.0" layoutY="646.0" mnemonicParsing="false" onAction="#doEndSubscription" text="Cessa il contratto" textFill="#d00000">
+      <Button fx:id="endSubscription" layoutX="544.0" layoutY="647.0" mnemonicParsing="false" onAction="#doEndSubscription" text="Richiedi cessazione" textFill="#d00000">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
@@ -120,17 +120,6 @@
          </font>
       </Label>
       <TextFlow fx:id="clientDetails" layoutX="54.0" layoutY="122.0" prefHeight="69.0" prefWidth="244.0" />
-      <Label fx:id="distributorLabel" layoutX="802.0" layoutY="395.0" text="Distributori di riferimento">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <TableView fx:id="distributorTable" layoutX="802.0" layoutY="443.0" prefHeight="165.0" prefWidth="414.0">
-        <columns>
-          <TableColumn fx:id="distributorNameCol" prefWidth="150.0" text="Nome" />
-            <TableColumn fx:id="distributorPhoneCol" prefWidth="116.0" text="Telefono contatto" />
-            <TableColumn fx:id="distributorEmailCol" prefWidth="147.0" text="E-mail contatto" />
-        </columns>
-      </TableView>
+      <Label layoutX="782.0" layoutY="428.0" text="Label" />
    </children>
 </AnchorPane>
