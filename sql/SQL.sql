@@ -28,7 +28,6 @@ create table bollette (
      Importo decimal(20, 2) not null,
      DettaglioBolletta mediumblob not null,
      Stimata boolean not null,
-     EmessaDa integer not null,
      check (DataScadenza > DataEmissione),
      check (DataPagamento is null or DataPagamento >= DataEmissione),
 	 constraint PK_BOLLETTA primary key (IdContratto, DataEmissione));
@@ -53,13 +52,11 @@ create table contatori (
     constraint AK2_CONTATORI unique (IdImmobile, MateriaPrima));
 
 create table contratti (
-     IdContratto integer not null auto_increment,
-     NumeroRichiesta integer not null,
+     IdContratto integer not null,
      DataInizio date not null,
      DataCessazione date default null,
      DataUltimaBolletta date default null,
-     constraint PK_CONTRATTO primary key (IdContratto),
-     constraint AK_CONTRATTO unique (NumeroRichiesta));
+     constraint PK_CONTRATTO primary key (IdContratto));
 
 create table immobili (
      IdImmobile integer not null auto_increment,
@@ -79,8 +76,6 @@ create table interruzioni (
 	 DataInterruzione date not null,
      DataRiattivazione date default null,
      Motivazione varchar(1000) not null,
-     IndettaDa integer not null,
-     AnnullataDa integer default null,
      check (DataRiattivazione is null or DataRiattivazione >= DataInterruzione),
      constraint PK_INTERRUZIONI primary key (DataInterruzione, IdContratto)
 );
@@ -90,7 +85,6 @@ create table letture (
     Contatore integer not null,
     DataEffettuazione date not null,
     Confermata boolean not null default false,
-    Operatore integer default null,
     Cliente integer not null,
     constraint PK_LETTURE primary key (Contatore, DataEffettuazione));
 
@@ -132,9 +126,8 @@ create table richieste_attivazione (
      Numero integer not null auto_increment,
      DataRichiesta date not null,
      NumeroComponenti integer not null,
-     Esito char default null check (Esito is null or Esito in ("A", "R")),
+     Stato char not null default "N" check (Stato in ("N", "E", "A", "R")),
      Note varchar(200) not null default "",
-     Operatore integer default null,
      Contatore integer not null,
      Cliente integer not null,
      Offerta integer not null,
@@ -145,11 +138,9 @@ create table richieste_attivazione (
 create table richieste_cessazione (
      Numero integer not null auto_increment,
      DataRichiesta date not null,
-     Esito char default null check (Esito is null or Esito in ("A", "R")),
+     Stato char not null default "N" check (Stato in ("N", "E", "A", "R")),
      Note varchar(200) not null default "",
-     Operatore integer default null,
      IdContratto integer not null,
-     Cliente integer not null,
      constraint PK_RIC_CESSAZIONE primary key (Numero));
      
 create table redditi (
@@ -240,10 +231,10 @@ values ("Gas", "19287488822211", 2);
 
 -- Populate "letture"
 insert into letture
-values (18.0, 1, date_sub(curdate(), interval 2 month), true, 3, 1);
+values (18.0, 1, date_sub(curdate(), interval 2 month), true, 1);
 
 insert into letture
-values (35.0, 1, curdate(), true, 3, 1);
+values (35.0, 1, curdate(), true, 1);
 
 
 -- Populate "persone", "clienti" and "operatori"
@@ -288,45 +279,42 @@ values (last_insert_id(), 2);
 
 
 -- richieste_attivazione
-insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Esito, Operatore)
-values (date_sub(curdate(), interval 123 day), 1, 2, 1, 1, 4, 1, "A", 3);
+insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Stato)
+values (date_sub(curdate(), interval 123 day), 1, 2, 1, 1, 4, 1, "A");
 
-insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Esito, Operatore)
-values (date_sub(curdate(), interval 123 day), 2, 1, 1, 1, 4, 1, "A", 3);
+insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Stato)
+values (date_sub(curdate(), interval 123 day), 2, 1, 1, 1, 4, 1, "A");
 
-insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Esito, Operatore)
-values (date_sub(curdate(), interval 2 day), 3, 2, 1, 1, 1, 2, null, null);
+insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente)
+values (date_sub(curdate(), interval 2 day), 3, 2, 1, 1, 1, 2);
 
 
 -- contratti
-insert into contratti(NumeroRichiesta, DataInizio, DataUltimaBolletta)
+insert into contratti(IdContratto, DataInizio, DataUltimaBolletta)
 values (1, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 2 month));
 
-insert into contratti(NumeroRichiesta, DataInizio, DataUltimaBolletta)
+insert into contratti(IdContratto, DataInizio, DataUltimaBolletta)
 values (2, date_sub(curdate(), interval 123 day), date_sub(curdate(), interval 2 month));
 
 
 -- Populate "bollette"
 insert into bollette
-values (1, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 124.64, unhex("54657374"), false, 3);
+values (1, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 124.64, unhex("54657374"), false);
 
 insert into bollette
-values (2, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 133.0, unhex("54657374"), true, 3);
+values (2, date_sub(curdate(), interval 4 month), date_sub(curdate(), interval 3 month), date_sub(curdate(), interval 3 month), 133.0, unhex("54657374"), true);
 
 insert into bollette
-values (1, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 19.97, unhex("54657374"), false, 3);
+values (1, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 19.97, unhex("54657374"), false);
 
 insert into bollette
-values (2, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 48.0, unhex("54657374"), true, 3);
+values (2, date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 1 month), date_sub(curdate(), interval 1 month), 48.0, unhex("54657374"), true);
 
 -- Foreign keys
 -- ___________________ 
 
 alter table bollette add constraint FK_CONTRATTO
      foreign key (IdContratto) references contratti (IdContratto);
-     
-alter table bollette add constraint FK_EMISSIONE
-	 foreign key (EmessaDa) references operatori (CodiceOperatore);
      
 alter table clienti add constraint FK_CODICECLIENTE
 	 foreign key (CodiceCliente) references persone (Identificativo);
@@ -347,22 +335,10 @@ alter table contatori add constraint FK_INSTALLAZIONE
      foreign key (IdImmobile) references immobili (IdImmobile);
      
 alter table contratti add constraint FK_DEFINIZIONE
-	 foreign key (NumeroRichiesta) references richieste_attivazione (Numero);
-     
-alter table interruzioni add constraint FK_SUBITA
-	 foreign key (IdContratto) references contratti (IdContratto);
-     
-alter table interruzioni add constraint FK_INDETTA
-	 foreign key (IndettaDa) references operatori (CodiceOperatore);
-     
-alter table interruzioni add constraint FK_ANNULLAMENTO
-	 foreign key (AnnullataDa) references operatori (CodiceOperatore);
+	 foreign key (IdContratto) references richieste_attivazione (Numero);
 
 alter table letture add constraint FK_CORRISPONDENZA
      foreign key (Contatore) references contatori (NumeroProgressivo);
-	
-alter table letture add constraint FK_CONFERMA
-	 foreign key (Operatore) references operatori (CodiceOperatore);
      
 alter table letture add constraint FK_EFFETTUAZIONE
      foreign key (Cliente) references clienti (CodiceCliente);
@@ -387,15 +363,6 @@ alter table richieste_attivazione add constraint FK_ATTIVAZIONE_TRAMITE
 
 alter table richieste_attivazione add constraint FK_COLLEGAMENTO
      foreign key (Contatore) references contatori (NumeroProgressivo);
-
-alter table richieste_attivazione add constraint FK_ATTIVAZIONE
-	 foreign key (Operatore) references operatori (CodiceOperatore);
-     
-alter table richieste_cessazione add constraint FK_RICHIESTA_CESS
-	 foreign key (Cliente) references clienti (CodiceCliente);
-     
-alter table richieste_cessazione add constraint FK_RICHIESTA_ESITO
-	 foreign key (Operatore) references operatori (CodiceOperatore);
      
 alter table richieste_cessazione add constraint FK_TERMINAZIONE
 	 foreign key (IdContratto) references contratti (IdContratto);
@@ -409,7 +376,7 @@ create view contratti_dettagliati as select C.IdContratto, C.DataInizio, C.DataC
                                             R.Attivazione, R.Uso, R.Contatore,
                                             R.NumeroComponenti
 									   from contratti C, richieste_attivazione R
-									  where C.NumeroRichiesta = R.Numero;
+									  where C.IdContratto = R.Numero;
                                       
 create view clienti_dettagliati as select P.*, C.FasciaReddito
 									 from persone P, clienti C

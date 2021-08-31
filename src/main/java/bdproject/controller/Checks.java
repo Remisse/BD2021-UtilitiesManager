@@ -23,7 +23,6 @@ public class Checks {
     }
 
     public static boolean isSubscriptionActive(final ContrattiDettagliati sub, final Connection conn) {
-        final boolean isInterrupted = Queries.hasOngoingInterruption(sub, conn);
-        return sub.getDatainizio() != null && sub.getDatacessazione() == null && !isInterrupted;
+        return sub.getDatacessazione() == null && !Queries.hasOngoingInterruption(sub, conn);
     }
 }

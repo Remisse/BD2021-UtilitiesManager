@@ -18,7 +18,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -86,11 +86,6 @@ public class Bollette extends TableImpl<BolletteRecord> {
      */
     public final TableField<BolletteRecord, Byte> STIMATA = createField(DSL.name("Stimata"), SQLDataType.TINYINT.nullable(false), this, "");
 
-    /**
-     * The column <code>utenze.bollette.EmessaDa</code>.
-     */
-    public final TableField<BolletteRecord, Integer> EMESSADA = createField(DSL.name("EmessaDa"), SQLDataType.INTEGER.nullable(false), this, "");
-
     private Bollette(Name alias, Table<BolletteRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -136,24 +131,16 @@ public class Bollette extends TableImpl<BolletteRecord> {
 
     @Override
     public List<ForeignKey<BolletteRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_CONTRATTO, Keys.FK_EMISSIONE);
+        return Arrays.asList(Keys.FK_CONTRATTO);
     }
 
     private transient Contratti _contratti;
-    private transient Operatori _operatori;
 
     public Contratti contratti() {
         if (_contratti == null)
             _contratti = new Contratti(this, Keys.FK_CONTRATTO);
 
         return _contratti;
-    }
-
-    public Operatori operatori() {
-        if (_operatori == null)
-            _operatori = new Operatori(this, Keys.FK_EMISSIONE);
-
-        return _operatori;
     }
 
     @Override
@@ -191,11 +178,11 @@ public class Bollette extends TableImpl<BolletteRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, LocalDate, LocalDate, LocalDate, BigDecimal, byte[], Byte, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row7<Integer, LocalDate, LocalDate, LocalDate, BigDecimal, byte[], Byte> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

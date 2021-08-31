@@ -22,7 +22,7 @@ public class AdminChooseAreaController extends AbstractViewController {
 
     @FXML
     private void goToRequestsArea() {
-
+        switchTo(RequestManagementController.create(getStage(), getDataSource()));
     }
 
     @FXML

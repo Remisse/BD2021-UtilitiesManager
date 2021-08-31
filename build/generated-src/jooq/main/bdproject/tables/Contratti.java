@@ -14,10 +14,9 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,12 +51,7 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     /**
      * The column <code>utenze.contratti.IdContratto</code>.
      */
-    public final TableField<ContrattiRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>utenze.contratti.NumeroRichiesta</code>.
-     */
-    public final TableField<ContrattiRecord, Integer> NUMERORICHIESTA = createField(DSL.name("NumeroRichiesta"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<ContrattiRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>utenze.contratti.DataInizio</code>.
@@ -113,18 +107,8 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     }
 
     @Override
-    public Identity<ContrattiRecord, Integer> getIdentity() {
-        return (Identity<ContrattiRecord, Integer>) super.getIdentity();
-    }
-
-    @Override
     public UniqueKey<ContrattiRecord> getPrimaryKey() {
         return Keys.KEY_CONTRATTI_PRIMARY;
-    }
-
-    @Override
-    public List<UniqueKey<ContrattiRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_CONTRATTI_AK_CONTRATTO);
     }
 
     @Override
@@ -168,11 +152,11 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, Integer, LocalDate, LocalDate, LocalDate> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row4<Integer, LocalDate, LocalDate, LocalDate> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

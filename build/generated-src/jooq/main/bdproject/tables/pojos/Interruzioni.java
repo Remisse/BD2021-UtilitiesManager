@@ -20,32 +20,24 @@ public class Interruzioni implements Serializable {
     private final LocalDate datainterruzione;
     private final LocalDate datariattivazione;
     private final String    motivazione;
-    private final Integer   indettada;
-    private final Integer   annullatada;
 
     public Interruzioni(Interruzioni value) {
         this.idcontratto = value.idcontratto;
         this.datainterruzione = value.datainterruzione;
         this.datariattivazione = value.datariattivazione;
         this.motivazione = value.motivazione;
-        this.indettada = value.indettada;
-        this.annullatada = value.annullatada;
     }
 
     public Interruzioni(
         Integer   idcontratto,
         LocalDate datainterruzione,
         LocalDate datariattivazione,
-        String    motivazione,
-        Integer   indettada,
-        Integer   annullatada
+        String    motivazione
     ) {
         this.idcontratto = idcontratto;
         this.datainterruzione = datainterruzione;
         this.datariattivazione = datariattivazione;
         this.motivazione = motivazione;
-        this.indettada = indettada;
-        this.annullatada = annullatada;
     }
 
     /**
@@ -76,20 +68,6 @@ public class Interruzioni implements Serializable {
         return this.motivazione;
     }
 
-    /**
-     * Getter for <code>utenze.interruzioni.IndettaDa</code>.
-     */
-    public Integer getIndettada() {
-        return this.indettada;
-    }
-
-    /**
-     * Getter for <code>utenze.interruzioni.AnnullataDa</code>.
-     */
-    public Integer getAnnullatada() {
-        return this.annullatada;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Interruzioni (");
@@ -98,8 +76,6 @@ public class Interruzioni implements Serializable {
         sb.append(", ").append(datainterruzione);
         sb.append(", ").append(datariattivazione);
         sb.append(", ").append(motivazione);
-        sb.append(", ").append(indettada);
-        sb.append(", ").append(annullatada);
 
         sb.append(")");
         return sb.toString();

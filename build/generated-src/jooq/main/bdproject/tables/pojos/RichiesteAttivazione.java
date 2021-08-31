@@ -19,9 +19,8 @@ public class RichiesteAttivazione implements Serializable {
     private final Integer   numero;
     private final LocalDate datarichiesta;
     private final Integer   numerocomponenti;
-    private final String    esito;
+    private final String    stato;
     private final String    note;
-    private final Integer   operatore;
     private final Integer   contatore;
     private final Integer   cliente;
     private final Integer   offerta;
@@ -32,9 +31,8 @@ public class RichiesteAttivazione implements Serializable {
         this.numero = value.numero;
         this.datarichiesta = value.datarichiesta;
         this.numerocomponenti = value.numerocomponenti;
-        this.esito = value.esito;
+        this.stato = value.stato;
         this.note = value.note;
-        this.operatore = value.operatore;
         this.contatore = value.contatore;
         this.cliente = value.cliente;
         this.offerta = value.offerta;
@@ -46,9 +44,8 @@ public class RichiesteAttivazione implements Serializable {
         Integer   numero,
         LocalDate datarichiesta,
         Integer   numerocomponenti,
-        String    esito,
+        String    stato,
         String    note,
-        Integer   operatore,
         Integer   contatore,
         Integer   cliente,
         Integer   offerta,
@@ -58,9 +55,8 @@ public class RichiesteAttivazione implements Serializable {
         this.numero = numero;
         this.datarichiesta = datarichiesta;
         this.numerocomponenti = numerocomponenti;
-        this.esito = esito;
+        this.stato = stato;
         this.note = note;
-        this.operatore = operatore;
         this.contatore = contatore;
         this.cliente = cliente;
         this.offerta = offerta;
@@ -90,10 +86,10 @@ public class RichiesteAttivazione implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.richieste_attivazione.Esito</code>.
+     * Getter for <code>utenze.richieste_attivazione.Stato</code>.
      */
-    public String getEsito() {
-        return this.esito;
+    public String getStato() {
+        return this.stato;
     }
 
     /**
@@ -101,13 +97,6 @@ public class RichiesteAttivazione implements Serializable {
      */
     public String getNote() {
         return this.note;
-    }
-
-    /**
-     * Getter for <code>utenze.richieste_attivazione.Operatore</code>.
-     */
-    public Integer getOperatore() {
-        return this.operatore;
     }
 
     /**
@@ -152,9 +141,8 @@ public class RichiesteAttivazione implements Serializable {
         sb.append(numero);
         sb.append(", ").append(datarichiesta);
         sb.append(", ").append(numerocomponenti);
-        sb.append(", ").append(esito);
+        sb.append(", ").append(stato);
         sb.append(", ").append(note);
-        sb.append(", ").append(operatore);
         sb.append(", ").append(contatore);
         sb.append(", ").append(cliente);
         sb.append(", ").append(offerta);

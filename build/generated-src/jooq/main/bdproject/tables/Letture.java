@@ -18,7 +18,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -72,11 +72,6 @@ public class Letture extends TableImpl<LettureRecord> {
     public final TableField<LettureRecord, Byte> CONFERMATA = createField(DSL.name("Confermata"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>utenze.letture.Operatore</code>.
-     */
-    public final TableField<LettureRecord, Integer> OPERATORE = createField(DSL.name("Operatore"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>utenze.letture.Cliente</code>.
      */
     public final TableField<LettureRecord, Integer> CLIENTE = createField(DSL.name("Cliente"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -126,11 +121,10 @@ public class Letture extends TableImpl<LettureRecord> {
 
     @Override
     public List<ForeignKey<LettureRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_CORRISPONDENZA, Keys.FK_CONFERMA, Keys.FK_EFFETTUAZIONE);
+        return Arrays.asList(Keys.FK_CORRISPONDENZA, Keys.FK_EFFETTUAZIONE);
     }
 
     private transient Contatori _contatori;
-    private transient Operatori _operatori;
     private transient Clienti _clienti;
 
     public Contatori contatori() {
@@ -138,13 +132,6 @@ public class Letture extends TableImpl<LettureRecord> {
             _contatori = new Contatori(this, Keys.FK_CORRISPONDENZA);
 
         return _contatori;
-    }
-
-    public Operatori operatori() {
-        if (_operatori == null)
-            _operatori = new Operatori(this, Keys.FK_CONFERMA);
-
-        return _operatori;
     }
 
     public Clienti clienti() {
@@ -188,11 +175,11 @@ public class Letture extends TableImpl<LettureRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<BigDecimal, Integer, LocalDate, Byte, Integer, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row5<BigDecimal, Integer, LocalDate, Byte, Integer> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

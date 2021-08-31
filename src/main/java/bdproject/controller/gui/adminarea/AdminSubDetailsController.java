@@ -12,7 +12,8 @@ import javax.sql.DataSource;
 public class AdminSubDetailsController extends AbstractSubscriptionDetailsController {
 
     @FXML private Button back;
-    @FXML private Button endSubscription;
+    @FXML private Button insertEndRequestButton;
+    @FXML private Button deleteRequestButton;
 
     protected AdminSubDetailsController(Stage stage, DataSource dataSource, ContrattiDettagliati subscription) {
         super(stage, dataSource, subscription);
@@ -26,9 +27,21 @@ public class AdminSubDetailsController extends AbstractSubscriptionDetailsContro
     @Override
     protected void setOther() {
         back.setVisible(false);
-        endSubscription.setVisible(false);
+        insertEndRequestButton.setVisible(false);
+        deleteRequestButton.setVisible(false);
     }
 
+    /**
+     * Unimplemented
+     */
+    @Override
+    protected void abstractDoDeleteEndRequest() {
+
+    }
+
+    /**
+     * Unimplemented
+     */
     @Override
     protected void abstractDoInsertEndRequest() {
     }

@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -70,16 +70,6 @@ public class Interruzioni extends TableImpl<InterruzioniRecord> {
      */
     public final TableField<InterruzioniRecord, String> MOTIVAZIONE = createField(DSL.name("Motivazione"), SQLDataType.VARCHAR(1000).nullable(false), this, "");
 
-    /**
-     * The column <code>utenze.interruzioni.IndettaDa</code>.
-     */
-    public final TableField<InterruzioniRecord, Integer> INDETTADA = createField(DSL.name("IndettaDa"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.interruzioni.AnnullataDa</code>.
-     */
-    public final TableField<InterruzioniRecord, Integer> ANNULLATADA = createField(DSL.name("AnnullataDa"), SQLDataType.INTEGER, this, "");
-
     private Interruzioni(Name alias, Table<InterruzioniRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -124,36 +114,6 @@ public class Interruzioni extends TableImpl<InterruzioniRecord> {
     }
 
     @Override
-    public List<ForeignKey<InterruzioniRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_SUBITA, Keys.FK_INDETTA, Keys.FK_ANNULLAMENTO);
-    }
-
-    private transient Contratti _contratti;
-    private transient Operatori _fkIndetta;
-    private transient Operatori _fkAnnullamento;
-
-    public Contratti contratti() {
-        if (_contratti == null)
-            _contratti = new Contratti(this, Keys.FK_SUBITA);
-
-        return _contratti;
-    }
-
-    public Operatori fkIndetta() {
-        if (_fkIndetta == null)
-            _fkIndetta = new Operatori(this, Keys.FK_INDETTA);
-
-        return _fkIndetta;
-    }
-
-    public Operatori fkAnnullamento() {
-        if (_fkAnnullamento == null)
-            _fkAnnullamento = new Operatori(this, Keys.FK_ANNULLAMENTO);
-
-        return _fkAnnullamento;
-    }
-
-    @Override
     public List<Check<InterruzioniRecord>> getChecks() {
         return Arrays.asList(
             Internal.createCheck(this, DSL.name("interruzioni_chk_1"), "((`DataRiattivazione` is null) or (`DataRiattivazione` >= `DataInterruzione`))", true)
@@ -187,11 +147,11 @@ public class Interruzioni extends TableImpl<InterruzioniRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, LocalDate, LocalDate, String, Integer, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row4<Integer, LocalDate, LocalDate, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

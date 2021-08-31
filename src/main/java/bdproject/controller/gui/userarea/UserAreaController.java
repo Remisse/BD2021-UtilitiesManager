@@ -201,7 +201,7 @@ public class UserAreaController extends AbstractViewController implements Initia
 
     private void initializeActivationRequestTable() {
         reqCreationDateCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDatarichiesta().toString()));
-        reqResultCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEsito()));
+        reqResultCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStato()));
         reqUtilityCol.setCellValueFactory(c -> {
             final String utility = Queries.fetchPlanById(c.getValue().getOfferta(), getDataSource()).orElseThrow().getMateriaprima();
             return new SimpleStringProperty(utility);
@@ -223,7 +223,12 @@ public class UserAreaController extends AbstractViewController implements Initia
 
     @FXML
     private void doShowActivationReqDetails() {
-
+        final RichiesteAttivazione request = activationReqTable.getSelectionModel().getSelectedItem();
+        if (request != null) {
+            createSubWindow(UserActivationRequestDetailsController.create(null, getDataSource(), request));
+        } else {
+            FXUtils.showBlockingWarning("Seleziona una richiesta.");
+        }
     }
 
     @FXML
@@ -231,7 +236,7 @@ public class UserAreaController extends AbstractViewController implements Initia
         final RichiesteAttivazione selectedReq = activationReqTable.getSelectionModel().getSelectedItem();
         if (selectedReq != null) {
             try (Connection conn = getDataSource().getConnection()) {
-                if (selectedReq.getOperatore() == null) {
+                if (selectedReq.getStato().equals("N") || selectedReq.getStato().equals("E")) {
                     final int result = Queries.deleteActivationRequest(selectedReq.getNumero(), conn);
                     if (result == 1) {
                         FXUtils.showBlockingWarning("Richiesta eliminata.");
@@ -262,8 +267,7 @@ public class UserAreaController extends AbstractViewController implements Initia
                                 subChoice.getValue().getContatore(),
                                 LocalDate.now(),
                                 (byte) 0,
-                                null,
-                                SessionHolder.getSession().orElseThrow().getUserId()
+                                null
                         );
                         Queries.insertMeasurement(measurement, conn);
                         showLastMeasurement();

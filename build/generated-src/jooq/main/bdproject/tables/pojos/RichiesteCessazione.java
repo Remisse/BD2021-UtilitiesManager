@@ -18,38 +18,30 @@ public class RichiesteCessazione implements Serializable {
 
     private final Integer   numero;
     private final LocalDate datarichiesta;
-    private final String    esito;
+    private final String    stato;
     private final String    note;
-    private final Integer   operatore;
     private final Integer   idcontratto;
-    private final Integer   cliente;
 
     public RichiesteCessazione(RichiesteCessazione value) {
         this.numero = value.numero;
         this.datarichiesta = value.datarichiesta;
-        this.esito = value.esito;
+        this.stato = value.stato;
         this.note = value.note;
-        this.operatore = value.operatore;
         this.idcontratto = value.idcontratto;
-        this.cliente = value.cliente;
     }
 
     public RichiesteCessazione(
         Integer   numero,
         LocalDate datarichiesta,
-        String    esito,
+        String    stato,
         String    note,
-        Integer   operatore,
-        Integer   idcontratto,
-        Integer   cliente
+        Integer   idcontratto
     ) {
         this.numero = numero;
         this.datarichiesta = datarichiesta;
-        this.esito = esito;
+        this.stato = stato;
         this.note = note;
-        this.operatore = operatore;
         this.idcontratto = idcontratto;
-        this.cliente = cliente;
     }
 
     /**
@@ -67,10 +59,10 @@ public class RichiesteCessazione implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.richieste_cessazione.Esito</code>.
+     * Getter for <code>utenze.richieste_cessazione.Stato</code>.
      */
-    public String getEsito() {
-        return this.esito;
+    public String getStato() {
+        return this.stato;
     }
 
     /**
@@ -81,24 +73,10 @@ public class RichiesteCessazione implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.richieste_cessazione.Operatore</code>.
-     */
-    public Integer getOperatore() {
-        return this.operatore;
-    }
-
-    /**
      * Getter for <code>utenze.richieste_cessazione.IdContratto</code>.
      */
     public Integer getIdcontratto() {
         return this.idcontratto;
-    }
-
-    /**
-     * Getter for <code>utenze.richieste_cessazione.Cliente</code>.
-     */
-    public Integer getCliente() {
-        return this.cliente;
     }
 
     @Override
@@ -107,11 +85,9 @@ public class RichiesteCessazione implements Serializable {
 
         sb.append(numero);
         sb.append(", ").append(datarichiesta);
-        sb.append(", ").append(esito);
+        sb.append(", ").append(stato);
         sb.append(", ").append(note);
-        sb.append(", ").append(operatore);
         sb.append(", ").append(idcontratto);
-        sb.append(", ").append(cliente);
 
         sb.append(")");
         return sb.toString();

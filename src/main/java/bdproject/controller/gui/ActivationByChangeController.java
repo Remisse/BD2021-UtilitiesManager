@@ -79,7 +79,6 @@ public class ActivationByChangeController extends AbstractViewController impleme
                                     m.getNumeroprogressivo(),
                                     LocalDate.now(),
                                     (byte) 0,
-                                    null,
                                     c.getIdentificativo()
                             );
                             process.setMeasurement(measurement);

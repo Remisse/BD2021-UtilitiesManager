@@ -50,13 +50,13 @@
             <TableColumn fx:id="measConfirmedCol" prefWidth="147.0" text="Confermata" />
          </columns>
       </TableView>
-      <Label layoutX="1049.0" layoutY="482.0" text="Nuova bolletta">
+      <Label layoutX="833.0" layoutY="482.0" text="Nuova bolletta">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="finalCostField" layoutX="1055.0" layoutY="581.0" prefHeight="30.0" prefWidth="165.0" promptText="Importo..." />
-      <Button fx:id="publishReport" layoutX="1089.0" layoutY="782.0" mnemonicParsing="false" onAction="#doPublishReport" prefHeight="31.0" prefWidth="85.0" text="Emetti">
+      <TextField fx:id="finalCostField" layoutX="834.0" layoutY="589.0" prefHeight="30.0" prefWidth="165.0" promptText="Importo..." />
+      <Button fx:id="publishReport" layoutX="986.0" layoutY="645.0" mnemonicParsing="false" onAction="#doPublishReport" prefHeight="31.0" prefWidth="85.0" text="Emetti">
          <font>
             <Font size="15.0" />
          </font>
@@ -72,14 +72,13 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="reportsTable" layoutX="233.0" layoutY="521.0" prefHeight="247.0" prefWidth="634.0">
+      <TableView fx:id="reportsTable" layoutX="233.0" layoutY="521.0" prefHeight="247.0" prefWidth="502.0">
          <columns>
             <TableColumn fx:id="repPublishDateCol" prefWidth="104.0" text="Emessa" />
             <TableColumn fx:id="repDeadlineCol" prefWidth="98.0" text="Scadenza" />
             <TableColumn fx:id="repPaidDateCol" prefWidth="102.0" text="Pagata" />
             <TableColumn fx:id="repCostCol" prefWidth="119.0" text="Importo" />
             <TableColumn fx:id="repEstimatedCol" prefWidth="77.0" text="Stimata" />
-            <TableColumn fx:id="repOperatorCol" prefWidth="133.0" text="Emessa da" />
          </columns>
       </TableView>
       <Button fx:id="subInfo" layoutX="233.0" layoutY="409.0" mnemonicParsing="false" onAction="#showSubDetails" prefHeight="31.0" prefWidth="94.0" text="Dettagli">
@@ -108,17 +107,17 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="1055.0" layoutY="645.0" mnemonicParsing="false" onAction="#loadReportFile" prefHeight="31.0" prefWidth="165.0" text="Carica file di dettaglio">
+      <Button layoutX="1060.0" layoutY="532.0" mnemonicParsing="false" onAction="#loadReportFile" prefHeight="31.0" prefWidth="165.0" text="Carica file di dettaglio">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="1056.0" layoutY="700.0" text="Stato:">
+      <Label layoutX="1055.0" layoutY="591.0" text="Stato:">
          <font>
             <Font size="17.0" />
          </font>
       </Label>
-      <Label fx:id="reportFileStatus" layoutX="1137.0" layoutY="700.0" text="non caricato">
+      <Label fx:id="reportFileStatus" layoutX="1136.0" layoutY="591.0" text="non caricato">
          <font>
             <Font size="17.0" />
          </font>
@@ -128,7 +127,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <CheckBox fx:id="estimatedCheckbox" layoutX="1054.0" layoutY="542.0" mnemonicParsing="false" text="Stimata">
+      <CheckBox fx:id="estimatedCheckbox" layoutX="833.0" layoutY="535.0" mnemonicParsing="false" text="Stimata">
          <font>
             <Font size="16.0" />
          </font>

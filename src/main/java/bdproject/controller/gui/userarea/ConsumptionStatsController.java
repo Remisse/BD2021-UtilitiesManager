@@ -79,7 +79,7 @@ public class ConsumptionStatsController extends AbstractViewController implement
 
     private void updateAverages(final Connection conn) {
         if (startDate.getValue() != null && endDate.getValue() != null) {
-            final Immobili premises = Queries.fetchPremisesFromSubscription(subscription, getDataSource());
+            final Immobili premises = Queries.fetchPremisesFromMeter(subscription.getContatore(), getDataSource());
             final String utility = Queries.fetchUtilityFromSubscription(subscription, conn).getNome();
             peopleAvg.setText(Queries.avgConsumptionPerZone(
                     premises,

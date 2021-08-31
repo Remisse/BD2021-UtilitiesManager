@@ -39,7 +39,7 @@ public class AdminSubManagementController extends AbstractViewController impleme
     private List<ContrattiDettagliati> subsList = Collections.emptyList();
     private List<TipologieUso> useTypes;
     private final Map<String, BiPredicate<ContrattiDettagliati, Connection>> statuses = Map.of(
-            "Attivo", (s, c) -> true,
+            "Attivo", (s, c) -> s.getDatacessazione() == null,
             "Interrotto", (s, c) -> s.getDatacessazione() == null && Queries.hasOngoingInterruption(s, c),
             "Cessato", (s, c) -> s.getDatacessazione() != null
     );
@@ -74,7 +74,6 @@ public class AdminSubManagementController extends AbstractViewController impleme
     @FXML private TableColumn<Bollette, String> repPaidDateCol;
     @FXML private TableColumn<Bollette, String> repCostCol;
     @FXML private TableColumn<Bollette, String> repEstimatedCol;
-    @FXML private TableColumn<Bollette, Integer> repOperatorCol;
 
     @FXML private CheckBox estimatedCheckbox;
     @FXML private TextField finalCostField;
@@ -113,12 +112,6 @@ public class AdminSubManagementController extends AbstractViewController impleme
     }
 
     private void initSubsTable() {
-        subsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldS, newS) -> {
-            if (newS != null && oldS != newS) {
-                doRefreshMeasurements();
-                doRefreshReports();
-            }
-        });
         clientIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCliente()).asObject());
         subIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getIdcontratto()).asObject());
         planIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getOfferta()).asObject());
@@ -131,8 +124,14 @@ public class AdminSubManagementController extends AbstractViewController impleme
         });
 
         zoneCol.setCellValueFactory(c -> {
-            final Immobili premises = Queries.fetchPremisesFromSubscription(c.getValue(), getDataSource());
+            final Immobili premises = Queries.fetchPremisesFromMeter(c.getValue().getContatore(), getDataSource());
             return new SimpleStringProperty(premises.getComune() + " (" + premises.getProvincia() + ")");
+        });
+        subsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldS, newS) -> {
+            if (newS != null && oldS != newS) {
+                doRefreshMeasurements();
+                doRefreshReports();
+            }
         });
     }
 
@@ -145,7 +144,6 @@ public class AdminSubManagementController extends AbstractViewController impleme
             Map<ContrattiDettagliati, Bollette> subs = Queries.fetchAllSubscriptionsWithLastReport(conn);
             subsList = subs.entrySet()
                     .stream()
-                    .filter(p -> p.getKey().getDatainizio() != null)
                     .filter(p -> statuses.get(statusChoice).test(p.getKey(), conn))
                     .filter(p -> clientId == NO_CLIENT || p.getKey().getCliente().equals(clientId))
                     .filter(p -> !lastReportFilter.isSelected()
@@ -168,11 +166,14 @@ public class AdminSubManagementController extends AbstractViewController impleme
     @FXML
     private void doInterrupt() {
         final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
+
         if (sub != null) {
             if (!interruptionDescription.getText().equals("")) {
                 try (Connection conn = getDataSource().getConnection()) {
                     final int result = Queries.interruptSubscription(
-                            sub.getIdcontratto(), interruptionDescription.getText(), conn);
+                            sub.getIdcontratto(),
+                            interruptionDescription.getText(),
+                            conn);
                     if (result != 0) {
                         FXUtils.showBlockingWarning("Contratto interrotto.");
                         interruptionDescription.setText("");
@@ -271,7 +272,6 @@ public class AdminSubManagementController extends AbstractViewController impleme
         repCostCol.setCellValueFactory(c -> new SimpleStringProperty("€ " + c.getValue().getImporto()));
         repEstimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
                 StringUtils.byteToYesNo(c.getValue().getStimata())));
-        repOperatorCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getEmessada()).asObject());
 
     }
 
@@ -336,7 +336,6 @@ public class AdminSubManagementController extends AbstractViewController impleme
                         BigDecimal.valueOf(Long.parseLong(finalCostField.getText())),
                         reportFile,
                         (byte) (estimatedCheckbox.isSelected() ? 1 : 0),
-                        SessionHolder.getSession().orElseThrow().getUserId(),
                         conn);
                 if (result != 0) {
                     FXUtils.showBlockingWarning("Bolletta emessa.");

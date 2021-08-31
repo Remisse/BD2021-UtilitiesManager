@@ -20,46 +20,32 @@ import java.util.ResourceBundle;
 
 public class SignupController extends AbstractViewController implements Initializable {
 
-    private static final String fxml = "signup.fxml";
+    private static final String FXML_FILE = "signup.fxml";
 
     private static final int ID_CODE_LIMIT = 16;
     private static final int POSTCODE_LIMIT = 5;
     private static final int PASSWORD_MAX = 30;
     private static final int PASSWORD_MIN = 8;
     private static final int PROVINCE_LIMIT = 2;
-    @FXML
-    private TextField name;
-    @FXML
-    private TextField surname;
-    @FXML
-    private TextField idCode;
-    @FXML
-    private TextField vatCode;
-    @FXML
-    private DatePicker birthdate;
-    @FXML
-    private TextField street;
-    @FXML
-    private TextField streetNo;
-    @FXML
-    private TextField municipality;
-    @FXML
-    private TextField postcode;
-    @FXML
-    private TextField province;
-    @FXML
-    private ComboBox<String> income;
-    @FXML
-    private TextField phone;
-    @FXML
-    private TextField email;
-    @FXML
-    private PasswordField password;
-    @FXML
-    private PasswordField confirmPw;
+
+    @FXML private TextField name;
+    @FXML private TextField surname;
+    @FXML private TextField idCode;
+    @FXML private TextField vatCode;
+    @FXML private DatePicker birthdate;
+    @FXML private TextField street;
+    @FXML private TextField streetNo;
+    @FXML private TextField municipality;
+    @FXML private TextField postcode;
+    @FXML private TextField province;
+    @FXML private ComboBox<String> income;
+    @FXML private TextField phone;
+    @FXML private TextField email;
+    @FXML private PasswordField password;
+    @FXML private PasswordField confirmPw;
 
     private SignupController(Stage stage, DataSource dataSource) {
-        super(stage, dataSource, fxml);
+        super(stage, dataSource, FXML_FILE);
     }
 
     public static ViewController create(final Stage stage, final DataSource dataSource) {
@@ -100,7 +86,7 @@ public class SignupController extends AbstractViewController implements Initiali
                 } else {
                     FXUtils.showError("Creazione dell'account non riuscita.");
                 }
-            } catch (SQLException | NullPointerException e) {
+            } catch (Exception e) {
                 FXUtils.showError(e.getMessage());
             }
         }

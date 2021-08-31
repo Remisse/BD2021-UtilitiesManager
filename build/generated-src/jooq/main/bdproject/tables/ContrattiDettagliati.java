@@ -47,7 +47,7 @@ public class ContrattiDettagliati extends TableImpl<ContrattiDettagliatiRecord> 
     /**
      * The column <code>utenze.contratti_dettagliati.IdContratto</code>.
      */
-    public final TableField<ContrattiDettagliatiRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<ContrattiDettagliatiRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>utenze.contratti_dettagliati.DataInizio</code>.
@@ -99,7 +99,7 @@ public class ContrattiDettagliati extends TableImpl<ContrattiDettagliatiRecord> 
     }
 
     private ContrattiDettagliati(Name alias, Table<ContrattiDettagliatiRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `contratti_dettagliati` as select `c`.`IdContratto` AS `IdContratto`,`c`.`DataInizio` AS `DataInizio`,`c`.`DataCessazione` AS `DataCessazione`,`r`.`DataRichiesta` AS `DataRichiesta`,`r`.`Cliente` AS `Cliente`,`r`.`Offerta` AS `Offerta`,`r`.`Attivazione` AS `Attivazione`,`r`.`Uso` AS `Uso`,`r`.`Contatore` AS `Contatore`,`r`.`NumeroComponenti` AS `NumeroComponenti` from `utenze`.`contratti` `c` join `utenze`.`richieste_attivazione` `r` where (`c`.`NumeroRichiesta` = `r`.`Numero`)"));
+        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `contratti_dettagliati` as select `c`.`IdContratto` AS `IdContratto`,`c`.`DataInizio` AS `DataInizio`,`c`.`DataCessazione` AS `DataCessazione`,`r`.`DataRichiesta` AS `DataRichiesta`,`r`.`Cliente` AS `Cliente`,`r`.`Offerta` AS `Offerta`,`r`.`Attivazione` AS `Attivazione`,`r`.`Uso` AS `Uso`,`r`.`Contatore` AS `Contatore`,`r`.`NumeroComponenti` AS `NumeroComponenti` from `utenze`.`contratti` `c` join `utenze`.`richieste_attivazione` `r` where (`c`.`IdContratto` = `r`.`Numero`)"));
     }
 
     /**

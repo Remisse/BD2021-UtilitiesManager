@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -67,19 +67,14 @@ public class RichiesteAttivazione extends TableImpl<RichiesteAttivazioneRecord> 
     public final TableField<RichiesteAttivazioneRecord, Integer> NUMEROCOMPONENTI = createField(DSL.name("NumeroComponenti"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>utenze.richieste_attivazione.Esito</code>.
+     * The column <code>utenze.richieste_attivazione.Stato</code>.
      */
-    public final TableField<RichiesteAttivazioneRecord, String> ESITO = createField(DSL.name("Esito"), SQLDataType.CHAR(1), this, "");
+    public final TableField<RichiesteAttivazioneRecord, String> STATO = createField(DSL.name("Stato"), SQLDataType.CHAR(1).nullable(false).defaultValue(DSL.inline("N", SQLDataType.CHAR)), this, "");
 
     /**
      * The column <code>utenze.richieste_attivazione.Note</code>.
      */
     public final TableField<RichiesteAttivazioneRecord, String> NOTE = createField(DSL.name("Note"), SQLDataType.VARCHAR(200).nullable(false).defaultValue(DSL.inline("", SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>utenze.richieste_attivazione.Operatore</code>.
-     */
-    public final TableField<RichiesteAttivazioneRecord, Integer> OPERATORE = createField(DSL.name("Operatore"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>utenze.richieste_attivazione.Contatore</code>.
@@ -158,22 +153,14 @@ public class RichiesteAttivazione extends TableImpl<RichiesteAttivazioneRecord> 
 
     @Override
     public List<ForeignKey<RichiesteAttivazioneRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_ATTIVAZIONE, Keys.FK_COLLEGAMENTO, Keys.FK_RICHIESTA, Keys.FK_SOTTOSCRIZIONE, Keys.FK_USO, Keys.FK_ATTIVAZIONE_TRAMITE);
+        return Arrays.asList(Keys.FK_COLLEGAMENTO, Keys.FK_RICHIESTA, Keys.FK_SOTTOSCRIZIONE, Keys.FK_USO, Keys.FK_ATTIVAZIONE_TRAMITE);
     }
 
-    private transient Operatori _operatori;
     private transient Contatori _contatori;
     private transient Clienti _clienti;
     private transient Offerte _offerte;
     private transient TipologieUso _tipologieUso;
     private transient TipiAttivazione _tipiAttivazione;
-
-    public Operatori operatori() {
-        if (_operatori == null)
-            _operatori = new Operatori(this, Keys.FK_ATTIVAZIONE);
-
-        return _operatori;
-    }
 
     public Contatori contatori() {
         if (_contatori == null)
@@ -213,7 +200,7 @@ public class RichiesteAttivazione extends TableImpl<RichiesteAttivazioneRecord> 
     @Override
     public List<Check<RichiesteAttivazioneRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("richieste_attivazione_chk_1"), "((`Esito` is null) or (`Esito` in (_utf8mb4\\'A\\',_utf8mb4\\'R\\')))", true)
+            Internal.createCheck(this, DSL.name("richieste_attivazione_chk_1"), "(`Stato` in (_utf8mb4\\'N\\',_utf8mb4\\'E\\',_utf8mb4\\'A\\',_utf8mb4\\'R\\'))", true)
         );
     }
 
@@ -244,11 +231,11 @@ public class RichiesteAttivazione extends TableImpl<RichiesteAttivazioneRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Integer, LocalDate, Integer, String, String, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row10<Integer, LocalDate, Integer, String, String, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

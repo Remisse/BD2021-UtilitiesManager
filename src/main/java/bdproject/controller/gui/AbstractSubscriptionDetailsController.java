@@ -21,16 +21,17 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public abstract class AbstractSubscriptionDetailsController extends AbstractViewController implements Initializable {
 
     private static final String FXML_FILE = "subDetails.fxml";
+    private static final String FLOW_CSS = "-fx-font: 16 arial";
+
     private final ContrattiDettagliati detailedSub;
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
-    private final Map<String, String> mUnit = LocaleUtils.getItUtilitiesUnits();
 
     @FXML private Button back;
     @FXML private TextFlow clientDetails;
@@ -50,6 +51,11 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
     @FXML private TableColumn<Interruzioni, String> reactivationDate;
     @FXML private TableColumn<Interruzioni, String> interruptionDescription;
 
+    @FXML private TableView<RichiesteCessazione> endRequestTable;
+    @FXML private TableColumn<RichiesteCessazione, String> reqPublishDateCol;
+    @FXML private TableColumn<RichiesteCessazione, String> reqResultCol;
+    @FXML private TableColumn<RichiesteCessazione, String> reqNotesCol;
+
     protected AbstractSubscriptionDetailsController(final Stage stage, final DataSource dataSource,
             final ContrattiDettagliati detailedSub) {
         super(stage, dataSource, FXML_FILE);
@@ -68,11 +74,13 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
             activation.setText(Queries.fetchActivationFromSub(detailedSub.getIdcontratto(), conn).getNome());
 
             setClientDetails(conn);
-            setPlanDetails(conn);
+            setPlanDetails();
             setPeopleNo();
-            setStatus(startDate, endDate, conn);
-            setPremisesDetails(conn);
+            setStatus(endDate, conn);
+            setPremisesDetails();
             setInterruptionTable(conn);
+            setEndRequestTable();
+            refreshEndRequestTable();
             setOther();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,9 +106,11 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
         interruptionDescription.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getMotivazione()));
     }
 
-    private void setPremisesDetails(Connection conn) {
-        final Immobili premises = Queries.fetchPremisesFromSubscription(detailedSub, getDataSource());
-        premisesDetails.getChildren().add(new Text(StringUtils.premisesToString(premises)));
+    private void setPremisesDetails() {
+        final Immobili premises = Queries.fetchPremisesFromMeter(detailedSub.getContatore(), getDataSource());
+        final Text premisesText = new Text(StringUtils.premisesToString(premises));
+        premisesText.setStyle(FLOW_CSS);
+        premisesDetails.getChildren().add(premisesText);
     }
 
     private void setPeopleNo() {
@@ -120,20 +130,33 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
         }
     }
 
-    private void setPlanDetails(Connection conn) {
-        Offerte plan = Queries.fetchPlanById(detailedSub.getOfferta(), getDataSource()).orElseThrow();
-        planDetails.getChildren().add(new Text(
-                        plan.getNome() +
-                        "\nMateria prima: " + plan.getMateriaprima() +
-                        "\nCosto materia prima: " + plan.getCostomateriaprima() + mUnit.get(plan.getMateriaprima())));
+    private void setPlanDetails() {
+        final Offerte plan = Queries.fetchPlanById(detailedSub.getOfferta(), getDataSource()).orElseThrow();
+        final Text planText = new Text(StringUtils.planToString(plan));
+        planText.setStyle(FLOW_CSS);
+        planDetails.getChildren().add(planText);
     }
 
-    protected void setStatus(LocalDate startDate, LocalDate endDate, final Connection conn) {
-        final boolean isInterrupted = Queries.hasOngoingInterruption(detailedSub, conn);
-        subState.setText(Checks.isSubscriptionActive(detailedSub, conn) ? "Attivo"
-                         : startDate != null && endDate == null && isInterrupted ? "Interrotto"
-                         : startDate != null ? "Cessato"
-                         : "In attesa di attivazione");
+    protected void setStatus(LocalDate endDate, final Connection conn) {
+        subState.setText(endDate != null ? "Cessato"
+                         : Checks.isSubscriptionActive(detailedSub, conn) ? "Attivo"
+                         : "Interrotto");
+    }
+
+    private void setEndRequestTable() {
+        reqPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatarichiesta())));
+        reqResultCol.setCellValueFactory(c -> new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
+        reqNotesCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNote()));
+    }
+
+    protected void refreshEndRequestTable() {
+        List<RichiesteCessazione> requests = Collections.emptyList();
+        try (Connection conn = getDataSource().getConnection()) {
+            requests = Queries.fetchEndRequestsFor(detailedSub.getIdcontratto(), conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        endRequestTable.setItems(FXCollections.observableList(requests));
     }
 
     @FXML
@@ -142,9 +165,16 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
     }
 
     @FXML
-    private void doEndSubscription() {
+    private void doInsertEndRequest() {
         abstractDoInsertEndRequest();
     }
+
+    @FXML
+    private void doDeleteEndRequest() {
+        abstractDoDeleteEndRequest();
+    }
+
+    protected abstract void abstractDoDeleteEndRequest();
 
     protected abstract void abstractDoInsertEndRequest();
 

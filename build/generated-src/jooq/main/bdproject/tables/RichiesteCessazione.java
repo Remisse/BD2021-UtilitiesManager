@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -62,9 +62,9 @@ public class RichiesteCessazione extends TableImpl<RichiesteCessazioneRecord> {
     public final TableField<RichiesteCessazioneRecord, LocalDate> DATARICHIESTA = createField(DSL.name("DataRichiesta"), SQLDataType.LOCALDATE.nullable(false), this, "");
 
     /**
-     * The column <code>utenze.richieste_cessazione.Esito</code>.
+     * The column <code>utenze.richieste_cessazione.Stato</code>.
      */
-    public final TableField<RichiesteCessazioneRecord, String> ESITO = createField(DSL.name("Esito"), SQLDataType.CHAR(1), this, "");
+    public final TableField<RichiesteCessazioneRecord, String> STATO = createField(DSL.name("Stato"), SQLDataType.CHAR(1).nullable(false).defaultValue(DSL.inline("N", SQLDataType.CHAR)), this, "");
 
     /**
      * The column <code>utenze.richieste_cessazione.Note</code>.
@@ -72,19 +72,9 @@ public class RichiesteCessazione extends TableImpl<RichiesteCessazioneRecord> {
     public final TableField<RichiesteCessazioneRecord, String> NOTE = createField(DSL.name("Note"), SQLDataType.VARCHAR(200).nullable(false).defaultValue(DSL.inline("", SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>utenze.richieste_cessazione.Operatore</code>.
-     */
-    public final TableField<RichiesteCessazioneRecord, Integer> OPERATORE = createField(DSL.name("Operatore"), SQLDataType.INTEGER, this, "");
-
-    /**
      * The column <code>utenze.richieste_cessazione.IdContratto</code>.
      */
     public final TableField<RichiesteCessazioneRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.richieste_cessazione.Cliente</code>.
-     */
-    public final TableField<RichiesteCessazioneRecord, Integer> CLIENTE = createField(DSL.name("Cliente"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private RichiesteCessazione(Name alias, Table<RichiesteCessazioneRecord> aliased) {
         this(alias, aliased, null);
@@ -138,19 +128,10 @@ public class RichiesteCessazione extends TableImpl<RichiesteCessazioneRecord> {
 
     @Override
     public List<ForeignKey<RichiesteCessazioneRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_RICHIESTA_ESITO, Keys.FK_TERMINAZIONE, Keys.FK_RICHIESTA_CESS);
+        return Arrays.asList(Keys.FK_TERMINAZIONE);
     }
 
-    private transient Operatori _operatori;
     private transient Contratti _contratti;
-    private transient Clienti _clienti;
-
-    public Operatori operatori() {
-        if (_operatori == null)
-            _operatori = new Operatori(this, Keys.FK_RICHIESTA_ESITO);
-
-        return _operatori;
-    }
 
     public Contratti contratti() {
         if (_contratti == null)
@@ -159,17 +140,10 @@ public class RichiesteCessazione extends TableImpl<RichiesteCessazioneRecord> {
         return _contratti;
     }
 
-    public Clienti clienti() {
-        if (_clienti == null)
-            _clienti = new Clienti(this, Keys.FK_RICHIESTA_CESS);
-
-        return _clienti;
-    }
-
     @Override
     public List<Check<RichiesteCessazioneRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("richieste_cessazione_chk_1"), "((`Esito` is null) or (`Esito` in (_utf8mb4\\'A\\',_utf8mb4\\'R\\')))", true)
+            Internal.createCheck(this, DSL.name("richieste_cessazione_chk_1"), "(`Stato` in (_utf8mb4\\'N\\',_utf8mb4\\'E\\',_utf8mb4\\'A\\',_utf8mb4\\'R\\'))", true)
         );
     }
 
@@ -200,11 +174,11 @@ public class RichiesteCessazione extends TableImpl<RichiesteCessazioneRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, LocalDate, String, String, Integer, Integer, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row5<Integer, LocalDate, String, String, Integer> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

@@ -3,6 +3,7 @@ package bdproject.view;
 import bdproject.model.Queries;
 import bdproject.tables.pojos.ClientiDettagliati;
 import bdproject.tables.pojos.Immobili;
+import bdproject.tables.pojos.Offerte;
 import bdproject.utils.LocaleUtils;
 
 import java.sql.Connection;
@@ -19,7 +20,7 @@ public class StringUtils {
     public static String clientToString(final int personId, final Connection conn) {
         final Optional<ClientiDettagliati> client = Queries.fetchClientById(personId, conn);
 
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         client.ifPresent(c -> builder.append(c.getNome())
                 .append(" ")
                 .append(c.getCognome())
@@ -38,8 +39,7 @@ public class StringUtils {
     }
 
     public static String premisesToString(final Immobili premises) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(premises.getTipo().equals("F") ? "Fabbricato"
+        return new StringBuilder().append(premises.getTipo().equals("F") ? "Fabbricato"
                        : premises.getTipo().equals("T") ? "Terreno"
                        : "Non definito")
                 .append("\n\n")
@@ -52,8 +52,36 @@ public class StringUtils {
                 .append("\n")
                 .append(premises.getCap())
                 .append("\n")
-                .append(premises.getProvincia());
-        return builder.toString();
+                .append(premises.getProvincia())
+                .toString();
+    }
+
+    public static String requestStatusToString(final String result) {
+        String outVal = "UNDEFINED";
+        switch (result) {
+            case "N":
+                outVal = "Non esaminata";
+                break;
+            case "E":
+                outVal = "Presa in carico";
+                break;
+            case "A":
+                outVal = "Approvata";
+                break;
+            case "R":
+                outVal = "Respinta";
+        }
+        return outVal;
+    }
+
+    public static String planToString(final Offerte plan) {
+        return new StringBuilder().append(plan.getNome())
+                .append("\nMateria prima: ")
+                .append(plan.getMateriaprima())
+                .append("\nCosto materia prima: ")
+                .append(plan.getCostomateriaprima())
+                .append(LocaleUtils.getItUtilitiesUnits().get(plan.getMateriaprima()))
+                .toString();
     }
 
     public static String byteToYesNo(final byte value) {

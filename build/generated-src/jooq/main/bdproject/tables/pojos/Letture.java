@@ -21,7 +21,6 @@ public class Letture implements Serializable {
     private final Integer    contatore;
     private final LocalDate  dataeffettuazione;
     private final Byte       confermata;
-    private final Integer    operatore;
     private final Integer    cliente;
 
     public Letture(Letture value) {
@@ -29,7 +28,6 @@ public class Letture implements Serializable {
         this.contatore = value.contatore;
         this.dataeffettuazione = value.dataeffettuazione;
         this.confermata = value.confermata;
-        this.operatore = value.operatore;
         this.cliente = value.cliente;
     }
 
@@ -38,14 +36,12 @@ public class Letture implements Serializable {
         Integer    contatore,
         LocalDate  dataeffettuazione,
         Byte       confermata,
-        Integer    operatore,
         Integer    cliente
     ) {
         this.consumi = consumi;
         this.contatore = contatore;
         this.dataeffettuazione = dataeffettuazione;
         this.confermata = confermata;
-        this.operatore = operatore;
         this.cliente = cliente;
     }
 
@@ -78,13 +74,6 @@ public class Letture implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.letture.Operatore</code>.
-     */
-    public Integer getOperatore() {
-        return this.operatore;
-    }
-
-    /**
      * Getter for <code>utenze.letture.Cliente</code>.
      */
     public Integer getCliente() {
@@ -99,7 +88,6 @@ public class Letture implements Serializable {
         sb.append(", ").append(contatore);
         sb.append(", ").append(dataeffettuazione);
         sb.append(", ").append(confermata);
-        sb.append(", ").append(operatore);
         sb.append(", ").append(cliente);
 
         sb.append(")");

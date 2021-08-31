@@ -24,7 +24,6 @@ public class Bollette implements Serializable {
     private final BigDecimal importo;
     private final byte[]     dettagliobolletta;
     private final Byte       stimata;
-    private final Integer    emessada;
 
     public Bollette(Bollette value) {
         this.idcontratto = value.idcontratto;
@@ -34,7 +33,6 @@ public class Bollette implements Serializable {
         this.importo = value.importo;
         this.dettagliobolletta = value.dettagliobolletta;
         this.stimata = value.stimata;
-        this.emessada = value.emessada;
     }
 
     public Bollette(
@@ -44,8 +42,7 @@ public class Bollette implements Serializable {
         LocalDate  datapagamento,
         BigDecimal importo,
         byte[]     dettagliobolletta,
-        Byte       stimata,
-        Integer    emessada
+        Byte       stimata
     ) {
         this.idcontratto = idcontratto;
         this.dataemissione = dataemissione;
@@ -54,7 +51,6 @@ public class Bollette implements Serializable {
         this.importo = importo;
         this.dettagliobolletta = dettagliobolletta;
         this.stimata = stimata;
-        this.emessada = emessada;
     }
 
     /**
@@ -106,13 +102,6 @@ public class Bollette implements Serializable {
         return this.stimata;
     }
 
-    /**
-     * Getter for <code>utenze.bollette.EmessaDa</code>.
-     */
-    public Integer getEmessada() {
-        return this.emessada;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Bollette (");
@@ -124,7 +113,6 @@ public class Bollette implements Serializable {
         sb.append(", ").append(importo);
         sb.append(", ").append("[binary...]");
         sb.append(", ").append(stimata);
-        sb.append(", ").append(emessada);
 
         sb.append(")");
         return sb.toString();

@@ -15,7 +15,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="53.0" layoutY="230.0" text="Offerta:">
+      <Label layoutX="53.0" layoutY="245.0" text="Offerta:">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -25,7 +25,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="peopleNoName" layoutX="54.0" layoutY="352.0" text="NumeroPersone:">
+      <Label fx:id="peopleNoName" layoutX="55.0" layoutY="352.0" text="NumeroPersone:">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -35,7 +35,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Label layoutX="53.0" layoutY="466.0" text="Data di cessazione della fornitura:">
+      <Label layoutX="55.0" layoutY="466.0" text="Data di cessazione della fornitura:">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -45,7 +45,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="interruptionTable" layoutX="782.0" layoutY="137.0" prefHeight="259.0" prefWidth="432.0">
+      <TableView fx:id="interruptionTable" layoutX="782.0" layoutY="137.0" prefHeight="240.0" prefWidth="432.0">
         <columns>
           <TableColumn fx:id="interruptionDate" prefWidth="102.0" text="Interrotto il" />
           <TableColumn fx:id="reactivationDate" minWidth="0.0" prefWidth="102.0" text="Riattivato il" />
@@ -67,12 +67,12 @@
             <Font name="System Bold" size="22.0" />
          </font>
       </Label>
-      <Button fx:id="endSubscription" layoutX="544.0" layoutY="647.0" mnemonicParsing="false" onAction="#doEndSubscription" text="Richiedi cessazione" textFill="#d00000">
+      <Button fx:id="insertEndRequestButton" layoutX="782.0" layoutY="652.0" mnemonicParsing="false" onAction="#doInsertEndRequest" text="Richiedi cessazione" textFill="#d00000">
          <font>
-            <Font name="System Bold" size="16.0" />
+            <Font size="16.0" />
          </font>
       </Button>
-      <TextFlow fx:id="planDetails" layoutX="54.0" layoutY="258.0" prefHeight="69.0" prefWidth="244.0" />
+      <TextFlow fx:id="planDetails" layoutX="54.0" layoutY="272.0" prefHeight="69.0" prefWidth="244.0" />
       <Label layoutX="556.0" layoutY="230.0" text="Immobile:">
          <font>
             <Font name="System Bold" size="18.0" />
@@ -119,7 +119,23 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <TextFlow fx:id="clientDetails" layoutX="54.0" layoutY="122.0" prefHeight="69.0" prefWidth="244.0" />
-      <Label layoutX="782.0" layoutY="428.0" text="Label" />
+      <TextFlow fx:id="clientDetails" layoutX="54.0" layoutY="122.0" prefHeight="103.0" prefWidth="244.0" />
+      <Label layoutX="782.0" layoutY="398.0" text="Storico delle richieste di cessazione">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TableView fx:id="endRequestTable" layoutX="782.0" layoutY="449.0" prefHeight="188.0" prefWidth="432.0">
+        <columns>
+          <TableColumn fx:id="reqPublishDateCol" prefWidth="112.0" text="Data apertura" />
+          <TableColumn fx:id="reqResultCol" prefWidth="89.0" text="Esito" />
+            <TableColumn fx:id="reqNotesCol" prefWidth="230.0" text="Note" />
+        </columns>
+      </TableView>
+      <Button fx:id="deleteRequestButton" layoutX="956.0" layoutY="652.0" mnemonicParsing="false" onAction="#doDeleteEndRequest" text="Annulla richiesta">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

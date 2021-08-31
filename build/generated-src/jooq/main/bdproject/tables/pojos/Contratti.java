@@ -17,14 +17,12 @@ public class Contratti implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Integer   idcontratto;
-    private final Integer   numerorichiesta;
     private final LocalDate datainizio;
     private final LocalDate datacessazione;
     private final LocalDate dataultimabolletta;
 
     public Contratti(Contratti value) {
         this.idcontratto = value.idcontratto;
-        this.numerorichiesta = value.numerorichiesta;
         this.datainizio = value.datainizio;
         this.datacessazione = value.datacessazione;
         this.dataultimabolletta = value.dataultimabolletta;
@@ -32,13 +30,11 @@ public class Contratti implements Serializable {
 
     public Contratti(
         Integer   idcontratto,
-        Integer   numerorichiesta,
         LocalDate datainizio,
         LocalDate datacessazione,
         LocalDate dataultimabolletta
     ) {
         this.idcontratto = idcontratto;
-        this.numerorichiesta = numerorichiesta;
         this.datainizio = datainizio;
         this.datacessazione = datacessazione;
         this.dataultimabolletta = dataultimabolletta;
@@ -49,13 +45,6 @@ public class Contratti implements Serializable {
      */
     public Integer getIdcontratto() {
         return this.idcontratto;
-    }
-
-    /**
-     * Getter for <code>utenze.contratti.NumeroRichiesta</code>.
-     */
-    public Integer getNumerorichiesta() {
-        return this.numerorichiesta;
     }
 
     /**
@@ -84,7 +73,6 @@ public class Contratti implements Serializable {
         StringBuilder sb = new StringBuilder("Contratti (");
 
         sb.append(idcontratto);
-        sb.append(", ").append(numerorichiesta);
         sb.append(", ").append(datainizio);
         sb.append(", ").append(datacessazione);
         sb.append(", ").append(dataultimabolletta);
