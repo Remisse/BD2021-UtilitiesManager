@@ -7,6 +7,7 @@ import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.model.SubscriptionProcessImpl;
 import bdproject.tables.pojos.Offerte;
+import bdproject.tables.pojos.TipiAttivazione;
 import bdproject.tables.pojos.TipologieUso;
 import bdproject.utils.FXUtils;
 import bdproject.utils.LocaleUtils;
@@ -42,6 +43,7 @@ public class CatalogueController extends AbstractViewController implements Initi
     @FXML private Button activate;
     @FXML private ComboBox<Choice<TipologieUso, String>> uses;
     @FXML private ComboBox<String> utilities;
+    @FXML private ComboBox<Choice<TipiAttivazione, String>> activationBox;
     @FXML private TableView<Offerte> table;
     @FXML private TableColumn<Offerte, String> nameColumn;
     @FXML private TableColumn<Offerte, String> descColumn;
@@ -96,21 +98,28 @@ public class CatalogueController extends AbstractViewController implements Initi
     }
 
     private void populateComboBoxes(Connection conn) {
-        DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
 
-        var utilityRecords = create.select(MATERIE_PRIME.NOME)
+        var utilityRecords = ctx.select(MATERIE_PRIME.NOME)
                 .from(MATERIE_PRIME)
                 .orderBy(MATERIE_PRIME.NOME.desc())
                 .fetch();
         utilities.setItems(FXCollections.observableList(utilityRecords.getValues(MATERIE_PRIME.NOME)));
         utilities.setValue(utilityRecords.getValue(0, MATERIE_PRIME.NOME));
 
-        List<Choice<TipologieUso, String>> useRecords = Queries.fetchAllUsages(conn)
+        List<Choice<TipologieUso, String>> useRecords = Queries.fetchAll(ctx, TIPOLOGIE_USO, TipologieUso.class)
                 .stream()
                 .map(t -> new ChoiceImpl<>(t, t.getNome(), (i, n) -> n))
                 .collect(Collectors.toList());
         uses.setItems(FXCollections.observableList(useRecords));
         uses.setValue(useRecords.get(0));
+
+        List<Choice<TipiAttivazione, String>> activationRecords = Queries.fetchAll(ctx, TIPI_ATTIVAZIONE, TipiAttivazione.class)
+                .stream()
+                .map(t -> new ChoiceImpl<>(t, t.getNome() , (i, n) -> n))
+                .collect(Collectors.toList());
+        activationBox.setItems(FXCollections.observableList(activationRecords));
+        activationBox.setValue(activationRecords.get(0));
     }
 
     @FXML
@@ -135,6 +144,7 @@ public class CatalogueController extends AbstractViewController implements Initi
             process.setClientId(SessionHolder.getSession().orElseThrow().getUserId());
             process.setPlan(table.getSelectionModel().getSelectedItem());
             process.setUse(uses.getValue().getItem());
+            process.setActivationMethod(activationBox.getValue().getItem());
             switchTo(ParametersSelectionController.create(getStage(), getDataSource(), process));
         }
     }

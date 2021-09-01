@@ -119,7 +119,7 @@ public class ClientiDettagliati extends TableImpl<ClientiDettagliatiRecord> {
     }
 
     private ClientiDettagliati(Name alias, Table<ClientiDettagliatiRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `clienti_dettagliati` as select `p`.`Identificativo` AS `Identificativo`,`p`.`CodiceFiscale` AS `CodiceFiscale`,`p`.`Nome` AS `Nome`,`p`.`Cognome` AS `Cognome`,`p`.`Via` AS `Via`,`p`.`NumCivico` AS `NumCivico`,`p`.`CAP` AS `CAP`,`p`.`Comune` AS `Comune`,`p`.`Provincia` AS `Provincia`,`p`.`DataNascita` AS `DataNascita`,`p`.`NumeroTelefono` AS `NumeroTelefono`,`p`.`Email` AS `Email`,`p`.`Password` AS `Password`,`c`.`FasciaReddito` AS `FasciaReddito` from `utenze`.`persone` `p` join `utenze`.`clienti` `c` where (`p`.`Identificativo` = `c`.`CodiceCliente`)"));
+        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `clienti_dettagliati` as select `P`.`Identificativo` AS `Identificativo`,`P`.`CodiceFiscale` AS `CodiceFiscale`,`P`.`Nome` AS `Nome`,`P`.`Cognome` AS `Cognome`,`P`.`Via` AS `Via`,`P`.`NumCivico` AS `NumCivico`,`P`.`CAP` AS `CAP`,`P`.`Comune` AS `Comune`,`P`.`Provincia` AS `Provincia`,`P`.`DataNascita` AS `DataNascita`,`P`.`NumeroTelefono` AS `NumeroTelefono`,`P`.`Email` AS `Email`,`P`.`Password` AS `Password`,`C`.`FasciaReddito` AS `FasciaReddito` from `utenze`.`persone` `P` join `utenze`.`clienti` `C` where (`P`.`Identificativo` = `C`.`CodiceCliente`)"));
     }
 
     /**

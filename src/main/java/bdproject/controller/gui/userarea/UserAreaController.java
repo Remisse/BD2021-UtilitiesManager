@@ -130,7 +130,8 @@ public class UserAreaController extends AbstractViewController implements Initia
     private void populateSubscriptionBox() {
         List<Choice<Integer, ContrattiDettagliati>> subs;
         try (Connection conn = getDataSource().getConnection()) {
-            subs = Queries.fetchAllSubscriptions(conn)
+            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            subs = Queries.fetchAll(ctx, CONTRATTI_DETTAGLIATI, ContrattiDettagliati.class)
                     .stream()
                     .filter(s -> s.getCliente().equals(SessionHolder.getSession().orElseThrow().getUserId()))
                     .map(s -> new ChoiceImpl<>(s.getIdcontratto(), s, (id, sub) -> id.toString()))
@@ -160,8 +161,9 @@ public class UserAreaController extends AbstractViewController implements Initia
 
     private void initializeReportTable() {
         try (Connection conn = getDataSource().getConnection()) {
+            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
             final Persone person = Queries.fetchPersonById(SessionHolder.getSession().orElseThrow().getUserId(), conn).orElseThrow();
-            final List<ContrattiDettagliati> userSubs = Queries.fetchAllSubscriptions(conn)
+            final List<ContrattiDettagliati> userSubs = Queries.fetchAll(ctx, CONTRATTI_DETTAGLIATI, ContrattiDettagliati.class)
                     .stream()
                     .filter(s -> s.getCliente().equals(person.getIdentificativo()))
                     .collect(Collectors.toList());
@@ -211,7 +213,8 @@ public class UserAreaController extends AbstractViewController implements Initia
 
     private void refreshActivationRequestTable() {
         try (Connection conn = getDataSource().getConnection()) {
-            final List<RichiesteAttivazione> reqs = Queries.fetchAllActivationRequests(conn)
+            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final List<RichiesteAttivazione> reqs = Queries.fetchAll(ctx, RICHIESTE_ATTIVAZIONE, RichiesteAttivazione.class)
                     .stream()
                     .filter(r -> r.getCliente().equals(SessionHolder.getSession().orElseThrow().getUserId()))
                     .collect(Collectors.toList());

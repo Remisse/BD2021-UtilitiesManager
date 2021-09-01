@@ -79,7 +79,7 @@ public class RichiesteAttivazione extends TableImpl<RichiesteAttivazioneRecord> 
     /**
      * The column <code>utenze.richieste_attivazione.Contatore</code>.
      */
-    public final TableField<RichiesteAttivazioneRecord, Integer> CONTATORE = createField(DSL.name("Contatore"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<RichiesteAttivazioneRecord, String> CONTATORE = createField(DSL.name("Contatore"), SQLDataType.VARCHAR(20), this, "");
 
     /**
      * The column <code>utenze.richieste_attivazione.Cliente</code>.
@@ -235,7 +235,7 @@ public class RichiesteAttivazione extends TableImpl<RichiesteAttivazioneRecord> 
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, LocalDate, Integer, String, String, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+    public Row10<Integer, LocalDate, Integer, String, String, String, Integer, Integer, Integer, Integer> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 }

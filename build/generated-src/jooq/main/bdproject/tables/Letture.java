@@ -59,7 +59,7 @@ public class Letture extends TableImpl<LettureRecord> {
     /**
      * The column <code>utenze.letture.Contatore</code>.
      */
-    public final TableField<LettureRecord, Integer> CONTATORE = createField(DSL.name("Contatore"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LettureRecord, String> CONTATORE = createField(DSL.name("Contatore"), SQLDataType.VARCHAR(20).nullable(false), this, "");
 
     /**
      * The column <code>utenze.letture.DataEffettuazione</code>.
@@ -179,7 +179,7 @@ public class Letture extends TableImpl<LettureRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<BigDecimal, Integer, LocalDate, Byte, Integer> fieldsRow() {
+    public Row5<BigDecimal, String, LocalDate, Byte, Integer> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 }

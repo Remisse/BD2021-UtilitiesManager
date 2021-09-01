@@ -18,6 +18,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.net.URL;
@@ -88,8 +91,9 @@ public class RequestManagementController extends AbstractViewController implemen
 
     private void refreshTables() {
         try (Connection conn = getDataSource().getConnection()) {
-            final List<RichiesteAttivazione> activRequests = Queries.fetchAllActivationRequests(conn);
-            final List<RichiesteCessazione> endRequests = Queries.fetchAllEndRequests(conn);
+            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final List<RichiesteAttivazione> activRequests = Queries.fetchAll(ctx, RICHIESTE_ATTIVAZIONE, RichiesteAttivazione.class);
+            final List<RichiesteCessazione> endRequests = Queries.fetchAll(ctx, RICHIESTE_CESSAZIONE, RichiesteCessazione.class);
 
             activationRequestTable.setItems(FXCollections.observableList(activRequests));
             endRequestTable.setItems(FXCollections.observableList(endRequests));

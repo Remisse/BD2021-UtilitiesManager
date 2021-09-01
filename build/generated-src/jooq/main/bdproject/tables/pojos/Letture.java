@@ -18,7 +18,7 @@ public class Letture implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final BigDecimal consumi;
-    private final Integer    contatore;
+    private final String     contatore;
     private final LocalDate  dataeffettuazione;
     private final Byte       confermata;
     private final Integer    cliente;
@@ -33,7 +33,7 @@ public class Letture implements Serializable {
 
     public Letture(
         BigDecimal consumi,
-        Integer    contatore,
+        String     contatore,
         LocalDate  dataeffettuazione,
         Byte       confermata,
         Integer    cliente
@@ -55,7 +55,7 @@ public class Letture implements Serializable {
     /**
      * Getter for <code>utenze.letture.Contatore</code>.
      */
-    public Integer getContatore() {
+    public String getContatore() {
         return this.contatore;
     }
 

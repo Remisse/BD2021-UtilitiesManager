@@ -16,6 +16,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -28,6 +31,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
+
+import static bdproject.tables.TipologieUso.TIPOLOGIE_USO;
 
 public class AdminSubManagementController extends AbstractViewController implements Initializable {
 
@@ -90,7 +95,8 @@ public class AdminSubManagementController extends AbstractViewController impleme
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try (Connection conn = getDataSource().getConnection()) {
-            useTypes = Queries.fetchAllUsages(conn);
+            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            useTypes = Queries.fetchAll(ctx, TIPOLOGIE_USO, TipologieUso.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }

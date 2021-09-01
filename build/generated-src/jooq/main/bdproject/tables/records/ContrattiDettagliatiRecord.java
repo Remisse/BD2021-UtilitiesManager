@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
  * VIEW
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagliatiRecord> implements Record10<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, Integer, Integer> {
+public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagliatiRecord> implements Record10<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, String, Integer> {
 
     private static final long serialVersionUID = 1L;
 
@@ -145,7 +145,7 @@ public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagl
     /**
      * Setter for <code>utenze.contratti_dettagliati.Contatore</code>.
      */
-    public ContrattiDettagliatiRecord setContatore(Integer value) {
+    public ContrattiDettagliatiRecord setContatore(String value) {
         set(8, value);
         return this;
     }
@@ -153,8 +153,8 @@ public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagl
     /**
      * Getter for <code>utenze.contratti_dettagliati.Contatore</code>.
      */
-    public Integer getContatore() {
-        return (Integer) get(8);
+    public String getContatore() {
+        return (String) get(8);
     }
 
     /**
@@ -177,12 +177,12 @@ public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagl
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+    public Row10<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, String, Integer> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 
     @Override
-    public Row10<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, Integer, Integer> valuesRow() {
+    public Row10<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, String, Integer> valuesRow() {
         return (Row10) super.valuesRow();
     }
 
@@ -227,7 +227,7 @@ public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagl
     }
 
     @Override
-    public Field<Integer> field9() {
+    public Field<String> field9() {
         return ContrattiDettagliati.CONTRATTI_DETTAGLIATI.CONTATORE;
     }
 
@@ -277,7 +277,7 @@ public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagl
     }
 
     @Override
-    public Integer component9() {
+    public String component9() {
         return getContatore();
     }
 
@@ -327,7 +327,7 @@ public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagl
     }
 
     @Override
-    public Integer value9() {
+    public String value9() {
         return getContatore();
     }
 
@@ -385,7 +385,7 @@ public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagl
     }
 
     @Override
-    public ContrattiDettagliatiRecord value9(Integer value) {
+    public ContrattiDettagliatiRecord value9(String value) {
         setContatore(value);
         return this;
     }
@@ -397,7 +397,7 @@ public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagl
     }
 
     @Override
-    public ContrattiDettagliatiRecord values(Integer value1, LocalDate value2, LocalDate value3, LocalDate value4, Integer value5, Integer value6, Integer value7, Integer value8, Integer value9, Integer value10) {
+    public ContrattiDettagliatiRecord values(Integer value1, LocalDate value2, LocalDate value3, LocalDate value4, Integer value5, Integer value6, Integer value7, Integer value8, String value9, Integer value10) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -425,7 +425,7 @@ public class ContrattiDettagliatiRecord extends TableRecordImpl<ContrattiDettagl
     /**
      * Create a detached, initialised ContrattiDettagliatiRecord
      */
-    public ContrattiDettagliatiRecord(Integer idcontratto, LocalDate datainizio, LocalDate datacessazione, LocalDate datarichiesta, Integer cliente, Integer offerta, Integer attivazione, Integer uso, Integer contatore, Integer numerocomponenti) {
+    public ContrattiDettagliatiRecord(Integer idcontratto, LocalDate datainizio, LocalDate datacessazione, LocalDate datarichiesta, Integer cliente, Integer offerta, Integer attivazione, Integer uso, String contatore, Integer numerocomponenti) {
         super(ContrattiDettagliati.CONTRATTI_DETTAGLIATI);
 
         setIdcontratto(idcontratto);

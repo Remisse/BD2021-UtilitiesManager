@@ -46,7 +46,7 @@
 <VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
             <SplitPane dividerPositions="0.2762128325508607" focusTraversable="true" VBox.vgrow="ALWAYS">
                 <AnchorPane>
-         <Label layoutX="18.0" layoutY="188.0" text="Filtri">
+         <Label layoutX="18.0" layoutY="188.0" text="Parametri">
             <font>
                <Font name="System Bold" size="18.0" />
             </font>
@@ -56,13 +56,19 @@
                <Font size="16.0" />
             </font>
          </Label>
-         <Label layoutX="18.0" layoutY="289.0" text="Uso">
+         <Label layoutX="18.0" layoutY="292.0" text="Uso">
             <font>
                <Font size="16.0" />
             </font>
          </Label>
-         <ComboBox fx:id="utilities" layoutX="149.0" layoutY="232.0" onAction="#triggerPopulate" prefWidth="150.0" />
+         <ComboBox fx:id="utilities" layoutX="149.0" layoutY="229.0" onAction="#triggerPopulate" prefHeight="30.0" prefWidth="187.0" />
          <ComboBox fx:id="uses" layoutX="149.0" layoutY="287.0" onAction="#triggerPopulate" prefHeight="30.0" prefWidth="187.0" />
+         <ComboBox fx:id="activationBox" layoutX="149.0" layoutY="342.0" prefHeight="30.0" prefWidth="187.0" />
+         <Label layoutX="18.0" layoutY="347.0" text="Attivazione">
+            <font>
+               <Font size="16.0" />
+            </font>
+         </Label>
                 </AnchorPane>
                 <ScrollPane>
                     <AnchorPane id="Content" prefHeight="696.0" prefWidth="919.0">
@@ -85,7 +91,7 @@
                <Font size="16.0" />
             </font>
          </Button>
-         <Button fx:id="activate" layoutX="677.0" layoutY="23.0" mnemonicParsing="false" onAction="#startSubscriptionProcess" text="Attiva offerta">
+         <Button fx:id="activate" layoutX="677.0" layoutY="23.0" mnemonicParsing="false" onAction="#startSubscriptionProcess" text="Avanti">
             <font>
                <Font size="16.0" />
             </font>

@@ -1,7 +1,9 @@
 package bdproject.controller.gui;
 
+import bdproject.controller.Checks;
+import bdproject.model.Queries;
 import bdproject.model.SubscriptionProcess;
-import bdproject.tables.pojos.TipiAttivazione;
+import bdproject.tables.pojos.*;
 import bdproject.utils.FXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,9 +13,12 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static bdproject.tables.TipiAttivazione.TIPI_ATTIVAZIONE;
@@ -26,17 +31,19 @@ public class ParametersSelectionController extends AbstractViewController implem
     @FXML private Label planLabel;
     @FXML private Label utilityLabel;
     @FXML private Label useLabel;
-    @FXML private Label methodChosen;
     @FXML private Label methodLabel;
+    @FXML private Label peopleNoLabel;
+    @FXML private Label otherClientIdLabel;
+    @FXML private Label meterIdLabel;
+    @FXML private Label measurementLabel;
+
+    @FXML private TextField otherClientIdField;
+    @FXML private TextField meterIdField;
+    @FXML private TextField peopleNoField;
+    @FXML private TextField measurementField;
+
     @FXML private Button back;
     @FXML private Button next;
-    @FXML private RadioButton meterYes;
-    @FXML private RadioButton meterNo;
-    @FXML private Label changeLabel;
-    @FXML private RadioButton changeYes;
-    @FXML private RadioButton changeNo;
-    @FXML private Label peopleNoLabel;
-    @FXML private TextField peopleNoField;
 
     private ParametersSelectionController(final Stage stage, final DataSource dataSource,
             final SubscriptionProcess process) {
@@ -54,30 +61,44 @@ public class ParametersSelectionController extends AbstractViewController implem
         planLabel.setText(process.plan().orElseThrow().getNome());
         utilityLabel.setText(process.plan().orElseThrow().getMateriaprima());
         useLabel.setText(process.usage().orElseThrow().getNome());
+        methodLabel.setText(process.usage().orElseThrow().getNome());
 
-        if (process.usage().orElseThrow().getNome().equals("Commerciale")) {
-            peopleNoLabel.setText("Numero di dipendenti");
-        } else if (process.usage().orElseThrow().getNome().equals("Abitativo residenziale")) {
+        if (requiresPeopleNo()) {
             peopleNoLabel.setText("N. componenti del nucleo familiare");
+            peopleNoLabel.setVisible(true);
+            peopleNoField.setVisible(true);
         } else {
             peopleNoLabel.setVisible(false);
             peopleNoField.setVisible(false);
         }
         peopleNoField.setText(String.valueOf(process.peopleNo()));
 
-        updateElements();
-    }
-
-    private boolean isNewActivation() {
-        return meterNo.isSelected();
-    }
-
-    private boolean isSubentro() {
-        return meterYes.isSelected() && changeNo.isSelected();
-    }
-
-    private boolean isChange() {
-        return changeYes.isSelected() && meterYes.isSelected();
+        switch (process.activation().orElseThrow().getCodice()) {
+            case 1:
+                otherClientIdLabel.setVisible(false);
+                otherClientIdField.setVisible(false);
+                meterIdField.setVisible(false);
+                meterIdLabel.setVisible(false);
+                measurementField.setVisible(false);
+                measurementLabel.setVisible(false);
+                break;
+            case 2:
+                otherClientIdField.setVisible(false);
+                otherClientIdLabel.setVisible(false);
+                meterIdField.setVisible(true);
+                meterIdLabel.setVisible(true);
+                measurementField.setVisible(false);
+                measurementLabel.setVisible(false);
+                break;
+            case 3:
+                otherClientIdField.setVisible(true);
+                otherClientIdLabel.setVisible(true);
+                meterIdField.setVisible(true);
+                meterIdLabel.setVisible(true);
+                measurementField.setVisible(true);
+                measurementLabel.setVisible(true);
+                break;
+        }
     }
 
     private boolean requiresPeopleNo() {
@@ -85,49 +106,23 @@ public class ParametersSelectionController extends AbstractViewController implem
         return use.equals("Commerciale") || use.equals("Abitativo residenziale");
     }
 
-    private boolean allRelevantChoicesMade() {
-        return isNewActivation() || isSubentro() || isChange();
-    }
-
-    @FXML
-    private void updateElements() {
-        final boolean canChooseChange = meterYes.isSelected();
-        changeYes.setVisible(canChooseChange);
-        changeNo.setVisible(canChooseChange);
-        changeLabel.setVisible(canChooseChange);
-
-        methodLabel.setVisible(allRelevantChoicesMade());
-        methodChosen.setVisible(allRelevantChoicesMade());
-        methodChosen.setText(isNewActivation() ? "Nuova attivazione"
-                             : isSubentro() ? "Subentro"
-                             : isChange() ? "Voltura"
-                             : "Non ancora selezionato");
-
-        next.setDisable(!allRelevantChoicesMade());
-    }
-
-    private void updateProcess() {
-        process.setPeopleNo(requiresPeopleNo() ? Integer.parseInt(peopleNoField.getText()) : 1);
-
-        final String method = isNewActivation() ? "Nuova attivazione"
-                                                : isSubentro() ? "Subentro"
-                                                               : isChange() ? "Voltura"
-                                                                            : null;
-        if (method != null) {
-            try (Connection conn = getDataSource().getConnection()) {
-                var selectedActivation = DSL.using(conn, SQLDialect.MYSQL)
-                        .select()
-                        .from(TIPI_ATTIVAZIONE)
-                        .where(TIPI_ATTIVAZIONE.NOME.eq(method))
-                        .fetchOneInto(TipiAttivazione.class);
-                process.setActivationMethod(selectedActivation);
-            } catch (SQLException ex) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage());
-                alert.showAndWait();
-            }
-        } else {
-            process.setActivationMethod(null);
+    private boolean areFieldsValid() {
+        boolean outcome = false;
+        switch (process.activation().orElseThrow().getCodice()) {
+            case 1:
+                outcome = isValidNumber(peopleNoField.getText());
+                break;
+            case 2:
+                outcome = isValidNumber(peopleNoField.getText()) && meterIdField.getText().length() > 0;
+                break;
+            case 3:
+                outcome = isValidNumber(peopleNoField.getText()) &&
+                        meterIdField.getText().length() > 0 &&
+                        Checks.isNumber(otherClientIdField.getText()) &&
+                        Checks.isValidConsumption(measurementField.getText());
+                break;
         }
+        return outcome;
     }
 
     private boolean isValidNumber(String s) {
@@ -143,13 +138,73 @@ public class ParametersSelectionController extends AbstractViewController implem
 
     @FXML
     private void nextScreen() {
-        if (requiresPeopleNo() && !isValidNumber(peopleNoField.getText())) {
-            FXUtils.showError("Verifica che il numero di persone inserito sia corretto.");
+        if (areFieldsValid()) {
+            FXUtils.showError("Verifica di aver inserito correttamente i dati.");
         } else {
-            updateProcess();
-            if (isChange()) {
-                switchTo(ActivationByChangeController.create(getStage(), getDataSource(), process));
+            try (Connection conn = getDataSource().getConnection()) {
+                process.setPeopleNo(requiresPeopleNo() ? Integer.parseInt(peopleNoField.getText()) : 1);
+                switch (process.activation().orElseThrow().getCodice()) {
+                    case 1:
+                        switchTo(PremisesInsertionController.create(getStage(), getDataSource(), process));
+                        break;
+                    case 2:
+                        bySubentro(conn);
+                        break;
+                    case 3:
+                        byChange(conn);
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    private void bySubentro(final Connection conn) {
+        Optional<Contatori> meter = Queries.fetchMeterByIdAndUtility(
+                meterIdField.getText(), process.plan().orElseThrow().getMateriaprima(), conn);
+
+        meter.ifPresentOrElse(m -> {
+                process.setMeter(m);
+                switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
+            }, () -> FXUtils.showError("Nessun contatore trovato. Verifica che la matricola inserita sia corretta."));
+    }
+
+    private void byChange(final Connection conn) {
+        Optional<Contatori> meter = Queries.fetchMeterByIdAndUtility(
+                meterIdField.getText(), process.plan().orElseThrow().getMateriaprima(), conn);
+
+        meter.ifPresentOrElse(m -> {
+            Optional<ClientiDettagliati> client = Queries.fetchClientById(Integer.parseInt(otherClientIdField.getText()), conn);
+
+            client.ifPresentOrElse(c -> {
+                /* Find the subscription on which the new one will be based */
+                Optional<ContrattiDettagliati> subscription = Queries.fetchSubscriptionForChange(
+                        m.getMatricola(), c.getIdentificativo(), conn);
+
+                subscription.ifPresentOrElse(s -> {
+                    if (Checks.isValidConsumption(measurementField.getText())) {
+                        Letture measurement = new Letture(
+                                BigDecimal.valueOf(Long.parseLong(measurementField.getText())),
+                                m.getMatricola(),
+                                LocalDate.now(),
+                                (byte) 0,
+                                c.getIdentificativo()
+                        );
+                        process.setMeasurement(measurement);
+
+                        Immobili premises = Queries.fetchPremisesById(m.getIdimmobile(), conn).orElseThrow();
+                        process.setPremises(premises);
+                        process.setMeter(m);
+                        process.setOtherClient(c);
+                        process.setOtherSubscription(s);
+
+                        switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
+                    } else {
+                        FXUtils.showError("Verifica di aver inserito correttamente la lettura.");
+                    }
+                }, () -> FXUtils.showError("Nessun contratto trovato. Verifica che i dati inseriti siano corretti."));
+            }, () -> FXUtils.showError("Nessun cliente trovato. Verifica che il codice inserito sia corretto."));
+        }, () -> FXUtils.showError("Nessun contatore trovato. Verifica che la matricola inserita sia corretta."));
     }
 }

@@ -43,12 +43,10 @@ create table compatibilità (
      constraint PK_COMPATIBILITÀ primary key (CodiceOfferta, Uso));
      
 create table contatori (
-    NumeroProgressivo integer not null auto_increment,
-    Matricola varchar(20) default null,
+    Matricola varchar(20) not null,
     MateriaPrima varchar(20) not null,
     IdImmobile integer not null,
-    constraint PK_CONTATORI primary key (NumeroProgressivo),
-    constraint AK_CONTATORI unique (Matricola),
+    constraint PK_CONTATORI primary key (Matricola),
     constraint AK2_CONTATORI unique (IdImmobile, MateriaPrima));
 
 create table contratti (
@@ -82,7 +80,7 @@ create table interruzioni (
 
 create table letture (
     Consumi decimal(20, 6) not null check(Consumi >= 0),
-    Contatore integer not null,
+    Contatore varchar(20) not null,
     DataEffettuazione date not null,
     Confermata boolean not null default false,
     Cliente integer not null,
@@ -128,7 +126,7 @@ create table richieste_attivazione (
      NumeroComponenti integer not null,
      Stato char not null default "N" check (Stato in ("N", "E", "A", "R")),
      Note varchar(200) not null default "",
-     Contatore integer not null,
+     Contatore varchar(20) default null,
      Cliente integer not null,
      Offerta integer not null,
      Uso integer not null,
@@ -231,10 +229,10 @@ values ("Gas", "19287488822211", 2);
 
 -- Populate "letture"
 insert into letture
-values (18.0, 1, date_sub(curdate(), interval 2 month), true, 1);
+values (18.0, "83850395028543", date_sub(curdate(), interval 2 month), true, 1);
 
 insert into letture
-values (35.0, 1, curdate(), true, 1);
+values (35.0, "385011111111", curdate(), true, 1);
 
 
 -- Populate "persone", "clienti" and "operatori"
@@ -280,13 +278,13 @@ values (last_insert_id(), 2);
 
 -- richieste_attivazione
 insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Stato)
-values (date_sub(curdate(), interval 123 day), 1, 2, 1, 1, 4, 1, "A");
+values (date_sub(curdate(), interval 123 day), "385011111111", 2, 1, 1, 4, 1, "A");
 
 insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Stato)
-values (date_sub(curdate(), interval 123 day), 2, 1, 1, 1, 4, 1, "A");
+values (date_sub(curdate(), interval 123 day), "83850395028543", 1, 1, 1, 4, 1, "A");
 
 insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente)
-values (date_sub(curdate(), interval 2 day), 3, 2, 1, 1, 1, 2);
+values (date_sub(curdate(), interval 2 day), "19287488822211", 2, 1, 1, 1, 2);
 
 
 -- contratti
@@ -338,7 +336,7 @@ alter table contratti add constraint FK_DEFINIZIONE
 	 foreign key (IdContratto) references richieste_attivazione (Numero);
 
 alter table letture add constraint FK_CORRISPONDENZA
-     foreign key (Contatore) references contatori (NumeroProgressivo);
+     foreign key (Contatore) references contatori (Matricola);
      
 alter table letture add constraint FK_EFFETTUAZIONE
      foreign key (Cliente) references clienti (CodiceCliente);
@@ -362,7 +360,7 @@ alter table richieste_attivazione add constraint FK_ATTIVAZIONE_TRAMITE
      foreign key (Attivazione) references tipi_attivazione (Codice);
 
 alter table richieste_attivazione add constraint FK_COLLEGAMENTO
-     foreign key (Contatore) references contatori (NumeroProgressivo);
+     foreign key (Contatore) references contatori (Matricola);
      
 alter table richieste_cessazione add constraint FK_TERMINAZIONE
 	 foreign key (IdContratto) references contratti (IdContratto);

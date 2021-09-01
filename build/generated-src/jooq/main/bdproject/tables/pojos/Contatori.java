@@ -15,35 +15,24 @@ public class Contatori implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer numeroprogressivo;
     private final String  matricola;
     private final String  materiaprima;
     private final Integer idimmobile;
 
     public Contatori(Contatori value) {
-        this.numeroprogressivo = value.numeroprogressivo;
         this.matricola = value.matricola;
         this.materiaprima = value.materiaprima;
         this.idimmobile = value.idimmobile;
     }
 
     public Contatori(
-        Integer numeroprogressivo,
         String  matricola,
         String  materiaprima,
         Integer idimmobile
     ) {
-        this.numeroprogressivo = numeroprogressivo;
         this.matricola = matricola;
         this.materiaprima = materiaprima;
         this.idimmobile = idimmobile;
-    }
-
-    /**
-     * Getter for <code>utenze.contatori.NumeroProgressivo</code>.
-     */
-    public Integer getNumeroprogressivo() {
-        return this.numeroprogressivo;
     }
 
     /**
@@ -71,8 +60,7 @@ public class Contatori implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Contatori (");
 
-        sb.append(numeroprogressivo);
-        sb.append(", ").append(matricola);
+        sb.append(matricola);
         sb.append(", ").append(materiaprima);
         sb.append(", ").append(idimmobile);
 

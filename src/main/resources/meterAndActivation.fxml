@@ -2,10 +2,8 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
@@ -54,47 +52,21 @@
                   <Font size="16.0" />
                </font>
             </Button>
+            <Label layoutX="27.0" layoutY="316.0" text="Attivazione">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="methodLabel" layoutX="231.0" layoutY="316.0" text="Label">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
       <Separator orientation="VERTICAL" prefHeight="720.0" prefWidth="0.0" />
       <AnchorPane prefHeight="720.0" prefWidth="945.0">
          <children>
-            <Label layoutX="117.0" layoutY="154.0" text="Il contatore è già installato?">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <RadioButton fx:id="meterYes" layoutX="140.0" layoutY="194.0" mnemonicParsing="false" onAction="#updateElements" text="Sì">
-               <toggleGroup>
-                  <ToggleGroup fx:id="installed" />
-               </toggleGroup>
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </RadioButton>
-            <RadioButton fx:id="meterNo" layoutX="262.0" layoutY="194.0" mnemonicParsing="false" onAction="#updateElements" text="No" toggleGroup="$installed">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </RadioButton>
-            <Label fx:id="changeLabel" layoutX="56.0" layoutY="288.0" text="Stai effettuando un cambio di intestatario?">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-            <RadioButton fx:id="changeYes" layoutX="140.0" layoutY="335.0" mnemonicParsing="false" onAction="#updateElements" text="Sì">
-               <font>
-                  <Font size="16.0" />
-               </font>
-               <toggleGroup>
-                  <ToggleGroup fx:id="change" />
-               </toggleGroup>
-            </RadioButton>
-            <RadioButton fx:id="changeNo" layoutX="262.0" layoutY="335.0" mnemonicParsing="false" onAction="#updateElements" text="No" toggleGroup="$change">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </RadioButton>
             <Button fx:id="next" layoutX="439.0" layoutY="584.0" mnemonicParsing="false" onAction="#nextScreen" text="Avanti">
                <font>
                   <Font size="16.0" />
@@ -105,23 +77,46 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label fx:id="methodLabel" layoutX="91.0" layoutY="429.0" text="Metodo:">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-            <Label fx:id="methodChosen" layoutX="292.0" layoutY="426.0" text="Label" textFill="#3e8049">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label fx:id="peopleNoLabel" layoutX="620.0" layoutY="290.0" text="NumeroPersone">
+            <Label fx:id="peopleNoLabel" layoutX="416.0" layoutY="459.0" text="NumeroPersone">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <TextField fx:id="peopleNoField" layoutX="620.0" layoutY="333.0" />
+            <TextField fx:id="peopleNoField" layoutX="356.0" layoutY="492.0" prefHeight="30.0" prefWidth="237.0" promptText="Numero">
+               <font>
+                  <Font size="16.0" />
+               </font></TextField>
             <Label fx:id="powerLabel1" layoutX="620.0" layoutY="360.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="otherClientIdLabel" layoutX="340.0" layoutY="135.0" text="Codice cliente dell'attuale intestatario">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="meterIdLabel" layoutX="391.0" layoutY="240.0" text="Matricola del contatore">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="meterIdField" layoutX="356.0" layoutY="279.0" prefHeight="30.0" prefWidth="237.0" promptText="Matricola">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="otherClientIdField" layoutX="355.0" layoutY="178.0" prefHeight="30.0" prefWidth="237.0" promptText="Codice cliente">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="measurementField" layoutX="357.0" layoutY="382.0" prefHeight="30.0" prefWidth="237.0" promptText="Consumi (senza cifre decimali)">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <Label fx:id="measurementLabel" layoutX="376.0" layoutY="350.0" text="Ultima lettura del contatore">
                <font>
                   <Font size="16.0" />
                </font>

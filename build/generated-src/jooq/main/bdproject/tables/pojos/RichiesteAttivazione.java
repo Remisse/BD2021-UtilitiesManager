@@ -21,7 +21,7 @@ public class RichiesteAttivazione implements Serializable {
     private final Integer   numerocomponenti;
     private final String    stato;
     private final String    note;
-    private final Integer   contatore;
+    private final String    contatore;
     private final Integer   cliente;
     private final Integer   offerta;
     private final Integer   uso;
@@ -46,7 +46,7 @@ public class RichiesteAttivazione implements Serializable {
         Integer   numerocomponenti,
         String    stato,
         String    note,
-        Integer   contatore,
+        String    contatore,
         Integer   cliente,
         Integer   offerta,
         Integer   uso,
@@ -102,7 +102,7 @@ public class RichiesteAttivazione implements Serializable {
     /**
      * Getter for <code>utenze.richieste_attivazione.Contatore</code>.
      */
-    public Integer getContatore() {
+    public String getContatore() {
         return this.contatore;
     }
 
