@@ -46,7 +46,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="139.0" layoutY="333.0" text="Visualizza il catalogo delle offerte" textAlignment="CENTER">
+      <Label fx:id="catalogueLabel" layoutX="139.0" layoutY="333.0" text="Visualizza il catalogo delle offerte" textAlignment="CENTER">
          <font>
             <Font size="20.0" />
          </font>
@@ -76,7 +76,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button alignment="TOP_CENTER" layoutX="227.0" layoutY="379.0" mnemonicParsing="false" onAction="#viewCatalogue" text="Vai al catalogo">
+      <Button fx:id="catalogueButton" alignment="TOP_CENTER" layoutX="227.0" layoutY="379.0" mnemonicParsing="false" onAction="#viewCatalogue" text="Vai al catalogo">
          <font>
             <Font size="15.0" />
          </font>

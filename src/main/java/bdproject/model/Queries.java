@@ -396,14 +396,11 @@ public class Queries {
                 .execute();
     }
 
-    /**
-     * TODO
-     * @param reqNumber
-     * @param conn
-     * @return
-     */
-    public static int approveActivationAndCreateSub(final int reqNumber, final Connection conn) {
-        return 0;
+    public static int createSubscriptionFromRequest(final int reqNumber, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.insertInto(CONTRATTI)
+                .values(reqNumber, LocalDate.now(), defaultValue(), defaultValue())
+                .execute();
     }
 
     public static int interruptSubscription(final int subId, final String reason, final Connection conn) {

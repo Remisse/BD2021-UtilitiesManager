@@ -32,7 +32,7 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="premises" layoutX="515.0" layoutY="267.0" mnemonicParsing="false" onAction="#goToCatalogue" prefHeight="35.0" prefWidth="251.0" text="Gestisci gli immobili (?)">
+      <Button fx:id="premises" layoutX="515.0" layoutY="267.0" mnemonicParsing="false" onAction="#goToCatalogue" prefHeight="35.0" prefWidth="251.0" text="Immobili e contatori (?)">
          <font>
             <Font size="16.0" />
          </font>

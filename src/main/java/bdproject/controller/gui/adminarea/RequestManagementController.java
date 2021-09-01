@@ -124,6 +124,9 @@ public class RequestManagementController extends AbstractViewController implemen
         if (activRequest != null) {
             try (Connection conn = getDataSource().getConnection()) {
                 result = Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), status, conn);
+                if (status.equals("A")) {
+                    Queries.createSubscriptionFromRequest(activRequest.getNumero(), conn);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

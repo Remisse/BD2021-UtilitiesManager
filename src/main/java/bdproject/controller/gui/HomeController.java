@@ -40,6 +40,8 @@ public class HomeController extends AbstractViewController implements Initializa
     @FXML private Label signupLabel;
     @FXML private Button signupButton;
     @FXML private Button adminArea;
+    @FXML private Label catalogueLabel;
+    @FXML private Button catalogueButton;
 
     private HomeController(final Stage stage, final DataSource dataSource) {
         super(stage, dataSource, FXML_FILE);
@@ -70,6 +72,9 @@ public class HomeController extends AbstractViewController implements Initializa
             signupLabel.setVisible(false);
             signupButton.setVisible(false);
 
+            catalogueLabel.setVisible(!s.isOperator());
+            catalogueButton.setVisible(!s.isOperator());
+
             adminArea.setVisible(s.isOperator());
         }, () -> {
             email.setVisible(true);
@@ -85,6 +90,9 @@ public class HomeController extends AbstractViewController implements Initializa
 
             signupLabel.setVisible(true);
             signupButton.setVisible(true);
+
+            catalogueLabel.setVisible(true);
+            catalogueButton.setVisible(true);
 
             adminArea.setVisible(false);
         });
