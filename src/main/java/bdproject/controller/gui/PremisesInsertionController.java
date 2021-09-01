@@ -1,6 +1,8 @@
 package bdproject.controller.gui;
 
+import bdproject.model.Queries;
 import bdproject.model.SubscriptionProcess;
+import bdproject.tables.pojos.Contatori;
 import bdproject.tables.pojos.Immobili;
 import bdproject.utils.FXUtils;
 import javafx.collections.FXCollections;
@@ -10,11 +12,17 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.jooq.DSLContext;
+import org.jooq.SQL;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.net.URL;
+import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PremisesInsertionController extends AbstractViewController implements Initializable {
@@ -91,11 +99,32 @@ public class PremisesInsertionController extends AbstractViewController implemen
                     typeMap.get(typeBox.getValue()),
                     streetField.getText(),
                     streetNoField.getText(),
-                    apartmentNumberField.getText(),
+                    apartmentNumberField.getText().equals("") ? null : apartmentNumberField.getText(),
                     municipalityField.getText(),
                     provinceField.getText(),
                     postcodeField.getText());
-            process.setPremises(newPremises);
+            try (Connection conn = getDataSource().getConnection()) {
+                final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                final Optional<Immobili> existingPremises = Queries.fetchPremisesByCandidateKey(
+                        newPremises.getComune(),
+                        newPremises.getNumcivico(),
+                        newPremises.getInterno(),
+                        newPremises.getComune(),
+                        newPremises.getProvincia(),
+                        ctx);
+                /*
+                 * If already present in DB, don't try to insert it again at the next screen.
+                 */
+                existingPremises.ifPresentOrElse(p -> {
+                        process.setPremises(null);
+                        if (process.meter().isPresent()) {
+                            final Contatori temp = process.meter().get();
+                            process.setMeter(new Contatori(temp.getMatricola(), temp.getMateriaprima(), p.getIdimmobile()));
+                        }
+                    }, () -> process.setPremises(newPremises));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
         } else {
             FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");

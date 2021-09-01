@@ -4,6 +4,7 @@ import bdproject.tables.pojos.*;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
+import javax.annotation.Nullable;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -90,7 +91,7 @@ public class Queries {
     public static void insertMeasurement(final Letture m, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         query.insertInto(LETTURE)
-                .values(m.getConsumi(), m.getContatore(), m.getDataeffettuazione(), m.getConfermata())
+                .values(m.getConsumi(), m.getContatore(), m.getDataeffettuazione(), m.getConfermata(), m.getCliente())
                 .onDuplicateKeyUpdate()
                 .set(LETTURE.CONSUMI, m.getConsumi())
                 .execute();
@@ -138,24 +139,29 @@ public class Queries {
                 .execute();
     }
 
-    public static int insertActivationRequest(final SubscriptionProcess process, final Connection conn) {
+    public static int insertActivationRequest(final int clientId, final LocalDate date, final int plan, final String meterId,
+            final int usage, final int method, final int peopleNo, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.insertInto(RICHIESTE_ATTIVAZIONE)
-            .columns(RICHIESTE_ATTIVAZIONE.CLIENTE, RICHIESTE_ATTIVAZIONE.DATARICHIESTA, RICHIESTE_ATTIVAZIONE.OFFERTA,
-                    RICHIESTE_ATTIVAZIONE.CONTATORE, RICHIESTE_ATTIVAZIONE.USO, RICHIESTE_ATTIVAZIONE.ATTIVAZIONE,
-                    RICHIESTE_ATTIVAZIONE.NUMEROCOMPONENTI)
-            .select(select(
-                        value(process.getClientId()),
+        return query.insertInto(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.CLIENTE, RICHIESTE_ATTIVAZIONE.DATARICHIESTA,
+                        RICHIESTE_ATTIVAZIONE.OFFERTA, RICHIESTE_ATTIVAZIONE.CONTATORE, RICHIESTE_ATTIVAZIONE.USO,
+                        RICHIESTE_ATTIVAZIONE.ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMEROCOMPONENTI)
+                .values(clientId, date, plan, meterId, usage, method, peopleNo)
+                .execute();
+    }
+
+    public static int createSubscriptionFromRequest(final int reqNumber, final String meterId, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.insertInto(CONTRATTI)
+                .select(select(
+                        value(reqNumber),
                         value(LocalDate.now()),
-                        value(process.plan().orElseThrow().getCodice()),
-                        value(process.meter().orElseThrow().getMatricola()),
-                        value(process.usage().orElseThrow().getCodice()),
-                        value(process.activation().orElseThrow().getCodice()),
-                        value(process.peopleNo()))
-                    .whereNotExists(selectFrom(CONTRATTI_DETTAGLIATI)
-                            .where(CONTRATTI_DETTAGLIATI.CONTATORE.eq(process.meter().orElseThrow().getMatricola()))
-                            .and(CONTRATTI_DETTAGLIATI.DATACESSAZIONE.isNull())))
-            .execute();
+                        value(defaultValue()),
+                        value(defaultValue()))
+                        .whereNotExists(selectFrom(CONTRATTI_DETTAGLIATI)
+                                .where(CONTRATTI_DETTAGLIATI.CONTATORE.eq(meterId))
+                                .and(CONTRATTI_DETTAGLIATI.DATACESSAZIONE.isNull()))
+                )
+                .execute();
     }
 
     public static MateriePrime fetchUtilityFromSubscription(final ContrattiDettagliati currentSub, final Connection conn) {
@@ -388,13 +394,6 @@ public class Queries {
                 .execute();
     }
 
-    public static int createSubscriptionFromRequest(final int reqNumber, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.insertInto(CONTRATTI)
-                .values(reqNumber, LocalDate.now(), defaultValue(), defaultValue())
-                .execute();
-    }
-
     public static int interruptSubscription(final int subId, final String reason, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         final var I1 = INTERRUZIONI;
@@ -593,11 +592,12 @@ public class Queries {
                 .execute();
     }
 
-    public static int insertPremises(final String tipo, final String via, final String numcivico, final String comune,
+    public static int insertPremisesReturningId(final String tipo, final String via, final String numcivico, final String comune,
                                       final String cap, final String provincia, final String interno, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         return query.insertInto(IMMOBILI)
-                .values(defaultValue(), tipo, via, numcivico, interno, comune, cap, provincia)
+                .values(defaultValue(), tipo, via, numcivico, interno, comune, provincia, cap)
+                .returning(IMMOBILI.IDIMMOBILE)
                 .execute();
     }
 
@@ -607,5 +607,17 @@ public class Queries {
         return query.insertInto(CONTATORI)
                 .values(matricola, materiaprima, idimmobile)
                 .execute();
+    }
+
+    public static Optional<Immobili> fetchPremisesByCandidateKey(final String street, final String streetNo,
+            @Nullable final String apartmentNumber, final String municipality, final String province, final DSLContext ctx) {
+        return ctx.select()
+                .from(IMMOBILI)
+                .where(IMMOBILI.VIA.eq(street))
+                .and(IMMOBILI.NUMCIVICO.eq(streetNo))
+                .and(condition(apartmentNumber == null).and(IMMOBILI.INTERNO.isNull()).or(IMMOBILI.INTERNO.eq(apartmentNumber)))
+                .and(IMMOBILI.COMUNE.eq(municipality))
+                .and(IMMOBILI.PROVINCIA.eq(province))
+                .fetchOptionalInto(Immobili.class);
     }
 }

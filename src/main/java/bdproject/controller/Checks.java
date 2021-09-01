@@ -15,7 +15,7 @@ public class Checks {
     }
 
     public static boolean isValidConsumption(final String consumption) {
-        return consumption.length() != 0 && isNumber(consumption);
+        return consumption.length() > 0 && isNumber(consumption);
     }
 
     public static boolean requiresPeopleNumber(final TipologieUso use) {

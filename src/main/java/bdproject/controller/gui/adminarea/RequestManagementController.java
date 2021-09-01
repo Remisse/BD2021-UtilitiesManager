@@ -127,9 +127,26 @@ public class RequestManagementController extends AbstractViewController implemen
         int result = 0;
         if (activRequest != null) {
             try (Connection conn = getDataSource().getConnection()) {
-                result = Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), status, conn);
                 if (status.equals("A")) {
-                    Queries.createSubscriptionFromRequest(activRequest.getNumero(), conn);
+                    if (activRequest.getContatore() == null) {
+                        FXUtils.showBlockingWarning("Impossibile creare il contratto. Non è stata ancora inserita la" +
+                                "matricola del contatore.");
+                    } else {
+                        result = Queries.createSubscriptionFromRequest(activRequest.getNumero(),
+                                activRequest.getContatore(), conn);
+                        if (result == 1) {
+                            FXUtils.showBlockingWarning("Contratto creato.");
+                        } else {
+                            FXUtils.showBlockingWarning("Impossibile creare il contratto.");
+                        }
+                    }
+                }
+                result = Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), status, conn);
+                if (result == 1) {
+                    FXUtils.showBlockingWarning("Richiesta aggiornata.");
+                    refreshTables();
+                } else {
+                    FXUtils.showBlockingWarning("Impossibile aggiornare la richiesta.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -139,16 +156,16 @@ public class RequestManagementController extends AbstractViewController implemen
             if (endRequest != null) {
                 try (Connection conn = getDataSource().getConnection()) {
                     result = Queries.setRequestStatus(RICHIESTE_CESSAZIONE, endRequest.getNumero(), status, conn);
+                    if (result == 1) {
+                        FXUtils.showBlockingWarning("Richiesta aggiornata.");
+                        refreshTables();
+                    } else {
+                        FXUtils.showBlockingWarning("Impossibile aggiornare la richiesta.");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }
-        if (result == 1) {
-            FXUtils.showBlockingWarning("Richiesta aggiornata.");
-            refreshTables();
-        } else {
-            FXUtils.showBlockingWarning(StringUtils.getGenericError());
         }
     }
 

@@ -9,19 +9,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static bdproject.tables.TipiAttivazione.TIPI_ATTIVAZIONE;
 
 public class ParametersSelectionController extends AbstractViewController implements Initializable {
 
@@ -138,7 +133,7 @@ public class ParametersSelectionController extends AbstractViewController implem
 
     @FXML
     private void nextScreen() {
-        if (areFieldsValid()) {
+        if (!areFieldsValid()) {
             FXUtils.showError("Verifica di aver inserito correttamente i dati.");
         } else {
             try (Connection conn = getDataSource().getConnection()) {
@@ -161,13 +156,30 @@ public class ParametersSelectionController extends AbstractViewController implem
     }
 
     private void bySubentro(final Connection conn) {
-        Optional<Contatori> meter = Queries.fetchMeterByIdAndUtility(
-                meterIdField.getText(), process.plan().orElseThrow().getMateriaprima(), conn);
+        final Optional<Contatori> existingMeter = Queries.fetchMeterByIdAndUtility(
+                meterIdField.getText(),
+                process.plan().orElseThrow().getMateriaprima(),
+                conn);
+        existingMeter.ifPresentOrElse(m -> {
+            process.setMeter(m);
 
-        meter.ifPresentOrElse(m -> {
-                process.setMeter(m);
-                switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
-            }, () -> FXUtils.showError("Nessun contatore trovato. Verifica che la matricola inserita sia corretta."));
+            final Immobili existingPremises = Queries.fetchPremisesFromMeter(m.getMatricola(), getDataSource());
+            process.setPremises(existingPremises);
+
+            switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
+        }, () -> {
+            /*
+             * Using a placeholder id for the premises, since it's going to be
+             * added at the next screen.
+             */
+            Contatori meter = new Contatori(
+                    meterIdField.getText(),
+                    process.plan().orElseThrow().getMateriaprima(),
+                    0
+            );
+            process.setMeter(meter);
+            switchTo(PremisesInsertionController.create(getStage(), getDataSource(), process));
+        });
     }
 
     private void byChange(final Connection conn) {
@@ -175,7 +187,8 @@ public class ParametersSelectionController extends AbstractViewController implem
                 meterIdField.getText(), process.plan().orElseThrow().getMateriaprima(), conn);
 
         meter.ifPresentOrElse(m -> {
-            Optional<ClientiDettagliati> client = Queries.fetchClientById(Integer.parseInt(otherClientIdField.getText()), conn);
+            Optional<ClientiDettagliati> client = Queries.fetchClientById(
+                    Integer.parseInt(otherClientIdField.getText()), conn);
 
             client.ifPresentOrElse(c -> {
                 /* Find the subscription on which the new one will be based */
