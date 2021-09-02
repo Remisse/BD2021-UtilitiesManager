@@ -1,6 +1,6 @@
 package bdproject.controller.gui.operators;
 
-import bdproject.controller.gui.AbstractSignupController;
+import bdproject.controller.gui.AbstractSignUpController;
 import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
 import javafx.stage.Stage;
@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import javax.sql.DataSource;
 import java.sql.Connection;
 
-public class OperatorSignUpController extends AbstractSignupController {
+public class OperatorSignUpController extends AbstractSignUpController {
 
     private OperatorSignUpController(final Stage stage, final DataSource dataSource) {
         super(stage, dataSource);

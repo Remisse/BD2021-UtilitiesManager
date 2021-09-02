@@ -1,6 +1,6 @@
 package bdproject.controller.gui.users;
 
-import bdproject.controller.gui.AbstractSignupController;
+import bdproject.controller.gui.AbstractSignUpController;
 import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
 import javafx.stage.Stage;
@@ -8,14 +8,14 @@ import javafx.stage.Stage;
 import javax.sql.DataSource;
 import java.sql.Connection;
 
-public class UserSignupController extends AbstractSignupController {
+public class UserSignUpController extends AbstractSignUpController {
 
-    private UserSignupController(final Stage stage, final DataSource dataSource) {
+    private UserSignUpController(final Stage stage, final DataSource dataSource) {
         super(stage, dataSource);
     }
 
     public static ViewController create(final Stage stage, final DataSource dataSource) {
-        return new UserSignupController(stage, dataSource);
+        return new UserSignUpController(stage, dataSource);
     }
 
     @Override

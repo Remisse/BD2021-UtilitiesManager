@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public abstract class AbstractSignupController extends AbstractViewController implements Initializable {
+public abstract class AbstractSignUpController extends AbstractViewController implements Initializable {
 
     private static final String FXML_FILE = "signup.fxml";
 
@@ -45,7 +45,7 @@ public abstract class AbstractSignupController extends AbstractViewController im
     @FXML private PasswordField password;
     @FXML private PasswordField confirmPw;
 
-    protected AbstractSignupController(Stage stage, DataSource dataSource) {
+    protected AbstractSignUpController(Stage stage, DataSource dataSource) {
         super(stage, dataSource, FXML_FILE);
     }
 

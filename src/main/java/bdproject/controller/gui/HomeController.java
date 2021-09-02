@@ -2,7 +2,7 @@ package bdproject.controller.gui;
 
 import bdproject.controller.gui.operators.AreaSelectorController;
 import bdproject.controller.gui.users.UserAreaController;
-import bdproject.controller.gui.users.UserSignupController;
+import bdproject.controller.gui.users.UserSignUpController;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.utils.FXUtils;
@@ -106,7 +106,7 @@ public class HomeController extends AbstractViewController implements Initializa
 
     @FXML
     private void viewSignupPage(ActionEvent event) {
-        switchTo(UserSignupController.create(getStage(), getDataSource()));
+        switchTo(UserSignUpController.create(getStage(), getDataSource()));
     }
 
     @FXML
