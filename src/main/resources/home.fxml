@@ -101,7 +101,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button fx:id="adminArea" layoutX="578.0" layoutY="211.0" mnemonicParsing="false" onAction="#toAdminArea" text="Area amministratore" visible="false">
+      <Button fx:id="adminArea" layoutX="578.0" layoutY="211.0" mnemonicParsing="false" onAction="#toAdminArea" text="Area operatori" visible="false">
          <font>
             <Font size="15.0" />
          </font>

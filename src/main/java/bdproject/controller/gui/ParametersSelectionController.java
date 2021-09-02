@@ -163,21 +163,20 @@ public class ParametersSelectionController extends AbstractViewController implem
         existingMeter.ifPresentOrElse(m -> {
             process.setMeter(m);
 
-            final Immobili existingPremises = Queries.fetchPremisesFromMeter(m.getMatricola(), getDataSource());
+            final Immobili existingPremises = Queries.fetchPremisesFromMeterId(m.getMatricola(), getDataSource());
             process.setPremises(existingPremises);
 
             switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
         }, () -> {
             /*
-             * Using a placeholder id for the premises, since it's going to be
+             * Using a placeholder id for meter and premises, since it's going to be
              * added at the next screen.
              */
-            Contatori meter = new Contatori(
+            process.setMeter(new Contatori(
+                    0,
                     meterIdField.getText(),
                     process.plan().orElseThrow().getMateriaprima(),
-                    0
-            );
-            process.setMeter(meter);
+                    0));
             switchTo(PremisesInsertionController.create(getStage(), getDataSource(), process));
         });
     }
@@ -199,7 +198,7 @@ public class ParametersSelectionController extends AbstractViewController implem
                     if (Checks.isValidConsumption(measurementField.getText())) {
                         Letture measurement = new Letture(
                                 BigDecimal.valueOf(Long.parseLong(measurementField.getText())),
-                                m.getMatricola(),
+                                m.getProgressivo(),
                                 LocalDate.now(),
                                 (byte) 0,
                                 c.getIdentificativo()

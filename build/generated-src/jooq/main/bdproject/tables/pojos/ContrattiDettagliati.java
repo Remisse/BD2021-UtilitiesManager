@@ -24,7 +24,7 @@ public class ContrattiDettagliati implements Serializable {
     private final Integer   offerta;
     private final Integer   attivazione;
     private final Integer   uso;
-    private final String    contatore;
+    private final Integer   contatore;
     private final Integer   numerocomponenti;
 
     public ContrattiDettagliati(ContrattiDettagliati value) {
@@ -49,7 +49,7 @@ public class ContrattiDettagliati implements Serializable {
         Integer   offerta,
         Integer   attivazione,
         Integer   uso,
-        String    contatore,
+        Integer   contatore,
         Integer   numerocomponenti
     ) {
         this.idcontratto = idcontratto;
@@ -123,7 +123,7 @@ public class ContrattiDettagliati implements Serializable {
     /**
      * Getter for <code>utenze.contratti_dettagliati.Contatore</code>.
      */
-    public String getContatore() {
+    public Integer getContatore() {
         return this.contatore;
     }
 

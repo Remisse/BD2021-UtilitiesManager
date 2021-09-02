@@ -1,4 +1,4 @@
-package bdproject.controller.gui.userarea;
+package bdproject.controller.gui.operators;
 
 import bdproject.controller.gui.AbstractActivationRequestDetailsController;
 import bdproject.controller.gui.ViewController;
@@ -7,13 +7,13 @@ import javafx.stage.Stage;
 
 import javax.sql.DataSource;
 
-public class UserActivationRequestDetailsController extends AbstractActivationRequestDetailsController {
+public class OperatorActivationRequestDetailsController extends AbstractActivationRequestDetailsController {
 
-    protected UserActivationRequestDetailsController(Stage stage, DataSource dataSource, RichiesteAttivazione request) {
+    protected OperatorActivationRequestDetailsController(Stage stage, DataSource dataSource, RichiesteAttivazione request) {
         super(stage, dataSource, request);
     }
 
     public static ViewController create(final Stage stage, final DataSource dataSource, final RichiesteAttivazione request) {
-        return new UserActivationRequestDetailsController(stage, dataSource, request);
+        return new OperatorActivationRequestDetailsController(stage, dataSource, request);
     }
 }

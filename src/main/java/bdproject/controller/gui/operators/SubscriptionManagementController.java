@@ -1,10 +1,9 @@
-package bdproject.controller.gui.adminarea;
+package bdproject.controller.gui.operators;
 
 import bdproject.controller.Checks;
 import bdproject.controller.gui.AbstractViewController;
 import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
-import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
 import bdproject.utils.FXUtils;
 import bdproject.utils.LocaleUtils;
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
 
 import static bdproject.tables.TipologieUso.TIPOLOGIE_USO;
 
-public class AdminSubManagementController extends AbstractViewController implements Initializable {
+public class SubscriptionManagementController extends AbstractViewController implements Initializable {
 
     private static final String FXML_FILE = "adminSubManagement.fxml";
     private static final int DEADLINE_DAYS = 14;
@@ -84,12 +83,12 @@ public class AdminSubManagementController extends AbstractViewController impleme
     @FXML private TextField finalCostField;
     @FXML private Label reportFileStatus;
 
-    private AdminSubManagementController(Stage stage, DataSource dataSource) {
+    private SubscriptionManagementController(Stage stage, DataSource dataSource) {
         super(stage, dataSource, FXML_FILE);
     }
 
     public static ViewController create(final Stage stage, final DataSource dataSource) {
-        return new AdminSubManagementController(stage, dataSource);
+        return new SubscriptionManagementController(stage, dataSource);
     }
 
     @Override
@@ -130,7 +129,7 @@ public class AdminSubManagementController extends AbstractViewController impleme
         });
 
         zoneCol.setCellValueFactory(c -> {
-            final Immobili premises = Queries.fetchPremisesFromMeter(c.getValue().getContatore(), getDataSource());
+            final Immobili premises = Queries.fetchPremisesFromMeterNumber(c.getValue().getContatore(), getDataSource());
             return new SimpleStringProperty(premises.getComune() + " (" + premises.getProvincia() + ")");
         });
         subsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldS, newS) -> {
@@ -224,7 +223,7 @@ public class AdminSubManagementController extends AbstractViewController impleme
     private void showSubDetails() {
         final ContrattiDettagliati selected = subsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            createSubWindow(AdminSubDetailsController.create(null, getDataSource(), selected));
+            createSubWindow(OperatorSubDetailsController.create(null, getDataSource(), selected));
         } else {
             FXUtils.showBlockingWarning("Seleziona un contratto.");
         }
@@ -373,6 +372,6 @@ public class AdminSubManagementController extends AbstractViewController impleme
 
     @FXML
     private void goBack() {
-        switchTo(AdminChooseAreaController.create(getStage(), getDataSource()));
+        switchTo(AreaSelectorController.create(getStage(), getDataSource()));
     }
 }

@@ -87,7 +87,7 @@ public class ContrattiDettagliati extends TableImpl<ContrattiDettagliatiRecord> 
     /**
      * The column <code>utenze.contratti_dettagliati.Contatore</code>.
      */
-    public final TableField<ContrattiDettagliatiRecord, String> CONTATORE = createField(DSL.name("Contatore"), SQLDataType.VARCHAR(20), this, "");
+    public final TableField<ContrattiDettagliatiRecord, Integer> CONTATORE = createField(DSL.name("Contatore"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>utenze.contratti_dettagliati.NumeroComponenti</code>.
@@ -165,7 +165,7 @@ public class ContrattiDettagliati extends TableImpl<ContrattiDettagliatiRecord> 
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, String, Integer> fieldsRow() {
+    public Row10<Integer, LocalDate, LocalDate, LocalDate, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 }

@@ -1,9 +1,8 @@
-package bdproject.controller.gui.userarea;
+package bdproject.controller.gui.users;
 
 import bdproject.controller.gui.AbstractSubscriptionDetailsController;
 import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
-import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.ContrattiDettagliati;
 import bdproject.tables.pojos.RichiesteCessazione;
 import bdproject.utils.FXUtils;
@@ -74,7 +73,8 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
     protected void abstractDoDeleteEndRequest() {
         final RichiesteCessazione selectedRequest = endRequestTable.getSelectionModel().getSelectedItem();
 
-        if (selectedRequest != null && selectedRequest.getStato() == null) {
+        if (selectedRequest != null &&
+                (selectedRequest.getStato().equals("N") || selectedRequest.getStato().equals("E"))) {
             try (Connection conn = getDataSource().getConnection()) {
                 final int result = Queries.deleteEndRequest(selectedRequest.getNumero(), conn);
                 if (result == 1) {

@@ -1,4 +1,4 @@
-package bdproject.controller.gui.adminarea;
+package bdproject.controller.gui.operators;
 
 import bdproject.controller.gui.AbstractSubscriptionDetailsController;
 import bdproject.controller.gui.ViewController;
@@ -9,19 +9,19 @@ import javafx.stage.Stage;
 
 import javax.sql.DataSource;
 
-public class AdminSubDetailsController extends AbstractSubscriptionDetailsController {
+public class OperatorSubDetailsController extends AbstractSubscriptionDetailsController {
 
     @FXML private Button back;
     @FXML private Button insertEndRequestButton;
     @FXML private Button deleteRequestButton;
 
-    protected AdminSubDetailsController(Stage stage, DataSource dataSource, ContrattiDettagliati subscription) {
+    protected OperatorSubDetailsController(Stage stage, DataSource dataSource, ContrattiDettagliati subscription) {
         super(stage, dataSource, subscription);
     }
 
     public static ViewController create(final Stage stage, final DataSource dataSource,
             final ContrattiDettagliati subscription) {
-        return new AdminSubDetailsController(stage, dataSource, subscription);
+        return new OperatorSubDetailsController(stage, dataSource, subscription);
     }
 
     @Override

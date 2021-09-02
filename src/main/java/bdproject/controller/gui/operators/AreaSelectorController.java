@@ -1,4 +1,4 @@
-package bdproject.controller.gui.adminarea;
+package bdproject.controller.gui.operators;
 
 import bdproject.controller.gui.AbstractViewController;
 import bdproject.controller.gui.HomeController;
@@ -8,16 +8,16 @@ import javafx.stage.Stage;
 
 import javax.sql.DataSource;
 
-public class AdminChooseAreaController extends AbstractViewController {
+public class AreaSelectorController extends AbstractViewController {
 
     private static final String FXML_FILE = "adminChooseArea.fxml";
 
-    private AdminChooseAreaController(Stage stage, DataSource dataSource) {
+    private AreaSelectorController(Stage stage, DataSource dataSource) {
         super(stage, dataSource, FXML_FILE);
     }
 
     public static ViewController create(final Stage stage, final DataSource dataSource) {
-        return new AdminChooseAreaController(stage, dataSource);
+        return new AreaSelectorController(stage, dataSource);
     }
 
     @FXML
@@ -27,12 +27,17 @@ public class AdminChooseAreaController extends AbstractViewController {
 
     @FXML
     private void goToSubsArea() {
-        switchTo(AdminSubManagementController.create(getStage(), getDataSource()));
+        switchTo(SubscriptionManagementController.create(getStage(), getDataSource()));
     }
 
     @FXML
     private void goToCatalogue() {
 
+    }
+
+    @FXML
+    private void goToNewOperatorSignUp() {
+        switchTo(OperatorSignUpController.create(getStage(), getDataSource()));
     }
 
     @FXML

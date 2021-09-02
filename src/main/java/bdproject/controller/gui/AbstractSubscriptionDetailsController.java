@@ -107,7 +107,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
     }
 
     private void setPremisesDetails() {
-        final Immobili premises = Queries.fetchPremisesFromMeter(detailedSub.getContatore(), getDataSource());
+        final Immobili premises = Queries.fetchPremisesFromMeterNumber(detailedSub.getContatore(), getDataSource());
         final Text premisesText = new Text(StringUtils.premisesToString(premises));
         premisesText.setStyle(FLOW_CSS);
         premisesDetails.getChildren().add(premisesText);

@@ -1,7 +1,8 @@
 package bdproject.controller.gui;
 
-import bdproject.controller.gui.adminarea.AdminChooseAreaController;
-import bdproject.controller.gui.userarea.UserAreaController;
+import bdproject.controller.gui.operators.AreaSelectorController;
+import bdproject.controller.gui.users.UserAreaController;
+import bdproject.controller.gui.users.UserSignupController;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.utils.FXUtils;
@@ -105,7 +106,7 @@ public class HomeController extends AbstractViewController implements Initializa
 
     @FXML
     private void viewSignupPage(ActionEvent event) {
-        switchTo(SignupController.create(getStage(), getDataSource()));
+        switchTo(UserSignupController.create(getStage(), getDataSource()));
     }
 
     @FXML
@@ -143,6 +144,6 @@ public class HomeController extends AbstractViewController implements Initializa
 
     @FXML
     private void toAdminArea(ActionEvent e) {
-        switchTo(AdminChooseAreaController.create(getStage(), getDataSource()));
+        switchTo(AreaSelectorController.create(getStage(), getDataSource()));
     }
 }

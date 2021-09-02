@@ -78,7 +78,7 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
     }
 
     private void setPremisesDetails() {
-        final Immobili premises = Queries.fetchPremisesFromMeter(request.getContatore(), getDataSource());
+        final Immobili premises = Queries.fetchPremisesFromMeterNumber(request.getContatore(), getDataSource());
         final Text premisesText = new Text(StringUtils.premisesToString(premises));
         premisesText.setStyle(FLOW_CSS);
         premisesDetails.getChildren().add(premisesText);

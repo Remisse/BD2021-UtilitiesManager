@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.commons.validator.routines.EmailValidator;
 
+import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
@@ -18,7 +19,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class SignupController extends AbstractViewController implements Initializable {
+public abstract class AbstractSignupController extends AbstractViewController implements Initializable {
 
     private static final String FXML_FILE = "signup.fxml";
 
@@ -44,52 +45,8 @@ public class SignupController extends AbstractViewController implements Initiali
     @FXML private PasswordField password;
     @FXML private PasswordField confirmPw;
 
-    private SignupController(Stage stage, DataSource dataSource) {
+    protected AbstractSignupController(Stage stage, DataSource dataSource) {
         super(stage, dataSource, FXML_FILE);
-    }
-
-    public static ViewController create(final Stage stage, final DataSource dataSource) {
-        return new SignupController(stage, dataSource);
-    }
-
-    @FXML
-    private void backToHome(ActionEvent event) {
-        FXUtils.showConfirmationDialog(
-                "Vuoi davvero tornare al menu principale? Tutti i dati inseriti verranno persi.",
-                () -> switchTo(HomeController.create(getStage(), getDataSource())));
-    }
-
-    @FXML
-    private void doSignup(ActionEvent event) {
-        if (areFieldsInvalid()) {
-            FXUtils.showBlockingWarning("Verifica i dati immessi.");
-        } else {
-            try (Connection conn = getDataSource().getConnection()) {
-                final int lastInsertId = Queries.insertPersonAndReturnId(
-                                    idCode.getText(),
-                                    name.getText(),
-                                    surname.getText(),
-                                    street.getText(),
-                                    streetNo.getText(),
-                                    postcode.getText(),
-                                    municipality.getText(),
-                                    province.getText(),
-                                    birthdate.getValue(),
-                                    phone.getText(),
-                                    email.getText(),
-                                    password.getText(),
-                                    conn);
-                final int resultClient = Queries.insertClient(lastInsertId, income.getValue(), conn);
-                if (resultClient == 1) {
-                    FXUtils.showBlockingWarning("Registrazione completata.");
-                    switchTo(HomeController.create(getStage(), getDataSource()));
-                } else {
-                    FXUtils.showError("Creazione dell'account non riuscita.");
-                }
-            } catch (Exception e) {
-                FXUtils.showError(e.getMessage());
-            }
-        }
     }
 
     @Override
@@ -101,6 +58,45 @@ public class SignupController extends AbstractViewController implements Initiali
             FXUtils.showError(e.getMessage());
         }
     }
+
+    @FXML
+    private void doSignup(ActionEvent event) {
+        if (areFieldsInvalid()) {
+            FXUtils.showBlockingWarning("Verifica i dati immessi.");
+        } else {
+            try (Connection conn = getDataSource().getConnection()) {
+                final int lastInsertId = Queries.insertPersonAndReturnId(
+                        idCode.getText(),
+                        name.getText(),
+                        surname.getText(),
+                        street.getText(),
+                        streetNo.getText(),
+                        postcode.getText(),
+                        municipality.getText(),
+                        province.getText(),
+                        birthdate.getValue(),
+                        phone.getText(),
+                        email.getText(),
+                        password.getText(),
+                        conn);
+                if (lastInsertId == 0) {
+                    FXUtils.showBlockingWarning("Impossibile creare un nuovo account.");
+                } else {
+                    final int result = abstractInsertRole(lastInsertId, income.getValue(), conn);
+                    if (result == 1) {
+                        FXUtils.showBlockingWarning("Registrazione completata.");
+                        switchTo(HomeController.create(getStage(), getDataSource()));
+                    } else {
+                        FXUtils.showError("Creazione dell'account non riuscita.");
+                    }
+                }
+            } catch (Exception e) {
+                FXUtils.showError(e.getMessage());
+            }
+        }
+    }
+
+    protected abstract int abstractInsertRole(final int personId, final String income, final Connection conn);
 
     private boolean areFieldsInvalid() {
         return (name.getText().length() == 0
@@ -119,5 +115,12 @@ public class SignupController extends AbstractViewController implements Initiali
             || password.getText().length() < PASSWORD_MIN
             || password.getText().length() > PASSWORD_MAX
             || !confirmPw.getText().equals(password.getText()));
+    }
+
+    @FXML
+    private void backToHome(ActionEvent event) {
+        FXUtils.showConfirmationDialog(
+                "Vuoi davvero tornare al menu principale? Tutti i dati inseriti verranno persi.",
+                () -> switchTo(HomeController.create(getStage(), getDataSource())));
     }
 }

@@ -21,13 +21,13 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <ComboBox fx:id="subscriptionChoice" layoutX="41.0" layoutY="132.0" onAction="#onSubChosen" prefHeight="30.0" prefWidth="173.0" promptText="Seleziona..." />
-      <Label layoutX="41.0" layoutY="98.0" text="I tuoi contratti">
+      <ComboBox fx:id="subscriptionChoice" layoutX="40.0" layoutY="118.0" onAction="#onSubChosen" prefHeight="30.0" prefWidth="173.0" promptText="Seleziona..." />
+      <Label layoutX="40.0" layoutY="84.0" text="I tuoi contratti">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="reportTable" layoutX="242.0" layoutY="132.0" prefHeight="238.0" prefWidth="695.0">
+      <TableView fx:id="reportTable" layoutX="241.0" layoutY="118.0" prefHeight="238.0" prefWidth="695.0">
         <columns>
           <TableColumn fx:id="publishDate" prefWidth="140.0" text="Data di emissione" />
             <TableColumn fx:id="deadline" prefWidth="109.0" text="Scadenza" />
@@ -36,12 +36,12 @@
             <TableColumn fx:id="estimatedCol" prefWidth="117.0" text="Stimata" />
         </columns>
       </TableView>
-      <Label layoutX="242.0" layoutY="98.0" text="Le tue bollette">
+      <Label layoutX="241.0" layoutY="84.0" text="Le tue bollette">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="40.0" layoutY="409.0" text="Modifica i tuoi dati">
+      <Label layoutX="40.0" layoutY="409.0" text="Modifica i tuoi dati anagrafici">
          <font>
             <Font size="18.0" />
          </font>
@@ -57,7 +57,7 @@
          </font>
       </Button>
       <TextField fx:id="email" layoutX="40.0" layoutY="460.0" prefHeight="30.0" prefWidth="218.0" promptText="Indirizzo e-mail" />
-      <Button fx:id="payReport" layoutX="242.0" layoutY="378.0" mnemonicParsing="false" onAction="#payReport" prefHeight="31.0" prefWidth="66.0" text="Paga">
+      <Button fx:id="payReport" layoutX="241.0" layoutY="364.0" mnemonicParsing="false" onAction="#payReport" prefHeight="31.0" prefWidth="66.0" text="Paga">
          <font>
             <Font size="15.0" />
          </font>
@@ -68,13 +68,13 @@
          </font>
       </Label>
       <ComboBox fx:id="incomeBracket" layoutX="40.0" layoutY="570.0" prefWidth="150.0" promptText="Seleziona..." />
-      <Button fx:id="subDetails" disable="true" layoutX="54.0" layoutY="204.0" mnemonicParsing="false" onAction="#showSubDetails" text="Dettagli contratto">
+      <Button fx:id="subDetails" disable="true" layoutX="53.0" layoutY="190.0" mnemonicParsing="false" onAction="#showSubDetails" text="Dettagli contratto">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
       <TextField fx:id="phone" layoutX="40.0" layoutY="500.0" prefHeight="30.0" prefWidth="218.0" promptText="Numero di telefono" />
-      <Label layoutX="1006.0" layoutY="98.0" text="Nuova lettura">
+      <Label layoutX="1005.0" layoutY="84.0" text="Nuova autolettura">
          <font>
             <Font size="18.0" />
          </font>
@@ -82,19 +82,19 @@
       <PasswordField fx:id="currentPw" layoutX="587.0" layoutY="460.0" promptText="Password attuale" />
       <PasswordField fx:id="newPw" layoutX="587.0" layoutY="500.0" promptText="Nuova password" />
       <PasswordField fx:id="confirmPw" layoutX="587.0" layoutY="540.0" promptText="Conferma password" />
-      <TextField fx:id="consumption" disable="true" layoutX="1006.0" layoutY="132.0" promptText="Consumi" />
-      <Button fx:id="addMeasurement" disable="true" layoutX="1049.0" layoutY="173.0" mnemonicParsing="false" onAction="#doAddMeasurement" text="Comunica">
+      <TextField fx:id="consumption" disable="true" layoutX="1005.0" layoutY="118.0" promptText="Consumi" />
+      <Button fx:id="addMeasurement" disable="true" layoutX="1048.0" layoutY="159.0" mnemonicParsing="false" onAction="#doAddMeasurement" text="Comunica">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="1006.0" layoutY="227.0" text="Ultima lettura:">
+      <Label layoutX="1005.0" layoutY="213.0" text="Ultima lettura:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TextFlow fx:id="lastReading" layoutX="1006.0" layoutY="257.0" prefHeight="114.0" prefWidth="198.0" />
-      <Button fx:id="consumptionTrend" disable="true" layoutX="84.0" layoutY="252.0" mnemonicParsing="false" onAction="#showConsumptionTrend" text="Statistiche">
+      <TextFlow fx:id="lastReading" layoutX="1005.0" layoutY="243.0" prefHeight="114.0" prefWidth="198.0" />
+      <Button fx:id="consumptionTrend" disable="true" layoutX="83.0" layoutY="238.0" mnemonicParsing="false" onAction="#showConsumptionTrend" text="Statistiche">
          <font>
             <Font size="15.0" />
          </font>
@@ -104,7 +104,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button fx:id="downloadFile" layoutX="326.0" layoutY="378.0" mnemonicParsing="false" onAction="#doDownloadFile" text="Scarica documento">
+      <Button fx:id="downloadFile" layoutX="325.0" layoutY="364.0" mnemonicParsing="false" onAction="#doDownloadFile" text="Scarica documento">
          <font>
             <Font size="15.0" />
          </font>
@@ -114,11 +114,11 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="activationReqTable" layoutX="825.0" layoutY="436.0" prefHeight="216.0" prefWidth="353.0">
+      <TableView fx:id="activationReqTable" layoutX="825.0" layoutY="436.0" prefHeight="216.0" prefWidth="350.0">
         <columns>
           <TableColumn fx:id="reqCreationDateCol" prefWidth="106.0" text="Data apertura" />
-            <TableColumn fx:id="reqUtilityCol" prefWidth="88.0" text="Fornitura" />
-            <TableColumn fx:id="reqResultCol" prefWidth="98.0" text="Esito" />
+            <TableColumn fx:id="reqUtilityCol" prefWidth="97.0" text="Fornitura" />
+            <TableColumn fx:id="reqResultCol" prefWidth="145.0" text="Esito" />
         </columns>
       </TableView>
       <Button layoutX="825.0" layoutY="662.0" mnemonicParsing="false" onAction="#doShowActivationReqDetails" text="Dettagli">

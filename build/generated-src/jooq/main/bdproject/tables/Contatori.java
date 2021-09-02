@@ -13,9 +13,10 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -48,9 +49,14 @@ public class Contatori extends TableImpl<ContatoriRecord> {
     }
 
     /**
+     * The column <code>utenze.contatori.Progressivo</code>.
+     */
+    public final TableField<ContatoriRecord, Integer> PROGRESSIVO = createField(DSL.name("Progressivo"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
      * The column <code>utenze.contatori.Matricola</code>.
      */
-    public final TableField<ContatoriRecord, String> MATRICOLA = createField(DSL.name("Matricola"), SQLDataType.VARCHAR(20).nullable(false), this, "");
+    public final TableField<ContatoriRecord, String> MATRICOLA = createField(DSL.name("Matricola"), SQLDataType.VARCHAR(20), this, "");
 
     /**
      * The column <code>utenze.contatori.MateriaPrima</code>.
@@ -101,13 +107,18 @@ public class Contatori extends TableImpl<ContatoriRecord> {
     }
 
     @Override
+    public Identity<ContatoriRecord, Integer> getIdentity() {
+        return (Identity<ContatoriRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
     public UniqueKey<ContatoriRecord> getPrimaryKey() {
         return Keys.KEY_CONTATORI_PRIMARY;
     }
 
     @Override
     public List<UniqueKey<ContatoriRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_CONTATORI_AK2_CONTATORI);
+        return Arrays.asList(Keys.KEY_CONTATORI_AK1_CONTATORI, Keys.KEY_CONTATORI_AK2_CONTATORI);
     }
 
     @Override
@@ -159,11 +170,11 @@ public class Contatori extends TableImpl<ContatoriRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<String, String, Integer> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Integer, String, String, Integer> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

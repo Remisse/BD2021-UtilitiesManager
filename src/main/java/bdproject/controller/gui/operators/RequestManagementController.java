@@ -1,11 +1,9 @@
-package bdproject.controller.gui.adminarea;
+package bdproject.controller.gui.operators;
 
 import bdproject.controller.gui.AbstractViewController;
 import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
-import bdproject.tables.pojos.ContrattiDettagliati;
-import bdproject.tables.pojos.RichiesteAttivazione;
-import bdproject.tables.pojos.RichiesteCessazione;
+import bdproject.tables.pojos.*;
 import bdproject.utils.FXUtils;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
@@ -17,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -28,8 +27,10 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static bdproject.tables.Contatori.CONTATORI;
 import static bdproject.tables.RichiesteAttivazione.RICHIESTE_ATTIVAZIONE;
 import static bdproject.tables.RichiesteCessazione.RICHIESTE_CESSAZIONE;
+import static bdproject.tables.TipiAttivazione.TIPI_ATTIVAZIONE;
 
 public class RequestManagementController extends AbstractViewController implements Initializable {
 
@@ -39,7 +40,8 @@ public class RequestManagementController extends AbstractViewController implemen
     @FXML private TableColumn<RichiesteAttivazione, String> activPublishDateCol;
     @FXML private TableColumn<RichiesteAttivazione, Integer> activClientCol;
     @FXML private TableColumn<RichiesteAttivazione, String> activStatusCol;
-    @FXML private TableColumn<RichiesteAttivazione, String> activNotesCol;
+    @FXML private TableColumn<RichiesteAttivazione, String> activMethodCol;
+    @FXML private TableColumn<RichiesteAttivazione, String> activMeterCol;
 
     @FXML private TableView<RichiesteCessazione> endRequestTable;
     @FXML private TableColumn<RichiesteCessazione, String> endPublishDateCol;
@@ -48,6 +50,7 @@ public class RequestManagementController extends AbstractViewController implemen
     @FXML private TableColumn<RichiesteCessazione, String> endNotesCol;
 
     @FXML private TextArea refusalNotes;
+    @FXML private TextField meterIdField;
 
     private RequestManagementController(Stage stage, DataSource dataSource) {
         super(stage, dataSource, FXML_FILE);
@@ -64,11 +67,30 @@ public class RequestManagementController extends AbstractViewController implemen
     }
 
     private void initTables() {
+        try (Connection conn = getDataSource().getConnection()) {
+            DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+
+            List<TipiAttivazione> methods = Queries.fetchAll(ctx, TIPI_ATTIVAZIONE, TipiAttivazione.class);
+            activMethodCol.setCellValueFactory(c -> new SimpleStringProperty(methods.stream()
+                    .filter(a -> a.getCodice().equals(c.getValue().getAttivazione()))
+                    .findFirst()
+                    .orElseThrow()
+                    .getNome()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        activMeterCol.setCellValueFactory(c -> {
+            final Contatori meter = Queries.fetchByKey(
+                    CONTATORI, CONTATORI.PROGRESSIVO, c.getValue().getContatore(), Contatori.class, getDataSource()).orElseThrow();
+            return new SimpleStringProperty(meter.getMatricola() == null ? "Non inserito" : meter.getMatricola());
+        });
+
         activPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(LocaleUtils.getItDateFormatter().format(
                 c.getValue().getDatarichiesta())));
         activClientCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCliente()).asObject());
-        activNotesCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNote()));
-        activStatusCol.setCellValueFactory(c -> new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
+        activStatusCol.setCellValueFactory(
+                c -> new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
 
         endPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(LocaleUtils.getItDateFormatter().format(
                 c.getValue().getDatarichiesta())));
@@ -107,7 +129,7 @@ public class RequestManagementController extends AbstractViewController implemen
     private void doShowDetails() {
         final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
         if (activRequest != null) {
-            createSubWindow(AdminActivationRequestDetailsController.create(null, getDataSource(), activRequest));
+            createSubWindow(OperatorActivationRequestDetailsController.create(null, getDataSource(), activRequest));
         } else {
             final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
@@ -117,20 +139,27 @@ public class RequestManagementController extends AbstractViewController implemen
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                createSubWindow(AdminSubDetailsController.create(getStage(), getDataSource(), sub));
+                createSubWindow(OperatorSubDetailsController.create(getStage(), getDataSource(), sub));
             }
         }
     }
 
+    /**
+     * TODO In dire need of a rewrite
+     * @param status
+     */
     private void updateSelectedRequestStatus(final String status) {
         final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
-        int result = 0;
         if (activRequest != null) {
+            int result = 1;
+
             try (Connection conn = getDataSource().getConnection()) {
                 if (status.equals("A")) {
-                    if (activRequest.getContatore() == null) {
-                        FXUtils.showBlockingWarning("Impossibile creare il contratto. Non è stata ancora inserita la" +
-                                "matricola del contatore.");
+                    final Contatori meter = Queries.fetchByKey(CONTATORI, CONTATORI.PROGRESSIVO, activRequest.getContatore(),
+                            Contatori.class, getDataSource()).orElseThrow();
+                    if (meter.getMatricola() == null) {
+                        result = 0;
+                        FXUtils.showBlockingWarning("Non è stata ancora inserita la matricola del contatore.");
                     } else {
                         result = Queries.createSubscriptionFromRequest(activRequest.getNumero(),
                                 activRequest.getContatore(), conn);
@@ -141,10 +170,13 @@ public class RequestManagementController extends AbstractViewController implemen
                         }
                     }
                 }
-                result = Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), status, conn);
+                /* If being approved and subscription was successfully created, then update status. */
                 if (result == 1) {
-                    FXUtils.showBlockingWarning("Richiesta aggiornata.");
-                    refreshTables();
+                    result = Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), status, conn);
+                    if (result == 1) {
+                        FXUtils.showBlockingWarning("Richiesta aggiornata.");
+                        refreshTables();
+                    }
                 } else {
                     FXUtils.showBlockingWarning("Impossibile aggiornare la richiesta.");
                 }
@@ -153,8 +185,18 @@ public class RequestManagementController extends AbstractViewController implemen
             }
         } else {
             final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
+            int result;
+
             if (endRequest != null) {
                 try (Connection conn = getDataSource().getConnection()) {
+                    if (status.equals("A")) {
+                        result = Queries.ceaseSubscription(endRequest.getIdcontratto(), conn);
+                        if (result == 1) {
+                            FXUtils.showBlockingWarning("Contratto cessato.");
+                        } else {
+                            FXUtils.showBlockingWarning("Impossibile cessare il contratto.");
+                        }
+                    }
                     result = Queries.setRequestStatus(RICHIESTE_CESSAZIONE, endRequest.getNumero(), status, conn);
                     if (result == 1) {
                         FXUtils.showBlockingWarning("Richiesta aggiornata.");
@@ -182,6 +224,35 @@ public class RequestManagementController extends AbstractViewController implemen
     @FXML
     private void doRefuse() {
         updateSelectedRequestStatus("R");
+    }
+
+    @FXML
+    private void doSetMeter() {
+        final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        if (activRequest != null) {
+            if (activRequest.getStato().equals("N") || activRequest.getStato().equals("E")) {
+                if (meterIdField.getText().length() > 0) {
+                    try (Connection conn = getDataSource().getConnection()) {
+                        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                        final int result =
+                                Queries.updateMeterId(activRequest.getContatore(), meterIdField.getText(), ctx);
+                        if (result == 1) {
+                            FXUtils.showBlockingWarning("Matricola inserita.");
+                        } else {
+                            FXUtils.showBlockingWarning("Impossibile inserire la matricola.");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    FXUtils.showBlockingWarning("Verifica che la matricola sia stata scritta correttamente.");
+                }
+            } else {
+                FXUtils.showBlockingWarning("La richiesta è già stata finalizzata.");
+            }
+        } else {
+            FXUtils.showBlockingWarning("Seleziona una richiesta di attivazione.");
+        }
     }
 
     @FXML
@@ -214,6 +285,6 @@ public class RequestManagementController extends AbstractViewController implemen
 
     @FXML
     private void goBack() {
-        switchTo(AdminChooseAreaController.create(getStage(), getDataSource()));
+        switchTo(AreaSelectorController.create(getStage(), getDataSource()));
     }
 }

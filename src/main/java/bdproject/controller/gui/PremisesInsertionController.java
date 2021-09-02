@@ -13,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.jooq.DSLContext;
-import org.jooq.SQL;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
@@ -112,16 +111,13 @@ public class PremisesInsertionController extends AbstractViewController implemen
                         newPremises.getComune(),
                         newPremises.getProvincia(),
                         ctx);
-                /*
-                 * If already present in DB, don't try to insert it again at the next screen.
-                 */
+
                 existingPremises.ifPresentOrElse(p -> {
-                        process.setPremises(null);
-                        if (process.meter().isPresent()) {
-                            final Contatori temp = process.meter().get();
-                            process.setMeter(new Contatori(temp.getMatricola(), temp.getMateriaprima(), p.getIdimmobile()));
-                        }
-                    }, () -> process.setPremises(newPremises));
+                    process.setPremises(p);
+                    process.meter().ifPresent(m ->
+                        process.setMeter(
+                                new Contatori(0, m.getMatricola(), m.getMateriaprima(), p.getIdimmobile())));
+                }, () -> process.setPremises(newPremises));
             } catch (Exception e) {
                 e.printStackTrace();
             }

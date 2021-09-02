@@ -1,4 +1,4 @@
-package bdproject.controller.gui.userarea;
+package bdproject.controller.gui.users;
 
 import bdproject.controller.Choice;
 import bdproject.controller.ChoiceImpl;
@@ -202,10 +202,13 @@ public class UserAreaController extends AbstractViewController implements Initia
     }
 
     private void initializeActivationRequestTable() {
-        reqCreationDateCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDatarichiesta().toString()));
-        reqResultCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStato()));
+        reqCreationDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatarichiesta())));
+        reqResultCol.setCellValueFactory(c ->
+                new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
         reqUtilityCol.setCellValueFactory(c -> {
-            final String utility = Queries.fetchPlanById(c.getValue().getOfferta(), getDataSource()).orElseThrow().getMateriaprima();
+            final String utility = Queries.fetchPlanById(c.getValue().getOfferta(), getDataSource())
+                    .orElseThrow()
+                    .getMateriaprima();
             return new SimpleStringProperty(utility);
         });
         refreshActivationRequestTable();
@@ -405,7 +408,7 @@ public class UserAreaController extends AbstractViewController implements Initia
 
     @FXML
     private void showConsumptionTrend() {
-        switchTo(ConsumptionStatsController.create(getStage(), getDataSource(), subscriptionChoice.getValue().getValue()));
+        switchTo(UserStatsController.create(getStage(), getDataSource(), subscriptionChoice.getValue().getValue()));
     }
 
     private boolean areUserFieldsInvalid() {

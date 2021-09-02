@@ -1,4 +1,4 @@
-package bdproject.controller.gui.userarea;
+package bdproject.controller.gui.users;
 
 import bdproject.controller.gui.AbstractViewController;
 import bdproject.controller.gui.ViewController;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class ConsumptionStatsController extends AbstractViewController implements Initializable {
+public class UserStatsController extends AbstractViewController implements Initializable {
 
     private static final String FXML_FILE = "consumptionTrend.fxml";
     private final ContrattiDettagliati subscription;
@@ -50,7 +50,7 @@ public class ConsumptionStatsController extends AbstractViewController implement
     @FXML
     private DatePicker endDate;
 
-    private ConsumptionStatsController(final Stage stage, final DataSource dataSource,
+    private UserStatsController(final Stage stage, final DataSource dataSource,
             final ContrattiDettagliati subscription) {
         super(stage, dataSource, FXML_FILE);
         this.subscription = subscription;
@@ -58,7 +58,7 @@ public class ConsumptionStatsController extends AbstractViewController implement
 
     public static ViewController create(final Stage stage, final DataSource dataSource,
             final ContrattiDettagliati subscription) {
-        return new ConsumptionStatsController(stage, dataSource, subscription);
+        return new UserStatsController(stage, dataSource, subscription);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class ConsumptionStatsController extends AbstractViewController implement
 
     private void updateAverages(final Connection conn) {
         if (startDate.getValue() != null && endDate.getValue() != null) {
-            final Immobili premises = Queries.fetchPremisesFromMeter(subscription.getContatore(), getDataSource());
+            final Immobili premises = Queries.fetchPremisesFromMeterNumber(subscription.getContatore(), getDataSource());
             final String utility = Queries.fetchUtilityFromSubscription(subscription, conn).getNome();
             peopleAvg.setText(Queries.avgConsumptionPerZone(
                     premises,
