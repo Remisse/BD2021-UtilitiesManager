@@ -273,7 +273,8 @@ public class SubscriptionManagementController extends AbstractViewController imp
     private void initReportsTable() {
         repPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDataemissione())));
         repDeadlineCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatascadenza())));
-        repPaidDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatapagamento())));
+        repPaidDateCol.setCellValueFactory(c -> new SimpleStringProperty(
+                c.getValue().getDatapagamento() == null ? "Non pagata" : dateIt.format(c.getValue().getDatapagamento())));
         repCostCol.setCellValueFactory(c -> new SimpleStringProperty("€ " + c.getValue().getImporto()));
         repEstimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
                 StringUtils.byteToYesNo(c.getValue().getStimata())));
@@ -334,24 +335,37 @@ public class SubscriptionManagementController extends AbstractViewController imp
     private void doPublishReport() {
         if (canPublishReport()) {
             final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
-            try (final Connection conn = getDataSource().getConnection()) {
-                final int result = Queries.publishReport(
-                        sub.getIdcontratto(),
-                        1,
-                        BigDecimal.valueOf(Long.parseLong(finalCostField.getText())),
-                        reportFile,
-                        (byte) (estimatedCheckbox.isSelected() ? 1 : 0),
-                        conn);
-                if (result != 0) {
-                    FXUtils.showBlockingWarning("Bolletta emessa.");
-                    clearReportData();
-                } else {
-                    FXUtils.showBlockingWarning("Impossibile emettere la bolletta.");
+            if (sub != null) {
+                try (final Connection conn = getDataSource().getConnection()) {
+                    final int result = Queries.publishReport(
+                            sub.getIdcontratto(),
+                            1,
+                            new BigDecimal(finalCostField.getText()),
+                            reportFile,
+                            (byte) (estimatedCheckbox.isSelected() ? 1 : 0),
+                            conn);
+                    if (result != 0) {
+                        FXUtils.showBlockingWarning("Bolletta emessa.");
+                        clearReportData();
+                        doRefreshReports();
+                        final int resultUpdateRedundant = Queries.updateLastReportRedundant(
+                                sub.getIdcontratto(), LocalDate.now(), conn);
+                        if (resultUpdateRedundant != 1) {
+                            FXUtils.showBlockingWarning("Impossibile aggiornare la data dell'ultima bolletta!");
+                        }
+                    } else {
+                        FXUtils.showBlockingWarning("Impossibile emettere la bolletta.");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    FXUtils.showBlockingWarning(StringUtils.getGenericError());
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                FXUtils.showBlockingWarning(StringUtils.getGenericError());
+            } else {
+                FXUtils.showBlockingWarning("Seleziona il contratto per il quale vuoi emettere una bolletta.");
             }
+        } else {
+            FXUtils.showBlockingWarning("Controlla che i dati inseriti siano corretti e che il file di dettaglio sia" +
+                    "stato caricato.");
         }
     }
 
@@ -361,7 +375,7 @@ public class SubscriptionManagementController extends AbstractViewController imp
     }
 
     private boolean canPublishReport() {
-        return Checks.isNumber(finalCostField.toString()) && reportFile != null;
+        return Checks.isBigDecimal(finalCostField.getText()) && reportFile != null;
     }
 
     private void refreshAll() {

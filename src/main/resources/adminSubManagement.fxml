@@ -8,10 +8,12 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="repFileStatusLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="178.0" layoutX="821.0" layoutY="520.0" stroke="#00000034" strokeType="INSIDE" width="428.0" />
       <Label layoutX="233.0" layoutY="106.0" text="Contratti">
          <font>
             <Font size="18.0" />
@@ -55,7 +57,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="finalCostField" layoutX="834.0" layoutY="589.0" prefHeight="30.0" prefWidth="165.0" promptText="Importo..." />
+      <TextField fx:id="finalCostField" layoutX="834.0" layoutY="589.0" prefHeight="30.0" prefWidth="165.0" promptText="Importo" />
       <Button fx:id="publishReport" layoutX="986.0" layoutY="645.0" mnemonicParsing="false" onAction="#doPublishReport" prefHeight="31.0" prefWidth="85.0" text="Emetti">
          <font>
             <Font size="15.0" />
@@ -97,7 +99,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <TextField fx:id="interruptionDescription" layoutX="454.0" layoutY="411.0" prefHeight="30.0" prefWidth="416.0" promptText="Motivazione">
+      <TextField fx:id="interruptionDescription" layoutX="452.0" layoutY="407.0" prefHeight="31.0" prefWidth="416.0" promptText="Motivazione">
          <font>
             <Font size="16.0" />
          </font>

@@ -4,8 +4,6 @@ import bdproject.tables.pojos.*;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -619,7 +617,7 @@ public class Queries {
     }
 
     public static Optional<Immobili> fetchPremisesByCandidateKey(final String street, final String streetNo,
-            @Nullable final String apartmentNumber, final String municipality, final String province, final DSLContext ctx) {
+            final String apartmentNumber, final String municipality, final String province, final DSLContext ctx) {
         return ctx.select()
                 .from(IMMOBILI)
                 .where(IMMOBILI.VIA.eq(street))
@@ -667,6 +665,46 @@ public class Queries {
         return ctx.update(CONTATORI)
                 .set(CONTATORI.MATRICOLA, meterId)
                 .where(CONTATORI.PROGRESSIVO.eq(meterNumber))
+                .execute();
+    }
+
+    public static Optional<Record2<Integer, String>> fetchPersonIdAndName(final String email, final String password,
+            final DSLContext ctx) {
+       return ctx.select(PERSONE.IDENTIFICATIVO, PERSONE.NOME)
+                .from(PERSONE)
+                .where(PERSONE.EMAIL.eq(email))
+                .and(PERSONE.PASSWORD.eq(password))
+                .fetchOptional();
+    }
+
+    public static int insertPlan(final String name, final String description, final String utility,
+            final BigDecimal cost, final boolean active, final DSLContext ctx) {
+        return ctx.insertInto(OFFERTE, OFFERTE.NOME, OFFERTE.DESCRIZIONE, OFFERTE.MATERIAPRIMA, OFFERTE.COSTOMATERIAPRIMA,
+                OFFERTE.ATTIVA)
+                .values(name, description, utility, cost, active ? (byte) 1 : (byte) 0)
+                .execute();
+    }
+
+    public static int updatePlan(final int id, final String name, final String description, final boolean active, final DSLContext ctx) {
+        return ctx.update(OFFERTE)
+                .set(OFFERTE.NOME, name)
+                .set(OFFERTE.DESCRIZIONE, description)
+                .set(OFFERTE.ATTIVA, active ? (byte) 1 : (byte) 0)
+                .where(OFFERTE.CODICE.eq(id))
+                .execute();
+    }
+
+    public static <K> int deleteGeneric(final Table<?> table, final Field<K> keyField, final K keyValue, final DSLContext ctx) {
+        return ctx.delete(table)
+                .where(table.field(keyField).eq(keyValue))
+                .execute();
+    }
+
+    public static int updateLastReportRedundant(final int subId, final LocalDate lastReport, final Connection conn) {
+        DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        return ctx.update(CONTRATTI)
+                .set(CONTRATTI.DATAULTIMABOLLETTA, lastReport)
+                .where(CONTRATTI.IDCONTRATTO.eq(subId))
                 .execute();
     }
 }

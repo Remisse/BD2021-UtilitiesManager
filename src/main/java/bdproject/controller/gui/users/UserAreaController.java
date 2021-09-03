@@ -44,8 +44,8 @@ public class UserAreaController extends AbstractViewController implements Initia
     private static final int POSTCODE_LIMIT = 5;
     private static final int PASSWORD_MAX = 30;
     private static final int PASSWORD_MIN = 8;
-    private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
-    private final DecimalFormat decimal = LocaleUtils.getItDecimalFormat();
+    private static final DateTimeFormatter DATE_FORMAT = LocaleUtils.getItDateFormatter();
+    private static final DecimalFormat DECIMAL_FORMAT = LocaleUtils.getItDecimalFormat();
 
     @FXML private Label clientFullName;
 
@@ -169,14 +169,14 @@ public class UserAreaController extends AbstractViewController implements Initia
                     .collect(Collectors.toList());
 
             if (!userSubs.isEmpty()) {
-                publishDate.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDataemissione().format(dateIt)));
-                deadline.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDatascadenza().format(dateIt)));
+                publishDate.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDataemissione().format(DATE_FORMAT)));
+                deadline.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDatascadenza().format(DATE_FORMAT)));
                 paid.setCellValueFactory(cellData -> {
                     final LocalDate paidDate = cellData.getValue().getDatapagamento();
-                    return new SimpleStringProperty(paidDate != null ? paidDate.format(dateIt) : "No");
+                    return new SimpleStringProperty(paidDate != null ? paidDate.format(DATE_FORMAT) : "Non pagata");
                 });
                 amount.setCellValueFactory(cellData -> new SimpleStringProperty(
-                        "€" + decimal.format(cellData.getValue().getImporto())));
+                        "€" + DECIMAL_FORMAT.format(cellData.getValue().getImporto())));
                 estimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
                         StringUtils.byteToYesNo(c.getValue().getStimata())));
 
@@ -202,7 +202,7 @@ public class UserAreaController extends AbstractViewController implements Initia
     }
 
     private void initializeActivationRequestTable() {
-        reqCreationDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatarichiesta())));
+        reqCreationDateCol.setCellValueFactory(c -> new SimpleStringProperty(DATE_FORMAT.format(c.getValue().getDatarichiesta())));
         reqResultCol.setCellValueFactory(c ->
                 new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
         reqUtilityCol.setCellValueFactory(c -> {
@@ -269,11 +269,11 @@ public class UserAreaController extends AbstractViewController implements Initia
                 if (Checks.isSubscriptionActive(subChoice.getValue(), conn)) {
                     if (Checks.isValidConsumption(consumption.getText())) {
                         var measurement = new Letture(
-                                BigDecimal.valueOf(Long.parseLong(consumption.getText())),
+                                new BigDecimal(consumption.getText()),
                                 subChoice.getValue().getContatore(),
                                 LocalDate.now(),
                                 (byte) 0,
-                                null
+                                SessionHolder.getSession().orElseThrow().getUserId()
                         );
                         Queries.insertMeasurement(measurement, conn);
                         showLastMeasurement();
@@ -298,8 +298,8 @@ public class UserAreaController extends AbstractViewController implements Initia
             try (Connection conn = getDataSource().getConnection()) {
                 Optional<Letture> lastMeasurement = Queries.fetchLastMeasurement(subChoice.getValue(), conn);
                 lastMeasurement.ifPresentOrElse(m -> {
-                    final Text text = new Text("Consumi: " + m.getConsumi()
-                            + "\nData: " + m.getDataeffettuazione().format(dateIt)
+                    final Text text = new Text("Consumi: " + DECIMAL_FORMAT.format(m.getConsumi())
+                            + "\nData: " + m.getDataeffettuazione().format(DATE_FORMAT)
                             + "\nConfermata: " + StringUtils.byteToYesNo(m.getConfermata()));
                     lastReading.getChildren().clear();
                     lastReading.getChildren().add(text);
@@ -421,7 +421,7 @@ public class UserAreaController extends AbstractViewController implements Initia
                 || email.getText().length() == 0
                 || !EmailValidator.getInstance().isValid(email.getText())
                 || phone.getText().length() == 0
-                || !Checks.isNumber(phone.getText());
+                || !Checks.isIntegerNumber(phone.getText());
     }
 
     private boolean isAreAllPasswordFieldsBlank() {
@@ -438,8 +438,9 @@ public class UserAreaController extends AbstractViewController implements Initia
         if (person == null) {
             throw new IllegalStateException("Fetched client in their own user area should not be null!");
         }
-        return currentPw.getText().equals(person.getPassword()) && newPw.getText().length() > PASSWORD_MIN && newPw.getText().length() < PASSWORD_MAX
-                && confirmPw.getText().equals(newPw.getText());
+        return currentPw.getText().equals(person.getPassword()) &&
+                newPw.getText().length() > PASSWORD_MIN && newPw.getText().length() < PASSWORD_MAX &&
+                confirmPw.getText().equals(newPw.getText());
     }
 
     /**

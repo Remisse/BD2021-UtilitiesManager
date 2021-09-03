@@ -78,6 +78,7 @@ public class HomeController extends AbstractViewController implements Initializa
             catalogueButton.setVisible(!s.isOperator());
 
             adminArea.setVisible(s.isOperator());
+            userArea.setVisible(!s.isOperator());
         }, () -> {
             email.setVisible(true);
             password.setVisible(true);
@@ -97,6 +98,7 @@ public class HomeController extends AbstractViewController implements Initializa
             catalogueButton.setVisible(true);
 
             adminArea.setVisible(false);
+            userArea.setVisible(false);
         });
     }
 
@@ -115,18 +117,13 @@ public class HomeController extends AbstractViewController implements Initializa
         try (Connection conn = getDataSource().getConnection()) {
             DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
 
-            query.select(PERSONE.IDENTIFICATIVO, PERSONE.NOME)
-                .from(PERSONE)
-                .where(PERSONE.EMAIL.eq(email.getText()))
-                .and(PERSONE.PASSWORD.eq(password.getText()))
-                .fetchOptional()
+            Queries.fetchPersonIdAndName(email.getText(), password.getText(), query)
                 .ifPresentOrElse(u -> {
                     final boolean isOperator = Queries.isOperator(u.component1(), conn);
                     SessionHolder.create(u.component1(), isOperator, u.component2());
                     updateSignInElements();
                 }, () -> FXUtils.showBlockingWarning("Indirizzo e-mail o password errati."));
-
-        } catch (SQLException | NoSuchElementException e) {
+        } catch (Exception e) {
             FXUtils.showError(e.getMessage());
         }
     }

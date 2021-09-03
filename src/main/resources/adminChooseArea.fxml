@@ -22,12 +22,12 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="misc" layoutX="515.0" layoutY="434.0" mnemonicParsing="false" onAction="#goToMisc" prefHeight="35.0" prefWidth="251.0" text="Altre operazioni">
+      <Button fx:id="misc" layoutX="515.0" layoutY="433.0" mnemonicParsing="false" onAction="#goToMisc" prefHeight="35.0" prefWidth="251.0" text="Altre operazioni">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="back" layoutX="581.0" layoutY="516.0" mnemonicParsing="false" onAction="#goBack" text="Torna indietro">
+      <Button fx:id="back" layoutX="582.0" layoutY="612.0" mnemonicParsing="false" onAction="#goBack" text="Torna indietro">
          <font>
             <Font size="16.0" />
          </font>
@@ -43,6 +43,11 @@
          </font>
       </Button>
       <Button fx:id="newOperator" layoutX="515.0" layoutY="378.0" mnemonicParsing="false" onAction="#goToNewOperatorSignUp" prefHeight="35.0" prefWidth="251.0" text="Registra un nuovo operatore">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="stats" layoutX="515.0" layoutY="519.0" mnemonicParsing="false" onAction="#goToStats" prefHeight="35.0" prefWidth="251.0" text="Statistiche">
          <font>
             <Font size="16.0" />
          </font>

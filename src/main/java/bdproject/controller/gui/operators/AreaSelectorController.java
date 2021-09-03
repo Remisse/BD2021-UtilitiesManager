@@ -32,7 +32,7 @@ public class AreaSelectorController extends AbstractViewController {
 
     @FXML
     private void goToCatalogue() {
-
+        switchTo(CatalogueManagementController.create(getStage(), getDataSource()));
     }
 
     @FXML
@@ -42,8 +42,11 @@ public class AreaSelectorController extends AbstractViewController {
 
     @FXML
     private void goToMisc() {
-
+        switchTo(MiscController.create(getStage(), getDataSource()));
     }
+
+    @FXML
+    private void goToStats() {}
 
     @FXML
     private void goBack() {

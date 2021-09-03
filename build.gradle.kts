@@ -26,13 +26,6 @@ javafx {
 }
 
 dependencies {
-    // Google Guava
-    implementation("com.google.guava:guava:30.1.1-jre")
-
-    // Apache Commons
-    implementation("org.apache.commons:commons-lang3:3.12.0")
-    implementation("org.apache.commons:commons-io:1.3.2")
-
     // Cross-platform JavaFX modules
     for (mod in fxmodules) {
         for (plat in platforms) {
@@ -46,11 +39,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/commons-validator/commons-validator
     implementation("commons-validator:commons-validator:1.7")
-
-    // JUnit Jupiter
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-
 }
 
 jooq {

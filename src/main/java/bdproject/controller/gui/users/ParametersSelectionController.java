@@ -123,7 +123,7 @@ public class ParametersSelectionController extends AbstractViewController implem
             case 3:
                 outcome = isValidNumber(peopleNoField.getText()) &&
                         meterIdField.getText().length() > 0 &&
-                        Checks.isNumber(otherClientIdField.getText()) &&
+                        Checks.isIntegerNumber(otherClientIdField.getText()) &&
                         Checks.isValidConsumption(measurementField.getText());
                 break;
         }
