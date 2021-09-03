@@ -1,5 +1,8 @@
-package bdproject.controller.gui;
+package bdproject.controller.gui.users;
 
+import bdproject.controller.gui.AbstractViewController;
+import bdproject.controller.gui.HomeController;
+import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.Contatori;
@@ -12,7 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
@@ -55,9 +57,15 @@ public class SubscriptionConfirmationController extends AbstractViewController i
         super(stage, dataSource, FXML);
         this.process = process;
         this.typeBackAction = Map.of(
-                3, () -> ParametersSelectionController.create(getStage(), getDataSource(), process),
-                2, () -> ParametersSelectionController.create(getStage(), getDataSource(), process),
-                1, () -> PremisesInsertionController.create(getStage(), getDataSource(), process)
+                3, () -> switchTo(ParametersSelectionController.create(getStage(), getDataSource(), process)),
+                2, () -> {
+                    if (process.premises().orElseThrow().getIdimmobile() == 0) {
+                        switchTo(PremisesInsertionController.create(getStage(), getDataSource(), process));
+                    } else {
+                        switchTo(ParametersSelectionController.create(getStage(), getDataSource(), process));
+                    }
+                },
+                1, () -> switchTo(PremisesInsertionController.create(getStage(), getDataSource(), process))
         );
     }
 

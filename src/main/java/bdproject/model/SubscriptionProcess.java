@@ -22,8 +22,6 @@ public interface SubscriptionProcess {
 
     void setOtherClient(ClientiDettagliati client);
 
-    void setOtherSubscription(ContrattiDettagliati sub);
-
     void setMeasurement(Letture m);
 
     int getClientId();
@@ -41,8 +39,6 @@ public interface SubscriptionProcess {
     Optional<Contatori> meter();
 
     Optional<ClientiDettagliati> otherClient();
-
-    Optional<ContrattiDettagliati> otherSubscription();
 
     Optional<Letture> measurement();
 }

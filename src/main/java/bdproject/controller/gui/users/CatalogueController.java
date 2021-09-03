@@ -1,7 +1,10 @@
-package bdproject.controller.gui;
+package bdproject.controller.gui.users;
 
 import bdproject.controller.Choice;
 import bdproject.controller.ChoiceImpl;
+import bdproject.controller.gui.AbstractViewController;
+import bdproject.controller.gui.HomeController;
+import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
@@ -148,7 +151,7 @@ public class CatalogueController extends AbstractViewController implements Initi
                 process = new SubscriptionProcessImpl();
             }
             process.setClientId(SessionHolder.getSession().orElseThrow().getUserId());
-            process.setPlan(table.getSelectionModel().getSelectedItem());
+            process.setPlan(table.isDisabled() ? null : table.getSelectionModel().getSelectedItem());
             process.setUse(uses.getValue().getItem());
             process.setActivationMethod(activationBox.getValue().getItem());
             switchTo(ParametersSelectionController.create(getStage(), getDataSource(), process));

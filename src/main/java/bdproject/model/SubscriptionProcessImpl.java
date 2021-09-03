@@ -13,7 +13,6 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     private int peopleNo;
     private Contatori meter;
     private ClientiDettagliati otherClient;
-    private ContrattiDettagliati otherSub;
     private Letture measurement;
 
     @Override
@@ -54,11 +53,6 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     @Override
     public void setOtherClient(ClientiDettagliati client) {
         otherClient = client;
-    }
-
-    @Override
-    public void setOtherSubscription(ContrattiDettagliati sub) {
-        otherSub = sub;
     }
 
     @Override
@@ -104,11 +98,6 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     @Override
     public Optional<ClientiDettagliati> otherClient() {
         return Optional.ofNullable(otherClient);
-    }
-
-    @Override
-    public Optional<ContrattiDettagliati> otherSubscription() {
-        return Optional.ofNullable(otherSub);
     }
 
     @Override

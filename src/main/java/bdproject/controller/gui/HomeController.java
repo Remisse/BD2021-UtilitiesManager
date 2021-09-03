@@ -1,6 +1,7 @@
 package bdproject.controller.gui;
 
 import bdproject.controller.gui.operators.AreaSelectorController;
+import bdproject.controller.gui.users.CatalogueController;
 import bdproject.controller.gui.users.UserAreaController;
 import bdproject.controller.gui.users.UserSignUpController;
 import bdproject.model.Queries;

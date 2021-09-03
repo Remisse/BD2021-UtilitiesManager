@@ -1,6 +1,8 @@
-package bdproject.controller.gui;
+package bdproject.controller.gui.users;
 
 import bdproject.controller.Checks;
+import bdproject.controller.gui.AbstractViewController;
+import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.*;
@@ -56,7 +58,7 @@ public class ParametersSelectionController extends AbstractViewController implem
         planLabel.setText(process.plan().orElseThrow().getNome());
         utilityLabel.setText(process.plan().orElseThrow().getMateriaprima());
         useLabel.setText(process.usage().orElseThrow().getNome());
-        methodLabel.setText(process.usage().orElseThrow().getNome());
+        methodLabel.setText(process.activation().orElseThrow().getNome());
 
         if (requiresPeopleNo()) {
             peopleNoLabel.setText("N. componenti del nucleo familiare");
@@ -66,7 +68,6 @@ public class ParametersSelectionController extends AbstractViewController implem
             peopleNoLabel.setVisible(false);
             peopleNoField.setVisible(false);
         }
-        peopleNoField.setText(String.valueOf(process.peopleNo()));
 
         switch (process.activation().orElseThrow().getCodice()) {
             case 1:
@@ -94,6 +95,15 @@ public class ParametersSelectionController extends AbstractViewController implem
                 measurementLabel.setVisible(true);
                 break;
         }
+
+        process.otherClient().ifPresent(c -> otherClientIdField.setText(c.getIdentificativo().toString()));
+        process.meter().ifPresent(m -> {
+            if (m.getMatricola() != null) {
+                meterIdField.setText(m.getMatricola());
+            }
+        });
+        process.measurement().ifPresent(m -> measurementField.setText(m.getConsumi().toString()));
+        peopleNoField.setText(String.valueOf(process.peopleNo()));
     }
 
     private boolean requiresPeopleNo() {
@@ -185,39 +195,43 @@ public class ParametersSelectionController extends AbstractViewController implem
     }
 
     private void byChange(final Connection conn) {
-        Optional<Contatori> meter = Queries.fetchMeterByIdAndUtility(
+        final Optional<Contatori> meter = Queries.fetchMeterByIdAndUtility(
                 meterIdField.getText(), process.plan().orElseThrow().getMateriaprima(), conn);
 
         meter.ifPresentOrElse(m -> {
-            Optional<ClientiDettagliati> client = Queries.fetchClientById(
+            final Optional<ClientiDettagliati> client = Queries.fetchClientById(
                     Integer.parseInt(otherClientIdField.getText()), conn);
 
             client.ifPresentOrElse(c -> {
                 /* Find the subscription on which the new one will be based */
-                Optional<ContrattiDettagliati> subscription = Queries.fetchSubscriptionForChange(
+                final Optional<ContrattiDettagliati> subscription = Queries.fetchSubscriptionForChange(
                         m.getMatricola(), c.getIdentificativo(), conn);
 
                 subscription.ifPresentOrElse(s -> {
-                    if (Checks.isValidConsumption(measurementField.getText())) {
-                        Letture measurement = new Letture(
-                                BigDecimal.valueOf(Long.parseLong(measurementField.getText())),
-                                m.getProgressivo(),
-                                LocalDate.now(),
-                                (byte) 0,
-                                c.getIdentificativo()
-                        );
-                        process.setMeasurement(measurement);
+                    final Optional<Offerte> plan = Queries.fetchPlanById(s.getOfferta(), getDataSource());
 
-                        Immobili premises = Queries.fetchPremisesById(m.getIdimmobile(), conn).orElseThrow();
-                        process.setPremises(premises);
-                        process.setMeter(m);
-                        process.setOtherClient(c);
-                        process.setOtherSubscription(s);
+                    plan.ifPresentOrElse(p -> {
+                        if (Checks.isValidConsumption(measurementField.getText())) {
+                            Letture measurement = new Letture(
+                                    BigDecimal.valueOf(Long.parseLong(measurementField.getText())),
+                                    m.getProgressivo(),
+                                    LocalDate.now(),
+                                    (byte) 0,
+                                    c.getIdentificativo()
+                            );
+                            process.setMeasurement(measurement);
 
-                        switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
-                    } else {
-                        FXUtils.showError("Verifica di aver inserito correttamente la lettura.");
-                    }
+                            Immobili premises = Queries.fetchPremisesById(m.getIdimmobile(), conn).orElseThrow();
+                            process.setPremises(premises);
+                            process.setMeter(m);
+                            process.setOtherClient(c);
+                            process.setPlan(p);
+
+                            switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
+                        } else {
+                            FXUtils.showError("Verifica di aver inserito correttamente la lettura.");
+                        }
+                    }, () -> FXUtils.showError("Offerta non trovata. Ma è davvero possibile?"));
                 }, () -> FXUtils.showError("Nessun contratto trovato. Verifica che i dati inseriti siano corretti."));
             }, () -> FXUtils.showError("Nessun cliente trovato. Verifica che il codice inserito sia corretto."));
         }, () -> FXUtils.showError("Nessun contatore trovato. Verifica che la matricola inserita sia corretta."));

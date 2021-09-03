@@ -1,10 +1,11 @@
-package bdproject.controller.gui;
+package bdproject.controller.gui.users;
 
 import bdproject.controller.Choice;
 import bdproject.controller.ChoiceImpl;
+import bdproject.controller.gui.AbstractViewController;
+import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
 import bdproject.model.SubscriptionProcess;
-import bdproject.tables.pojos.Contatori;
 import bdproject.tables.pojos.Immobili;
 import bdproject.utils.FXUtils;
 import javafx.collections.FXCollections;
@@ -74,6 +75,16 @@ public class PremisesInsertionController extends AbstractViewController implemen
 
         typeBox.setItems(FXCollections.observableList(typeList));
         typeBox.setValue(typeList.get(0));
+
+        process.premises().ifPresent(p -> {
+            typeBox.setValue(typeList.stream().filter(c -> c.getValue().equals(p.getTipo())).findFirst().orElseThrow());
+            streetField.setText(p.getVia());
+            streetNoField.setText(p.getNumcivico());
+            municipalityField.setText(p.getComune());
+            postcodeField.setText(p.getCap());
+            provinceField.setText(p.getProvincia());
+            apartmentNumberField.setText(p.getInterno() == null ? "" : p.getInterno());
+        });
     }
 
     private boolean areFieldsValid() {
