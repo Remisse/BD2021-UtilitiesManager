@@ -69,23 +69,23 @@
          </font>
       </Label>
       <DatePicker fx:id="birthdate" layoutX="128.0" layoutY="474.0" />
-      <TextField fx:id="email" layoutX="959.0" layoutY="135.0" />
-      <Label layoutX="959.0" layoutY="99.0" text="Indirizzo e-mail">
+      <TextField fx:id="email" layoutX="692.0" layoutY="251.0" />
+      <Label layoutX="694.0" layoutY="215.0" text="Indirizzo e-mail">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="959.0" layoutY="215.0" text="Password">
+      <Label layoutX="692.0" layoutY="327.0" text="Password">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="959.0" layoutY="327.0" text="Conferma password">
+      <Label layoutX="692.0" layoutY="438.0" text="Conferma password">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="692.0" layoutY="216.0" text="Fascia di reddito">
+      <Label fx:id="incomeLabel" layoutX="964.0" layoutY="99.0" text="Fascia di reddito">
          <font>
             <Font size="16.0" />
          </font>
@@ -102,9 +102,9 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <ComboBox fx:id="income" layoutX="694.0" layoutY="251.0" prefWidth="150.0" />
-      <PasswordField fx:id="password" layoutX="959.0" layoutY="252.0" />
-      <PasswordField fx:id="confirmPw" layoutX="959.0" layoutY="364.0" />
+      <ComboBox fx:id="income" layoutX="964.0" layoutY="135.0" prefHeight="25.0" prefWidth="150.0" />
+      <PasswordField fx:id="password" layoutX="692.0" layoutY="363.0" />
+      <PasswordField fx:id="confirmPw" layoutX="692.0" layoutY="474.0" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="571.0" layoutY="36.0" text="Inserisci i tuoi dati">
          <font>
             <Font size="18.0" />

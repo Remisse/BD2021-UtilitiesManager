@@ -54,6 +54,7 @@ public abstract class AbstractSignUpController extends AbstractViewController im
         try (Connection conn = getDataSource().getConnection()) {
             List<String> brackets = Queries.fetchAllIncomeBrackets(conn);
             income.setItems(FXCollections.observableList(brackets));
+            initOther(conn);
         } catch (SQLException e) {
             FXUtils.showError(e.getMessage());
         }
@@ -95,6 +96,8 @@ public abstract class AbstractSignUpController extends AbstractViewController im
             }
         }
     }
+
+    protected abstract void initOther(final Connection conn);
 
     protected abstract int abstractInsertRole(final int personId, final String income, final Connection conn);
 

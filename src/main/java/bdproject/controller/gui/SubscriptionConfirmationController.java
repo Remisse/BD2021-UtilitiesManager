@@ -12,6 +12,10 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 
 import javax.sql.DataSource;
 import java.net.URL;
@@ -20,6 +24,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import static org.jooq.impl.DSL.field;
 
 public class SubscriptionConfirmationController extends AbstractViewController implements Initializable {
 
@@ -99,35 +105,47 @@ public class SubscriptionConfirmationController extends AbstractViewController i
             "Stai per richiedere l'attivazione di un contratto di fornitura. Vuoi continuare?",
             () -> {
                 try (Connection conn = getDataSource().getConnection()) {
-                    final Immobili pTemp = process.premises().orElseThrow();
-                    final int premisesId = Queries.insertPremisesReturningId(
-                            pTemp.getTipo(),
-                            pTemp.getVia(),
-                            pTemp.getNumcivico(),
-                            pTemp.getComune(),
-                            pTemp.getCap(),
-                            pTemp.getProvincia(),
-                            pTemp.getInterno(),
-                            conn);
-                    if (premisesId == 0) {
-                        FXUtils.showBlockingWarning("Immobile non inserito!");
+                    int premisesId;
+                    if (process.premises().orElseThrow().getIdimmobile() == 0) {
+                        final Immobili pTemp = process.premises().orElseThrow();
+                        Queries.insertPremisesReturningId(
+                                pTemp.getTipo(),
+                                pTemp.getVia(),
+                                pTemp.getNumcivico(),
+                                pTemp.getComune(),
+                                pTemp.getCap(),
+                                pTemp.getProvincia(),
+                                pTemp.getInterno(),
+                                conn);
+                        premisesId = DSL.using(conn, SQLDialect.MYSQL)
+                                .select(field("last_insert_id()", SQLDataType.INTEGER))
+                                .fetchOne()
+                                .component1();
+                    } else {
+                        premisesId = process.premises().orElseThrow().getIdimmobile();
                     }
 
-                    process.meter().ifPresent(m -> {
-                        final int finalPremisesId = premisesId != 0 ? premisesId : m.getIdimmobile();
-                        final int lastInsertMeter = Queries.insertMeterReturningId(
-                                    m.getMatricola(),
-                                    m.getMateriaprima(),
-                                    finalPremisesId,
-                                    conn);
+                    final Contatori m = process.meter().orElseThrow();
+                    if (m.getProgressivo() == 0) {
+                        Queries.insertMeterReturningId(
+                                m.getMatricola(),
+                                m.getMateriaprima(),
+                                premisesId,
+                                conn
+                        );
+                        final int lastMeterId = DSL.using(conn, SQLDialect.MYSQL)
+                                .select(field("last_insert_id()", SQLDataType.INTEGER))
+                                .fetchOne()
+                                .component1();
                         process.setMeter(new Contatori(
-                                    lastInsertMeter != 0 ? lastInsertMeter : m.getProgressivo(),
-                                    m.getMatricola(),
-                                    m.getMateriaprima(),
-                                    finalPremisesId));
-                    });
+                                lastMeterId,
+                                m.getMatricola(),
+                                m.getMateriaprima(),
+                                premisesId
+                        ));
+                    }
 
-                    process.measurement().ifPresent(m -> Queries.insertMeasurement(process.measurement().orElseThrow(), conn));
+                    process.measurement().ifPresent(mt -> Queries.insertMeasurement(mt, conn));
 
                     final int result = Queries.insertActivationRequest(
                             process.getClientId(),

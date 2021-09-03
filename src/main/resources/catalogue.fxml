@@ -63,7 +63,7 @@
          </Label>
          <ComboBox fx:id="utilities" layoutX="149.0" layoutY="229.0" onAction="#triggerPopulate" prefHeight="30.0" prefWidth="187.0" />
          <ComboBox fx:id="uses" layoutX="149.0" layoutY="287.0" onAction="#triggerPopulate" prefHeight="30.0" prefWidth="187.0" />
-         <ComboBox fx:id="activationBox" layoutX="149.0" layoutY="342.0" prefHeight="30.0" prefWidth="187.0" />
+         <ComboBox fx:id="activationBox" layoutX="149.0" layoutY="342.0" onAction="#togglePlanTable" prefHeight="30.0" prefWidth="187.0" />
          <Label layoutX="18.0" layoutY="347.0" text="Attivazione">
             <font>
                <Font size="16.0" />

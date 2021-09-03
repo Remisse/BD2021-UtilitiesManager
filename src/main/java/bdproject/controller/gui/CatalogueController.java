@@ -132,11 +132,17 @@ public class CatalogueController extends AbstractViewController implements Initi
     }
 
     @FXML
+    private void togglePlanTable() {
+        table.setDisable(activationBox.getValue().getItem().getCodice() == 3);
+        table.getSelectionModel().clearSelection();
+    }
+
+    @FXML
     private void startSubscriptionProcess(ActionEvent e) {
-        if (table.getSelectionModel().getSelectedItem() == null) {
+        if (activationBox.getValue().getItem().getCodice() != 3 && table.getSelectionModel().getSelectedItem() == null) {
             FXUtils.showBlockingWarning("Non hai selezionato un'offerta.");
         } else if (SessionHolder.getSession().isEmpty()) {
-            FXUtils.showBlockingWarning("Per poter richiedere l'attivazione di un'offerta, devi prima effettuare l'accesso.");
+            FXUtils.showBlockingWarning("Per poter continuare, devi effettuare l'accesso.");
         } else {
             if (process == null) {
                 process = new SubscriptionProcessImpl();

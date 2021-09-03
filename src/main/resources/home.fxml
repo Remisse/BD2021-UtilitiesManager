@@ -56,7 +56,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField fx:id="email" layoutX="562.0" layoutY="363.0" promptText="Indirizzo e-mail">
+      <TextField fx:id="email" layoutX="562.0" layoutY="357.0" promptText="Indirizzo e-mail">
          <font>
             <Font size="15.0" />
          </font>
@@ -81,17 +81,17 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Label fx:id="greeting" alignment="CENTER" layoutX="608.0" layoutY="324.0" text="Ciao, USER" textAlignment="CENTER" visible="false">
+      <Label fx:id="greeting" alignment="BASELINE_CENTER" layoutX="520.0" layoutY="309.0" prefHeight="31.0" prefWidth="275.0" text="Ciao, USER" textAlignment="CENTER" visible="false">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Button fx:id="logout" alignment="CENTER" contentDisplay="CENTER" layoutX="605.0" layoutY="426.0" mnemonicParsing="false" onAction="#doLogout" text="Disconnettiti" textAlignment="CENTER" visible="false">
+      <Button fx:id="logout" alignment="CENTER" contentDisplay="CENTER" layoutX="605.0" layoutY="411.0" mnemonicParsing="false" onAction="#doLogout" text="Disconnettiti" textAlignment="CENTER" visible="false">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="userArea" alignment="CENTER" contentDisplay="CENTER" layoutX="596.0" layoutY="378.0" mnemonicParsing="false" onAction="#toUserArea" text="Area personale" visible="false">
+      <Button fx:id="userArea" alignment="CENTER" contentDisplay="CENTER" layoutX="597.0" layoutY="357.0" mnemonicParsing="false" onAction="#toUserArea" text="Area personale" visible="false">
          <font>
             <Font size="15.0" />
          </font>
@@ -101,7 +101,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button fx:id="adminArea" layoutX="578.0" layoutY="211.0" mnemonicParsing="false" onAction="#toAdminArea" text="Area operatori" visible="false">
+      <Button fx:id="adminArea" layoutX="599.0" layoutY="211.0" mnemonicParsing="false" onAction="#toAdminArea" text="Area operatori" visible="false">
          <font>
             <Font size="15.0" />
          </font>

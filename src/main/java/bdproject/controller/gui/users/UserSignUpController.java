@@ -14,6 +14,15 @@ public class UserSignUpController extends AbstractSignUpController {
         super(stage, dataSource);
     }
 
+    /**
+     * Empty
+     * @param conn
+     */
+    @Override
+    protected void initOther(final Connection conn) {
+
+    }
+
     public static ViewController create(final Stage stage, final DataSource dataSource) {
         return new UserSignUpController(stage, dataSource);
     }

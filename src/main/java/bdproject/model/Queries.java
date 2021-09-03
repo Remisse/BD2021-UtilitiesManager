@@ -78,7 +78,7 @@ public class Queries {
                         phone,
                         email,
                         password)
-                .returning(PERSONE.IDENTIFICATIVO)
+                .returningResult(PERSONE.IDENTIFICATIVO)
                 .execute();
     }
 
@@ -599,23 +599,22 @@ public class Queries {
                 .execute();
     }
 
-    public static int insertPremisesReturningId(final String tipo, final String via, final String numcivico, final String comune,
+    public static Integer insertPremisesReturningId(final String tipo, final String via, final String numcivico, final String comune,
                                       final String cap, final String provincia, final String interno, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.insertInto(IMMOBILI)
-                .values(defaultValue(), tipo, via, numcivico, interno, comune, provincia, cap)
+        return query.insertInto(IMMOBILI, IMMOBILI.TIPO, IMMOBILI.VIA, IMMOBILI.NUMCIVICO, IMMOBILI.INTERNO,
+                        IMMOBILI.COMUNE, IMMOBILI.PROVINCIA, IMMOBILI.CAP)
+                .values(tipo, via, numcivico, interno, comune, provincia, cap)
                 .onDuplicateKeyIgnore()
-                .returning(IMMOBILI.IDIMMOBILE)
                 .execute();
     }
 
-    public static int insertMeterReturningId(final String matricola, final String materiaprima, final Integer idimmobile,
+    public static Integer insertMeterReturningId(final String matricola, final String materiaprima, final int idimmobile,
                                    final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.insertInto(CONTATORI)
+        return query.insertInto(CONTATORI, CONTATORI.MATRICOLA, CONTATORI.MATERIAPRIMA, CONTATORI.IDIMMOBILE)
                 .values(matricola, materiaprima, idimmobile)
                 .onDuplicateKeyIgnore()
-                .returning(CONTATORI.PROGRESSIVO)
                 .execute();
     }
 

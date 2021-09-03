@@ -1,5 +1,7 @@
 package bdproject.controller.gui;
 
+import bdproject.controller.Choice;
+import bdproject.controller.ChoiceImpl;
 import bdproject.model.Queries;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.Contatori;
@@ -20,7 +22,6 @@ import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -35,9 +36,9 @@ public class PremisesInsertionController extends AbstractViewController implemen
 
     private static final String fxml = "premises.fxml";
     private final SubscriptionProcess process;
-    private final Map<String, String> typeMap = Map.of(
-            "Fabbricato", "F",
-            "Terreno", "T");
+    private final List<Choice<String, String>> typeList = List.of(
+            new ChoiceImpl<>("Fabbricato", "F", (i, v) -> i),
+            new ChoiceImpl<>("Terreno", "T", (i, v) -> i));
 
     @FXML private Label planLabel;
     @FXML private Label utilityLabel;
@@ -51,7 +52,7 @@ public class PremisesInsertionController extends AbstractViewController implemen
     @FXML private TextField apartmentNumberField;
     @FXML private TextField provinceField;
 
-    @FXML private ComboBox<String> typeBox;
+    @FXML private ComboBox<Choice<String, String>> typeBox;
 
     private PremisesInsertionController(final Stage stage, final DataSource dataSource, final String fxml,
             final SubscriptionProcess process) {
@@ -71,9 +72,8 @@ public class PremisesInsertionController extends AbstractViewController implemen
         usageLabel.setText(process.usage().orElseThrow().getNome());
         methodLabel.setText(process.activation().orElseThrow().getNome());
 
-        final List<String> types = List.copyOf(typeMap.keySet());
-        typeBox.setItems(FXCollections.observableList(types));
-        typeBox.setValue(types.get(0));
+        typeBox.setItems(FXCollections.observableList(typeList));
+        typeBox.setValue(typeList.get(0));
     }
 
     private boolean areFieldsValid() {
@@ -82,7 +82,13 @@ public class PremisesInsertionController extends AbstractViewController implemen
                 municipalityField.getText().length() > 0 && municipalityField.getText().length() <= MUNICIPALITY_LENGTH &&
                 postcodeField.getText().length() == POSTCODE_LENGTH &&
                 provinceField.getText().length() == PROVINCE_LENGTH &&
-                apartmentNumberField.getText().length() > 0 && apartmentNumberField.getText().length() <= AP_LENGTH;
+                apartmentNumberField.getText().length() <= AP_LENGTH;
+    }
+
+    @FXML
+    private void toggleApartmentNumberField() {
+        apartmentNumberField.setDisable(typeBox.getValue().getValue().equals("T"));
+        apartmentNumberField.clear();
     }
 
     @FXML
@@ -95,7 +101,7 @@ public class PremisesInsertionController extends AbstractViewController implemen
         if (areFieldsValid()) {
             final Immobili newPremises = new Immobili(
                     0,
-                    typeMap.get(typeBox.getValue()),
+                    typeBox.getValue().getValue(),
                     streetField.getText(),
                     streetNoField.getText(),
                     apartmentNumberField.getText().equals("") ? null : apartmentNumberField.getText(),
@@ -112,12 +118,7 @@ public class PremisesInsertionController extends AbstractViewController implemen
                         newPremises.getProvincia(),
                         ctx);
 
-                existingPremises.ifPresentOrElse(p -> {
-                    process.setPremises(p);
-                    process.meter().ifPresent(m ->
-                        process.setMeter(
-                                new Contatori(0, m.getMatricola(), m.getMateriaprima(), p.getIdimmobile())));
-                }, () -> process.setPremises(newPremises));
+                existingPremises.ifPresentOrElse(process::setPremises, () -> process.setPremises(newPremises));
             } catch (Exception e) {
                 e.printStackTrace();
             }

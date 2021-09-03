@@ -140,6 +140,9 @@ public class ParametersSelectionController extends AbstractViewController implem
                 process.setPeopleNo(requiresPeopleNo() ? Integer.parseInt(peopleNoField.getText()) : 1);
                 switch (process.activation().orElseThrow().getCodice()) {
                     case 1:
+                        process.setMeter(new Contatori(
+                                0, null, process.plan().orElseThrow().getMateriaprima(), 0
+                        ));
                         switchTo(PremisesInsertionController.create(getStage(), getDataSource(), process));
                         break;
                     case 2:
