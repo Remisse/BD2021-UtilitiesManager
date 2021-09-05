@@ -112,7 +112,7 @@ public class ClientiDettagliati extends TableImpl<ClientiDettagliatiRecord> {
     /**
      * The column <code>utenze.clienti_dettagliati.FasciaReddito</code>.
      */
-    public final TableField<ClientiDettagliatiRecord, String> FASCIAREDDITO = createField(DSL.name("FasciaReddito"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+    public final TableField<ClientiDettagliatiRecord, Integer> FASCIAREDDITO = createField(DSL.name("FasciaReddito"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private ClientiDettagliati(Name alias, Table<ClientiDettagliatiRecord> aliased) {
         this(alias, aliased, null);
@@ -183,7 +183,7 @@ public class ClientiDettagliati extends TableImpl<ClientiDettagliatiRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, String> fieldsRow() {
+    public Row14<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, Integer> fieldsRow() {
         return (Row14) super.fieldsRow();
     }
 }

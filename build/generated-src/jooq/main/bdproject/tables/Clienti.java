@@ -55,7 +55,7 @@ public class Clienti extends TableImpl<ClientiRecord> {
     /**
      * The column <code>utenze.clienti.FasciaReddito</code>.
      */
-    public final TableField<ClientiRecord, String> FASCIAREDDITO = createField(DSL.name("FasciaReddito"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+    public final TableField<ClientiRecord, Integer> FASCIAREDDITO = createField(DSL.name("FasciaReddito"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Clienti(Name alias, Table<ClientiRecord> aliased) {
         this(alias, aliased, null);
@@ -153,7 +153,7 @@ public class Clienti extends TableImpl<ClientiRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Integer, String> fieldsRow() {
+    public Row2<Integer, Integer> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 }

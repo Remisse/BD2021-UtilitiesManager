@@ -1,6 +1,9 @@
 package bdproject.controller.gui;
 
+import bdproject.controller.Choice;
+import bdproject.controller.ChoiceImpl;
 import bdproject.model.Queries;
+import bdproject.tables.pojos.Redditi;
 import bdproject.utils.FXUtils;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -10,6 +13,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.net.URL;
@@ -17,6 +22,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+
+import static bdproject.Tables.REDDITI;
 
 public abstract class AbstractSignUpController extends AbstractViewController implements Initializable {
 
@@ -38,7 +46,7 @@ public abstract class AbstractSignUpController extends AbstractViewController im
     @FXML private TextField municipality;
     @FXML private TextField postcode;
     @FXML private TextField province;
-    @FXML private ComboBox<String> income;
+    @FXML private ComboBox<Choice<Redditi, String>> income;
     @FXML private TextField phone;
     @FXML private TextField email;
     @FXML private PasswordField password;
@@ -51,8 +59,12 @@ public abstract class AbstractSignUpController extends AbstractViewController im
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try (Connection conn = getDataSource().getConnection()) {
-            List<String> brackets = Queries.fetchAllIncomeBrackets(conn);
-            income.setItems(FXCollections.observableList(brackets));
+            final List<Redditi> brackets = Queries.fetchAll(DSL.using(conn, SQLDialect.MYSQL), REDDITI, Redditi.class);
+            final List<Choice<Redditi, String>> list = brackets.stream()
+                    .map(r -> new ChoiceImpl<>(r, r.getFascia(), (i, v) -> v))
+                    .collect(Collectors.toList());
+            income.setItems(FXCollections.observableList(list));
+            income.setValue(list.get(0));
             initOther(conn);
         } catch (SQLException e) {
             FXUtils.showError(e.getMessage());
@@ -82,7 +94,7 @@ public abstract class AbstractSignUpController extends AbstractViewController im
                 if (lastInsertId == 0) {
                     FXUtils.showBlockingWarning("Impossibile creare un nuovo account.");
                 } else {
-                    final int result = abstractInsertRole(lastInsertId, income.getValue(), conn);
+                    final int result = abstractInsertRole(lastInsertId, income.getValue().getItem().getCodice(), conn);
                     if (result == 1) {
                         FXUtils.showBlockingWarning("Registrazione completata.");
                         switchTo(HomeController.create(getStage(), getDataSource()));
@@ -98,7 +110,7 @@ public abstract class AbstractSignUpController extends AbstractViewController im
 
     protected abstract void initOther(final Connection conn);
 
-    protected abstract int abstractInsertRole(final int personId, final String income, final Connection conn);
+    protected abstract int abstractInsertRole(final int personId, final int income, final Connection conn);
 
     private boolean areFieldsInvalid() {
         return (name.getText().length() == 0

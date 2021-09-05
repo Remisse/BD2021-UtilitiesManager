@@ -53,8 +53,29 @@ public class Queries {
                 .execute();
     }
 
+    public static <K, V> int updateOneFieldWhere(final Table<?> table, final Field<K> keyField, final K keyValue,
+            final Field<V> updatedField, final V updatedValue, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.update(table)
+                .set(table.field(updatedField), updatedValue)
+                .where(table.field(keyField).eq(keyValue))
+                .execute();
+    }
+
     public static int updatePersonPassword(final String password, final int personId, final Connection conn) {
-        return 0;
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.update(PERSONE)
+                .set(PERSONE.PASSWORD, password)
+                .where(PERSONE.IDENTIFICATIVO.eq(personId))
+                .execute();
+    }
+
+    public static int updateClientIncome(final int clientId, final int income, final Connection conn) {
+        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        return query.update(CLIENTI)
+                .set(CLIENTI.FASCIAREDDITO, income)
+                .where(CLIENTI.CODICECLIENTE.eq(clientId))
+                .execute();
     }
 
     public static int insertPersonAndReturnId(final String nhsCode, final String name, final String surname,
@@ -87,9 +108,9 @@ public class Queries {
                 .execute();
     }
 
-    public static int insertClient(final int personId, final String income, final Connection conn) {
+    public static int insertClient(final int personId, final int income, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.insertInto(CLIENTI)
+        return query.insertInto(CLIENTI, CLIENTI.CODICECLIENTE, CLIENTI.FASCIAREDDITO)
                 .values(personId, income)
                 .execute();
     }
@@ -321,15 +342,6 @@ public class Queries {
                 .fetchInto(BigDecimal.class);
 
         return averageBigDecimal(sums);
-    }
-
-    public static List<String> fetchAllIncomeBrackets(final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.select()
-            .from(REDDITI)
-            .fetchStreamInto(Redditi.class)
-            .map(Redditi::getFascia)
-            .collect(Collectors.toList());
     }
 
     public static Map<ContrattiDettagliati, Bollette> fetchAllSubscriptionsWithLastReport(final Connection conn) {

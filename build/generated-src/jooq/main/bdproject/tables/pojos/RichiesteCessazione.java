@@ -21,6 +21,7 @@ public class RichiesteCessazione implements Serializable {
     private final String    stato;
     private final String    note;
     private final Integer   idcontratto;
+    private final Integer   operatore;
 
     public RichiesteCessazione(RichiesteCessazione value) {
         this.numero = value.numero;
@@ -28,6 +29,7 @@ public class RichiesteCessazione implements Serializable {
         this.stato = value.stato;
         this.note = value.note;
         this.idcontratto = value.idcontratto;
+        this.operatore = value.operatore;
     }
 
     public RichiesteCessazione(
@@ -35,13 +37,15 @@ public class RichiesteCessazione implements Serializable {
         LocalDate datarichiesta,
         String    stato,
         String    note,
-        Integer   idcontratto
+        Integer   idcontratto,
+        Integer   operatore
     ) {
         this.numero = numero;
         this.datarichiesta = datarichiesta;
         this.stato = stato;
         this.note = note;
         this.idcontratto = idcontratto;
+        this.operatore = operatore;
     }
 
     /**
@@ -79,6 +83,13 @@ public class RichiesteCessazione implements Serializable {
         return this.idcontratto;
     }
 
+    /**
+     * Getter for <code>utenze.richieste_cessazione.Operatore</code>.
+     */
+    public Integer getOperatore() {
+        return this.operatore;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("RichiesteCessazione (");
@@ -88,6 +99,7 @@ public class RichiesteCessazione implements Serializable {
         sb.append(", ").append(stato);
         sb.append(", ").append(note);
         sb.append(", ").append(idcontratto);
+        sb.append(", ").append(operatore);
 
         sb.append(")");
         return sb.toString();

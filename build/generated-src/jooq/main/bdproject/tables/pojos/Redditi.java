@@ -16,20 +16,31 @@ public class Redditi implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final Integer    codice;
     private final String     fascia;
     private final BigDecimal sconto;
 
     public Redditi(Redditi value) {
+        this.codice = value.codice;
         this.fascia = value.fascia;
         this.sconto = value.sconto;
     }
 
     public Redditi(
+        Integer    codice,
         String     fascia,
         BigDecimal sconto
     ) {
+        this.codice = codice;
         this.fascia = fascia;
         this.sconto = sconto;
+    }
+
+    /**
+     * Getter for <code>utenze.redditi.Codice</code>.
+     */
+    public Integer getCodice() {
+        return this.codice;
     }
 
     /**
@@ -50,7 +61,8 @@ public class Redditi implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Redditi (");
 
-        sb.append(fascia);
+        sb.append(codice);
+        sb.append(", ").append(fascia);
         sb.append(", ").append(sconto);
 
         sb.append(")");

@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row2;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -49,6 +49,11 @@ public class Redditi extends TableImpl<RedditiRecord> {
     public Class<RedditiRecord> getRecordType() {
         return RedditiRecord.class;
     }
+
+    /**
+     * The column <code>utenze.redditi.Codice</code>.
+     */
+    public final TableField<RedditiRecord, Integer> CODICE = createField(DSL.name("Codice"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>utenze.redditi.Fascia</code>.
@@ -104,6 +109,11 @@ public class Redditi extends TableImpl<RedditiRecord> {
     }
 
     @Override
+    public List<UniqueKey<RedditiRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.KEY_REDDITI_AK_REDDITI);
+    }
+
+    @Override
     public List<Check<RedditiRecord>> getChecks() {
         return Arrays.asList(
             Internal.createCheck(this, DSL.name("redditi_chk_1"), "((`Sconto` > 0.0) and (`Sconto` <= 1.0))", true)
@@ -137,11 +147,11 @@ public class Redditi extends TableImpl<RedditiRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<String, BigDecimal> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<Integer, String, BigDecimal> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

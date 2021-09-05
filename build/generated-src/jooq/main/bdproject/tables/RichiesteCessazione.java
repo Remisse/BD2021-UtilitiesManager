@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -76,6 +76,11 @@ public class RichiesteCessazione extends TableImpl<RichiesteCessazioneRecord> {
      */
     public final TableField<RichiesteCessazioneRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false), this, "");
 
+    /**
+     * The column <code>utenze.richieste_cessazione.Operatore</code>.
+     */
+    public final TableField<RichiesteCessazioneRecord, Integer> OPERATORE = createField(DSL.name("Operatore"), SQLDataType.INTEGER, this, "");
+
     private RichiesteCessazione(Name alias, Table<RichiesteCessazioneRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -128,16 +133,24 @@ public class RichiesteCessazione extends TableImpl<RichiesteCessazioneRecord> {
 
     @Override
     public List<ForeignKey<RichiesteCessazioneRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_TERMINAZIONE);
+        return Arrays.asList(Keys.FK_TERMINAZIONE, Keys.FK_OPERATORE_CES);
     }
 
     private transient Contratti _contratti;
+    private transient Operatori _operatori;
 
     public Contratti contratti() {
         if (_contratti == null)
             _contratti = new Contratti(this, Keys.FK_TERMINAZIONE);
 
         return _contratti;
+    }
+
+    public Operatori operatori() {
+        if (_operatori == null)
+            _operatori = new Operatori(this, Keys.FK_OPERATORE_CES);
+
+        return _operatori;
     }
 
     @Override
@@ -174,11 +187,11 @@ public class RichiesteCessazione extends TableImpl<RichiesteCessazioneRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, LocalDate, String, String, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Integer, LocalDate, String, String, Integer, Integer> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

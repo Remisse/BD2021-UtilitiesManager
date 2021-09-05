@@ -23,6 +23,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+import static bdproject.tables.Persone.PERSONE;
+
 public class MiscController extends AbstractViewController implements Initializable {
 
     private static final String FXML_FILE = "operatorMisc.fxml";
@@ -85,7 +87,7 @@ public class MiscController extends AbstractViewController implements Initializa
     }
 
     private boolean isAreAllPasswordFieldsBlank() {
-        return currentPw.getText().length() == 0 && newPw.getText().length() == 0 && confirmPw.getText().length() == 0;
+        return currentPw.getText().length() == 0 || newPw.getText().length() == 0 || confirmPw.getText().length() == 0;
     }
 
     private boolean isNewPasswordCorrectlySet() {
@@ -99,7 +101,7 @@ public class MiscController extends AbstractViewController implements Initializa
             throw new IllegalStateException("Fetched operator in their own area should not be null!");
         }
         return currentPw.getText().equals(person.getPassword()) &&
-                newPw.getText().length() > PASSWORD_MIN && newPw.getText().length() < PASSWORD_MAX &&
+                newPw.getText().length() >= PASSWORD_MIN && newPw.getText().length() <= PASSWORD_MAX &&
                 confirmPw.getText().equals(newPw.getText());
     }
 
@@ -108,7 +110,7 @@ public class MiscController extends AbstractViewController implements Initializa
         if (areUserFieldsInvalid()) {
             FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i nuovi dati.");
         } else {
-            final int clientId = SessionHolder.getSession().orElseThrow().getUserId();
+            final int operatorId = SessionHolder.getSession().orElseThrow().getUserId();
             try (Connection conn = getDataSource().getConnection()) {
                 final int resultUpdateData = Queries.updatePerson(
                         email.getText(),
@@ -118,7 +120,7 @@ public class MiscController extends AbstractViewController implements Initializa
                         phone.getText(),
                         state.getText(),
                         street.getText(),
-                        clientId,
+                        operatorId,
                         conn);
                 if (resultUpdateData == 1) {
                     FXUtils.showBlockingWarning("Dati modificati con successo.");
@@ -135,9 +137,10 @@ public class MiscController extends AbstractViewController implements Initializa
     @FXML
     private void doUpdatePassword() {
         if (!isAreAllPasswordFieldsBlank() && isNewPasswordCorrectlySet()) {
-            final int clientId = SessionHolder.getSession().orElseThrow().getUserId();
+            final int operatorId = SessionHolder.getSession().orElseThrow().getUserId();
             try (Connection conn = getDataSource().getConnection()) {
-                final int resultUpdatePw = Queries.updatePersonPassword(newPw.getText(), clientId, conn);
+                final int resultUpdatePw = Queries.updateOneFieldWhere(PERSONE, PERSONE.IDENTIFICATIVO, operatorId,
+                        PERSONE.PASSWORD, newPw.getText(), conn);
                 if (resultUpdatePw == 1) {
                     FXUtils.showBlockingWarning("Password modificata con successo.");
                 } else {

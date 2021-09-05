@@ -23,6 +23,7 @@ public class RichiesteAttivazione implements Serializable {
     private final String    note;
     private final Integer   contatore;
     private final Integer   cliente;
+    private final Integer   operatore;
     private final Integer   offerta;
     private final Integer   uso;
     private final Integer   attivazione;
@@ -35,6 +36,7 @@ public class RichiesteAttivazione implements Serializable {
         this.note = value.note;
         this.contatore = value.contatore;
         this.cliente = value.cliente;
+        this.operatore = value.operatore;
         this.offerta = value.offerta;
         this.uso = value.uso;
         this.attivazione = value.attivazione;
@@ -48,6 +50,7 @@ public class RichiesteAttivazione implements Serializable {
         String    note,
         Integer   contatore,
         Integer   cliente,
+        Integer   operatore,
         Integer   offerta,
         Integer   uso,
         Integer   attivazione
@@ -59,6 +62,7 @@ public class RichiesteAttivazione implements Serializable {
         this.note = note;
         this.contatore = contatore;
         this.cliente = cliente;
+        this.operatore = operatore;
         this.offerta = offerta;
         this.uso = uso;
         this.attivazione = attivazione;
@@ -114,6 +118,13 @@ public class RichiesteAttivazione implements Serializable {
     }
 
     /**
+     * Getter for <code>utenze.richieste_attivazione.Operatore</code>.
+     */
+    public Integer getOperatore() {
+        return this.operatore;
+    }
+
+    /**
      * Getter for <code>utenze.richieste_attivazione.Offerta</code>.
      */
     public Integer getOfferta() {
@@ -145,6 +156,7 @@ public class RichiesteAttivazione implements Serializable {
         sb.append(", ").append(note);
         sb.append(", ").append(contatore);
         sb.append(", ").append(cliente);
+        sb.append(", ").append(operatore);
         sb.append(", ").append(offerta);
         sb.append(", ").append(uso);
         sb.append(", ").append(attivazione);

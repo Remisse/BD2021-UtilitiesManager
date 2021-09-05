@@ -31,7 +31,7 @@ public class OperatorSignUpController extends AbstractSignUpController {
     }
 
     @Override
-    protected int abstractInsertRole(final int personId, final String income, final Connection conn) {
+    protected int abstractInsertRole(final int personId, final int income, final Connection conn) {
         return Queries.insertOperator(personId, conn);
     }
 }

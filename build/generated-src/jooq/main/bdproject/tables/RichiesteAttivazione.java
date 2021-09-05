@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -87,6 +87,11 @@ public class RichiesteAttivazione extends TableImpl<RichiesteAttivazioneRecord> 
     public final TableField<RichiesteAttivazioneRecord, Integer> CLIENTE = createField(DSL.name("Cliente"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>utenze.richieste_attivazione.Operatore</code>.
+     */
+    public final TableField<RichiesteAttivazioneRecord, Integer> OPERATORE = createField(DSL.name("Operatore"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>utenze.richieste_attivazione.Offerta</code>.
      */
     public final TableField<RichiesteAttivazioneRecord, Integer> OFFERTA = createField(DSL.name("Offerta"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -153,11 +158,12 @@ public class RichiesteAttivazione extends TableImpl<RichiesteAttivazioneRecord> 
 
     @Override
     public List<ForeignKey<RichiesteAttivazioneRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_COLLEGAMENTO, Keys.FK_RICHIESTA, Keys.FK_SOTTOSCRIZIONE, Keys.FK_USO, Keys.FK_ATTIVAZIONE_TRAMITE);
+        return Arrays.asList(Keys.FK_COLLEGAMENTO, Keys.FK_RICHIESTA, Keys.FK_OPERATORE_ATT, Keys.FK_SOTTOSCRIZIONE, Keys.FK_USO, Keys.FK_ATTIVAZIONE_TRAMITE);
     }
 
     private transient Contatori _contatori;
     private transient Clienti _clienti;
+    private transient Operatori _operatori;
     private transient Offerte _offerte;
     private transient TipologieUso _tipologieUso;
     private transient TipiAttivazione _tipiAttivazione;
@@ -174,6 +180,13 @@ public class RichiesteAttivazione extends TableImpl<RichiesteAttivazioneRecord> 
             _clienti = new Clienti(this, Keys.FK_RICHIESTA);
 
         return _clienti;
+    }
+
+    public Operatori operatori() {
+        if (_operatori == null)
+            _operatori = new Operatori(this, Keys.FK_OPERATORE_ATT);
+
+        return _operatori;
     }
 
     public Offerte offerte() {
@@ -231,11 +244,11 @@ public class RichiesteAttivazione extends TableImpl<RichiesteAttivazioneRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, LocalDate, Integer, String, String, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row11<Integer, LocalDate, Integer, String, String, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

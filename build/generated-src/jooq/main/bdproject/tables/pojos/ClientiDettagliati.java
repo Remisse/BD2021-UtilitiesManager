@@ -29,7 +29,7 @@ public class ClientiDettagliati implements Serializable {
     private final String    numerotelefono;
     private final String    email;
     private final String    password;
-    private final String    fasciareddito;
+    private final Integer   fasciareddito;
 
     public ClientiDettagliati(ClientiDettagliati value) {
         this.identificativo = value.identificativo;
@@ -62,7 +62,7 @@ public class ClientiDettagliati implements Serializable {
         String    numerotelefono,
         String    email,
         String    password,
-        String    fasciareddito
+        Integer   fasciareddito
     ) {
         this.identificativo = identificativo;
         this.codicefiscale = codicefiscale;
@@ -174,7 +174,7 @@ public class ClientiDettagliati implements Serializable {
     /**
      * Getter for <code>utenze.clienti_dettagliati.FasciaReddito</code>.
      */
-    public String getFasciareddito() {
+    public Integer getFasciareddito() {
         return this.fasciareddito;
     }
 

@@ -16,7 +16,7 @@ public class Clienti implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Integer codicecliente;
-    private final String  fasciareddito;
+    private final Integer fasciareddito;
 
     public Clienti(Clienti value) {
         this.codicecliente = value.codicecliente;
@@ -25,7 +25,7 @@ public class Clienti implements Serializable {
 
     public Clienti(
         Integer codicecliente,
-        String  fasciareddito
+        Integer fasciareddito
     ) {
         this.codicecliente = codicecliente;
         this.fasciareddito = fasciareddito;
@@ -41,7 +41,7 @@ public class Clienti implements Serializable {
     /**
      * Getter for <code>utenze.clienti.FasciaReddito</code>.
      */
-    public String getFasciareddito() {
+    public Integer getFasciareddito() {
         return this.fasciareddito;
     }
 

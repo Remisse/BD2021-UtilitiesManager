@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
  * VIEW
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class ClientiDettagliatiRecord extends TableRecordImpl<ClientiDettagliatiRecord> implements Record14<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, String> {
+public class ClientiDettagliatiRecord extends TableRecordImpl<ClientiDettagliatiRecord> implements Record14<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, Integer> {
 
     private static final long serialVersionUID = 1L;
 
@@ -220,7 +220,7 @@ public class ClientiDettagliatiRecord extends TableRecordImpl<ClientiDettagliati
     /**
      * Setter for <code>utenze.clienti_dettagliati.FasciaReddito</code>.
      */
-    public ClientiDettagliatiRecord setFasciareddito(String value) {
+    public ClientiDettagliatiRecord setFasciareddito(Integer value) {
         set(13, value);
         return this;
     }
@@ -228,8 +228,8 @@ public class ClientiDettagliatiRecord extends TableRecordImpl<ClientiDettagliati
     /**
      * Getter for <code>utenze.clienti_dettagliati.FasciaReddito</code>.
      */
-    public String getFasciareddito() {
-        return (String) get(13);
+    public Integer getFasciareddito() {
+        return (Integer) get(13);
     }
 
     // -------------------------------------------------------------------------
@@ -237,12 +237,12 @@ public class ClientiDettagliatiRecord extends TableRecordImpl<ClientiDettagliati
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, String> fieldsRow() {
+    public Row14<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, Integer> fieldsRow() {
         return (Row14) super.fieldsRow();
     }
 
     @Override
-    public Row14<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, String> valuesRow() {
+    public Row14<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, Integer> valuesRow() {
         return (Row14) super.valuesRow();
     }
 
@@ -312,7 +312,7 @@ public class ClientiDettagliatiRecord extends TableRecordImpl<ClientiDettagliati
     }
 
     @Override
-    public Field<String> field14() {
+    public Field<Integer> field14() {
         return ClientiDettagliati.CLIENTI_DETTAGLIATI.FASCIAREDDITO;
     }
 
@@ -382,7 +382,7 @@ public class ClientiDettagliatiRecord extends TableRecordImpl<ClientiDettagliati
     }
 
     @Override
-    public String component14() {
+    public Integer component14() {
         return getFasciareddito();
     }
 
@@ -452,7 +452,7 @@ public class ClientiDettagliatiRecord extends TableRecordImpl<ClientiDettagliati
     }
 
     @Override
-    public String value14() {
+    public Integer value14() {
         return getFasciareddito();
     }
 
@@ -535,13 +535,13 @@ public class ClientiDettagliatiRecord extends TableRecordImpl<ClientiDettagliati
     }
 
     @Override
-    public ClientiDettagliatiRecord value14(String value) {
+    public ClientiDettagliatiRecord value14(Integer value) {
         setFasciareddito(value);
         return this;
     }
 
     @Override
-    public ClientiDettagliatiRecord values(Integer value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, String value9, LocalDate value10, String value11, String value12, String value13, String value14) {
+    public ClientiDettagliatiRecord values(Integer value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, String value9, LocalDate value10, String value11, String value12, String value13, Integer value14) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -573,7 +573,7 @@ public class ClientiDettagliatiRecord extends TableRecordImpl<ClientiDettagliati
     /**
      * Create a detached, initialised ClientiDettagliatiRecord
      */
-    public ClientiDettagliatiRecord(Integer identificativo, String codicefiscale, String nome, String cognome, String via, String numcivico, String cap, String comune, String provincia, LocalDate datanascita, String numerotelefono, String email, String password, String fasciareddito) {
+    public ClientiDettagliatiRecord(Integer identificativo, String codicefiscale, String nome, String cognome, String via, String numcivico, String cap, String comune, String provincia, LocalDate datanascita, String numerotelefono, String email, String password, Integer fasciareddito) {
         super(ClientiDettagliati.CLIENTI_DETTAGLIATI);
 
         setIdentificativo(identificativo);

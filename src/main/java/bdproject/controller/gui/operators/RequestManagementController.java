@@ -3,6 +3,7 @@ package bdproject.controller.gui.operators;
 import bdproject.controller.gui.AbstractViewController;
 import bdproject.controller.gui.ViewController;
 import bdproject.model.Queries;
+import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
 import bdproject.utils.FXUtils;
 import bdproject.utils.LocaleUtils;
@@ -25,6 +26,7 @@ import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static bdproject.tables.Contatori.CONTATORI;
@@ -42,12 +44,14 @@ public class RequestManagementController extends AbstractViewController implemen
     @FXML private TableColumn<RichiesteAttivazione, String> activStatusCol;
     @FXML private TableColumn<RichiesteAttivazione, String> activMethodCol;
     @FXML private TableColumn<RichiesteAttivazione, String> activMeterCol;
+    @FXML private TableColumn<RichiesteAttivazione, String> activOperatorCol;
 
     @FXML private TableView<RichiesteCessazione> endRequestTable;
     @FXML private TableColumn<RichiesteCessazione, String> endPublishDateCol;
     @FXML private TableColumn<RichiesteCessazione, Integer> endSubscriptionCol;
     @FXML private TableColumn<RichiesteCessazione, String> endStatusCol;
     @FXML private TableColumn<RichiesteCessazione, String> endNotesCol;
+    @FXML private TableColumn<RichiesteCessazione, String> endOperatorCol;
 
     @FXML private TextArea refusalNotes;
     @FXML private TextField meterIdField;
@@ -91,12 +95,16 @@ public class RequestManagementController extends AbstractViewController implemen
         activClientCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCliente()).asObject());
         activStatusCol.setCellValueFactory(
                 c -> new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
+        activOperatorCol.setCellValueFactory(c -> new SimpleStringProperty(
+                c.getValue().getOperatore() == null ? "-" : c.getValue().getOperatore().toString()));
 
         endPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(LocaleUtils.getItDateFormatter().format(
                 c.getValue().getDatarichiesta())));
         endSubscriptionCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getIdcontratto()).asObject());
         endNotesCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNote()));
         endStatusCol.setCellValueFactory(c -> new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
+        endOperatorCol.setCellValueFactory(c -> new SimpleStringProperty(
+                c.getValue().getOperatore() == null ? "-" : c.getValue().getOperatore().toString()));
 
         activationRequestTable.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
             if (newItem != null) {
@@ -144,108 +152,188 @@ public class RequestManagementController extends AbstractViewController implemen
         }
     }
 
-    /**
-     * TODO In dire need of a rewrite
-     * @param status
-     */
-    private void updateSelectedRequestStatus(final String status) {
+    @FXML
+    private void doSetInReview() {
+        final int operatorId = SessionHolder.getSession().orElseThrow().getUserId();
         final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        int result = 0;
         if (activRequest != null) {
-            int result = 1;
+            if (activRequest.getOperatore() == null) {
+                try (Connection conn = getDataSource().getConnection()) {
+                    result = Queries.updateOneFieldWhere(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMERO,
+                            activRequest.getNumero(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
+                    if (result == 1) {
+                        result += Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), "E", conn);
+                    } else {
+                        FXUtils.showBlockingWarning("Impossibile assegnare l'operatore.");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                FXUtils.showBlockingWarning("Richiesta già presa in carico da un operatore.");
+            }
+        } else {
+            final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
+            if (endRequest != null) {
+                if (endRequest.getOperatore() == null) {
+                    try (Connection conn = getDataSource().getConnection()) {
+                        result = Queries.updateOneFieldWhere(RICHIESTE_CESSAZIONE, RICHIESTE_CESSAZIONE.NUMERO,
+                                endRequest.getNumero(), RICHIESTE_CESSAZIONE.OPERATORE, operatorId, conn);
+                        if (result == 1) {
+                            result += Queries.setRequestStatus(RICHIESTE_CESSAZIONE, endRequest.getNumero(), "E", conn);
+                        } else {
+                            FXUtils.showBlockingWarning("Impossibile aggiornare la richiesta.");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    FXUtils.showBlockingWarning("Richiesta già presa in carico da un operatore.");
+                }
+            }
+        }
+        if (result == 2) {
+            FXUtils.showBlockingWarning("Richiesta aggiornata.");
+            refreshTables();
+        } else {
+            FXUtils.showBlockingWarning("Impossibile assegnare l'operatore.");
+        }
+    }
 
-            try (Connection conn = getDataSource().getConnection()) {
-                if (status.equals("A")) {
+    @FXML
+    private void doAccept() {
+        final int operatorId = SessionHolder.getSession().orElseThrow().getUserId();
+        final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        int result = 0;
+
+        if (activRequest != null) {
+            if (activRequest.getOperatore() == null || activRequest.getOperatore() == operatorId) {
+                try (Connection conn = getDataSource().getConnection()) {
+                    Queries.updateOneFieldWhere(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMERO,
+                            activRequest.getNumero(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
                     final Contatori meter = Queries.fetchByKey(CONTATORI, CONTATORI.PROGRESSIVO, activRequest.getContatore(),
-                            Contatori.class, getDataSource()).orElseThrow();
+                                    Contatori.class, getDataSource())
+                            .orElseThrow();
                     if (meter.getMatricola() == null) {
-                        result = 0;
                         FXUtils.showBlockingWarning("Non è stata ancora inserita la matricola del contatore.");
                     } else {
                         result = Queries.createSubscriptionFromRequest(activRequest.getNumero(),
                                 activRequest.getContatore(), conn);
                         if (result == 1) {
                             FXUtils.showBlockingWarning("Contratto creato.");
+                            result += Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), "A", conn);
                         } else {
                             FXUtils.showBlockingWarning("Impossibile creare il contratto.");
                         }
                     }
-                }
-                /* If being approved and subscription was successfully created, then update status. */
-                if (result == 1) {
-                    result = Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), status, conn);
-                    if (result == 1) {
-                        FXUtils.showBlockingWarning("Richiesta aggiornata.");
-                        refreshTables();
-                    }
-                } else {
-                    FXUtils.showBlockingWarning("Impossibile aggiornare la richiesta.");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
-            int result;
-
-            if (endRequest != null) {
-                try (Connection conn = getDataSource().getConnection()) {
-                    if (status.equals("A")) {
-                        result = Queries.ceaseSubscription(endRequest.getIdcontratto(), conn);
-                        if (result == 1) {
-                            FXUtils.showBlockingWarning("Contratto cessato.");
-                        } else {
-                            FXUtils.showBlockingWarning("Impossibile cessare il contratto.");
-                        }
-                    }
-                    result = Queries.setRequestStatus(RICHIESTE_CESSAZIONE, endRequest.getNumero(), status, conn);
-                    if (result == 1) {
-                        FXUtils.showBlockingWarning("Richiesta aggiornata.");
-                        refreshTables();
-                    } else {
-                        FXUtils.showBlockingWarning("Impossibile aggiornare la richiesta.");
-                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else {
+                FXUtils.showBlockingWarning("Richiesta presa in carico da un altro operatore.");
             }
-        }
-    }
-
-    @FXML
-    private void doSetInReview() {
-        updateSelectedRequestStatus("E");
-    }
-
-    @FXML
-    private void doAccept() {
-        updateSelectedRequestStatus("A");
-    }
-
-    @FXML
-    private void doRefuse() {
-        updateSelectedRequestStatus("R");
-    }
-
-    @FXML
-    private void doSetMeter() {
-        final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
-        if (activRequest != null) {
-            if (activRequest.getStato().equals("N") || activRequest.getStato().equals("E")) {
-                if (meterIdField.getText().length() > 0) {
+        } else {
+            final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
+            if (endRequest != null) {
+                if (endRequest.getOperatore() == null || endRequest.getOperatore() == operatorId) {
                     try (Connection conn = getDataSource().getConnection()) {
-                        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-                        final int result =
-                                Queries.updateMeterId(activRequest.getContatore(), meterIdField.getText(), ctx);
+                        Queries.updateOneFieldWhere(RICHIESTE_CESSAZIONE, RICHIESTE_CESSAZIONE.NUMERO,
+                                endRequest.getNumero(), RICHIESTE_CESSAZIONE.OPERATORE, operatorId, conn);
+                        result = Queries.ceaseSubscription(endRequest.getIdcontratto(), conn);
                         if (result == 1) {
-                            FXUtils.showBlockingWarning("Matricola inserita.");
+                            FXUtils.showBlockingWarning("Contratto cessato.");
+                            result += Queries.setRequestStatus(RICHIESTE_CESSAZIONE, endRequest.getNumero(), "A", conn);
                         } else {
-                            FXUtils.showBlockingWarning("Impossibile inserire la matricola.");
+                            FXUtils.showBlockingWarning("Impossibile cessare il contratto.");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    FXUtils.showBlockingWarning("Verifica che la matricola sia stata scritta correttamente.");
+                    FXUtils.showBlockingWarning("Richiesta presa in carico da un altro operatore.");
+                }
+            }
+        }
+        if (result == 2) {
+            FXUtils.showBlockingWarning("Richiesta aggiornata");
+            refreshTables();
+        } else {
+            FXUtils.showBlockingWarning("Impossibile aggiornare la richiesta");
+        }
+    }
+
+    @FXML
+    private void doRefuse() {
+        final int operatorId = SessionHolder.getSession().orElseThrow().getUserId();
+        final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        int result = 0;
+
+        if (activRequest != null) {
+            if (activRequest.getOperatore() == null || activRequest.getOperatore() == operatorId) {
+                try (Connection conn = getDataSource().getConnection()) {
+                    Queries.updateOneFieldWhere(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMERO,
+                            activRequest.getNumero(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
+                    result = Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), "R", conn);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                FXUtils.showBlockingWarning("Richiesta presa in carico da un altro operatore.");
+            }
+        } else {
+            final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
+            if (endRequest != null) {
+                if (endRequest.getOperatore() == null || endRequest.getOperatore() == operatorId) {
+                    try (Connection conn = getDataSource().getConnection()) {
+                        Queries.updateOneFieldWhere(RICHIESTE_CESSAZIONE, RICHIESTE_CESSAZIONE.NUMERO,
+                                endRequest.getNumero(), RICHIESTE_CESSAZIONE.OPERATORE, operatorId, conn);
+                        result = Queries.setRequestStatus(RICHIESTE_CESSAZIONE, endRequest.getNumero(), "R", conn);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    FXUtils.showBlockingWarning("Richiesta presa in carico da un altro operatore.");
+                }
+            }
+        }
+        if (result != 0) {
+            FXUtils.showBlockingWarning("Richiesta aggiornata");
+            refreshTables();
+        } else {
+            FXUtils.showBlockingWarning("Impossibile aggiornare la richiesta");
+        }
+    }
+
+    @FXML
+    private void doSetMeter() {
+        final int operatorId = SessionHolder.getSession().orElseThrow().getUserId();
+        final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+
+        if (activRequest != null) {
+            if (activRequest.getStato().equals("N") || activRequest.getStato().equals("E")) {
+                if (activRequest.getOperatore() == null || activRequest.getOperatore() == operatorId) {
+                    if (meterIdField.getText().length() > 0) {
+                        try (Connection conn = getDataSource().getConnection()) {
+                            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                            Queries.updateOneFieldWhere(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMERO,
+                                    activRequest.getNumero(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
+                            final int result =
+                                    Queries.updateMeterId(activRequest.getContatore(), meterIdField.getText(), ctx);
+                            if (result == 1) {
+                                FXUtils.showBlockingWarning("Matricola inserita.");
+                                refreshTables();
+                            } else {
+                                FXUtils.showBlockingWarning("Impossibile inserire la matricola.");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        FXUtils.showBlockingWarning("Verifica che la matricola sia stata scritta correttamente.");
+                    }
+                } else {
+                    FXUtils.showBlockingWarning("La richiesta è stata presa in carico da un altro operatore.");
                 }
             } else {
                 FXUtils.showBlockingWarning("La richiesta è già stata finalizzata.");

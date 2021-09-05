@@ -11,13 +11,14 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TableView fx:id="activationRequestTable" layoutX="42.0" layoutY="133.0" prefHeight="389.0" prefWidth="575.0">
+      <TableView fx:id="activationRequestTable" layoutX="18.0" layoutY="133.0" prefHeight="389.0" prefWidth="625.0">
         <columns>
           <TableColumn fx:id="activPublishDateCol" prefWidth="102.0" text="Data apertura" />
-            <TableColumn fx:id="activClientCol" prefWidth="94.0" text="Cliente" />
-            <TableColumn fx:id="activStatusCol" prefWidth="117.0" text="Stato" />
-            <TableColumn fx:id="activMethodCol" prefWidth="137.0" text="Metodo" />
-            <TableColumn fx:id="activMeterCol" prefWidth="124.0" text="Contatore" />
+            <TableColumn fx:id="activClientCol" prefWidth="70.0" text="Cliente" />
+            <TableColumn fx:id="activStatusCol" prefWidth="113.0" text="Stato" />
+            <TableColumn fx:id="activMethodCol" prefWidth="131.0" text="Metodo" />
+            <TableColumn fx:id="activMeterCol" prefWidth="125.0" text="Contatore" />
+            <TableColumn fx:id="activOperatorCol" prefWidth="86.0" text="Operatore" />
         </columns>
       </TableView>
       <Label layoutX="597.0" layoutY="33.0" text="Richieste">
@@ -25,7 +26,7 @@
             <Font size="22.0" />
          </font>
       </Label>
-      <Button layoutX="40.0" layoutY="31.0" mnemonicParsing="false" onAction="#goBack" text="Indietro">
+      <Button layoutX="18.0" layoutY="32.0" mnemonicParsing="false" onAction="#goBack" text="Indietro">
          <font>
             <Font size="16.0" />
          </font>
@@ -55,12 +56,13 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="endRequestTable" layoutX="665.0" layoutY="133.0" prefHeight="389.0" prefWidth="575.0">
+      <TableView fx:id="endRequestTable" layoutX="652.0" layoutY="133.0" prefHeight="389.0" prefWidth="609.0">
          <columns>
-            <TableColumn fx:id="endPublishDateCol" prefWidth="116.0" text="Data apertura" />
-            <TableColumn fx:id="endSubscriptionCol" prefWidth="91.0" text="Contratto" />
-            <TableColumn fx:id="endStatusCol" prefWidth="112.0" text="Stato" />
-            <TableColumn fx:id="endNotesCol" prefWidth="255.0" text="Note" />
+            <TableColumn fx:id="endPublishDateCol" prefWidth="104.0" text="Data apertura" />
+            <TableColumn fx:id="endSubscriptionCol" prefWidth="93.0" text="Contratto" />
+            <TableColumn fx:id="endStatusCol" prefWidth="110.0" text="Stato" />
+            <TableColumn fx:id="endNotesCol" prefWidth="213.0" text="Note" />
+            <TableColumn fx:id="endOperatorCol" prefWidth="88.0" text="Operatore" />
          </columns>
       </TableView>
       <Label layoutX="285.0" layoutY="97.0" text="Attivazioni">
@@ -79,7 +81,7 @@
          </font>
       </Button>
       <TextArea fx:id="refusalNotes" layoutX="420.0" layoutY="601.0" prefHeight="107.0" prefWidth="243.0" />
-      <Button layoutX="42.0" layoutY="530.0" mnemonicParsing="false" onAction="#doSetMeter" text="Aggiorna contatore" />
-      <TextField fx:id="meterIdField" layoutX="42.0" layoutY="573.0" promptText="Matricola" />
+      <Button layoutX="18.0" layoutY="527.0" mnemonicParsing="false" onAction="#doSetMeter" text="Aggiorna contatore" />
+      <TextField fx:id="meterIdField" layoutX="18.0" layoutY="570.0" promptText="Matricola" />
    </children>
 </AnchorPane>

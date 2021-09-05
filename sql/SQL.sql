@@ -34,7 +34,7 @@ create table bollette (
      
 create table clienti (
 	 CodiceCliente integer not null,
-     FasciaReddito varchar(30) not null,
+     FasciaReddito integer not null,
      constraint PK_CLIENTI primary key (CodiceCliente));
 
 create table compatibilità (
@@ -130,6 +130,7 @@ create table richieste_attivazione (
      Note varchar(200) not null default "",
      Contatore integer not null,
      Cliente integer not null,
+     Operatore integer default null,
      Offerta integer not null,
      Uso integer not null,
      Attivazione integer not null,
@@ -141,12 +142,15 @@ create table richieste_cessazione (
      Stato char not null default "N" check (Stato in ("N", "E", "A", "R")),
      Note varchar(200) not null default "",
      IdContratto integer not null,
+     Operatore integer default null,
      constraint PK_RIC_CESSAZIONE primary key (Numero));
      
 create table redditi (
+	Codice integer not null,
 	Fascia varchar(30) not null,
     Sconto decimal(7, 6) not null check (Sconto > 0.0 and Sconto <= 1.0),
-    constraint PK_REDDITI primary key (Fascia));
+    constraint PK_REDDITI primary key (Codice),
+    constraint AK_REDDITI unique (Fascia));
 
 create table tipi_attivazione (
 	 Codice integer not null,
@@ -198,16 +202,16 @@ values (3, "Voltura", 45.0);
 
 -- Populate "redditi"
 insert into redditi
-values ("0 - 5000", 0.5);
+values (1, "0 - 5.000", 0.5);
 
 insert into redditi
-values ("5001 - 10000", 0.7);
+values (2, "5.001 - 10.000", 0.7);
 
 insert into redditi
-values ("10001 - 15000", 0.95);
+values (3, "10.001 - 15.000", 0.95);
 
 insert into redditi
-values ("> 15000", 1.0);
+values (4, "15.001 o più", 1.0);
 
 
 -- Populate "immobili"
@@ -248,10 +252,10 @@ insert into persone
 values (default, "GAGGUG92F28U275P", "Armando", "Armandini", "Viale Vialone", 73, "88100", "Catanzaro", "CZ", 19951030, "292892992", "amministratore@admin.com", "password");
 
 insert into clienti
-values (1, "10001 - 15000");
+values (1, 3);
 
 insert into clienti
-values (2, "0 - 5000");
+values (2, 1);
 
 insert into operatori
 values (3);
@@ -279,11 +283,11 @@ values (last_insert_id(), 2);
 
 
 -- richieste_attivazione
-insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Stato)
-values (date_sub(curdate(), interval 123 day), 2, 2, 1, 1, 4, 1, "A");
+insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Operatore, Stato)
+values (date_sub(curdate(), interval 123 day), 2, 2, 1, 1, 4, 1, 3, "A");
 
-insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Stato)
-values (date_sub(curdate(), interval 123 day), 1, 1, 1, 1, 4, 1, "A");
+insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente, Operatore, Stato)
+values (date_sub(curdate(), interval 123 day), 1, 1, 1, 1, 4, 1, 3, "A");
 
 insert into richieste_attivazione(DataRichiesta, Contatore, Offerta, Uso, Attivazione, NumeroComponenti, Cliente)
 values (date_sub(curdate(), interval 2 day), 3, 2, 1, 1, 1, 2);
@@ -320,7 +324,7 @@ alter table clienti add constraint FK_CODICECLIENTE
 	 foreign key (CodiceCliente) references persone (Identificativo);
      
 alter table clienti add constraint FK_POSSEDIMENTO
-	foreign key (FasciaReddito) references redditi (Fascia) on update cascade;
+	foreign key (FasciaReddito) references redditi (Codice);
 
 alter table compatibilità add constraint FK_USOOFFERTA
      foreign key (Uso) references tipologie_uso (Codice);
@@ -357,6 +361,9 @@ alter table richieste_attivazione add constraint FK_SOTTOSCRIZIONE
 
 alter table richieste_attivazione add constraint FK_USO
      foreign key (Uso) references tipologie_uso (Codice);
+     
+alter table richieste_attivazione add constraint FK_OPERATORE_ATT
+     foreign key (Operatore) references operatori (CodiceOperatore);
 
 alter table richieste_attivazione add constraint FK_ATTIVAZIONE_TRAMITE
      foreign key (Attivazione) references tipi_attivazione (Codice);
@@ -366,6 +373,9 @@ alter table richieste_attivazione add constraint FK_COLLEGAMENTO
      
 alter table richieste_cessazione add constraint FK_TERMINAZIONE
 	 foreign key (IdContratto) references contratti (IdContratto);
+     
+alter table richieste_cessazione add constraint FK_OPERATORE_CES
+	 foreign key (Operatore) references operatori (CodiceOperatore);
     
 
 -- View section

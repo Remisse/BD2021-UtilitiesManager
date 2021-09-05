@@ -79,7 +79,7 @@ public class UserAreaController extends AbstractViewController implements Initia
     @FXML private PasswordField currentPw;
     @FXML private PasswordField newPw;
     @FXML private PasswordField confirmPw;
-    @FXML private ComboBox<String> incomeBracket;
+    @FXML private ComboBox<Choice<Redditi, String>> incomeBracket;
 
     private UserAreaController(final Stage stage, final DataSource dataSource) {
         super(stage, dataSource, FXML_FILE);
@@ -120,8 +120,13 @@ public class UserAreaController extends AbstractViewController implements Initia
             state.setText(client.getProvincia());
             email.setText(client.getEmail());
             phone.setText(client.getNumerotelefono());
-            incomeBracket.setItems(FXCollections.observableList(Queries.fetchAllIncomeBrackets(conn)));
-            incomeBracket.setValue(client.getFasciareddito());
+
+            final List<Redditi> brackets = Queries.fetchAll(DSL.using(conn, SQLDialect.MYSQL), REDDITI, Redditi.class);
+            final List<Choice<Redditi, String>> list = brackets.stream()
+                    .map(r -> new ChoiceImpl<>(r, r.getFascia(), (i, v) -> v))
+                    .collect(Collectors.toList());
+            incomeBracket.setItems(FXCollections.observableList(list));
+            incomeBracket.setValue(list.get(client.getFasciareddito() - 1));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -356,7 +361,7 @@ public class UserAreaController extends AbstractViewController implements Initia
         } else {
             final int clientId = SessionHolder.getSession().orElseThrow().getUserId();
             try (Connection conn = getDataSource().getConnection()) {
-                final int resultUpdateData = Queries.updatePerson(
+                int resultUpdateData = Queries.updatePerson(
                             email.getText(),
                             postcode.getText(),
                             municipality.getText(),
@@ -366,10 +371,12 @@ public class UserAreaController extends AbstractViewController implements Initia
                             street.getText(),
                             clientId,
                             conn);
-                if (resultUpdateData == 1) {
+                resultUpdateData += Queries.updateOneFieldWhere(CLIENTI, CLIENTI.CODICECLIENTE, clientId,
+                        CLIENTI.FASCIAREDDITO, incomeBracket.getValue().getItem().getCodice(), conn);
+                if (resultUpdateData == 2) {
                     FXUtils.showBlockingWarning("Dati modificati con successo.");
                 } else {
-                    FXUtils.showBlockingWarning("Impossibile modificare i dati.");
+                    FXUtils.showBlockingWarning("Operazione non riuscita.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -380,10 +387,11 @@ public class UserAreaController extends AbstractViewController implements Initia
 
     @FXML
     private void doUpdatePassword() {
-        if (!isAreAllPasswordFieldsBlank() && isNewPasswordCorrectlySet()) {
+        if (!isAtLeastOnePasswordFieldBlank() && isNewPasswordCorrectlySet()) {
             final int clientId = SessionHolder.getSession().orElseThrow().getUserId();
             try (Connection conn = getDataSource().getConnection()) {
-                final int resultUpdatePw = Queries.updatePersonPassword(newPw.getText(), clientId, conn);
+                final int resultUpdatePw = Queries.updateOneFieldWhere(PERSONE, PERSONE.IDENTIFICATIVO, clientId,
+                        PERSONE.PASSWORD, newPw.getText(), conn);
                 if (resultUpdatePw == 1) {
                     FXUtils.showBlockingWarning("Password modificata con successo.");
                 } else {
@@ -424,8 +432,8 @@ public class UserAreaController extends AbstractViewController implements Initia
                 || !Checks.isIntegerNumber(phone.getText());
     }
 
-    private boolean isAreAllPasswordFieldsBlank() {
-        return currentPw.getText().length() == 0 && newPw.getText().length() == 0 && confirmPw.getText().length() == 0;
+    private boolean isAtLeastOnePasswordFieldBlank() {
+        return currentPw.getText().length() == 0 || newPw.getText().length() == 0 || confirmPw.getText().length() == 0;
     }
 
     private boolean isNewPasswordCorrectlySet() {
@@ -439,7 +447,7 @@ public class UserAreaController extends AbstractViewController implements Initia
             throw new IllegalStateException("Fetched client in their own user area should not be null!");
         }
         return currentPw.getText().equals(person.getPassword()) &&
-                newPw.getText().length() > PASSWORD_MIN && newPw.getText().length() < PASSWORD_MAX &&
+                newPw.getText().length() >= PASSWORD_MIN && newPw.getText().length() <= PASSWORD_MAX &&
                 confirmPw.getText().equals(newPw.getText());
     }
 
