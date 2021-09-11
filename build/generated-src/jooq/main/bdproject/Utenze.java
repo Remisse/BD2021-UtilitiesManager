@@ -23,6 +23,7 @@ import bdproject.tables.Redditi;
 import bdproject.tables.RichiesteAttivazione;
 import bdproject.tables.RichiesteCessazione;
 import bdproject.tables.TipiAttivazione;
+import bdproject.tables.TipiImmobile;
 import bdproject.tables.TipologieUso;
 
 import java.util.Arrays;
@@ -142,6 +143,11 @@ public class Utenze extends SchemaImpl {
     public final TipiAttivazione TIPI_ATTIVAZIONE = TipiAttivazione.TIPI_ATTIVAZIONE;
 
     /**
+     * The table <code>utenze.tipi_immobile</code>.
+     */
+    public final TipiImmobile TIPI_IMMOBILE = TipiImmobile.TIPI_IMMOBILE;
+
+    /**
      * The table <code>utenze.tipologie_uso</code>.
      */
     public final TipologieUso TIPOLOGIE_USO = TipologieUso.TIPOLOGIE_USO;
@@ -181,6 +187,7 @@ public class Utenze extends SchemaImpl {
             RichiesteAttivazione.RICHIESTE_ATTIVAZIONE,
             RichiesteCessazione.RICHIESTE_CESSAZIONE,
             TipiAttivazione.TIPI_ATTIVAZIONE,
+            TipiImmobile.TIPI_IMMOBILE,
             TipologieUso.TIPOLOGIE_USO
         );
     }

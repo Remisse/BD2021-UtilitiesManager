@@ -1,8 +1,9 @@
 package bdproject.controller.gui.users;
 
 import bdproject.controller.gui.AbstractSubscriptionDetailsController;
-import bdproject.controller.gui.ViewController;
+import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
+import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.ContrattiDettagliati;
 import bdproject.tables.pojos.RichiesteCessazione;
 import bdproject.utils.FXUtils;
@@ -20,13 +21,14 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
 
     @FXML private TableView<RichiesteCessazione> endRequestTable;
 
-    protected UserSubDetailsController(Stage stage, DataSource dataSource, ContrattiDettagliati detailedSub) {
-        super(stage, dataSource, detailedSub);
+    protected UserSubDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
+            final ContrattiDettagliati detailedSub) {
+        super(stage, dataSource, holder, detailedSub);
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource,
+    public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final ContrattiDettagliati detailedSub) {
-        return new UserSubDetailsController(stage, dataSource, detailedSub);
+        return new UserSubDetailsController(stage, dataSource, holder, detailedSub);
     }
 
     /**
@@ -37,15 +39,15 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
     }
 
     @Override
-    protected ViewController getBackController() {
-        return UserAreaController.create(getStage(), getDataSource());
+    protected Controller getBackController() {
+        return UserAreaController.create(stage(), dataSource(), sessionHolder());
     }
 
     @Override
     protected void abstractDoInsertEndRequest() {
         final ContrattiDettagliati subscription = getSubscription();
 
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             if (subscription.getDatacessazione() != null) {
                 FXUtils.showBlockingWarning("Il contratto risulta già cessato.");
             } else if (Queries.hasOngoingInterruption(subscription, conn)) {
@@ -75,7 +77,7 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
 
         if (selectedRequest != null &&
                 (selectedRequest.getStato().equals("N") || selectedRequest.getStato().equals("E"))) {
-            try (Connection conn = getDataSource().getConnection()) {
+            try (Connection conn = dataSource().getConnection()) {
                 final int result = Queries.deleteEndRequest(selectedRequest.getNumero(), conn);
                 if (result == 1) {
                     FXUtils.showBlockingWarning("Richiesta eliminata.");

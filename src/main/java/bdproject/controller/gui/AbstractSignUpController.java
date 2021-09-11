@@ -3,6 +3,7 @@ package bdproject.controller.gui;
 import bdproject.controller.Choice;
 import bdproject.controller.ChoiceImpl;
 import bdproject.model.Queries;
+import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Redditi;
 import bdproject.utils.FXUtils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 
 import static bdproject.Tables.REDDITI;
 
-public abstract class AbstractSignUpController extends AbstractViewController implements Initializable {
+public abstract class AbstractSignUpController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "signup.fxml";
 
@@ -52,13 +53,13 @@ public abstract class AbstractSignUpController extends AbstractViewController im
     @FXML private PasswordField password;
     @FXML private PasswordField confirmPw;
 
-    protected AbstractSignUpController(Stage stage, DataSource dataSource) {
-        super(stage, dataSource, FXML_FILE);
+    protected AbstractSignUpController(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        super(stage, dataSource, holder, FXML_FILE);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             final List<Redditi> brackets = Queries.fetchAll(DSL.using(conn, SQLDialect.MYSQL), REDDITI, Redditi.class);
             final List<Choice<Redditi, String>> list = brackets.stream()
                     .map(r -> new ChoiceImpl<>(r, r.getFascia(), (i, v) -> v))
@@ -76,7 +77,7 @@ public abstract class AbstractSignUpController extends AbstractViewController im
         if (areFieldsInvalid()) {
             FXUtils.showBlockingWarning("Verifica i dati immessi.");
         } else {
-            try (Connection conn = getDataSource().getConnection()) {
+            try (Connection conn = dataSource().getConnection()) {
                 final int lastInsertId = Queries.insertPersonAndReturnId(
                         idCode.getText(),
                         name.getText(),
@@ -97,7 +98,7 @@ public abstract class AbstractSignUpController extends AbstractViewController im
                     final int result = abstractInsertRole(lastInsertId, income.getValue().getItem().getCodice(), conn);
                     if (result == 1) {
                         FXUtils.showBlockingWarning("Registrazione completata.");
-                        switchTo(HomeController.create(getStage(), getDataSource()));
+                        switchTo(HomeController.create(stage(), dataSource(), sessionHolder()));
                     } else {
                         FXUtils.showError("Creazione dell'account non riuscita.");
                     }
@@ -135,6 +136,6 @@ public abstract class AbstractSignUpController extends AbstractViewController im
     private void backToHome(ActionEvent event) {
         FXUtils.showConfirmationDialog(
                 "Vuoi davvero tornare al menu principale? Tutti i dati inseriti verranno persi.",
-                () -> switchTo(HomeController.create(getStage(), getDataSource())));
+                () -> switchTo(HomeController.create(stage(), dataSource(), sessionHolder())));
     }
 }

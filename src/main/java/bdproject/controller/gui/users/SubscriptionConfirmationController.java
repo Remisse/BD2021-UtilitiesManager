@@ -1,12 +1,14 @@
 package bdproject.controller.gui.users;
 
-import bdproject.controller.gui.AbstractViewController;
+import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.HomeController;
-import bdproject.controller.gui.ViewController;
+import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
+import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.Contatori;
 import bdproject.tables.pojos.Immobili;
+import bdproject.tables.pojos.TipiImmobile;
 import bdproject.utils.FXUtils;
 import bdproject.view.StringUtils;
 import javafx.fxml.FXML;
@@ -27,9 +29,10 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static bdproject.tables.TipiImmobile.TIPI_IMMOBILE;
 import static org.jooq.impl.DSL.field;
 
-public class SubscriptionConfirmationController extends AbstractViewController implements Initializable {
+public class SubscriptionConfirmationController extends AbstractController implements Initializable {
 
     private static final String FXML = "subConfirmation.fxml";
     private static final String FLOW_CSS = "-fx-font: 16 arial";
@@ -37,41 +40,34 @@ public class SubscriptionConfirmationController extends AbstractViewController i
     private final SubscriptionProcess process;
     private final Map<Integer, Runnable> typeBackAction;
 
-    @FXML
-    private Label planText;
-    @FXML
-    private Label utilityText;
-    @FXML
-    private Label useText;
-    @FXML
-    private Label activationText;
-    @FXML
-    private Label currentClientLabel;
-    @FXML
-    private TextFlow premisesFlow;
-    @FXML
-    private TextFlow currentClientFlow;
+    @FXML private Label planText;
+    @FXML private Label utilityText;
+    @FXML private Label useText;
+    @FXML private Label activationText;
+    @FXML private Label currentClientLabel;
+    @FXML private TextFlow premisesFlow;
+    @FXML private TextFlow currentClientFlow;
 
-    private SubscriptionConfirmationController(final Stage stage, final DataSource dataSource,
+    private SubscriptionConfirmationController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final SubscriptionProcess process) {
-        super(stage, dataSource, FXML);
+        super(stage, dataSource, holder, FXML);
         this.process = process;
         this.typeBackAction = Map.of(
-                3, () -> switchTo(ParametersSelectionController.create(getStage(), getDataSource(), process)),
+                3, () -> switchTo(ParametersSelectionController.create(stage(), dataSource(), sessionHolder(), this.process)),
                 2, () -> {
-                    if (process.premises().orElseThrow().getIdimmobile() == 0) {
-                        switchTo(PremisesInsertionController.create(getStage(), getDataSource(), process));
+                    if (this.process.estate().orElseThrow().getIdimmobile() == 0) {
+                        switchTo(EstateInsertionController.create(stage(), dataSource(), sessionHolder(), this.process));
                     } else {
-                        switchTo(ParametersSelectionController.create(getStage(), getDataSource(), process));
+                        switchTo(ParametersSelectionController.create(stage(), dataSource(), sessionHolder(), this.process));
                     }
                 },
-                1, () -> switchTo(PremisesInsertionController.create(getStage(), getDataSource(), process))
+                1, () -> switchTo(EstateInsertionController.create(stage(), dataSource(), sessionHolder(), this.process))
         );
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource,
+    public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final SubscriptionProcess process) {
-        return new SubscriptionConfirmationController(stage, dataSource, process);
+        return new SubscriptionConfirmationController(stage, dataSource, holder, process);
     }
 
     @Override
@@ -81,11 +77,9 @@ public class SubscriptionConfirmationController extends AbstractViewController i
         useText.setText(process.usage().orElseThrow().getNome());
         activationText.setText(process.activation().orElseThrow().getNome());
 
-        final Text premisesText = new Text(StringUtils.premisesToString(process.premises().orElseThrow()));
-        premisesText.setStyle(FLOW_CSS);
-        premisesFlow.getChildren().add(premisesText);
+        setPremisesText();
 
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             process.otherClient().ifPresentOrElse(
                     c -> {
                         final Text clientText = new Text(StringUtils.clientToString(c.getIdentificativo(), conn));
@@ -102,6 +96,15 @@ public class SubscriptionConfirmationController extends AbstractViewController i
         }
     }
 
+    private void setPremisesText() {
+        final TipiImmobile type = Queries.fetchOne(
+                TIPI_IMMOBILE, TIPI_IMMOBILE.CODICE, process.estate().orElseThrow().getTipo(), TipiImmobile.class, dataSource()
+        ).orElseThrow();
+        final Text premisesText = new Text(StringUtils.premisesToString(process.estate().orElseThrow(), type));
+        premisesText.setStyle(FLOW_CSS);
+        premisesFlow.getChildren().add(premisesText);
+    }
+
     @FXML
     private void goBack() {
         typeBackAction.get(process.activation().orElseThrow().getCodice()).run();
@@ -112,11 +115,11 @@ public class SubscriptionConfirmationController extends AbstractViewController i
         FXUtils.showConfirmationDialog(
             "Stai per richiedere l'attivazione di un contratto di fornitura. Vuoi continuare?",
             () -> {
-                try (Connection conn = getDataSource().getConnection()) {
-                    int premisesId;
-                    if (process.premises().orElseThrow().getIdimmobile() == 0) {
-                        final Immobili pTemp = process.premises().orElseThrow();
-                        Queries.insertPremisesReturningId(
+                try (Connection conn = dataSource().getConnection()) {
+                    int estateId;
+                    if (process.estate().orElseThrow().getIdimmobile() == 0) {
+                        final Immobili pTemp = process.estate().orElseThrow();
+                        Queries.insertEstateReturningId(
                                 pTemp.getTipo(),
                                 pTemp.getVia(),
                                 pTemp.getNumcivico(),
@@ -125,12 +128,12 @@ public class SubscriptionConfirmationController extends AbstractViewController i
                                 pTemp.getProvincia(),
                                 pTemp.getInterno(),
                                 conn);
-                        premisesId = DSL.using(conn, SQLDialect.MYSQL)
+                        estateId = DSL.using(conn, SQLDialect.MYSQL)
                                 .select(field("last_insert_id()", SQLDataType.INTEGER))
                                 .fetchOne()
                                 .component1();
                     } else {
-                        premisesId = process.premises().orElseThrow().getIdimmobile();
+                        estateId = process.estate().orElseThrow().getIdimmobile();
                     }
 
                     final Contatori m = process.meter().orElseThrow();
@@ -138,7 +141,7 @@ public class SubscriptionConfirmationController extends AbstractViewController i
                         Queries.insertMeterReturningId(
                                 m.getMatricola(),
                                 m.getMateriaprima(),
-                                premisesId,
+                                estateId,
                                 conn
                         );
                         final int lastMeterId = DSL.using(conn, SQLDialect.MYSQL)
@@ -149,7 +152,7 @@ public class SubscriptionConfirmationController extends AbstractViewController i
                                 lastMeterId,
                                 m.getMatricola(),
                                 m.getMateriaprima(),
-                                premisesId
+                                estateId
                         ));
                     }
 
@@ -166,7 +169,7 @@ public class SubscriptionConfirmationController extends AbstractViewController i
                             conn);
                     if (result != 0) {
                         FXUtils.showBlockingWarning("Richiesta inserita con successo.");
-                        switchTo(HomeController.create(getStage(), getDataSource()));
+                        switchTo(HomeController.create(stage(), dataSource(), sessionHolder()));
                     } else {
                         FXUtils.showBlockingWarning("Richiesta non inserita!");
                     }

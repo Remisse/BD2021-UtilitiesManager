@@ -1,5 +1,7 @@
 package bdproject.controller.gui;
 
+import bdproject.model.Session;
+import bdproject.model.SessionHolder;
 import bdproject.utils.FXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,20 +11,23 @@ import javafx.stage.Stage;
 import javax.sql.DataSource;
 import java.io.IOException;
 
-public abstract class AbstractViewController implements ViewController {
+public abstract class AbstractController implements Controller {
 
     private final Stage stage;
     private final DataSource dataSource;
+    private final SessionHolder sessionHolder;
     private final String fxml;
 
-    protected AbstractViewController(final Stage stage, final DataSource dataSource, final String fxml) {
+    protected AbstractController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
+            final String fxml) {
         this.stage = stage;
         this.dataSource = dataSource;
+        this.sessionHolder = holder;
         this.fxml = fxml;
     }
 
-    private Scene createNewScene(ViewController controller) {
-        final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource(controller.getFxml()));
+    private Scene createNewScene(Controller controller) {
+        final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource(controller.fxml()));
         loader.setController(controller);
         Pane pane = null;
         try {
@@ -37,28 +42,33 @@ public abstract class AbstractViewController implements ViewController {
     }
 
     @Override
-    public void switchTo(ViewController controller) {
+    public void switchTo(Controller controller) {
         stage.setScene(createNewScene(controller));
         stage.show();
     }
 
     @Override
-    public void createSubWindow(ViewController controller) {
+    public void createSubWindow(Controller controller) {
         Stage subStage = new Stage();
         subStage.setScene(createNewScene(controller));
         subStage.show();
     }
 
-    protected Stage getStage() {
+    @Override
+    public SessionHolder sessionHolder() {
+        return sessionHolder;
+    }
+
+    protected Stage stage() {
         return stage;
     }
 
-    protected DataSource getDataSource() {
+    protected DataSource dataSource() {
         return dataSource;
     }
 
     @Override
-    public String getFxml() {
+    public String fxml() {
         return fxml;
     }
 }

@@ -20,6 +20,7 @@ import bdproject.tables.Redditi;
 import bdproject.tables.RichiesteAttivazione;
 import bdproject.tables.RichiesteCessazione;
 import bdproject.tables.TipiAttivazione;
+import bdproject.tables.TipiImmobile;
 import bdproject.tables.TipologieUso;
 import bdproject.tables.records.BolletteRecord;
 import bdproject.tables.records.ClientiRecord;
@@ -37,6 +38,7 @@ import bdproject.tables.records.RedditiRecord;
 import bdproject.tables.records.RichiesteAttivazioneRecord;
 import bdproject.tables.records.RichiesteCessazioneRecord;
 import bdproject.tables.records.TipiAttivazioneRecord;
+import bdproject.tables.records.TipiImmobileRecord;
 import bdproject.tables.records.TipologieUsoRecord;
 
 import org.jooq.ForeignKey;
@@ -78,6 +80,7 @@ public class Keys {
     public static final UniqueKey<RichiesteAttivazioneRecord> KEY_RICHIESTE_ATTIVAZIONE_PRIMARY = Internal.createUniqueKey(RichiesteAttivazione.RICHIESTE_ATTIVAZIONE, DSL.name("KEY_richieste_attivazione_PRIMARY"), new TableField[] { RichiesteAttivazione.RICHIESTE_ATTIVAZIONE.NUMERO }, true);
     public static final UniqueKey<RichiesteCessazioneRecord> KEY_RICHIESTE_CESSAZIONE_PRIMARY = Internal.createUniqueKey(RichiesteCessazione.RICHIESTE_CESSAZIONE, DSL.name("KEY_richieste_cessazione_PRIMARY"), new TableField[] { RichiesteCessazione.RICHIESTE_CESSAZIONE.NUMERO }, true);
     public static final UniqueKey<TipiAttivazioneRecord> KEY_TIPI_ATTIVAZIONE_PRIMARY = Internal.createUniqueKey(TipiAttivazione.TIPI_ATTIVAZIONE, DSL.name("KEY_tipi_attivazione_PRIMARY"), new TableField[] { TipiAttivazione.TIPI_ATTIVAZIONE.CODICE }, true);
+    public static final UniqueKey<TipiImmobileRecord> KEY_TIPI_IMMOBILE_PRIMARY = Internal.createUniqueKey(TipiImmobile.TIPI_IMMOBILE, DSL.name("KEY_tipi_immobile_PRIMARY"), new TableField[] { TipiImmobile.TIPI_IMMOBILE.CODICE }, true);
     public static final UniqueKey<TipologieUsoRecord> KEY_TIPOLOGIE_USO_PRIMARY = Internal.createUniqueKey(TipologieUso.TIPOLOGIE_USO, DSL.name("KEY_tipologie_uso_PRIMARY"), new TableField[] { TipologieUso.TIPOLOGIE_USO.CODICE }, true);
 
     // -------------------------------------------------------------------------
@@ -92,6 +95,7 @@ public class Keys {
     public static final ForeignKey<ContatoriRecord, ImmobiliRecord> FK_INSTALLAZIONE = Internal.createForeignKey(Contatori.CONTATORI, DSL.name("FK_INSTALLAZIONE"), new TableField[] { Contatori.CONTATORI.IDIMMOBILE }, Keys.KEY_IMMOBILI_PRIMARY, new TableField[] { Immobili.IMMOBILI.IDIMMOBILE }, true);
     public static final ForeignKey<ContatoriRecord, MateriePrimeRecord> FK_MISURAZIONE = Internal.createForeignKey(Contatori.CONTATORI, DSL.name("FK_MISURAZIONE"), new TableField[] { Contatori.CONTATORI.MATERIAPRIMA }, Keys.KEY_MATERIE_PRIME_PRIMARY, new TableField[] { MateriePrime.MATERIE_PRIME.NOME }, true);
     public static final ForeignKey<ContrattiRecord, RichiesteAttivazioneRecord> FK_DEFINIZIONE = Internal.createForeignKey(Contratti.CONTRATTI, DSL.name("FK_DEFINIZIONE"), new TableField[] { Contratti.CONTRATTI.IDCONTRATTO }, Keys.KEY_RICHIESTE_ATTIVAZIONE_PRIMARY, new TableField[] { RichiesteAttivazione.RICHIESTE_ATTIVAZIONE.NUMERO }, true);
+    public static final ForeignKey<ImmobiliRecord, TipiImmobileRecord> FK_TIPO = Internal.createForeignKey(Immobili.IMMOBILI, DSL.name("FK_TIPO"), new TableField[] { Immobili.IMMOBILI.TIPO }, Keys.KEY_TIPI_IMMOBILE_PRIMARY, new TableField[] { TipiImmobile.TIPI_IMMOBILE.CODICE }, true);
     public static final ForeignKey<LettureRecord, ContatoriRecord> FK_CORRISPONDENZA = Internal.createForeignKey(Letture.LETTURE, DSL.name("FK_CORRISPONDENZA"), new TableField[] { Letture.LETTURE.CONTATORE }, Keys.KEY_CONTATORI_PRIMARY, new TableField[] { Contatori.CONTATORI.PROGRESSIVO }, true);
     public static final ForeignKey<LettureRecord, ClientiRecord> FK_EFFETTUAZIONE = Internal.createForeignKey(Letture.LETTURE, DSL.name("FK_EFFETTUAZIONE"), new TableField[] { Letture.LETTURE.CLIENTE }, Keys.KEY_CLIENTI_PRIMARY, new TableField[] { Clienti.CLIENTI.CODICECLIENTE }, true);
     public static final ForeignKey<OfferteRecord, MateriePrimeRecord> FK_INTERESSE = Internal.createForeignKey(Offerte.OFFERTE, DSL.name("FK_INTERESSE"), new TableField[] { Offerte.OFFERTE.MATERIAPRIMA }, Keys.KEY_MATERIE_PRIME_PRIMARY, new TableField[] { MateriePrime.MATERIE_PRIME.NOME }, true);

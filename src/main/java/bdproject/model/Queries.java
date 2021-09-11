@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
-import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import static bdproject.Tables.*;
@@ -59,22 +58,6 @@ public class Queries {
         return query.update(table)
                 .set(table.field(updatedField), updatedValue)
                 .where(table.field(keyField).eq(keyValue))
-                .execute();
-    }
-
-    public static int updatePersonPassword(final String password, final int personId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.update(PERSONE)
-                .set(PERSONE.PASSWORD, password)
-                .where(PERSONE.IDENTIFICATIVO.eq(personId))
-                .execute();
-    }
-
-    public static int updateClientIncome(final int clientId, final int income, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.update(CLIENTI)
-                .set(CLIENTI.FASCIAREDDITO, income)
-                .where(CLIENTI.CODICECLIENTE.eq(clientId))
                 .execute();
     }
 
@@ -241,11 +224,11 @@ public class Queries {
                 .fetchInto(pojo);
     }
 
-    public static Immobili fetchPremisesFromMeterId(final String meterId, final DataSource dataSource) {
-        Immobili premises = null;
+    public static Immobili fetchEstateFromMeterId(final String meterId, final DataSource dataSource) {
+        Immobili estate = null;
         try (Connection conn = dataSource.getConnection()) {
             DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-            premises = query.select(IMMOBILI.asterisk())
+            estate = query.select(IMMOBILI.asterisk())
                     .from(IMMOBILI, CONTATORI)
                     .where(CONTATORI.MATRICOLA.eq(meterId))
                     .and(CONTATORI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
@@ -253,10 +236,10 @@ public class Queries {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (premises == null) {
-            throw new IllegalStateException("Premises fetched from meter should not be null!");
+        if (estate == null) {
+            throw new IllegalStateException("estate fetched from meter should not be null!");
         }
-        return premises;
+        return estate;
     }
 
     public static List<Interruzioni> fetchInterruptions(final int subId, final Connection conn) {
@@ -291,12 +274,6 @@ public class Queries {
                 .fetchInto(Bollette.class);
     }
 
-    public static Optional<Bollette> getLastReport(final ContrattiDettagliati sub, final Connection conn) {
-        return fetchSubscriptionReports(sub, conn)
-                .stream()
-                .max(Comparator.comparing(Bollette::getDataemissione));
-    }
-
     public static boolean allReportsPaid(final ContrattiDettagliati sub, final Connection conn) {
         return fetchSubscriptionReports(sub, conn).stream()
                 .allMatch(r -> r.getDatapagamento() != null);
@@ -313,7 +290,7 @@ public class Queries {
                 .orElse(BigDecimal.ZERO);
     }
 
-    public static BigDecimal avgConsumptionPerZone(final Immobili premises, final String utility, final LocalDate start,
+    public static BigDecimal avgConsumptionPerZone(final Immobili estate, final String utility, final LocalDate start,
             final LocalDate end, final Connection conn) {
         final bdproject.tables.Bollette B1 = BOLLETTE;
         final bdproject.tables.ContrattiDettagliati C1 = CONTRATTI_DETTAGLIATI;
@@ -331,8 +308,8 @@ public class Queries {
                         .from(M, I)
                         .where(M.IDIMMOBILE.eq(I.IDIMMOBILE))
                         .and(M.MATERIAPRIMA.eq(utility))
-                        .and(I.COMUNE.eq(premises.getComune()))
-                        .and(I.PROVINCIA.eq(premises.getProvincia()))))
+                        .and(I.COMUNE.eq(estate.getComune()))
+                        .and(I.PROVINCIA.eq(estate.getProvincia()))))
                 .and(B1.DATAEMISSIONE.greaterOrEqual(start))
                 .and(B1.DATAEMISSIONE.lessOrEqual(end))
                 .groupBy(M1.MATRICOLA)).as("T");
@@ -547,11 +524,11 @@ public class Queries {
                 .fetchOptionalInto(ContrattiDettagliati.class);
     }
 
-    public static Optional<Immobili> fetchPremisesById(final int premisesId, final Connection conn) {
+    public static Optional<Immobili> fetchEstateById(final int estateId, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         return query.select()
                 .from(IMMOBILI)
-                .where(IMMOBILI.IDIMMOBILE.eq(premisesId))
+                .where(IMMOBILI.IDIMMOBILE.eq(estateId))
                 .fetchOptionalInto(Immobili.class);
     }
 
@@ -609,7 +586,7 @@ public class Queries {
                 .execute();
     }
 
-    public static Integer insertPremisesReturningId(final String tipo, final String via, final String numcivico, final String comune,
+    public static Integer insertEstateReturningId(final int tipo, final String via, final String numcivico, final String comune,
                                       final String cap, final String provincia, final String interno, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         return query.insertInto(IMMOBILI, IMMOBILI.TIPO, IMMOBILI.VIA, IMMOBILI.NUMCIVICO, IMMOBILI.INTERNO,
@@ -628,7 +605,7 @@ public class Queries {
                 .execute();
     }
 
-    public static Optional<Immobili> fetchPremisesByCandidateKey(final String street, final String streetNo,
+    public static Optional<Immobili> fetchEstateByCandidateKey(final String street, final String streetNo,
             final String apartmentNumber, final String municipality, final String province, final DSLContext ctx) {
         return ctx.select()
                 .from(IMMOBILI)
@@ -640,11 +617,11 @@ public class Queries {
                 .fetchOptionalInto(Immobili.class);
     }
 
-    public static Immobili fetchPremisesFromMeterNumber(final int meterNumber, final DataSource dataSource) {
-        Immobili premises = null;
+    public static Immobili fetchEstateFromMeterNumber(final int meterNumber, final DataSource dataSource) {
+        Immobili estate = null;
         try (Connection conn = dataSource.getConnection()) {
             DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-            premises = query.select(IMMOBILI.asterisk())
+            estate = query.select(IMMOBILI.asterisk())
                     .from(IMMOBILI, CONTATORI)
                     .where(CONTATORI.PROGRESSIVO.eq(meterNumber))
                     .and(CONTATORI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
@@ -652,10 +629,10 @@ public class Queries {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (premises == null) {
-            throw new IllegalStateException("Premises fetched from meter should not be null!");
+        if (estate == null) {
+            throw new IllegalStateException("estate fetched from meter should not be null!");
         }
-        return premises;
+        return estate;
     }
 
     public static <T, K> Optional<T> fetchByKey(final Table<?> table, final Field<K> keyField, final K keyValue,
@@ -718,5 +695,57 @@ public class Queries {
                 .set(CONTRATTI.DATAULTIMABOLLETTA, lastReport)
                 .where(CONTRATTI.IDCONTRATTO.eq(subId))
                 .execute();
+    }
+
+    public static int insertUse(final String name, final BigDecimal estimate, final byte discount, final DSLContext ctx) {
+        return ctx.insertInto(TIPOLOGIE_USO, TIPOLOGIE_USO.NOME, TIPOLOGIE_USO.STIMAPERPERSONA, TIPOLOGIE_USO.SCONTOREDDITO)
+                .values(name, estimate, discount)
+                .execute();
+    }
+
+    public static int updateUse(final int useId, final String name, final BigDecimal estimate, final byte discount, final DSLContext ctx) {
+        return ctx.update(TIPOLOGIE_USO)
+                .set(TIPOLOGIE_USO.NOME, name)
+                .set(TIPOLOGIE_USO.STIMAPERPERSONA, estimate)
+                .set(TIPOLOGIE_USO.SCONTOREDDITO, discount)
+                .where(TIPOLOGIE_USO.CODICE.eq(useId))
+                .execute();
+    }
+
+    public static List<Record4<Integer, String, Integer, String>> fetchCompatibilities(final DSLContext ctx) {
+        return ctx.select(TIPOLOGIE_USO.CODICE, TIPOLOGIE_USO.NOME, OFFERTE.CODICE, OFFERTE.NOME)
+                .from(TIPOLOGIE_USO, OFFERTE, COMPATIBILITÀ)
+                .where(TIPOLOGIE_USO.CODICE.eq(COMPATIBILITÀ.USO))
+                .and(OFFERTE.CODICE.eq(COMPATIBILITÀ.CODICEOFFERTA))
+                .fetchStream()
+                .collect(Collectors.toList());
+    }
+
+    public static int insertCompatibility(final int useId, final int planId, final DSLContext ctx) {
+        return ctx.insertInto(COMPATIBILITÀ, COMPATIBILITÀ.USO, COMPATIBILITÀ.CODICEOFFERTA)
+                .values(useId, planId)
+                .execute();
+    }
+
+    public static int deleteCompatibility(final int useId, final int planId, final DSLContext ctx) {
+        return ctx.delete(COMPATIBILITÀ)
+                .where(COMPATIBILITÀ.USO.eq(useId))
+                .and(COMPATIBILITÀ.CODICEOFFERTA.eq(planId))
+                .execute();
+    }
+
+    public static <T, K> Optional<T> fetchOne(final Table<?> table, final Field<K> keyField, final K keyValue,
+            final Class<T> pojo, final DataSource dataSource) {
+        Optional<T> item = Optional.empty();
+        try (Connection conn = dataSource.getConnection()) {
+            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            item = ctx.select()
+                    .from(table)
+                    .where(table.field(keyField).eq(keyValue))
+                    .fetchOptionalInto(pojo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return item;
     }
 }

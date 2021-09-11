@@ -1,6 +1,7 @@
 package bdproject;
 
 import bdproject.controller.gui.HomeController;
+import bdproject.model.SessionHolder;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -28,8 +29,9 @@ public class AppLoader extends Application {
         dataSource.setServerName(serverName);
 
         Locale.setDefault(Locale.ITALY);
+
         final FXMLLoader loader = new FXMLLoader(ClassLoader.getSystemResource("home.fxml"));
-        loader.setController(HomeController.create(primaryStage, dataSource));
+        loader.setController(HomeController.create(primaryStage, dataSource, SessionHolder.empty()));
         Pane pane = loader.load();
         primaryStage.setScene(new Scene(pane));
         primaryStage.setResizable(false);

@@ -2,9 +2,9 @@ package bdproject.model;
 
 public interface Session {
 
-    int getUserId();
+    int userId();
 
     boolean isOperator();
 
-    String getName();
+    String username();
 }

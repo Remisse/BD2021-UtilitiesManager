@@ -2,11 +2,13 @@ package bdproject.controller.gui.users;
 
 import bdproject.controller.Choice;
 import bdproject.controller.ChoiceImpl;
-import bdproject.controller.gui.AbstractViewController;
-import bdproject.controller.gui.ViewController;
+import bdproject.controller.gui.AbstractController;
+import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
+import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.Immobili;
+import bdproject.tables.pojos.TipiImmobile;
 import bdproject.utils.FXUtils;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -25,8 +27,11 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
-public class PremisesInsertionController extends AbstractViewController implements Initializable {
+import static bdproject.tables.TipiImmobile.TIPI_IMMOBILE;
+
+public class EstateInsertionController extends AbstractController implements Initializable {
 
     private static final int POSTCODE_LENGTH = 5;
     private static final int PROVINCE_LENGTH = 2;
@@ -35,11 +40,8 @@ public class PremisesInsertionController extends AbstractViewController implemen
     private static final int MUNICIPALITY_LENGTH = 50;
     private static final int AP_LENGTH = 10;
 
-    private static final String fxml = "premises.fxml";
+    private static final String fxml = "estateInsertion.fxml";
     private final SubscriptionProcess process;
-    private final List<Choice<String, String>> typeList = List.of(
-            new ChoiceImpl<>("Fabbricato", "F", (i, v) -> i),
-            new ChoiceImpl<>("Terreno", "T", (i, v) -> i));
 
     @FXML private Label planLabel;
     @FXML private Label utilityLabel;
@@ -53,17 +55,17 @@ public class PremisesInsertionController extends AbstractViewController implemen
     @FXML private TextField apartmentNumberField;
     @FXML private TextField provinceField;
 
-    @FXML private ComboBox<Choice<String, String>> typeBox;
+    @FXML private ComboBox<Choice<TipiImmobile, String>> typeBox;
 
-    private PremisesInsertionController(final Stage stage, final DataSource dataSource, final String fxml,
-            final SubscriptionProcess process) {
-        super(stage, dataSource, fxml);
+    private EstateInsertionController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
+            final String fxml, final SubscriptionProcess process) {
+        super(stage, dataSource, holder, fxml);
         this.process = process;
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource,
+    public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final SubscriptionProcess process) {
-        return new PremisesInsertionController(stage, dataSource, fxml, process);
+        return new EstateInsertionController(stage, dataSource, holder, fxml, process);
     }
 
     @Override
@@ -73,18 +75,30 @@ public class PremisesInsertionController extends AbstractViewController implemen
         usageLabel.setText(process.usage().orElseThrow().getNome());
         methodLabel.setText(process.activation().orElseThrow().getNome());
 
-        typeBox.setItems(FXCollections.observableList(typeList));
-        typeBox.setValue(typeList.get(0));
+        try (Connection conn = dataSource().getConnection()) {
+            DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final List<Choice<TipiImmobile, String>> types = Queries.fetchAll(ctx, TIPI_IMMOBILE, TipiImmobile.class)
+                    .stream()
+                    .map(t -> new ChoiceImpl<>(t, t.getNome(), (i, v) -> v))
+                    .collect(Collectors.toList());
+            typeBox.setItems(FXCollections.observableList(types));
+            typeBox.setValue(types.get(0));
 
-        process.premises().ifPresent(p -> {
-            typeBox.setValue(typeList.stream().filter(c -> c.getValue().equals(p.getTipo())).findFirst().orElseThrow());
-            streetField.setText(p.getVia());
-            streetNoField.setText(p.getNumcivico());
-            municipalityField.setText(p.getComune());
-            postcodeField.setText(p.getCap());
-            provinceField.setText(p.getProvincia());
-            apartmentNumberField.setText(p.getInterno() == null ? "" : p.getInterno());
-        });
+            process.estate().ifPresent(p -> {
+                typeBox.setValue(types.stream()
+                        .filter(c -> c.getItem().getCodice().equals(p.getTipo()))
+                        .findFirst()
+                        .orElseThrow());
+                streetField.setText(p.getVia());
+                streetNoField.setText(p.getNumcivico());
+                municipalityField.setText(p.getComune());
+                postcodeField.setText(p.getCap());
+                provinceField.setText(p.getProvincia());
+                apartmentNumberField.setText(p.getInterno() == null ? "" : p.getInterno());
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean areFieldsValid() {
@@ -98,13 +112,13 @@ public class PremisesInsertionController extends AbstractViewController implemen
 
     @FXML
     private void toggleApartmentNumberField() {
-        apartmentNumberField.setDisable(typeBox.getValue().getValue().equals("T"));
+        apartmentNumberField.setDisable(typeBox.getValue().getItem().getHainterno() == 0);
         apartmentNumberField.clear();
     }
 
     @FXML
     private void goBack() {
-        switchTo(ParametersSelectionController.create(getStage(), getDataSource(), process));
+        switchTo(ParametersSelectionController.create(stage(), dataSource(), sessionHolder(), process));
     }
 
     @FXML
@@ -112,16 +126,16 @@ public class PremisesInsertionController extends AbstractViewController implemen
         if (areFieldsValid()) {
             final Immobili newPremises = new Immobili(
                     0,
-                    typeBox.getValue().getValue(),
+                    typeBox.getValue().getItem().getCodice(),
                     streetField.getText(),
                     streetNoField.getText(),
                     apartmentNumberField.getText().equals("") ? null : apartmentNumberField.getText(),
                     municipalityField.getText(),
                     provinceField.getText(),
                     postcodeField.getText());
-            try (Connection conn = getDataSource().getConnection()) {
+            try (Connection conn = dataSource().getConnection()) {
                 final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-                final Optional<Immobili> existingPremises = Queries.fetchPremisesByCandidateKey(
+                final Optional<Immobili> existingEstate = Queries.fetchEstateByCandidateKey(
                         newPremises.getComune(),
                         newPremises.getNumcivico(),
                         newPremises.getInterno(),
@@ -129,11 +143,11 @@ public class PremisesInsertionController extends AbstractViewController implemen
                         newPremises.getProvincia(),
                         ctx);
 
-                existingPremises.ifPresentOrElse(process::setPremises, () -> process.setPremises(newPremises));
+                existingEstate.ifPresentOrElse(process::setEstate, () -> process.setEstate(newPremises));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
+            switchTo(SubscriptionConfirmationController.create(stage(), dataSource(), sessionHolder(), process));
         } else {
             FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");
         }

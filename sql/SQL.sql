@@ -60,14 +60,13 @@ create table contratti (
 
 create table immobili (
      IdImmobile integer not null auto_increment,
-     Tipo char(1) not null check(Tipo in ('F', 'T')),
+     Tipo integer not null,
      Via varchar(50) not null,
      NumCivico varchar(10) not null,
      Interno varchar(10),
 	 Comune varchar(50) not null,
      Provincia varchar(2) not null,
      CAP varchar(5) not null check (length(CAP) = 5),
-     check((Tipo = 'F') or (Tipo = 'T' and Interno is null)),
      constraint IDIMMOBILE primary key (IdImmobile),
      constraint IDIMMOBILE_2 unique (Via, NumCivico, Interno, Comune, Provincia));
      
@@ -146,11 +145,11 @@ create table richieste_cessazione (
      constraint PK_RIC_CESSAZIONE primary key (Numero));
      
 create table redditi (
-	Codice integer not null,
-	Fascia varchar(30) not null,
-    Sconto decimal(7, 6) not null check (Sconto > 0.0 and Sconto <= 1.0),
-    constraint PK_REDDITI primary key (Codice),
-    constraint AK_REDDITI unique (Fascia));
+	 Codice integer not null,
+	 Fascia varchar(30) not null,
+     Sconto decimal(7, 6) not null check (Sconto > 0.0 and Sconto <= 1.0),
+     constraint PK_REDDITI primary key (Codice),
+     constraint AK_REDDITI unique (Fascia));
 
 create table tipi_attivazione (
 	 Codice integer not null,
@@ -158,9 +157,15 @@ create table tipi_attivazione (
      Costo decimal(20, 2) not null,
      check(Costo >= 0),
      constraint PK_TIPO_ATTIVAZIONE primary key (Codice));
+     
+create table tipi_immobile ( 
+	 Codice integer not null auto_increment,
+     Nome varchar(30) not null,
+     HaInterno boolean not null,
+     constraint PK_TIPO_IMMOBILE primary key (Codice));
 
 create table tipologie_uso (
-	 Codice integer not null,
+	 Codice integer not null auto_increment,
      Nome varchar(30) not null,
      StimaPerPersona decimal(20, 2) not null,
      ScontoReddito boolean not null,
@@ -183,10 +188,10 @@ values("Acqua");
 -- Populate "tipologie_uso"
 
 insert into tipologie_uso
-values(1, "Abitativo residenziale", 0.2, true);
+values(default, "Abitativo residenziale", 0.2, true);
 
 insert into tipologie_uso
-values(2, "Abitativo non residenziale", 0.7, false);
+values(default, "Abitativo non residenziale", 0.7, false);
 
 
 -- Populate "tipi_attivazione"
@@ -214,12 +219,23 @@ insert into redditi
 values (4, "15.001 o più", 1.0);
 
 
+-- Populate "tipi_immobile"
+insert into tipi_immobile
+values (default, "Terreno", false);
+
+insert into tipi_immobile
+values (default, "Edificio", false);
+
+insert into tipi_immobile
+values (default, "Appartamento", true);
+
+
 -- Populate "immobili"
 insert into immobili (Tipo, Via, NumCivico, Interno, Comune, CAP, Provincia)
-values ('F', "Via Bongo", 69, 1, "Forlì", "47121", "FC");
+values (3, "Via Bongo", 69, 1, "Forlì", "47121", "FC");
 
 insert into immobili (Tipo, Via, NumCivico, Interno, Comune, CAP, Provincia)
-values ('F', "Via Roma", 11, null, "Cesena", "47521", "FC");
+values (2, "Via Roma", 11, null, "Cesena", "47521", "FC");
 
 
 -- Populate "contatori"
@@ -261,7 +277,6 @@ insert into operatori
 values (3);
 
 
-
 -- Populate "offerte" and "compatibilità"
 insert into offerte(Nome, Descrizione, CostoMateriaPrima, MateriaPrima)
 values ("A tutto gas", "Una generica offerta per la fornitura di gas.", 0.3, "Gas");
@@ -280,6 +295,12 @@ values (last_insert_id(), 1);
 
 insert into compatibilità
 values (last_insert_id(), 2);
+
+insert into offerte(Nome, Descrizione, CostoMateriaPrima, MateriaPrima)
+values ("GAAAAS", "Tanto, tanto gas.", 0.45, "Gas");
+
+insert into compatibilità
+values (last_insert_id(), 1);
 
 
 -- richieste_attivazione
@@ -340,6 +361,9 @@ alter table contatori add constraint FK_INSTALLAZIONE
      
 alter table contratti add constraint FK_DEFINIZIONE
 	 foreign key (IdContratto) references richieste_attivazione (Numero);
+     
+alter table immobili add constraint FK_TIPO
+	 foreign key (Tipo) references tipi_immobile (Codice);
 
 alter table letture add constraint FK_CORRISPONDENZA
      foreign key (Contatore) references contatori (Progressivo);

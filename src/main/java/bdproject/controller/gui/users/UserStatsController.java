@@ -1,8 +1,9 @@
 package bdproject.controller.gui.users;
 
-import bdproject.controller.gui.AbstractViewController;
-import bdproject.controller.gui.ViewController;
+import bdproject.controller.gui.AbstractController;
+import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
+import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.ContrattiDettagliati;
 import bdproject.tables.pojos.Bollette;
 import bdproject.tables.pojos.Immobili;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class UserStatsController extends AbstractViewController implements Initializable {
+public class UserStatsController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "consumptionTrend.fxml";
     private final ContrattiDettagliati subscription;
@@ -50,15 +51,15 @@ public class UserStatsController extends AbstractViewController implements Initi
     @FXML
     private DatePicker endDate;
 
-    private UserStatsController(final Stage stage, final DataSource dataSource,
+    private UserStatsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final ContrattiDettagliati subscription) {
-        super(stage, dataSource, FXML_FILE);
+        super(stage, dataSource, holder, FXML_FILE);
         this.subscription = subscription;
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource,
+    public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final ContrattiDettagliati subscription) {
-        return new UserStatsController(stage, dataSource, subscription);
+        return new UserStatsController(stage, dataSource, holder, subscription);
     }
 
     @Override
@@ -79,10 +80,10 @@ public class UserStatsController extends AbstractViewController implements Initi
 
     private void updateAverages(final Connection conn) {
         if (startDate.getValue() != null && endDate.getValue() != null) {
-            final Immobili premises = Queries.fetchPremisesFromMeterNumber(subscription.getContatore(), getDataSource());
+            final Immobili estate = Queries.fetchEstateFromMeterNumber(subscription.getContatore(), dataSource());
             final String utility = Queries.fetchUtilityFromSubscription(subscription, conn).getNome();
             peopleAvg.setText(Queries.avgConsumptionPerZone(
-                    premises,
+                    estate,
                     utility,
                     startDate.getValue(),
                     endDate.getValue(),
@@ -97,7 +98,7 @@ public class UserStatsController extends AbstractViewController implements Initi
 
     @FXML
     private void onDateSelect(ActionEvent event) {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             updateAverages(conn);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,7 +109,7 @@ public class UserStatsController extends AbstractViewController implements Initi
     @FXML
     private void onYearSelect() {
         final DateTimeFormatter month_it = LocaleUtils.getItLongMonthFormatter();
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             final var reports = Queries.fetchSubscriptionReports(subscription, conn);
             XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
             for (Bollette report : reports) {
@@ -127,6 +128,6 @@ public class UserStatsController extends AbstractViewController implements Initi
 
     @FXML
     private void goBack() {
-        switchTo(UserAreaController.create(getStage(), getDataSource()));
+        switchTo(UserAreaController.create(stage(), dataSource(), sessionHolder()));
     }
 }

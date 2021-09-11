@@ -2,10 +2,8 @@ package bdproject.controller.gui;
 
 import bdproject.controller.Checks;
 import bdproject.model.Queries;
-import bdproject.tables.pojos.Immobili;
-import bdproject.tables.pojos.Offerte;
-import bdproject.tables.pojos.RichiesteAttivazione;
-import bdproject.tables.pojos.TipologieUso;
+import bdproject.model.SessionHolder;
+import bdproject.tables.pojos.*;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
 import javafx.fxml.FXML;
@@ -22,7 +20,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public abstract class AbstractActivationRequestDetailsController extends AbstractViewController implements Initializable {
+import static bdproject.tables.TipiImmobile.TIPI_IMMOBILE;
+
+public abstract class AbstractActivationRequestDetailsController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "requestDetails.fxml";
     private static final String FLOW_CSS = "-fx-font: 16 arial";
@@ -42,22 +42,22 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
     @FXML private Label use;
     @FXML private Label activation;
 
-    protected AbstractActivationRequestDetailsController(final Stage stage, final DataSource dataSource,
+    protected AbstractActivationRequestDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final RichiesteAttivazione request) {
-        super(stage, dataSource, FXML_FILE);
+        super(stage, dataSource, holder, FXML_FILE);
         this.request = request;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             use.setText(Queries.fetchUsageFromRequest(request.getNumero(), conn).getNome());
             activation.setText(Queries.fetchActivationFromRequest(request.getNumero(), conn).getNome());
 
             setNotes();
             setRequestResult();
             setClientDetails(conn);
-            setPremisesDetails();
+            setEstateDetails();
             setPeopleNo();
             setPlanDetails();
         } catch (Exception e) {
@@ -77,15 +77,19 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
         clientDetails.getChildren().add(clientText);
     }
 
-    private void setPremisesDetails() {
-        final Immobili premises = Queries.fetchPremisesFromMeterNumber(request.getContatore(), getDataSource());
-        final Text premisesText = new Text(StringUtils.premisesToString(premises));
-        premisesText.setStyle(FLOW_CSS);
-        premisesDetails.getChildren().add(premisesText);
+    private void setEstateDetails() {
+        final Immobili estate = Queries.fetchEstateFromMeterNumber(request.getContatore(), dataSource());
+        final TipiImmobile type = Queries.fetchOne(
+                TIPI_IMMOBILE, TIPI_IMMOBILE.CODICE, estate.getTipo(), TipiImmobile.class, dataSource()
+        ).orElseThrow();
+
+        final Text estateText = new Text(StringUtils.premisesToString(estate, type));
+        estateText.setStyle(FLOW_CSS);
+        premisesDetails.getChildren().add(estateText);
     }
 
     private void setPeopleNo() {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             final TipologieUso use = Queries.fetchUsageById(request.getUso(), conn).orElseThrow();
             if (Checks.requiresPeopleNumber(use)) {
                 peopleNoName.setText("Componenti nucleo familiare:");
@@ -100,7 +104,7 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
     }
 
     private void setPlanDetails() {
-        final Offerte plan = Queries.fetchPlanById(request.getOfferta(), getDataSource()).orElseThrow();
+        final Offerte plan = Queries.fetchPlanById(request.getOfferta(), dataSource()).orElseThrow();
         final Text planText = new Text(StringUtils.planToString(plan));
         planText.setStyle(FLOW_CSS);
         planDetails.getChildren().add(planText);

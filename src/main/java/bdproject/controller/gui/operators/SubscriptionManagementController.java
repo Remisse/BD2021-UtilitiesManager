@@ -1,9 +1,10 @@
 package bdproject.controller.gui.operators;
 
 import bdproject.controller.Checks;
-import bdproject.controller.gui.AbstractViewController;
-import bdproject.controller.gui.ViewController;
+import bdproject.controller.gui.AbstractController;
+import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
+import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
 import bdproject.utils.FXUtils;
 import bdproject.utils.LocaleUtils;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 
 import static bdproject.tables.TipologieUso.TIPOLOGIE_USO;
 
-public class SubscriptionManagementController extends AbstractViewController implements Initializable {
+public class SubscriptionManagementController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "adminSubManagement.fxml";
     private static final int DEADLINE_DAYS = 14;
@@ -83,17 +84,17 @@ public class SubscriptionManagementController extends AbstractViewController imp
     @FXML private TextField finalCostField;
     @FXML private Label reportFileStatus;
 
-    private SubscriptionManagementController(Stage stage, DataSource dataSource) {
-        super(stage, dataSource, FXML_FILE);
+    private SubscriptionManagementController(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        super(stage, dataSource, holder, FXML_FILE);
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource) {
-        return new SubscriptionManagementController(stage, dataSource);
+    public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        return new SubscriptionManagementController(stage, dataSource, holder);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
             useTypes = Queries.fetchAll(ctx, TIPOLOGIE_USO, TipologieUso.class);
         } catch (SQLException e) {
@@ -129,8 +130,8 @@ public class SubscriptionManagementController extends AbstractViewController imp
         });
 
         zoneCol.setCellValueFactory(c -> {
-            final Immobili premises = Queries.fetchPremisesFromMeterNumber(c.getValue().getContatore(), getDataSource());
-            return new SimpleStringProperty(premises.getComune() + " (" + premises.getProvincia() + ")");
+            final Immobili estate = Queries.fetchEstateFromMeterNumber(c.getValue().getContatore(), dataSource());
+            return new SimpleStringProperty(estate.getComune() + " (" + estate.getProvincia() + ")");
         });
         subsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldS, newS) -> {
             if (newS != null && oldS != newS) {
@@ -145,7 +146,7 @@ public class SubscriptionManagementController extends AbstractViewController imp
         final int clientId = clientIdFilter.getText().equals("") ? NO_CLIENT : Integer.parseInt(clientIdFilter.getText());
         final String statusChoice = statusFilter.getValue();
 
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             Map<ContrattiDettagliati, Bollette> subs = Queries.fetchAllSubscriptionsWithLastReport(conn);
             subsList = subs.entrySet()
                     .stream()
@@ -174,7 +175,7 @@ public class SubscriptionManagementController extends AbstractViewController imp
 
         if (sub != null) {
             if (!interruptionDescription.getText().equals("")) {
-                try (Connection conn = getDataSource().getConnection()) {
+                try (Connection conn = dataSource().getConnection()) {
                     final int result = Queries.interruptSubscription(
                             sub.getIdcontratto(),
                             interruptionDescription.getText(),
@@ -202,7 +203,7 @@ public class SubscriptionManagementController extends AbstractViewController imp
     private void doReactivate() {
         final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
         if (sub != null) {
-            try (Connection conn = getDataSource().getConnection()) {
+            try (Connection conn = dataSource().getConnection()) {
                 final int result = Queries.reactivateSubscription(sub.getIdcontratto(), conn);
                 if (result != 0) {
                     FXUtils.showBlockingWarning("Contratto riattivato.");
@@ -223,7 +224,7 @@ public class SubscriptionManagementController extends AbstractViewController imp
     private void showSubDetails() {
         final ContrattiDettagliati selected = subsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            createSubWindow(OperatorSubDetailsController.create(null, getDataSource(), selected));
+            createSubWindow(OperatorSubDetailsController.create(null, dataSource(), sessionHolder(), selected));
         } else {
             FXUtils.showBlockingWarning("Seleziona un contratto.");
         }
@@ -238,7 +239,7 @@ public class SubscriptionManagementController extends AbstractViewController imp
     private void doRefreshMeasurements() {
         final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
         if (sub != null) {
-            try (Connection conn = getDataSource().getConnection()) {
+            try (Connection conn = dataSource().getConnection()) {
                 final List<Letture> measurements = Queries.fetchMeasurements(sub.getIdcontratto(), conn);
                 measurementsTable.setItems(FXCollections.observableList(measurements));
             } catch (SQLException e) {
@@ -254,7 +255,7 @@ public class SubscriptionManagementController extends AbstractViewController imp
     private void doConfirmMeasurement() {
         final Letture selectedMeas = measurementsTable.getSelectionModel().getSelectedItem();
         if (selectedMeas != null) {
-            try (Connection conn = getDataSource().getConnection()) {
+            try (Connection conn = dataSource().getConnection()) {
                 final int result = Queries.confirmMeasurement(selectedMeas.getContatore(), selectedMeas.getDataeffettuazione(), conn);
                 if (result != 0) {
                     FXUtils.showBlockingWarning("Lettura confermata.");
@@ -284,7 +285,7 @@ public class SubscriptionManagementController extends AbstractViewController imp
     private void doRefreshReports() {
         final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
         if (sub != null) {
-            try (Connection conn = getDataSource().getConnection()) {
+            try (Connection conn = dataSource().getConnection()) {
                 final var reports = Queries.fetchSubscriptionReports(sub, conn);
                 reportsTable.setItems(FXCollections.observableList(reports));
             } catch (SQLException e) {
@@ -308,7 +309,7 @@ public class SubscriptionManagementController extends AbstractViewController imp
     private void doDeleteReport() {
         final Bollette report = reportsTable.getSelectionModel().getSelectedItem();
         if (report != null) {
-            try (Connection conn = getDataSource().getConnection()) {
+            try (Connection conn = dataSource().getConnection()) {
                 final int result = Queries.deleteReport(report.getIdcontratto(), report.getDataemissione(), conn);
                 if (result != 0) {
                     FXUtils.showBlockingWarning("Bolletta eliminata.");
@@ -336,7 +337,7 @@ public class SubscriptionManagementController extends AbstractViewController imp
         if (canPublishReport()) {
             final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
             if (sub != null) {
-                try (final Connection conn = getDataSource().getConnection()) {
+                try (final Connection conn = dataSource().getConnection()) {
                     final int result = Queries.publishReport(
                             sub.getIdcontratto(),
                             1,
@@ -386,6 +387,6 @@ public class SubscriptionManagementController extends AbstractViewController imp
 
     @FXML
     private void goBack() {
-        switchTo(AreaSelectorController.create(getStage(), getDataSource()));
+        switchTo(AreaSelectorController.create(stage(), dataSource(), sessionHolder()));
     }
 }

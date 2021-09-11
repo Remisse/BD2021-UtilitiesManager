@@ -4,6 +4,7 @@ import bdproject.model.Queries;
 import bdproject.tables.pojos.ClientiDettagliati;
 import bdproject.tables.pojos.Immobili;
 import bdproject.tables.pojos.Offerte;
+import bdproject.tables.pojos.TipiImmobile;
 import bdproject.utils.LocaleUtils;
 
 import java.sql.Connection;
@@ -38,15 +39,13 @@ public class StringUtils {
         return builder.toString();
     }
 
-    public static String premisesToString(final Immobili premises) {
-        return new StringBuilder().append(premises.getTipo().equals("F") ? "Fabbricato"
-                       : premises.getTipo().equals("T") ? "Terreno"
-                       : "Non definito")
+    public static String premisesToString(final Immobili premises, final TipiImmobile type) {
+        return new StringBuilder().append(type.getNome())
                 .append("\n\n")
                 .append(premises.getVia())
                 .append(" ")
                 .append(premises.getNumcivico())
-                .append(premises.getInterno() != null ? "\nInterno: " + premises.getInterno() : "")
+                .append(type.getHainterno() == 1 ? "\nInterno " + premises.getInterno() : "")
                 .append("\n")
                 .append(premises.getComune())
                 .append("\n")

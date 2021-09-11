@@ -21,8 +21,8 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     }
 
     @Override
-    public void setPremises(final Immobili premises) {
-        this.premises = premises;
+    public void setEstate(final Immobili estate) {
+        this.premises = estate;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class SubscriptionProcessImpl implements SubscriptionProcess {
     }
 
     @Override
-    public Optional<Immobili> premises() {
+    public Optional<Immobili> estate() {
         return Optional.ofNullable(premises);
     }
 

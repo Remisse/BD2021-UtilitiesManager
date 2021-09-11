@@ -16,7 +16,7 @@ public class Immobili implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Integer idimmobile;
-    private final String  tipo;
+    private final Integer tipo;
     private final String  via;
     private final String  numcivico;
     private final String  interno;
@@ -37,7 +37,7 @@ public class Immobili implements Serializable {
 
     public Immobili(
         Integer idimmobile,
-        String  tipo,
+        Integer tipo,
         String  via,
         String  numcivico,
         String  interno,
@@ -65,7 +65,7 @@ public class Immobili implements Serializable {
     /**
      * Getter for <code>utenze.immobili.Tipo</code>.
      */
-    public String getTipo() {
+    public Integer getTipo() {
         return this.tipo;
     }
 

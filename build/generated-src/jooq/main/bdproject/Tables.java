@@ -23,6 +23,7 @@ import bdproject.tables.Redditi;
 import bdproject.tables.RichiesteAttivazione;
 import bdproject.tables.RichiesteCessazione;
 import bdproject.tables.TipiAttivazione;
+import bdproject.tables.TipiImmobile;
 import bdproject.tables.TipologieUso;
 
 
@@ -126,6 +127,11 @@ public class Tables {
      * The table <code>utenze.tipi_attivazione</code>.
      */
     public static final TipiAttivazione TIPI_ATTIVAZIONE = TipiAttivazione.TIPI_ATTIVAZIONE;
+
+    /**
+     * The table <code>utenze.tipi_immobile</code>.
+     */
+    public static final TipiImmobile TIPI_IMMOBILE = TipiImmobile.TIPI_IMMOBILE;
 
     /**
      * The table <code>utenze.tipologie_uso</code>.

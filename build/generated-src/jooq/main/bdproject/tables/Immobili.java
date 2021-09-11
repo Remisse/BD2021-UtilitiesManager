@@ -58,7 +58,7 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     /**
      * The column <code>utenze.immobili.Tipo</code>.
      */
-    public final TableField<ImmobiliRecord, String> TIPO = createField(DSL.name("Tipo"), SQLDataType.CHAR(1).nullable(false), this, "");
+    public final TableField<ImmobiliRecord, Integer> TIPO = createField(DSL.name("Tipo"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>utenze.immobili.Via</code>.
@@ -144,11 +144,23 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     }
 
     @Override
+    public List<ForeignKey<ImmobiliRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.FK_TIPO);
+    }
+
+    private transient TipiImmobile _tipiImmobile;
+
+    public TipiImmobile tipiImmobile() {
+        if (_tipiImmobile == null)
+            _tipiImmobile = new TipiImmobile(this, Keys.FK_TIPO);
+
+        return _tipiImmobile;
+    }
+
+    @Override
     public List<Check<ImmobiliRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("immobili_chk_1"), "(`Tipo` in (_utf8mb4\\'F\\',_utf8mb4\\'T\\'))", true),
-            Internal.createCheck(this, DSL.name("immobili_chk_2"), "(length(`CAP`) = 5)", true),
-            Internal.createCheck(this, DSL.name("immobili_chk_3"), "((`Tipo` = _utf8mb4\\'F\\') or ((`Tipo` = _utf8mb4\\'T\\') and (`Interno` is null)))", true)
+            Internal.createCheck(this, DSL.name("immobili_chk_1"), "(length(`CAP`) = 5)", true)
         );
     }
 
@@ -183,7 +195,7 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, String, String, String, String, String> fieldsRow() {
+    public Row8<Integer, Integer, String, String, String, String, String, String> fieldsRow() {
         return (Row8) super.fieldsRow();
     }
 }

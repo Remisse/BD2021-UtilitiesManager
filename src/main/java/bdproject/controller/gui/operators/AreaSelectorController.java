@@ -1,55 +1,59 @@
 package bdproject.controller.gui.operators;
 
-import bdproject.controller.gui.AbstractViewController;
+import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.HomeController;
-import bdproject.controller.gui.ViewController;
+import bdproject.controller.gui.Controller;
+import bdproject.model.SessionHolder;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
 import javax.sql.DataSource;
 
-public class AreaSelectorController extends AbstractViewController {
+public class AreaSelectorController extends AbstractController {
 
     private static final String FXML_FILE = "adminChooseArea.fxml";
 
-    private AreaSelectorController(Stage stage, DataSource dataSource) {
-        super(stage, dataSource, FXML_FILE);
+    private AreaSelectorController(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        super(stage, dataSource, holder, FXML_FILE);
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource) {
-        return new AreaSelectorController(stage, dataSource);
+    public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        return new AreaSelectorController(stage, dataSource, holder);
     }
 
     @FXML
     private void goToRequestsArea() {
-        switchTo(RequestManagementController.create(getStage(), getDataSource()));
+        switchTo(RequestManagementController.create(stage(), dataSource(), sessionHolder()));
     }
 
     @FXML
     private void goToSubsArea() {
-        switchTo(SubscriptionManagementController.create(getStage(), getDataSource()));
+        switchTo(SubscriptionManagementController.create(stage(), dataSource(), sessionHolder()));
     }
 
     @FXML
     private void goToCatalogue() {
-        switchTo(CatalogueManagementController.create(getStage(), getDataSource()));
+        switchTo(CatalogueManagementController.create(stage(), dataSource(), sessionHolder()));
     }
 
     @FXML
     private void goToNewOperatorSignUp() {
-        switchTo(OperatorSignUpController.create(getStage(), getDataSource()));
+        switchTo(OperatorSignUpController.create(stage(), dataSource(), sessionHolder()));
     }
 
     @FXML
     private void goToMisc() {
-        switchTo(MiscController.create(getStage(), getDataSource()));
+        switchTo(MiscController.create(stage(), dataSource(), sessionHolder()));
     }
 
     @FXML
-    private void goToStats() {}
+    private void goToEstatesAndMeters() {}
+
+    @FXML
+    private void goToStats() {switchTo(OperatorStatsController.create(stage(), dataSource(), sessionHolder()));}
 
     @FXML
     private void goBack() {
-        switchTo(HomeController.create(getStage(), getDataSource()));
+        switchTo(HomeController.create(stage(), dataSource(), sessionHolder()));
     }
 }

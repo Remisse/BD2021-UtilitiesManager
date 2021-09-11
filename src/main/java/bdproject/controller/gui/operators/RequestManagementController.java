@@ -1,7 +1,7 @@
 package bdproject.controller.gui.operators;
 
-import bdproject.controller.gui.AbstractViewController;
-import bdproject.controller.gui.ViewController;
+import bdproject.controller.gui.AbstractController;
+import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
@@ -26,7 +26,6 @@ import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static bdproject.tables.Contatori.CONTATORI;
@@ -34,7 +33,7 @@ import static bdproject.tables.RichiesteAttivazione.RICHIESTE_ATTIVAZIONE;
 import static bdproject.tables.RichiesteCessazione.RICHIESTE_CESSAZIONE;
 import static bdproject.tables.TipiAttivazione.TIPI_ATTIVAZIONE;
 
-public class RequestManagementController extends AbstractViewController implements Initializable {
+public class RequestManagementController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "requestManagement.fxml";
 
@@ -56,12 +55,12 @@ public class RequestManagementController extends AbstractViewController implemen
     @FXML private TextArea refusalNotes;
     @FXML private TextField meterIdField;
 
-    private RequestManagementController(Stage stage, DataSource dataSource) {
-        super(stage, dataSource, FXML_FILE);
+    private RequestManagementController(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        super(stage, dataSource, holder, FXML_FILE);
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource) {
-        return new RequestManagementController(stage, dataSource);
+    public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        return new RequestManagementController(stage, dataSource, holder);
     }
 
     @Override
@@ -71,7 +70,7 @@ public class RequestManagementController extends AbstractViewController implemen
     }
 
     private void initTables() {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
 
             List<TipiAttivazione> methods = Queries.fetchAll(ctx, TIPI_ATTIVAZIONE, TipiAttivazione.class);
@@ -86,7 +85,7 @@ public class RequestManagementController extends AbstractViewController implemen
 
         activMeterCol.setCellValueFactory(c -> {
             final Contatori meter = Queries.fetchByKey(
-                    CONTATORI, CONTATORI.PROGRESSIVO, c.getValue().getContatore(), Contatori.class, getDataSource()).orElseThrow();
+                    CONTATORI, CONTATORI.PROGRESSIVO, c.getValue().getContatore(), Contatori.class, dataSource()).orElseThrow();
             return new SimpleStringProperty(meter.getMatricola() == null ? "Non inserito" : meter.getMatricola());
         });
 
@@ -120,7 +119,7 @@ public class RequestManagementController extends AbstractViewController implemen
     }
 
     private void refreshTables() {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
             final List<RichiesteAttivazione> activRequests = Queries.fetchAll(ctx, RICHIESTE_ATTIVAZIONE, RichiesteAttivazione.class);
             final List<RichiesteCessazione> endRequests = Queries.fetchAll(ctx, RICHIESTE_CESSAZIONE, RichiesteCessazione.class);
@@ -137,29 +136,30 @@ public class RequestManagementController extends AbstractViewController implemen
     private void doShowDetails() {
         final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
         if (activRequest != null) {
-            createSubWindow(OperatorActivationRequestDetailsController.create(null, getDataSource(), activRequest));
+            createSubWindow(OperatorActivationRequestDetailsController.create(
+                    null, dataSource(), sessionHolder(), activRequest));
         } else {
             final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
                 ContrattiDettagliati sub = null;
-                try (Connection conn = getDataSource().getConnection()) {
+                try (Connection conn = dataSource().getConnection()) {
                     sub = Queries.fetchSubscriptionFromId(endRequest.getIdcontratto(), conn).orElseThrow();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                createSubWindow(OperatorSubDetailsController.create(getStage(), getDataSource(), sub));
+                createSubWindow(OperatorSubDetailsController.create(stage(), dataSource(), sessionHolder(), sub));
             }
         }
     }
 
     @FXML
     private void doSetInReview() {
-        final int operatorId = SessionHolder.getSession().orElseThrow().getUserId();
+        final int operatorId = sessionHolder().session().orElseThrow().userId();
         final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
         int result = 0;
         if (activRequest != null) {
             if (activRequest.getOperatore() == null) {
-                try (Connection conn = getDataSource().getConnection()) {
+                try (Connection conn = dataSource().getConnection()) {
                     result = Queries.updateOneFieldWhere(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMERO,
                             activRequest.getNumero(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
                     if (result == 1) {
@@ -177,7 +177,7 @@ public class RequestManagementController extends AbstractViewController implemen
             final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
                 if (endRequest.getOperatore() == null) {
-                    try (Connection conn = getDataSource().getConnection()) {
+                    try (Connection conn = dataSource().getConnection()) {
                         result = Queries.updateOneFieldWhere(RICHIESTE_CESSAZIONE, RICHIESTE_CESSAZIONE.NUMERO,
                                 endRequest.getNumero(), RICHIESTE_CESSAZIONE.OPERATORE, operatorId, conn);
                         if (result == 1) {
@@ -203,17 +203,17 @@ public class RequestManagementController extends AbstractViewController implemen
 
     @FXML
     private void doAccept() {
-        final int operatorId = SessionHolder.getSession().orElseThrow().getUserId();
+        final int operatorId = sessionHolder().session().orElseThrow().userId();
         final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
         int result = 0;
 
         if (activRequest != null) {
             if (activRequest.getOperatore() == null || activRequest.getOperatore() == operatorId) {
-                try (Connection conn = getDataSource().getConnection()) {
+                try (Connection conn = dataSource().getConnection()) {
                     Queries.updateOneFieldWhere(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMERO,
                             activRequest.getNumero(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
                     final Contatori meter = Queries.fetchByKey(CONTATORI, CONTATORI.PROGRESSIVO, activRequest.getContatore(),
-                                    Contatori.class, getDataSource())
+                                    Contatori.class, dataSource())
                             .orElseThrow();
                     if (meter.getMatricola() == null) {
                         FXUtils.showBlockingWarning("Non è stata ancora inserita la matricola del contatore.");
@@ -237,7 +237,7 @@ public class RequestManagementController extends AbstractViewController implemen
             final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
                 if (endRequest.getOperatore() == null || endRequest.getOperatore() == operatorId) {
-                    try (Connection conn = getDataSource().getConnection()) {
+                    try (Connection conn = dataSource().getConnection()) {
                         Queries.updateOneFieldWhere(RICHIESTE_CESSAZIONE, RICHIESTE_CESSAZIONE.NUMERO,
                                 endRequest.getNumero(), RICHIESTE_CESSAZIONE.OPERATORE, operatorId, conn);
                         result = Queries.ceaseSubscription(endRequest.getIdcontratto(), conn);
@@ -265,13 +265,13 @@ public class RequestManagementController extends AbstractViewController implemen
 
     @FXML
     private void doRefuse() {
-        final int operatorId = SessionHolder.getSession().orElseThrow().getUserId();
+        final int operatorId = sessionHolder().session().orElseThrow().userId();
         final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
         int result = 0;
 
         if (activRequest != null) {
             if (activRequest.getOperatore() == null || activRequest.getOperatore() == operatorId) {
-                try (Connection conn = getDataSource().getConnection()) {
+                try (Connection conn = dataSource().getConnection()) {
                     Queries.updateOneFieldWhere(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMERO,
                             activRequest.getNumero(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
                     result = Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), "R", conn);
@@ -285,7 +285,7 @@ public class RequestManagementController extends AbstractViewController implemen
             final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
                 if (endRequest.getOperatore() == null || endRequest.getOperatore() == operatorId) {
-                    try (Connection conn = getDataSource().getConnection()) {
+                    try (Connection conn = dataSource().getConnection()) {
                         Queries.updateOneFieldWhere(RICHIESTE_CESSAZIONE, RICHIESTE_CESSAZIONE.NUMERO,
                                 endRequest.getNumero(), RICHIESTE_CESSAZIONE.OPERATORE, operatorId, conn);
                         result = Queries.setRequestStatus(RICHIESTE_CESSAZIONE, endRequest.getNumero(), "R", conn);
@@ -307,14 +307,14 @@ public class RequestManagementController extends AbstractViewController implemen
 
     @FXML
     private void doSetMeter() {
-        final int operatorId = SessionHolder.getSession().orElseThrow().getUserId();
+        final int operatorId = sessionHolder().session().orElseThrow().userId();
         final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
 
         if (activRequest != null) {
             if (activRequest.getStato().equals("N") || activRequest.getStato().equals("E")) {
                 if (activRequest.getOperatore() == null || activRequest.getOperatore() == operatorId) {
                     if (meterIdField.getText().length() > 0) {
-                        try (Connection conn = getDataSource().getConnection()) {
+                        try (Connection conn = dataSource().getConnection()) {
                             final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
                             Queries.updateOneFieldWhere(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMERO,
                                     activRequest.getNumero(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
@@ -348,7 +348,7 @@ public class RequestManagementController extends AbstractViewController implemen
         final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
         int result = 0;
         if (activRequest != null) {
-            try (Connection conn = getDataSource().getConnection()) {
+            try (Connection conn = dataSource().getConnection()) {
                 result = Queries.setRequestNotes(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), refusalNotes.getText(), conn);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -356,7 +356,7 @@ public class RequestManagementController extends AbstractViewController implemen
         } else {
             final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
-                try (Connection conn = getDataSource().getConnection()) {
+                try (Connection conn = dataSource().getConnection()) {
                     result = Queries.setRequestNotes(RICHIESTE_CESSAZIONE, endRequest.getNumero(), refusalNotes.getText(), conn);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -373,6 +373,6 @@ public class RequestManagementController extends AbstractViewController implemen
 
     @FXML
     private void goBack() {
-        switchTo(AreaSelectorController.create(getStage(), getDataSource()));
+        switchTo(AreaSelectorController.create(stage(), dataSource(), sessionHolder()));
     }
 }

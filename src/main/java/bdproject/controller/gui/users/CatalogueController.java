@@ -2,9 +2,9 @@ package bdproject.controller.gui.users;
 
 import bdproject.controller.Choice;
 import bdproject.controller.ChoiceImpl;
-import bdproject.controller.gui.AbstractViewController;
+import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.HomeController;
-import bdproject.controller.gui.ViewController;
+import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 import static bdproject.Tables.*;
 
-public class CatalogueController extends AbstractViewController implements Initializable {
+public class CatalogueController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "catalogue.fxml";
     private SubscriptionProcess process;
@@ -52,17 +52,17 @@ public class CatalogueController extends AbstractViewController implements Initi
     @FXML private TableColumn<Offerte, String> descColumn;
     @FXML private TableColumn<Offerte, String> costColumn;
 
-    private CatalogueController(Stage stage, DataSource dataSource) {
-        super(stage, dataSource, FXML_FILE);
+    private CatalogueController(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        super(stage, dataSource, holder, FXML_FILE);
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource) {
-        return new CatalogueController(stage, dataSource);
+    public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        return new CatalogueController(stage, dataSource, holder);
     }
 
     @FXML
     private void backToHome(ActionEvent e) {
-        switchTo(HomeController.create(getStage(), getDataSource()));
+        switchTo(HomeController.create(stage(), dataSource(), sessionHolder()));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CatalogueController extends AbstractViewController implements Initi
                         + " "
                         + measurementUnit.get(cellData.getValue().getMateriaprima()))
         );
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             populateComboBoxes(conn);
             populatePlanTable(conn);
         } catch (SQLException e) {
@@ -127,7 +127,7 @@ public class CatalogueController extends AbstractViewController implements Initi
 
     @FXML
     private void triggerPopulate(ActionEvent e) {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             populatePlanTable(conn);
         } catch (SQLException ex) {
             FXUtils.showError(ex.getMessage());
@@ -144,17 +144,17 @@ public class CatalogueController extends AbstractViewController implements Initi
     private void startSubscriptionProcess(ActionEvent e) {
         if (activationBox.getValue().getItem().getCodice() != 3 && table.getSelectionModel().getSelectedItem() == null) {
             FXUtils.showBlockingWarning("Non hai selezionato un'offerta.");
-        } else if (SessionHolder.getSession().isEmpty()) {
+        } else if (sessionHolder().session().isEmpty()) {
             FXUtils.showBlockingWarning("Per poter continuare, devi effettuare l'accesso.");
         } else {
             if (process == null) {
                 process = new SubscriptionProcessImpl();
             }
-            process.setClientId(SessionHolder.getSession().orElseThrow().getUserId());
+            process.setClientId(sessionHolder().session().orElseThrow().userId());
             process.setPlan(table.isDisabled() ? null : table.getSelectionModel().getSelectedItem());
             process.setUse(uses.getValue().getItem());
             process.setActivationMethod(activationBox.getValue().getItem());
-            switchTo(ParametersSelectionController.create(getStage(), getDataSource(), process));
+            switchTo(ParametersSelectionController.create(stage(), dataSource(), sessionHolder(), process));
         }
     }
 }

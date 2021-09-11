@@ -2,6 +2,7 @@ package bdproject.controller.gui;
 
 import bdproject.controller.Checks;
 import bdproject.model.Queries;
+import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
@@ -25,7 +26,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public abstract class AbstractSubscriptionDetailsController extends AbstractViewController implements Initializable {
+import static bdproject.tables.TipiImmobile.TIPI_IMMOBILE;
+
+public abstract class AbstractSubscriptionDetailsController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "subDetails.fxml";
     private static final String FLOW_CSS = "-fx-font: 16 arial";
@@ -56,15 +59,15 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
     @FXML private TableColumn<RichiesteCessazione, String> reqResultCol;
     @FXML private TableColumn<RichiesteCessazione, String> reqNotesCol;
 
-    protected AbstractSubscriptionDetailsController(final Stage stage, final DataSource dataSource,
+    protected AbstractSubscriptionDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final ContrattiDettagliati detailedSub) {
-        super(stage, dataSource, FXML_FILE);
+        super(stage, dataSource, holder, FXML_FILE);
         this.detailedSub = detailedSub;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             final LocalDate startDate = detailedSub.getDatainizio();
             final LocalDate endDate = detailedSub.getDatacessazione();
 
@@ -107,14 +110,18 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
     }
 
     private void setPremisesDetails() {
-        final Immobili premises = Queries.fetchPremisesFromMeterNumber(detailedSub.getContatore(), getDataSource());
-        final Text premisesText = new Text(StringUtils.premisesToString(premises));
+        final Immobili estate = Queries.fetchEstateFromMeterNumber(detailedSub.getContatore(), dataSource());
+        final TipiImmobile type = Queries.fetchOne(
+                TIPI_IMMOBILE, TIPI_IMMOBILE.CODICE, estate.getTipo(), TipiImmobile.class, dataSource()
+        ).orElseThrow();
+
+        final Text premisesText = new Text(StringUtils.premisesToString(estate, type));
         premisesText.setStyle(FLOW_CSS);
         premisesDetails.getChildren().add(premisesText);
     }
 
     private void setPeopleNo() {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             final TipologieUso use = Queries.fetchUsageFromSub(detailedSub.getIdcontratto(), conn);
             if (Checks.requiresPeopleNumber(use)) {
                 peopleNoName.setText(use.getNome().equals("Commerciale")
@@ -131,7 +138,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
     }
 
     private void setPlanDetails() {
-        final Offerte plan = Queries.fetchPlanById(detailedSub.getOfferta(), getDataSource()).orElseThrow();
+        final Offerte plan = Queries.fetchPlanById(detailedSub.getOfferta(), dataSource()).orElseThrow();
         final Text planText = new Text(StringUtils.planToString(plan));
         planText.setStyle(FLOW_CSS);
         planDetails.getChildren().add(planText);
@@ -151,7 +158,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
 
     protected void refreshEndRequestTable() {
         List<RichiesteCessazione> requests = Collections.emptyList();
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             requests = Queries.fetchEndRequestsFor(detailedSub.getIdcontratto(), conn);
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,5 +185,5 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractView
 
     protected abstract void abstractDoInsertEndRequest();
 
-    protected abstract ViewController getBackController();
+    protected abstract Controller getBackController();
 }

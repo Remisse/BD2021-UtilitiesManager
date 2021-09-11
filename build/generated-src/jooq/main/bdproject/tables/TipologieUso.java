@@ -15,6 +15,7 @@ import java.util.List;
 import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -53,7 +54,7 @@ public class TipologieUso extends TableImpl<TipologieUsoRecord> {
     /**
      * The column <code>utenze.tipologie_uso.Codice</code>.
      */
-    public final TableField<TipologieUsoRecord, Integer> CODICE = createField(DSL.name("Codice"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<TipologieUsoRecord, Integer> CODICE = createField(DSL.name("Codice"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>utenze.tipologie_uso.Nome</code>.
@@ -106,6 +107,11 @@ public class TipologieUso extends TableImpl<TipologieUsoRecord> {
     @Override
     public Schema getSchema() {
         return aliased() ? null : Utenze.UTENZE;
+    }
+
+    @Override
+    public Identity<TipologieUsoRecord, Integer> getIdentity() {
+        return (Identity<TipologieUsoRecord, Integer>) super.getIdentity();
     }
 
     @Override

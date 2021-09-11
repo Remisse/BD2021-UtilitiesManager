@@ -4,25 +4,26 @@ import java.util.Optional;
 
 public class SessionHolder {
 
-    private static Session session = null;
+    private Session session;
 
     private SessionHolder() {}
 
-    public static void create(final int id, final boolean isOperator, final String username) {
-        if (session != null) {
-            throw new IllegalStateException("A session is already active!");
-        } else {
-            session = new SessionImpl(id, isOperator, username);
-        }
+    private SessionHolder(final int id, final boolean isOperator, final String username) {
+        session = new SessionImpl(id, isOperator, username);
     }
 
-    public static Optional<Session> getSession() {
+    public static SessionHolder empty() {
+        return new SessionHolder();
+    }
+
+    public static SessionHolder of(final int id, final String username, final boolean isOperator) {
+        return new SessionHolder(id, isOperator, username);
+    }
+
+    public Optional<Session> session() {
         return Optional.ofNullable(session);
     }
 
-    public static void disconnect() {
-        session = null;
-    }
 
     /**
      *
@@ -40,7 +41,7 @@ public class SessionHolder {
         }
 
         @Override
-        public int getUserId() {
+        public int userId() {
             return id;
         }
 
@@ -50,7 +51,7 @@ public class SessionHolder {
         }
 
         @Override
-        public String getName() {
+        public String username() {
             return username;
         }
     }

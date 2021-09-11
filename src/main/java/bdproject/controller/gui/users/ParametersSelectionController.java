@@ -1,9 +1,10 @@
 package bdproject.controller.gui.users;
 
 import bdproject.controller.Checks;
-import bdproject.controller.gui.AbstractViewController;
-import bdproject.controller.gui.ViewController;
+import bdproject.controller.gui.AbstractController;
+import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
+import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.*;
 import bdproject.utils.FXUtils;
@@ -20,7 +21,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class ParametersSelectionController extends AbstractViewController implements Initializable {
+public class ParametersSelectionController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "meterAndActivation.fxml";
     private final SubscriptionProcess process;
@@ -42,15 +43,15 @@ public class ParametersSelectionController extends AbstractViewController implem
     @FXML private Button back;
     @FXML private Button next;
 
-    private ParametersSelectionController(final Stage stage, final DataSource dataSource,
+    private ParametersSelectionController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final SubscriptionProcess process) {
-        super(stage, dataSource, FXML_FILE);
+        super(stage, dataSource, holder, FXML_FILE);
         this.process = process;
     }
 
-    public static ViewController create(final Stage stage, final DataSource dataSource,
+    public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final SubscriptionProcess process) {
-        return new ParametersSelectionController(stage, dataSource, process);
+        return new ParametersSelectionController(stage, dataSource, holder, process);
     }
 
     @Override
@@ -138,7 +139,7 @@ public class ParametersSelectionController extends AbstractViewController implem
     private void goBack() {
         FXUtils.showConfirmationDialog(
                 "Tornando al catalogo, tutti i dati inseriti verranno persi. Vuoi tornare al catalogo?",
-                () -> switchTo(CatalogueController.create(getStage(), getDataSource())));
+                () -> switchTo(CatalogueController.create(stage(), dataSource(), sessionHolder())));
     }
 
     @FXML
@@ -146,14 +147,14 @@ public class ParametersSelectionController extends AbstractViewController implem
         if (!areFieldsValid()) {
             FXUtils.showError("Verifica di aver inserito correttamente i dati.");
         } else {
-            try (Connection conn = getDataSource().getConnection()) {
+            try (Connection conn = dataSource().getConnection()) {
                 process.setPeopleNo(requiresPeopleNo() ? Integer.parseInt(peopleNoField.getText()) : 1);
                 switch (process.activation().orElseThrow().getCodice()) {
                     case 1:
                         process.setMeter(new Contatori(
                                 0, null, process.plan().orElseThrow().getMateriaprima(), 0
                         ));
-                        switchTo(PremisesInsertionController.create(getStage(), getDataSource(), process));
+                        switchTo(EstateInsertionController.create(stage(), dataSource(), sessionHolder(), process));
                         break;
                     case 2:
                         bySubentro(conn);
@@ -176,10 +177,10 @@ public class ParametersSelectionController extends AbstractViewController implem
         existingMeter.ifPresentOrElse(m -> {
             process.setMeter(m);
 
-            final Immobili existingPremises = Queries.fetchPremisesFromMeterId(m.getMatricola(), getDataSource());
-            process.setPremises(existingPremises);
+            final Immobili existingEstate = Queries.fetchEstateFromMeterId(m.getMatricola(), dataSource());
+            process.setEstate(existingEstate);
 
-            switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
+            switchTo(SubscriptionConfirmationController.create(stage(), dataSource(), sessionHolder(), process));
         }, () -> {
             /*
              * Using a placeholder id for meter and premises, since it's going to be
@@ -190,7 +191,7 @@ public class ParametersSelectionController extends AbstractViewController implem
                     meterIdField.getText(),
                     process.plan().orElseThrow().getMateriaprima(),
                     0));
-            switchTo(PremisesInsertionController.create(getStage(), getDataSource(), process));
+            switchTo(EstateInsertionController.create(stage(), dataSource(), sessionHolder(), process));
         });
     }
 
@@ -208,7 +209,7 @@ public class ParametersSelectionController extends AbstractViewController implem
                         m.getMatricola(), c.getIdentificativo(), conn);
 
                 subscription.ifPresentOrElse(s -> {
-                    final Optional<Offerte> plan = Queries.fetchPlanById(s.getOfferta(), getDataSource());
+                    final Optional<Offerte> plan = Queries.fetchPlanById(s.getOfferta(), dataSource());
 
                     plan.ifPresentOrElse(p -> {
                         if (Checks.isValidConsumption(measurementField.getText())) {
@@ -221,13 +222,13 @@ public class ParametersSelectionController extends AbstractViewController implem
                             );
                             process.setMeasurement(measurement);
 
-                            Immobili premises = Queries.fetchPremisesById(m.getIdimmobile(), conn).orElseThrow();
-                            process.setPremises(premises);
+                            Immobili estate = Queries.fetchEstateById(m.getIdimmobile(), conn).orElseThrow();
+                            process.setEstate(estate);
                             process.setMeter(m);
                             process.setOtherClient(c);
                             process.setPlan(p);
 
-                            switchTo(SubscriptionConfirmationController.create(getStage(), getDataSource(), process));
+                            switchTo(SubscriptionConfirmationController.create(stage(), dataSource(), sessionHolder(), process));
                         } else {
                             FXUtils.showError("Verifica di aver inserito correttamente la lettura.");
                         }

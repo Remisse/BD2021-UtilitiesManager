@@ -22,13 +22,9 @@ import org.jooq.impl.DSL;
 import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 
-import static bdproject.Tables.PERSONE;
-
-public class HomeController extends AbstractViewController implements Initializable {
+public class HomeController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "home.fxml";
 
@@ -45,12 +41,12 @@ public class HomeController extends AbstractViewController implements Initializa
     @FXML private Label catalogueLabel;
     @FXML private Button catalogueButton;
 
-    private HomeController(final Stage stage, final DataSource dataSource) {
-        super(stage, dataSource, FXML_FILE);
+    private HomeController(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        super(stage, dataSource, holder, FXML_FILE);
     }
 
-    public static ViewController create(Stage stage, DataSource dataSource) {
-        return new HomeController(stage, dataSource);
+    public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
+        return new HomeController(stage, dataSource, holder);
     }
 
     @Override
@@ -59,7 +55,7 @@ public class HomeController extends AbstractViewController implements Initializa
     }
 
     private void updateSignInElements() {
-        SessionHolder.getSession().ifPresentOrElse(s -> {
+        sessionHolder().session().ifPresentOrElse(s -> {
             email.setVisible(false);
             password.setVisible(false);
             password.setText("");
@@ -67,7 +63,7 @@ public class HomeController extends AbstractViewController implements Initializa
             login.setVisible(false);
 
             greeting.setVisible(true);
-            greeting.setText("Ciao, " + s.getName());
+            greeting.setText("Ciao, " + s.username());
             logout.setVisible(true);
             userArea.setVisible(true);
 
@@ -104,24 +100,27 @@ public class HomeController extends AbstractViewController implements Initializa
 
     @FXML
     private void viewCatalogue(ActionEvent event) {
-        switchTo(CatalogueController.create(getStage(), getDataSource()));
+        switchTo(CatalogueController.create(stage(), dataSource(), sessionHolder()));
     }
 
     @FXML
     private void viewSignupPage(ActionEvent event) {
-        switchTo(UserSignUpController.create(getStage(), getDataSource()));
+        switchTo(UserSignUpController.create(stage(), dataSource(), sessionHolder()));
     }
 
     @FXML
     private void doLogin(ActionEvent event) {
-        try (Connection conn = getDataSource().getConnection()) {
+        try (Connection conn = dataSource().getConnection()) {
             DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
 
             Queries.fetchPersonIdAndName(email.getText(), password.getText(), query)
                 .ifPresentOrElse(u -> {
                     final boolean isOperator = Queries.isOperator(u.component1(), conn);
-                    SessionHolder.create(u.component1(), isOperator, u.component2());
-                    updateSignInElements();
+                    switchTo(HomeController.create(stage(), dataSource(), SessionHolder.of(
+                            u.component1(),
+                            u.component2(),
+                            isOperator
+                    )));
                 }, () -> FXUtils.showBlockingWarning("Indirizzo e-mail o password errati."));
         } catch (Exception e) {
             FXUtils.showError(e.getMessage());
@@ -130,18 +129,17 @@ public class HomeController extends AbstractViewController implements Initializa
 
     @FXML
     private void doLogout(ActionEvent event) {
-        SessionHolder.disconnect();
-        updateSignInElements();
+        switchTo(HomeController.create(stage(), dataSource(), SessionHolder.empty()));
         FXUtils.showBlockingWarning("Disconnessione avvenuta con successo.");
     }
 
     @FXML
     private void toUserArea(ActionEvent e) {
-        switchTo(UserAreaController.create(getStage(), getDataSource()));
+        switchTo(UserAreaController.create(stage(), dataSource(), sessionHolder()));
     }
 
     @FXML
     private void toAdminArea(ActionEvent e) {
-        switchTo(AreaSelectorController.create(getStage(), getDataSource()));
+        switchTo(AreaSelectorController.create(stage(), dataSource(), sessionHolder()));
     }
 }
