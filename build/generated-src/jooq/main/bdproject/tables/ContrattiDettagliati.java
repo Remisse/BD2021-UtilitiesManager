@@ -99,7 +99,7 @@ public class ContrattiDettagliati extends TableImpl<ContrattiDettagliatiRecord> 
     }
 
     private ContrattiDettagliati(Name alias, Table<ContrattiDettagliatiRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `contratti_dettagliati` as select `c`.`IdContratto` AS `IdContratto`,`c`.`DataInizio` AS `DataInizio`,`c`.`DataCessazione` AS `DataCessazione`,`r`.`DataRichiesta` AS `DataRichiesta`,`r`.`Cliente` AS `Cliente`,`r`.`Offerta` AS `Offerta`,`r`.`Attivazione` AS `Attivazione`,`r`.`Uso` AS `Uso`,`r`.`Contatore` AS `Contatore`,`r`.`NumeroComponenti` AS `NumeroComponenti` from `utenze`.`contratti` `c` join `utenze`.`richieste_attivazione` `r` where (`c`.`IdContratto` = `r`.`Numero`)"));
+        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `contratti_dettagliati` as select `C`.`IdContratto` AS `IdContratto`,`C`.`DataInizio` AS `DataInizio`,`C`.`DataCessazione` AS `DataCessazione`,`R`.`DataRichiesta` AS `DataRichiesta`,`R`.`Cliente` AS `Cliente`,`R`.`Offerta` AS `Offerta`,`R`.`Attivazione` AS `Attivazione`,`R`.`Uso` AS `Uso`,`R`.`Contatore` AS `Contatore`,`R`.`NumeroComponenti` AS `NumeroComponenti` from `utenze`.`contratti` `C` join `utenze`.`richieste_attivazione` `R` where (`C`.`IdContratto` = `R`.`Numero`)"));
     }
 
     /**

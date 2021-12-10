@@ -34,8 +34,8 @@ dependencies {
     }
 
     // MySQL Java Connector
-    implementation("mysql:mysql-connector-java:8.0.25")
-    jooqGenerator("mysql:mysql-connector-java:8.0.25")
+    implementation("mysql:mysql-connector-java:8.0.26")
+    jooqGenerator("mysql:mysql-connector-java:8.0.26")
 
     // https://mvnrepository.com/artifact/commons-validator/commons-validator
     implementation("commons-validator:commons-validator:1.7")
