@@ -16,9 +16,10 @@ import java.util.List;
 import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,14 +53,14 @@ public class Letture extends TableImpl<LettureRecord> {
     }
 
     /**
-     * The column <code>utenze.letture.Consumi</code>.
+     * The column <code>utenze.letture.NumeroLettura</code>.
      */
-    public final TableField<LettureRecord, BigDecimal> CONSUMI = createField(DSL.name("Consumi"), SQLDataType.DECIMAL(20, 6).nullable(false), this, "");
+    public final TableField<LettureRecord, Integer> NUMEROLETTURA = createField(DSL.name("NumeroLettura"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>utenze.letture.Contatore</code>.
+     * The column <code>utenze.letture.MatricolaContatore</code>.
      */
-    public final TableField<LettureRecord, Integer> CONTATORE = createField(DSL.name("Contatore"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LettureRecord, String> MATRICOLACONTATORE = createField(DSL.name("MatricolaContatore"), SQLDataType.VARCHAR(20).nullable(false), this, "");
 
     /**
      * The column <code>utenze.letture.DataEffettuazione</code>.
@@ -67,14 +68,19 @@ public class Letture extends TableImpl<LettureRecord> {
     public final TableField<LettureRecord, LocalDate> DATAEFFETTUAZIONE = createField(DSL.name("DataEffettuazione"), SQLDataType.LOCALDATE.nullable(false), this, "");
 
     /**
-     * The column <code>utenze.letture.Confermata</code>.
+     * The column <code>utenze.letture.Consumi</code>.
      */
-    public final TableField<LettureRecord, Byte> CONFERMATA = createField(DSL.name("Confermata"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.inline("0", SQLDataType.TINYINT)), this, "");
+    public final TableField<LettureRecord, BigDecimal> CONSUMI = createField(DSL.name("Consumi"), SQLDataType.DECIMAL(20, 4).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.letture.Cliente</code>.
+     * The column <code>utenze.letture.Stato</code>.
      */
-    public final TableField<LettureRecord, Integer> CLIENTE = createField(DSL.name("Cliente"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LettureRecord, String> STATO = createField(DSL.name("Stato"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.letture.IdPersona</code>.
+     */
+    public final TableField<LettureRecord, Integer> IDPERSONA = createField(DSL.name("IdPersona"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Letture(Name alias, Table<LettureRecord> aliased) {
         this(alias, aliased, null);
@@ -115,8 +121,18 @@ public class Letture extends TableImpl<LettureRecord> {
     }
 
     @Override
+    public Identity<LettureRecord, Integer> getIdentity() {
+        return (Identity<LettureRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
     public UniqueKey<LettureRecord> getPrimaryKey() {
         return Keys.KEY_LETTURE_PRIMARY;
+    }
+
+    @Override
+    public List<UniqueKey<LettureRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.KEY_LETTURE_AK_LETTURE);
     }
 
     @Override
@@ -125,7 +141,7 @@ public class Letture extends TableImpl<LettureRecord> {
     }
 
     private transient Contatori _contatori;
-    private transient Clienti _clienti;
+    private transient Persone _persone;
 
     public Contatori contatori() {
         if (_contatori == null)
@@ -134,11 +150,11 @@ public class Letture extends TableImpl<LettureRecord> {
         return _contatori;
     }
 
-    public Clienti clienti() {
-        if (_clienti == null)
-            _clienti = new Clienti(this, Keys.FK_EFFETTUAZIONE);
+    public Persone persone() {
+        if (_persone == null)
+            _persone = new Persone(this, Keys.FK_EFFETTUAZIONE);
 
-        return _clienti;
+        return _persone;
     }
 
     @Override
@@ -175,11 +191,11 @@ public class Letture extends TableImpl<LettureRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<BigDecimal, Integer, LocalDate, Byte, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Integer, String, LocalDate, BigDecimal, String, Integer> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

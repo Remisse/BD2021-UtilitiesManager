@@ -21,17 +21,17 @@ public class CompatibilitàRecord extends UpdatableRecordImpl<CompatibilitàReco
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.compatibilità.CodiceOfferta</code>.
+     * Setter for <code>utenze.compatibilità.Offerta</code>.
      */
-    public CompatibilitàRecord setCodiceofferta(Integer value) {
+    public CompatibilitàRecord setOfferta(Integer value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.compatibilità.CodiceOfferta</code>.
+     * Getter for <code>utenze.compatibilità.Offerta</code>.
      */
-    public Integer getCodiceofferta() {
+    public Integer getOfferta() {
         return (Integer) get(0);
     }
 
@@ -75,7 +75,7 @@ public class CompatibilitàRecord extends UpdatableRecordImpl<CompatibilitàReco
 
     @Override
     public Field<Integer> field1() {
-        return Compatibilità.COMPATIBILITÀ.CODICEOFFERTA;
+        return Compatibilità.COMPATIBILITÀ.OFFERTA;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class CompatibilitàRecord extends UpdatableRecordImpl<CompatibilitàReco
 
     @Override
     public Integer component1() {
-        return getCodiceofferta();
+        return getOfferta();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class CompatibilitàRecord extends UpdatableRecordImpl<CompatibilitàReco
 
     @Override
     public Integer value1() {
-        return getCodiceofferta();
+        return getOfferta();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class CompatibilitàRecord extends UpdatableRecordImpl<CompatibilitàReco
 
     @Override
     public CompatibilitàRecord value1(Integer value) {
-        setCodiceofferta(value);
+        setOfferta(value);
         return this;
     }
 
@@ -136,10 +136,10 @@ public class CompatibilitàRecord extends UpdatableRecordImpl<CompatibilitàReco
     /**
      * Create a detached, initialised CompatibilitàRecord
      */
-    public CompatibilitàRecord(Integer codiceofferta, Integer uso) {
+    public CompatibilitàRecord(Integer offerta, Integer uso) {
         super(Compatibilità.COMPATIBILITÀ);
 
-        setCodiceofferta(codiceofferta);
+        setOfferta(offerta);
         setUso(uso);
     }
 
@@ -150,7 +150,7 @@ public class CompatibilitàRecord extends UpdatableRecordImpl<CompatibilitàReco
         super(Compatibilità.COMPATIBILITÀ);
 
         if (value != null) {
-            setCodiceofferta(value.getCodiceofferta());
+            setOfferta(value.getOfferta());
             setUso(value.getUso());
         }
     }

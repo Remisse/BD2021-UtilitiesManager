@@ -16,9 +16,10 @@ import java.util.List;
 import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,9 +53,9 @@ public class Bollette extends TableImpl<BolletteRecord> {
     }
 
     /**
-     * The column <code>utenze.bollette.IdContratto</code>.
+     * The column <code>utenze.bollette.NumeroBolletta</code>.
      */
-    public final TableField<BolletteRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<BolletteRecord, Integer> NUMEROBOLLETTA = createField(DSL.name("NumeroBolletta"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>utenze.bollette.DataEmissione</code>.
@@ -62,14 +63,19 @@ public class Bollette extends TableImpl<BolletteRecord> {
     public final TableField<BolletteRecord, LocalDate> DATAEMISSIONE = createField(DSL.name("DataEmissione"), SQLDataType.LOCALDATE.nullable(false), this, "");
 
     /**
+     * The column <code>utenze.bollette.DataInizioPeriodo</code>.
+     */
+    public final TableField<BolletteRecord, LocalDate> DATAINIZIOPERIODO = createField(DSL.name("DataInizioPeriodo"), SQLDataType.LOCALDATE.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.bollette.DataFinePeriodo</code>.
+     */
+    public final TableField<BolletteRecord, LocalDate> DATAFINEPERIODO = createField(DSL.name("DataFinePeriodo"), SQLDataType.LOCALDATE.nullable(false), this, "");
+
+    /**
      * The column <code>utenze.bollette.DataScadenza</code>.
      */
     public final TableField<BolletteRecord, LocalDate> DATASCADENZA = createField(DSL.name("DataScadenza"), SQLDataType.LOCALDATE.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.bollette.DataPagamento</code>.
-     */
-    public final TableField<BolletteRecord, LocalDate> DATAPAGAMENTO = createField(DSL.name("DataPagamento"), SQLDataType.LOCALDATE, this, "");
 
     /**
      * The column <code>utenze.bollette.Importo</code>.
@@ -77,14 +83,29 @@ public class Bollette extends TableImpl<BolletteRecord> {
     public final TableField<BolletteRecord, BigDecimal> IMPORTO = createField(DSL.name("Importo"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.bollette.DettaglioBolletta</code>.
+     * The column <code>utenze.bollette.Consumi</code>.
      */
-    public final TableField<BolletteRecord, byte[]> DETTAGLIOBOLLETTA = createField(DSL.name("DettaglioBolletta"), SQLDataType.BLOB.nullable(false), this, "");
+    public final TableField<BolletteRecord, BigDecimal> CONSUMI = createField(DSL.name("Consumi"), SQLDataType.DECIMAL(20, 4).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.bollette.DocumentoDettagliato</code>.
+     */
+    public final TableField<BolletteRecord, byte[]> DOCUMENTODETTAGLIATO = createField(DSL.name("DocumentoDettagliato"), SQLDataType.BLOB.nullable(false), this, "");
 
     /**
      * The column <code>utenze.bollette.Stimata</code>.
      */
     public final TableField<BolletteRecord, Byte> STIMATA = createField(DSL.name("Stimata"), SQLDataType.TINYINT.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.bollette.IdOperatore</code>.
+     */
+    public final TableField<BolletteRecord, Integer> IDOPERATORE = createField(DSL.name("IdOperatore"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.bollette.IdContratto</code>.
+     */
+    public final TableField<BolletteRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Bollette(Name alias, Table<BolletteRecord> aliased) {
         this(alias, aliased, null);
@@ -125,16 +146,29 @@ public class Bollette extends TableImpl<BolletteRecord> {
     }
 
     @Override
+    public Identity<BolletteRecord, Integer> getIdentity() {
+        return (Identity<BolletteRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
     public UniqueKey<BolletteRecord> getPrimaryKey() {
         return Keys.KEY_BOLLETTE_PRIMARY;
     }
 
     @Override
     public List<ForeignKey<BolletteRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_CONTRATTO);
+        return Arrays.asList(Keys.FK_EMISSIONE, Keys.FK_CONTRATTO);
     }
 
+    private transient Operatori _operatori;
     private transient Contratti _contratti;
+
+    public Operatori operatori() {
+        if (_operatori == null)
+            _operatori = new Operatori(this, Keys.FK_EMISSIONE);
+
+        return _operatori;
+    }
 
     public Contratti contratti() {
         if (_contratti == null)
@@ -146,8 +180,7 @@ public class Bollette extends TableImpl<BolletteRecord> {
     @Override
     public List<Check<BolletteRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("bollette_chk_1"), "(`DataScadenza` > `DataEmissione`)", true),
-            Internal.createCheck(this, DSL.name("bollette_chk_2"), "((`DataPagamento` is null) or (`DataPagamento` >= `DataEmissione`))", true)
+            Internal.createCheck(this, DSL.name("bollette_chk_1"), "(`DataScadenza` > `DataEmissione`)", true)
         );
     }
 
@@ -178,11 +211,11 @@ public class Bollette extends TableImpl<BolletteRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, LocalDate, LocalDate, LocalDate, BigDecimal, byte[], Byte> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row11<Integer, LocalDate, LocalDate, LocalDate, LocalDate, BigDecimal, BigDecimal, byte[], Byte, Integer, Integer> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

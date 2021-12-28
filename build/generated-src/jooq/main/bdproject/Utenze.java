@@ -5,25 +5,25 @@ package bdproject;
 
 
 import bdproject.tables.Bollette;
+import bdproject.tables.Cessazioni;
 import bdproject.tables.Clienti;
 import bdproject.tables.ClientiDettagliati;
 import bdproject.tables.Compatibilità;
 import bdproject.tables.Contatori;
 import bdproject.tables.Contratti;
-import bdproject.tables.ContrattiDettagliati;
 import bdproject.tables.Immobili;
-import bdproject.tables.Interruzioni;
 import bdproject.tables.Letture;
 import bdproject.tables.MateriePrime;
 import bdproject.tables.Offerte;
 import bdproject.tables.Operatori;
+import bdproject.tables.OperatoriCessazioni;
+import bdproject.tables.OperatoriContratti;
 import bdproject.tables.OperatoriDettagliati;
+import bdproject.tables.OperatoriLetture;
+import bdproject.tables.Pagamenti;
 import bdproject.tables.Persone;
 import bdproject.tables.Redditi;
-import bdproject.tables.RichiesteAttivazione;
-import bdproject.tables.RichiesteCessazione;
 import bdproject.tables.TipiAttivazione;
-import bdproject.tables.TipiImmobile;
 import bdproject.tables.TipologieUso;
 
 import java.util.Arrays;
@@ -53,6 +53,11 @@ public class Utenze extends SchemaImpl {
     public final Bollette BOLLETTE = Bollette.BOLLETTE;
 
     /**
+     * The table <code>utenze.cessazioni</code>.
+     */
+    public final Cessazioni CESSAZIONI = Cessazioni.CESSAZIONI;
+
+    /**
      * The table <code>utenze.clienti</code>.
      */
     public final Clienti CLIENTI = Clienti.CLIENTI;
@@ -78,19 +83,9 @@ public class Utenze extends SchemaImpl {
     public final Contratti CONTRATTI = Contratti.CONTRATTI;
 
     /**
-     * VIEW
-     */
-    public final ContrattiDettagliati CONTRATTI_DETTAGLIATI = ContrattiDettagliati.CONTRATTI_DETTAGLIATI;
-
-    /**
      * The table <code>utenze.immobili</code>.
      */
     public final Immobili IMMOBILI = Immobili.IMMOBILI;
-
-    /**
-     * The table <code>utenze.interruzioni</code>.
-     */
-    public final Interruzioni INTERRUZIONI = Interruzioni.INTERRUZIONI;
 
     /**
      * The table <code>utenze.letture</code>.
@@ -113,9 +108,29 @@ public class Utenze extends SchemaImpl {
     public final Operatori OPERATORI = Operatori.OPERATORI;
 
     /**
+     * The table <code>utenze.operatori cessazioni</code>.
+     */
+    public final OperatoriCessazioni OPERATORI_CESSAZIONI = OperatoriCessazioni.OPERATORI_CESSAZIONI;
+
+    /**
+     * The table <code>utenze.operatori contratti</code>.
+     */
+    public final OperatoriContratti OPERATORI_CONTRATTI = OperatoriContratti.OPERATORI_CONTRATTI;
+
+    /**
+     * The table <code>utenze.operatori letture</code>.
+     */
+    public final OperatoriLetture OPERATORI_LETTURE = OperatoriLetture.OPERATORI_LETTURE;
+
+    /**
      * VIEW
      */
     public final OperatoriDettagliati OPERATORI_DETTAGLIATI = OperatoriDettagliati.OPERATORI_DETTAGLIATI;
+
+    /**
+     * The table <code>utenze.pagamenti</code>.
+     */
+    public final Pagamenti PAGAMENTI = Pagamenti.PAGAMENTI;
 
     /**
      * The table <code>utenze.persone</code>.
@@ -128,24 +143,9 @@ public class Utenze extends SchemaImpl {
     public final Redditi REDDITI = Redditi.REDDITI;
 
     /**
-     * The table <code>utenze.richieste_attivazione</code>.
-     */
-    public final RichiesteAttivazione RICHIESTE_ATTIVAZIONE = RichiesteAttivazione.RICHIESTE_ATTIVAZIONE;
-
-    /**
-     * The table <code>utenze.richieste_cessazione</code>.
-     */
-    public final RichiesteCessazione RICHIESTE_CESSAZIONE = RichiesteCessazione.RICHIESTE_CESSAZIONE;
-
-    /**
      * The table <code>utenze.tipi_attivazione</code>.
      */
     public final TipiAttivazione TIPI_ATTIVAZIONE = TipiAttivazione.TIPI_ATTIVAZIONE;
-
-    /**
-     * The table <code>utenze.tipi_immobile</code>.
-     */
-    public final TipiImmobile TIPI_IMMOBILE = TipiImmobile.TIPI_IMMOBILE;
 
     /**
      * The table <code>utenze.tipologie_uso</code>.
@@ -169,25 +169,25 @@ public class Utenze extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.asList(
             Bollette.BOLLETTE,
+            Cessazioni.CESSAZIONI,
             Clienti.CLIENTI,
             ClientiDettagliati.CLIENTI_DETTAGLIATI,
             Compatibilità.COMPATIBILITÀ,
             Contatori.CONTATORI,
             Contratti.CONTRATTI,
-            ContrattiDettagliati.CONTRATTI_DETTAGLIATI,
             Immobili.IMMOBILI,
-            Interruzioni.INTERRUZIONI,
             Letture.LETTURE,
             MateriePrime.MATERIE_PRIME,
             Offerte.OFFERTE,
             Operatori.OPERATORI,
+            OperatoriCessazioni.OPERATORI_CESSAZIONI,
+            OperatoriContratti.OPERATORI_CONTRATTI,
+            OperatoriLetture.OPERATORI_LETTURE,
             OperatoriDettagliati.OPERATORI_DETTAGLIATI,
+            Pagamenti.PAGAMENTI,
             Persone.PERSONE,
             Redditi.REDDITI,
-            RichiesteAttivazione.RICHIESTE_ATTIVAZIONE,
-            RichiesteCessazione.RICHIESTE_CESSAZIONE,
             TipiAttivazione.TIPI_ATTIVAZIONE,
-            TipiImmobile.TIPI_IMMOBILE,
             TipologieUso.TIPOLOGIE_USO
         );
     }

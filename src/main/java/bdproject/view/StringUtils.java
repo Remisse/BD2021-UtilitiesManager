@@ -1,15 +1,9 @@
 package bdproject.view;
 
-import bdproject.model.Queries;
 import bdproject.tables.pojos.ClientiDettagliati;
 import bdproject.tables.pojos.Immobili;
 import bdproject.tables.pojos.Offerte;
-import bdproject.tables.pojos.TipiImmobile;
 import bdproject.utils.LocaleUtils;
-
-import java.sql.Connection;
-import java.util.Optional;
-
 public class StringUtils {
 
     private StringUtils() {}
@@ -18,59 +12,38 @@ public class StringUtils {
         return "Impossibile soddisfare la richiesta.";
     }
 
-    public static String clientToString(final int personId, final Connection conn) {
-        final Optional<ClientiDettagliati> client = Queries.fetchClientById(personId, conn);
-
+    public static String clientToString(final ClientiDettagliati client) {
         final StringBuilder builder = new StringBuilder();
-        client.ifPresent(c -> builder.append(c.getNome())
+        return builder.append(client.getNome())
                 .append(" ")
-                .append(c.getCognome())
+                .append(client.getCognome())
                 .append("\nData di nascita: ")
-                .append(LocaleUtils.getItDateFormatter().format(c.getDatanascita()))
+                .append(LocaleUtils.getItDateFormatter().format(client.getDatanascita()))
                 .append("\n")
-                .append(c.getCodicefiscale())
+                .append(client.getCodicefiscale())
                 .append("\nCodice cliente: ")
-                .append(c.getIdentificativo())
+                .append(client.getIdpersona())
                 .append("\n")
-                .append(c.getEmail())
+                .append(client.getEmail())
                 .append("\nReddito: ")
-                .append(c.getFasciareddito())
-        );
-        return builder.toString();
-    }
-
-    public static String premisesToString(final Immobili premises, final TipiImmobile type) {
-        return new StringBuilder().append(type.getNome())
-                .append("\n\n")
-                .append(premises.getVia())
-                .append(" ")
-                .append(premises.getNumcivico())
-                .append(type.getHainterno() == 1 ? "\nInterno " + premises.getInterno() : "")
-                .append("\n")
-                .append(premises.getComune())
-                .append("\n")
-                .append(premises.getCap())
-                .append("\n")
-                .append(premises.getProvincia())
+                .append(client.getFasciareddito())
                 .toString();
     }
 
-    public static String requestStatusToString(final String result) {
-        String outVal = "UNDEFINED";
-        switch (result) {
-            case "N":
-                outVal = "Non esaminata";
-                break;
-            case "E":
-                outVal = "Presa in carico";
-                break;
-            case "A":
-                outVal = "Approvata";
-                break;
-            case "R":
-                outVal = "Respinta";
-        }
-        return outVal;
+    public static String premiseToString(final Immobili premise) {
+        return new StringBuilder().append(premise.getTipo())
+                .append("\n\n")
+                .append(premise.getVia())
+                .append(" ")
+                .append(premise.getNumcivico())
+                .append(premise.getInterno() != null ? "\nInterno " + premise.getInterno() : "")
+                .append("\n")
+                .append(premise.getComune())
+                .append("\n")
+                .append(premise.getCap())
+                .append("\n")
+                .append(premise.getProvincia())
+                .toString();
     }
 
     public static String planToString(final Offerte plan) {

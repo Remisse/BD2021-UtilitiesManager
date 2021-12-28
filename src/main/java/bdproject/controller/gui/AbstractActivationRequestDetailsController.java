@@ -18,15 +18,14 @@ import java.net.URL;
 import java.sql.Connection;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static bdproject.tables.TipiImmobile.TIPI_IMMOBILE;
 
 public abstract class AbstractActivationRequestDetailsController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "requestDetails.fxml";
     private static final String FLOW_CSS = "-fx-font: 16 arial";
-    private final RichiesteAttivazione request;
+    private final Contratti request;
 
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
     private final Map<String, String> mUnit = LocaleUtils.getItUtilitiesUnits();
@@ -42,8 +41,8 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
     @FXML private Label use;
     @FXML private Label activation;
 
-    protected AbstractActivationRequestDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final RichiesteAttivazione request) {
+    protected AbstractActivationRequestDetailsController(final Stage stage, final DataSource dataSource,
+                                                         final SessionHolder holder, final Contratti request) {
         super(stage, dataSource, holder, FXML_FILE);
         this.request = request;
     }
@@ -51,8 +50,8 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try (Connection conn = dataSource().getConnection()) {
-            use.setText(Queries.fetchUsageFromRequest(request.getNumero(), conn).getNome());
-            activation.setText(Queries.fetchActivationFromRequest(request.getNumero(), conn).getNome());
+            use.setText(Queries.fetchUsageFromRequest(request.getIdcontratto(), conn).getNome());
+            activation.setText(Queries.fetchActivationFromSub(request.getIdcontratto(), conn).getNome());
 
             setNotes();
             setRequestResult();
@@ -66,26 +65,26 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
     }
 
     private void setNotes() {
-        final Text notesText = new Text(request.getNote());
+        final Text notesText = new Text(request.getNoterichiesta());
         notesText.setStyle(FLOW_CSS);
         notesFlow.getChildren().add(notesText);
     }
 
     private void setClientDetails(final Connection conn) {
-        final Text clientText = new Text(StringUtils.clientToString(request.getCliente(), conn));
-        clientText.setStyle(FLOW_CSS);
-        clientDetails.getChildren().add(clientText);
+        final Optional<ClientiDettagliati> client = Queries.fetchClientById(request.getIdcliente(), conn);
+        client.ifPresent(c -> {
+            final Text clientText = new Text(StringUtils.clientToString(c));
+            clientText.setStyle(FLOW_CSS);
+            clientDetails.getChildren().add(clientText);
+        });
     }
 
     private void setEstateDetails() {
-        final Immobili estate = Queries.fetchEstateFromMeterNumber(request.getContatore(), dataSource());
-        final TipiImmobile type = Queries.fetchOne(
-                TIPI_IMMOBILE, TIPI_IMMOBILE.CODICE, estate.getTipo(), TipiImmobile.class, dataSource()
-        ).orElseThrow();
+        final Immobili premise = Queries.fetchPremiseFromSubscription(request.getIdcontratto(), dataSource());
+        final Text premiseText = new Text(StringUtils.premiseToString(premise));
 
-        final Text estateText = new Text(StringUtils.premisesToString(estate, type));
-        estateText.setStyle(FLOW_CSS);
-        premisesDetails.getChildren().add(estateText);
+        premiseText.setStyle(FLOW_CSS);
+        premisesDetails.getChildren().add(premiseText);
     }
 
     private void setPeopleNo() {
@@ -111,10 +110,10 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
     }
 
     private void setRequestResult() {
-        resultLabel.setText(StringUtils.requestStatusToString(request.getStato()));
+        resultLabel.setText(request.getStatorichiesta());
     }
 
-    protected RichiesteAttivazione getRequest() {
+    protected Contratti getRequest() {
         return this.request;
     }
 }

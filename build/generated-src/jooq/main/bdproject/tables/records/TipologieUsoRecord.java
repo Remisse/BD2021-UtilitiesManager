@@ -24,17 +24,17 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.tipologie_uso.Codice</code>.
+     * Setter for <code>utenze.tipologie_uso.CodUso</code>.
      */
-    public TipologieUsoRecord setCodice(Integer value) {
+    public TipologieUsoRecord setCoduso(Integer value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.tipologie_uso.Codice</code>.
+     * Getter for <code>utenze.tipologie_uso.CodUso</code>.
      */
-    public Integer getCodice() {
+    public Integer getCoduso() {
         return (Integer) get(0);
     }
 
@@ -108,7 +108,7 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
 
     @Override
     public Field<Integer> field1() {
-        return TipologieUso.TIPOLOGIE_USO.CODICE;
+        return TipologieUso.TIPOLOGIE_USO.CODUSO;
     }
 
     @Override
@@ -128,7 +128,7 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
 
     @Override
     public Integer component1() {
-        return getCodice();
+        return getCoduso();
     }
 
     @Override
@@ -148,7 +148,7 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
 
     @Override
     public Integer value1() {
-        return getCodice();
+        return getCoduso();
     }
 
     @Override
@@ -168,7 +168,7 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
 
     @Override
     public TipologieUsoRecord value1(Integer value) {
-        setCodice(value);
+        setCoduso(value);
         return this;
     }
 
@@ -213,10 +213,10 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
     /**
      * Create a detached, initialised TipologieUsoRecord
      */
-    public TipologieUsoRecord(Integer codice, String nome, BigDecimal stimaperpersona, Byte scontoreddito) {
+    public TipologieUsoRecord(Integer coduso, String nome, BigDecimal stimaperpersona, Byte scontoreddito) {
         super(TipologieUso.TIPOLOGIE_USO);
 
-        setCodice(codice);
+        setCoduso(coduso);
         setNome(nome);
         setStimaperpersona(stimaperpersona);
         setScontoreddito(scontoreddito);
@@ -229,7 +229,7 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
         super(TipologieUso.TIPOLOGIE_USO);
 
         if (value != null) {
-            setCodice(value.getCodice());
+            setCoduso(value.getCoduso());
             setNome(value.getNome());
             setStimaperpersona(value.getStimaperpersona());
             setScontoreddito(value.getScontoreddito());

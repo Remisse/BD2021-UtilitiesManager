@@ -17,46 +17,50 @@ public class Letture implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final BigDecimal consumi;
-    private final Integer    contatore;
+    private final Integer    numerolettura;
+    private final String     matricolacontatore;
     private final LocalDate  dataeffettuazione;
-    private final Byte       confermata;
-    private final Integer    cliente;
+    private final BigDecimal consumi;
+    private final String     stato;
+    private final Integer    idpersona;
 
     public Letture(Letture value) {
-        this.consumi = value.consumi;
-        this.contatore = value.contatore;
+        this.numerolettura = value.numerolettura;
+        this.matricolacontatore = value.matricolacontatore;
         this.dataeffettuazione = value.dataeffettuazione;
-        this.confermata = value.confermata;
-        this.cliente = value.cliente;
+        this.consumi = value.consumi;
+        this.stato = value.stato;
+        this.idpersona = value.idpersona;
     }
 
     public Letture(
-        BigDecimal consumi,
-        Integer    contatore,
+        Integer    numerolettura,
+        String     matricolacontatore,
         LocalDate  dataeffettuazione,
-        Byte       confermata,
-        Integer    cliente
+        BigDecimal consumi,
+        String     stato,
+        Integer    idpersona
     ) {
-        this.consumi = consumi;
-        this.contatore = contatore;
+        this.numerolettura = numerolettura;
+        this.matricolacontatore = matricolacontatore;
         this.dataeffettuazione = dataeffettuazione;
-        this.confermata = confermata;
-        this.cliente = cliente;
+        this.consumi = consumi;
+        this.stato = stato;
+        this.idpersona = idpersona;
     }
 
     /**
-     * Getter for <code>utenze.letture.Consumi</code>.
+     * Getter for <code>utenze.letture.NumeroLettura</code>.
      */
-    public BigDecimal getConsumi() {
-        return this.consumi;
+    public Integer getNumerolettura() {
+        return this.numerolettura;
     }
 
     /**
-     * Getter for <code>utenze.letture.Contatore</code>.
+     * Getter for <code>utenze.letture.MatricolaContatore</code>.
      */
-    public Integer getContatore() {
-        return this.contatore;
+    public String getMatricolacontatore() {
+        return this.matricolacontatore;
     }
 
     /**
@@ -67,28 +71,36 @@ public class Letture implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.letture.Confermata</code>.
+     * Getter for <code>utenze.letture.Consumi</code>.
      */
-    public Byte getConfermata() {
-        return this.confermata;
+    public BigDecimal getConsumi() {
+        return this.consumi;
     }
 
     /**
-     * Getter for <code>utenze.letture.Cliente</code>.
+     * Getter for <code>utenze.letture.Stato</code>.
      */
-    public Integer getCliente() {
-        return this.cliente;
+    public String getStato() {
+        return this.stato;
+    }
+
+    /**
+     * Getter for <code>utenze.letture.IdPersona</code>.
+     */
+    public Integer getIdpersona() {
+        return this.idpersona;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Letture (");
 
-        sb.append(consumi);
-        sb.append(", ").append(contatore);
+        sb.append(numerolettura);
+        sb.append(", ").append(matricolacontatore);
         sb.append(", ").append(dataeffettuazione);
-        sb.append(", ").append(confermata);
-        sb.append(", ").append(cliente);
+        sb.append(", ").append(consumi);
+        sb.append(", ").append(stato);
+        sb.append(", ").append(idpersona);
 
         sb.append(")");
         return sb.toString();

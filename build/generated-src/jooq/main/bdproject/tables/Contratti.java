@@ -12,17 +12,20 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -51,22 +54,62 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     /**
      * The column <code>utenze.contratti.IdContratto</code>.
      */
-    public final TableField<ContrattiRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<ContrattiRecord, Integer> IDCONTRATTO = createField(DSL.name("IdContratto"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>utenze.contratti.DataInizio</code>.
+     * The column <code>utenze.contratti.DataAperturaRichiesta</code>.
      */
-    public final TableField<ContrattiRecord, LocalDate> DATAINIZIO = createField(DSL.name("DataInizio"), SQLDataType.LOCALDATE.nullable(false), this, "");
+    public final TableField<ContrattiRecord, LocalDate> DATAAPERTURARICHIESTA = createField(DSL.name("DataAperturaRichiesta"), SQLDataType.LOCALDATE.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.contratti.DataChiusuraRichiesta</code>.
+     */
+    public final TableField<ContrattiRecord, LocalDate> DATACHIUSURARICHIESTA = createField(DSL.name("DataChiusuraRichiesta"), SQLDataType.LOCALDATE, this, "");
+
+    /**
+     * The column <code>utenze.contratti.StatoRichiesta</code>.
+     */
+    public final TableField<ContrattiRecord, String> STATORICHIESTA = createField(DSL.name("StatoRichiesta"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.contratti.NoteRichiesta</code>.
+     */
+    public final TableField<ContrattiRecord, String> NOTERICHIESTA = createField(DSL.name("NoteRichiesta"), SQLDataType.VARCHAR(500).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.contratti.NumeroComponenti</code>.
+     */
+    public final TableField<ContrattiRecord, Integer> NUMEROCOMPONENTI = createField(DSL.name("NumeroComponenti"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.contratti.Uso</code>.
+     */
+    public final TableField<ContrattiRecord, Integer> USO = createField(DSL.name("Uso"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.contratti.Offerta</code>.
+     */
+    public final TableField<ContrattiRecord, Integer> OFFERTA = createField(DSL.name("Offerta"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.contratti.TipoAttivazione</code>.
+     */
+    public final TableField<ContrattiRecord, Integer> TIPOATTIVAZIONE = createField(DSL.name("TipoAttivazione"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.contratti.IdImmobile</code>.
+     */
+    public final TableField<ContrattiRecord, Integer> IDIMMOBILE = createField(DSL.name("IdImmobile"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.contratti.IdCliente</code>.
+     */
+    public final TableField<ContrattiRecord, Integer> IDCLIENTE = createField(DSL.name("IdCliente"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>utenze.contratti.DataCessazione</code>.
      */
     public final TableField<ContrattiRecord, LocalDate> DATACESSAZIONE = createField(DSL.name("DataCessazione"), SQLDataType.LOCALDATE, this, "");
-
-    /**
-     * The column <code>utenze.contratti.DataUltimaBolletta</code>.
-     */
-    public final TableField<ContrattiRecord, LocalDate> DATAULTIMABOLLETTA = createField(DSL.name("DataUltimaBolletta"), SQLDataType.LOCALDATE, this, "");
 
     private Contratti(Name alias, Table<ContrattiRecord> aliased) {
         this(alias, aliased, null);
@@ -107,22 +150,66 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     }
 
     @Override
+    public Identity<ContrattiRecord, Integer> getIdentity() {
+        return (Identity<ContrattiRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
     public UniqueKey<ContrattiRecord> getPrimaryKey() {
         return Keys.KEY_CONTRATTI_PRIMARY;
     }
 
     @Override
     public List<ForeignKey<ContrattiRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_DEFINIZIONE);
+        return Arrays.asList(Keys.FK_USO, Keys.FK_SOTTOSCRIZIONE, Keys.FK_ATTIVAZIONE_TRAMITE, Keys.FK_COLLEGAMENTO, Keys.FK_RICHIESTA);
     }
 
-    private transient RichiesteAttivazione _richiesteAttivazione;
+    private transient TipologieUso _tipologieUso;
+    private transient Offerte _offerte;
+    private transient TipiAttivazione _tipiAttivazione;
+    private transient Immobili _immobili;
+    private transient Clienti _clienti;
 
-    public RichiesteAttivazione richiesteAttivazione() {
-        if (_richiesteAttivazione == null)
-            _richiesteAttivazione = new RichiesteAttivazione(this, Keys.FK_DEFINIZIONE);
+    public TipologieUso tipologieUso() {
+        if (_tipologieUso == null)
+            _tipologieUso = new TipologieUso(this, Keys.FK_USO);
 
-        return _richiesteAttivazione;
+        return _tipologieUso;
+    }
+
+    public Offerte offerte() {
+        if (_offerte == null)
+            _offerte = new Offerte(this, Keys.FK_SOTTOSCRIZIONE);
+
+        return _offerte;
+    }
+
+    public TipiAttivazione tipiAttivazione() {
+        if (_tipiAttivazione == null)
+            _tipiAttivazione = new TipiAttivazione(this, Keys.FK_ATTIVAZIONE_TRAMITE);
+
+        return _tipiAttivazione;
+    }
+
+    public Immobili immobili() {
+        if (_immobili == null)
+            _immobili = new Immobili(this, Keys.FK_COLLEGAMENTO);
+
+        return _immobili;
+    }
+
+    public Clienti clienti() {
+        if (_clienti == null)
+            _clienti = new Clienti(this, Keys.FK_RICHIESTA);
+
+        return _clienti;
+    }
+
+    @Override
+    public List<Check<ContrattiRecord>> getChecks() {
+        return Arrays.asList(
+            Internal.createCheck(this, DSL.name("contratti_chk_1"), "(`NumeroComponenti` > 0)", true)
+        );
     }
 
     @Override
@@ -152,11 +239,11 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, LocalDate, LocalDate, LocalDate> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row12<Integer, LocalDate, LocalDate, String, String, Integer, Integer, Integer, Integer, Integer, Integer, LocalDate> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }

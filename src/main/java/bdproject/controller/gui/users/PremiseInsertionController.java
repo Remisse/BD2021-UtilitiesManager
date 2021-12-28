@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 import static bdproject.tables.TipiImmobile.TIPI_IMMOBILE;
 
-public class EstateInsertionController extends AbstractController implements Initializable {
+public class PremiseInsertionController extends AbstractController implements Initializable {
 
     private static final int POSTCODE_LENGTH = 5;
     private static final int PROVINCE_LENGTH = 2;
@@ -57,15 +57,15 @@ public class EstateInsertionController extends AbstractController implements Ini
 
     @FXML private ComboBox<Choice<TipiImmobile, String>> typeBox;
 
-    private EstateInsertionController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final String fxml, final SubscriptionProcess process) {
+    private PremiseInsertionController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
+                                       final String fxml, final SubscriptionProcess process) {
         super(stage, dataSource, holder, fxml);
         this.process = process;
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
             final SubscriptionProcess process) {
-        return new EstateInsertionController(stage, dataSource, holder, fxml, process);
+        return new PremiseInsertionController(stage, dataSource, holder, fxml, process);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class EstateInsertionController extends AbstractController implements Ini
                     postcodeField.getText());
             try (Connection conn = dataSource().getConnection()) {
                 final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-                final Optional<Immobili> existingEstate = Queries.fetchEstateByCandidateKey(
+                final Optional<Immobili> existingEstate = Queries.fetchPremiseByCandidateKey(
                         newPremises.getComune(),
                         newPremises.getNumcivico(),
                         newPremises.getInterno(),

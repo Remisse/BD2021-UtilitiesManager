@@ -56,12 +56,12 @@ public class SubscriptionConfirmationController extends AbstractController imple
                 3, () -> switchTo(ParametersSelectionController.create(stage(), dataSource(), sessionHolder(), this.process)),
                 2, () -> {
                     if (this.process.estate().orElseThrow().getIdimmobile() == 0) {
-                        switchTo(EstateInsertionController.create(stage(), dataSource(), sessionHolder(), this.process));
+                        switchTo(PremiseInsertionController.create(stage(), dataSource(), sessionHolder(), this.process));
                     } else {
                         switchTo(ParametersSelectionController.create(stage(), dataSource(), sessionHolder(), this.process));
                     }
                 },
-                1, () -> switchTo(EstateInsertionController.create(stage(), dataSource(), sessionHolder(), this.process))
+                1, () -> switchTo(PremiseInsertionController.create(stage(), dataSource(), sessionHolder(), this.process))
         );
     }
 
@@ -100,7 +100,7 @@ public class SubscriptionConfirmationController extends AbstractController imple
         final TipiImmobile type = Queries.fetchOne(
                 TIPI_IMMOBILE, TIPI_IMMOBILE.CODICE, process.estate().orElseThrow().getTipo(), TipiImmobile.class, dataSource()
         ).orElseThrow();
-        final Text premisesText = new Text(StringUtils.premisesToString(process.estate().orElseThrow(), type));
+        final Text premisesText = new Text(StringUtils.premiseToString(process.estate().orElseThrow(), type));
         premisesText.setStyle(FLOW_CSS);
         premisesFlow.getChildren().add(premisesText);
     }
@@ -119,7 +119,7 @@ public class SubscriptionConfirmationController extends AbstractController imple
                     int estateId;
                     if (process.estate().orElseThrow().getIdimmobile() == 0) {
                         final Immobili pTemp = process.estate().orElseThrow();
-                        Queries.insertEstateReturningId(
+                        Queries.insertPremiseThenReturnId(
                                 pTemp.getTipo(),
                                 pTemp.getVia(),
                                 pTemp.getNumcivico(),
@@ -138,7 +138,7 @@ public class SubscriptionConfirmationController extends AbstractController imple
 
                     final Contatori m = process.meter().orElseThrow();
                     if (m.getProgressivo() == 0) {
-                        Queries.insertMeterReturningId(
+                        Queries.insertMeterThenReturnId(
                                 m.getMatricola(),
                                 m.getMateriaprima(),
                                 estateId,
@@ -158,7 +158,7 @@ public class SubscriptionConfirmationController extends AbstractController imple
 
                     process.measurement().ifPresent(mt -> Queries.insertMeasurement(mt, conn));
 
-                    final int result = Queries.insertActivationRequest(
+                    final int result = Queries.insertSubscriptionRequest(
                             process.getClientId(),
                             LocalDate.now(),
                             process.plan().orElseThrow().getCodice(),

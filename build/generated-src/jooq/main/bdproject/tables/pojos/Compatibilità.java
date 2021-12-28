@@ -15,27 +15,27 @@ public class Compatibilità implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer codiceofferta;
+    private final Integer offerta;
     private final Integer uso;
 
     public Compatibilità(Compatibilità value) {
-        this.codiceofferta = value.codiceofferta;
+        this.offerta = value.offerta;
         this.uso = value.uso;
     }
 
     public Compatibilità(
-        Integer codiceofferta,
+        Integer offerta,
         Integer uso
     ) {
-        this.codiceofferta = codiceofferta;
+        this.offerta = offerta;
         this.uso = uso;
     }
 
     /**
-     * Getter for <code>utenze.compatibilità.CodiceOfferta</code>.
+     * Getter for <code>utenze.compatibilità.Offerta</code>.
      */
-    public Integer getCodiceofferta() {
-        return this.codiceofferta;
+    public Integer getOfferta() {
+        return this.offerta;
     }
 
     /**
@@ -49,7 +49,7 @@ public class Compatibilità implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Compatibilità (");
 
-        sb.append(codiceofferta);
+        sb.append(offerta);
         sb.append(", ").append(uso);
 
         sb.append(")");

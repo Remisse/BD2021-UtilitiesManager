@@ -51,9 +51,9 @@ public class TipiAttivazione extends TableImpl<TipiAttivazioneRecord> {
     }
 
     /**
-     * The column <code>utenze.tipi_attivazione.Codice</code>.
+     * The column <code>utenze.tipi_attivazione.CodAttivazione</code>.
      */
-    public final TableField<TipiAttivazioneRecord, Integer> CODICE = createField(DSL.name("Codice"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<TipiAttivazioneRecord, Integer> CODATTIVAZIONE = createField(DSL.name("CodAttivazione"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>utenze.tipi_attivazione.Nome</code>.

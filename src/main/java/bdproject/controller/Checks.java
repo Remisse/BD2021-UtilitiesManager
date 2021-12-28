@@ -1,11 +1,9 @@
 package bdproject.controller;
 
-import bdproject.model.Queries;
-import bdproject.tables.pojos.ContrattiDettagliati;
+import bdproject.tables.pojos.Contratti;
 import bdproject.tables.pojos.TipologieUso;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 
 public class Checks {
 
@@ -38,7 +36,13 @@ public class Checks {
         return use.getNome().equals("Abitativo residenziale") || use.getNome().equals("Commerciale");
     }
 
-    public static boolean isSubscriptionActive(final ContrattiDettagliati sub, final Connection conn) {
-        return sub.getDatacessazione() == null && !Queries.hasOngoingInterruption(sub, conn);
+    public static boolean isSubscriptionActive(final Contratti sub) {
+        return sub.getDatachiusurarichiesta() != null
+                && sub.getStatorichiesta().equals("Approvata")
+                && sub.getDatacessazione() == null;
+    }
+
+    public static boolean isSubscriptionBeingReviewed(final Contratti sub) {
+        return sub.getDatachiusurarichiesta() == null;
     }
 }

@@ -104,7 +104,7 @@ public class CatalogueManagementController extends AbstractController implements
 
     private void initPlanTable() {
         nameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNome()));
-        idCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCodice()).asObject());
+        idCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCodofferta()).asObject());
         descriptionCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDescrizione()));
         utilityCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getMateriaprima()));
         costCol.setCellValueFactory(c -> new SimpleStringProperty(
@@ -163,7 +163,7 @@ public class CatalogueManagementController extends AbstractController implements
                 try (Connection conn = dataSource().getConnection()) {
                     final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
                     final int result = Queries.updatePlan(
-                            selectedPlan.getCodice(),
+                            selectedPlan.getCodofferta(),
                             nameField.getText(),
                             descriptionArea.getText(),
                             activeYes.isSelected(),
@@ -194,7 +194,7 @@ public class CatalogueManagementController extends AbstractController implements
         if (selectedPlan != null) {
             try (Connection conn = dataSource().getConnection()) {
                 final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-                final int result = Queries.deleteGeneric(OFFERTE, OFFERTE.CODICE, selectedPlan.getCodice(), ctx);
+                final int result = Queries.deleteGeneric(OFFERTE, OFFERTE.CODOFFERTA, selectedPlan.getCodofferta(), ctx);
                 if (result == 1) {
                     FXUtils.showBlockingWarning("Offerta eliminata.");
                     refreshPlanTable();
@@ -229,7 +229,7 @@ public class CatalogueManagementController extends AbstractController implements
     }
 
     private void initUseTable() {
-        useIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCodice()).asObject());
+        useIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCoduso()).asObject());
         useNameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNome()));
         useEstimateCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStimaperpersona().toString()));
         useDiscountCol.setCellValueFactory(c -> new SimpleStringProperty(StringUtils.byteToYesNo(c.getValue().getScontoreddito())));
@@ -281,7 +281,7 @@ public class CatalogueManagementController extends AbstractController implements
                 try (Connection conn = dataSource().getConnection())  {
                     final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
                     final int result = Queries.updateUse(
-                            selectedUse.getCodice(),
+                            selectedUse.getCoduso(),
                             useNameField.getText(),
                             new BigDecimal(useEstimateField.getText()),
                             discountApplicable.isSelected() ? (byte) 1 : (byte) 0,
@@ -309,7 +309,7 @@ public class CatalogueManagementController extends AbstractController implements
         if (selectedUse != null) {
             try (Connection conn = dataSource().getConnection())  {
                 final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-                final int result = Queries.deleteGeneric(TIPOLOGIE_USO, TIPOLOGIE_USO.CODICE, selectedUse.getCodice(), ctx);
+                final int result = Queries.deleteGeneric(TIPOLOGIE_USO, TIPOLOGIE_USO.CODUSO, selectedUse.getCoduso(), ctx);
                 if (result == 1) {
                     FXUtils.showBlockingWarning("Tipologia d'uso eliminata.");
                     refreshUseTable();
@@ -347,7 +347,7 @@ public class CatalogueManagementController extends AbstractController implements
         if (selectedPlan != null && selectedUse != null) {
             try (Connection conn = dataSource().getConnection()) {
                 final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-                final int result = Queries.insertCompatibility(selectedUse.getCodice(), selectedPlan.getCodice(), ctx);
+                final int result = Queries.insertCompatibility(selectedUse.getCoduso(), selectedPlan.getCodofferta(), ctx);
                 if (result == 1) {
                     FXUtils.showBlockingWarning("Compatibilità aggiunta.");
                     refreshCompatibilityTable();

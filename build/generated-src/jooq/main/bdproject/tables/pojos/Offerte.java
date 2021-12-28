@@ -16,7 +16,7 @@ public class Offerte implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer    codice;
+    private final Integer    codofferta;
     private final String     nome;
     private final String     descrizione;
     private final BigDecimal costomateriaprima;
@@ -24,7 +24,7 @@ public class Offerte implements Serializable {
     private final String     materiaprima;
 
     public Offerte(Offerte value) {
-        this.codice = value.codice;
+        this.codofferta = value.codofferta;
         this.nome = value.nome;
         this.descrizione = value.descrizione;
         this.costomateriaprima = value.costomateriaprima;
@@ -33,14 +33,14 @@ public class Offerte implements Serializable {
     }
 
     public Offerte(
-        Integer    codice,
+        Integer    codofferta,
         String     nome,
         String     descrizione,
         BigDecimal costomateriaprima,
         Byte       attiva,
         String     materiaprima
     ) {
-        this.codice = codice;
+        this.codofferta = codofferta;
         this.nome = nome;
         this.descrizione = descrizione;
         this.costomateriaprima = costomateriaprima;
@@ -49,10 +49,10 @@ public class Offerte implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.offerte.Codice</code>.
+     * Getter for <code>utenze.offerte.CodOfferta</code>.
      */
-    public Integer getCodice() {
-        return this.codice;
+    public Integer getCodofferta() {
+        return this.codofferta;
     }
 
     /**
@@ -94,7 +94,7 @@ public class Offerte implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Offerte (");
 
-        sb.append(codice);
+        sb.append(codofferta);
         sb.append(", ").append(nome);
         sb.append(", ").append(descrizione);
         sb.append(", ").append(costomateriaprima);

@@ -16,35 +16,35 @@ public class TipologieUso implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer    codice;
+    private final Integer    coduso;
     private final String     nome;
     private final BigDecimal stimaperpersona;
     private final Byte       scontoreddito;
 
     public TipologieUso(TipologieUso value) {
-        this.codice = value.codice;
+        this.coduso = value.coduso;
         this.nome = value.nome;
         this.stimaperpersona = value.stimaperpersona;
         this.scontoreddito = value.scontoreddito;
     }
 
     public TipologieUso(
-        Integer    codice,
+        Integer    coduso,
         String     nome,
         BigDecimal stimaperpersona,
         Byte       scontoreddito
     ) {
-        this.codice = codice;
+        this.coduso = coduso;
         this.nome = nome;
         this.stimaperpersona = stimaperpersona;
         this.scontoreddito = scontoreddito;
     }
 
     /**
-     * Getter for <code>utenze.tipologie_uso.Codice</code>.
+     * Getter for <code>utenze.tipologie_uso.CodUso</code>.
      */
-    public Integer getCodice() {
-        return this.codice;
+    public Integer getCoduso() {
+        return this.coduso;
     }
 
     /**
@@ -72,7 +72,7 @@ public class TipologieUso implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("TipologieUso (");
 
-        sb.append(codice);
+        sb.append(coduso);
         sb.append(", ").append(nome);
         sb.append(", ").append(stimaperpersona);
         sb.append(", ").append(scontoreddito);

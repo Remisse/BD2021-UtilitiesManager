@@ -51,9 +51,9 @@ public class Redditi extends TableImpl<RedditiRecord> {
     }
 
     /**
-     * The column <code>utenze.redditi.Codice</code>.
+     * The column <code>utenze.redditi.CodReddito</code>.
      */
-    public final TableField<RedditiRecord, Integer> CODICE = createField(DSL.name("Codice"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<RedditiRecord, Integer> CODREDDITO = createField(DSL.name("CodReddito"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>utenze.redditi.Fascia</code>.

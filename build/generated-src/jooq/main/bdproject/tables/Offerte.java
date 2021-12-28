@@ -52,9 +52,9 @@ public class Offerte extends TableImpl<OfferteRecord> {
     }
 
     /**
-     * The column <code>utenze.offerte.Codice</code>.
+     * The column <code>utenze.offerte.CodOfferta</code>.
      */
-    public final TableField<OfferteRecord, Integer> CODICE = createField(DSL.name("Codice"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<OfferteRecord, Integer> CODOFFERTA = createField(DSL.name("CodOfferta"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>utenze.offerte.Nome</code>.

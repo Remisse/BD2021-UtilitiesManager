@@ -8,20 +8,23 @@ import bdproject.Keys;
 import bdproject.Utenze;
 import bdproject.tables.records.OperatoriRecord;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row1;
+import org.jooq.Row2;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -48,9 +51,14 @@ public class Operatori extends TableImpl<OperatoriRecord> {
     }
 
     /**
-     * The column <code>utenze.operatori.CodiceOperatore</code>.
+     * The column <code>utenze.operatori.IdOperatore</code>.
      */
-    public final TableField<OperatoriRecord, Integer> CODICEOPERATORE = createField(DSL.name("CodiceOperatore"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<OperatoriRecord, Integer> IDOPERATORE = createField(DSL.name("IdOperatore"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.operatori.Stipendio</code>.
+     */
+    public final TableField<OperatoriRecord, BigDecimal> STIPENDIO = createField(DSL.name("Stipendio"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
 
     private Operatori(Name alias, Table<OperatoriRecord> aliased) {
         this(alias, aliased, null);
@@ -110,6 +118,13 @@ public class Operatori extends TableImpl<OperatoriRecord> {
     }
 
     @Override
+    public List<Check<OperatoriRecord>> getChecks() {
+        return Arrays.asList(
+            Internal.createCheck(this, DSL.name("operatori_chk_1"), "(`Stipendio` >= 0)", true)
+        );
+    }
+
+    @Override
     public Operatori as(String alias) {
         return new Operatori(DSL.name(alias), this);
     }
@@ -136,11 +151,11 @@ public class Operatori extends TableImpl<OperatoriRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row1 type methods
+    // Row2 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row1<Integer> fieldsRow() {
-        return (Row1) super.fieldsRow();
+    public Row2<Integer, BigDecimal> fieldsRow() {
+        return (Row2) super.fieldsRow();
     }
 }

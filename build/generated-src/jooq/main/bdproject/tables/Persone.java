@@ -52,14 +52,9 @@ public class Persone extends TableImpl<PersoneRecord> {
     }
 
     /**
-     * The column <code>utenze.persone.Identificativo</code>.
+     * The column <code>utenze.persone.IdPersona</code>.
      */
-    public final TableField<PersoneRecord, Integer> IDENTIFICATIVO = createField(DSL.name("Identificativo"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>utenze.persone.CodiceFiscale</code>.
-     */
-    public final TableField<PersoneRecord, String> CODICEFISCALE = createField(DSL.name("CodiceFiscale"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+    public final TableField<PersoneRecord, Integer> IDPERSONA = createField(DSL.name("IdPersona"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>utenze.persone.Nome</code>.
@@ -72,6 +67,11 @@ public class Persone extends TableImpl<PersoneRecord> {
     public final TableField<PersoneRecord, String> COGNOME = createField(DSL.name("Cognome"), SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
+     * The column <code>utenze.persone.CodiceFiscale</code>.
+     */
+    public final TableField<PersoneRecord, String> CODICEFISCALE = createField(DSL.name("CodiceFiscale"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+
+    /**
      * The column <code>utenze.persone.Via</code>.
      */
     public final TableField<PersoneRecord, String> VIA = createField(DSL.name("Via"), SQLDataType.VARCHAR(50).nullable(false), this, "");
@@ -82,14 +82,14 @@ public class Persone extends TableImpl<PersoneRecord> {
     public final TableField<PersoneRecord, String> NUMCIVICO = createField(DSL.name("NumCivico"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.persone.CAP</code>.
-     */
-    public final TableField<PersoneRecord, String> CAP = createField(DSL.name("CAP"), SQLDataType.VARCHAR(5).nullable(false), this, "");
-
-    /**
      * The column <code>utenze.persone.Comune</code>.
      */
     public final TableField<PersoneRecord, String> COMUNE = createField(DSL.name("Comune"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.persone.CAP</code>.
+     */
+    public final TableField<PersoneRecord, String> CAP = createField(DSL.name("CAP"), SQLDataType.VARCHAR(5).nullable(false), this, "");
 
     /**
      * The column <code>utenze.persone.Provincia</code>.

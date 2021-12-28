@@ -24,17 +24,17 @@ public class RedditiRecord extends UpdatableRecordImpl<RedditiRecord> implements
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.redditi.Codice</code>.
+     * Setter for <code>utenze.redditi.CodReddito</code>.
      */
-    public RedditiRecord setCodice(Integer value) {
+    public RedditiRecord setCodreddito(Integer value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.redditi.Codice</code>.
+     * Getter for <code>utenze.redditi.CodReddito</code>.
      */
-    public Integer getCodice() {
+    public Integer getCodreddito() {
         return (Integer) get(0);
     }
 
@@ -93,7 +93,7 @@ public class RedditiRecord extends UpdatableRecordImpl<RedditiRecord> implements
 
     @Override
     public Field<Integer> field1() {
-        return Redditi.REDDITI.CODICE;
+        return Redditi.REDDITI.CODREDDITO;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class RedditiRecord extends UpdatableRecordImpl<RedditiRecord> implements
 
     @Override
     public Integer component1() {
-        return getCodice();
+        return getCodreddito();
     }
 
     @Override
@@ -123,7 +123,7 @@ public class RedditiRecord extends UpdatableRecordImpl<RedditiRecord> implements
 
     @Override
     public Integer value1() {
-        return getCodice();
+        return getCodreddito();
     }
 
     @Override
@@ -138,7 +138,7 @@ public class RedditiRecord extends UpdatableRecordImpl<RedditiRecord> implements
 
     @Override
     public RedditiRecord value1(Integer value) {
-        setCodice(value);
+        setCodreddito(value);
         return this;
     }
 
@@ -176,10 +176,10 @@ public class RedditiRecord extends UpdatableRecordImpl<RedditiRecord> implements
     /**
      * Create a detached, initialised RedditiRecord
      */
-    public RedditiRecord(Integer codice, String fascia, BigDecimal sconto) {
+    public RedditiRecord(Integer codreddito, String fascia, BigDecimal sconto) {
         super(Redditi.REDDITI);
 
-        setCodice(codice);
+        setCodreddito(codreddito);
         setFascia(fascia);
         setSconto(sconto);
     }
@@ -191,7 +191,7 @@ public class RedditiRecord extends UpdatableRecordImpl<RedditiRecord> implements
         super(Redditi.REDDITI);
 
         if (value != null) {
-            setCodice(value.getCodice());
+            setCodreddito(value.getCodreddito());
             setFascia(value.getFascia());
             setSconto(value.getSconto());
         }

@@ -45,18 +45,6 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="interruptionTable" layoutX="782.0" layoutY="137.0" prefHeight="240.0" prefWidth="432.0">
-        <columns>
-          <TableColumn fx:id="interruptionDate" prefWidth="102.0" text="Interrotto il" />
-          <TableColumn fx:id="reactivationDate" minWidth="0.0" prefWidth="102.0" text="Riattivato il" />
-            <TableColumn fx:id="interruptionDescription" prefWidth="227.0" text="Note" />
-        </columns>
-      </TableView>
-      <Label fx:id="interruptionLabel" layoutX="782.0" layoutY="91.0" text="Storico delle interruzioni">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
       <Label layoutX="494.0" layoutY="91.0" text="Stato:">
          <font>
             <Font size="20.0" />
@@ -137,5 +125,21 @@
             <Font size="16.0" />
          </font>
       </Button>
+      <Label layoutX="801.0" layoutY="93.0" text="Data di creazione della richiesta:">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="creationDateLabel" layoutX="1140.0" layoutY="94.0" text="Label">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="801.0" layoutY="139.0" text="Note sulla richiesta:">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <TextFlow fx:id="requestNotesFlow" layoutX="801.0" layoutY="172.0" prefHeight="200.0" prefWidth="379.0" />
    </children>
 </AnchorPane>

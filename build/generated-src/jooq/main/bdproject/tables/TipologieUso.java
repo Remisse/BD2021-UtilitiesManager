@@ -52,9 +52,9 @@ public class TipologieUso extends TableImpl<TipologieUsoRecord> {
     }
 
     /**
-     * The column <code>utenze.tipologie_uso.Codice</code>.
+     * The column <code>utenze.tipologie_uso.CodUso</code>.
      */
-    public final TableField<TipologieUsoRecord, Integer> CODICE = createField(DSL.name("Codice"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<TipologieUsoRecord, Integer> CODUSO = createField(DSL.name("CodUso"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>utenze.tipologie_uso.Nome</code>.

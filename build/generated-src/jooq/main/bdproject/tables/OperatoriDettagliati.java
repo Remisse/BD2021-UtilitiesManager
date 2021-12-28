@@ -45,14 +45,9 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     }
 
     /**
-     * The column <code>utenze.operatori_dettagliati.Identificativo</code>.
+     * The column <code>utenze.operatori_dettagliati.IdPersona</code>.
      */
-    public final TableField<OperatoriDettagliatiRecord, Integer> IDENTIFICATIVO = createField(DSL.name("Identificativo"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>utenze.operatori_dettagliati.CodiceFiscale</code>.
-     */
-    public final TableField<OperatoriDettagliatiRecord, String> CODICEFISCALE = createField(DSL.name("CodiceFiscale"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+    public final TableField<OperatoriDettagliatiRecord, Integer> IDPERSONA = createField(DSL.name("IdPersona"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>utenze.operatori_dettagliati.Nome</code>.
@@ -65,6 +60,11 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     public final TableField<OperatoriDettagliatiRecord, String> COGNOME = createField(DSL.name("Cognome"), SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
+     * The column <code>utenze.operatori_dettagliati.CodiceFiscale</code>.
+     */
+    public final TableField<OperatoriDettagliatiRecord, String> CODICEFISCALE = createField(DSL.name("CodiceFiscale"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+
+    /**
      * The column <code>utenze.operatori_dettagliati.Via</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> VIA = createField(DSL.name("Via"), SQLDataType.VARCHAR(50).nullable(false), this, "");
@@ -75,14 +75,14 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     public final TableField<OperatoriDettagliatiRecord, String> NUMCIVICO = createField(DSL.name("NumCivico"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.CAP</code>.
-     */
-    public final TableField<OperatoriDettagliatiRecord, String> CAP = createField(DSL.name("CAP"), SQLDataType.VARCHAR(5).nullable(false), this, "");
-
-    /**
      * The column <code>utenze.operatori_dettagliati.Comune</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> COMUNE = createField(DSL.name("Comune"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.operatori_dettagliati.CAP</code>.
+     */
+    public final TableField<OperatoriDettagliatiRecord, String> CAP = createField(DSL.name("CAP"), SQLDataType.VARCHAR(5).nullable(false), this, "");
 
     /**
      * The column <code>utenze.operatori_dettagliati.Provincia</code>.
@@ -114,7 +114,7 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     }
 
     private OperatoriDettagliati(Name alias, Table<OperatoriDettagliatiRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `operatori_dettagliati` as select `P`.`Identificativo` AS `Identificativo`,`P`.`CodiceFiscale` AS `CodiceFiscale`,`P`.`Nome` AS `Nome`,`P`.`Cognome` AS `Cognome`,`P`.`Via` AS `Via`,`P`.`NumCivico` AS `NumCivico`,`P`.`CAP` AS `CAP`,`P`.`Comune` AS `Comune`,`P`.`Provincia` AS `Provincia`,`P`.`DataNascita` AS `DataNascita`,`P`.`NumeroTelefono` AS `NumeroTelefono`,`P`.`Email` AS `Email`,`P`.`Password` AS `Password` from `utenze`.`persone` `P` join `utenze`.`operatori` `O` where (`P`.`Identificativo` = `O`.`CodiceOperatore`)"));
+        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `operatori_dettagliati` as select `P`.`IdPersona` AS `IdPersona`,`P`.`Nome` AS `Nome`,`P`.`Cognome` AS `Cognome`,`P`.`CodiceFiscale` AS `CodiceFiscale`,`P`.`Via` AS `Via`,`P`.`NumCivico` AS `NumCivico`,`P`.`Comune` AS `Comune`,`P`.`CAP` AS `CAP`,`P`.`Provincia` AS `Provincia`,`P`.`DataNascita` AS `DataNascita`,`P`.`NumeroTelefono` AS `NumeroTelefono`,`P`.`Email` AS `Email`,`P`.`Password` AS `Password` from `utenze`.`persone` `P` join `utenze`.`operatori` `O` where (`P`.`IdPersona` = `O`.`IdOperatore`)"));
     }
 
     /**

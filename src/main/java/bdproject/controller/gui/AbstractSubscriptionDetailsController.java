@@ -24,16 +24,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static bdproject.tables.TipiImmobile.TIPI_IMMOBILE;
 
 public abstract class AbstractSubscriptionDetailsController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "subDetails.fxml";
     private static final String FLOW_CSS = "-fx-font: 16 arial";
 
-    private final ContrattiDettagliati detailedSub;
+    private final Contratti sub;
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
 
     @FXML private Button back;
@@ -49,39 +48,33 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     @FXML private Label use;
     @FXML private Label activation;
 
-    @FXML private TableView<Interruzioni> interruptionTable;
-    @FXML private TableColumn<Interruzioni, String> interruptionDate;
-    @FXML private TableColumn<Interruzioni, String> reactivationDate;
-    @FXML private TableColumn<Interruzioni, String> interruptionDescription;
-
-    @FXML private TableView<RichiesteCessazione> endRequestTable;
-    @FXML private TableColumn<RichiesteCessazione, String> reqPublishDateCol;
-    @FXML private TableColumn<RichiesteCessazione, String> reqResultCol;
-    @FXML private TableColumn<RichiesteCessazione, String> reqNotesCol;
+    @FXML private TableView<Cessazioni> endRequestTable;
+    @FXML private TableColumn<Cessazioni, String> reqPublishDateCol;
+    @FXML private TableColumn<Cessazioni, String> reqResultCol;
+    @FXML private TableColumn<Cessazioni, String> reqNotesCol;
 
     protected AbstractSubscriptionDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiDettagliati detailedSub) {
+            final Contratti sub) {
         super(stage, dataSource, holder, FXML_FILE);
-        this.detailedSub = detailedSub;
+        this.sub = sub;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try (Connection conn = dataSource().getConnection()) {
-            final LocalDate startDate = detailedSub.getDatainizio();
-            final LocalDate endDate = detailedSub.getDatacessazione();
+            final LocalDate startDate = sub.getDatachiusurarichiesta();
+            final LocalDate endDate = sub.getDatacessazione();
 
             subStartDate.setText(startDate != null ? dateIt.format(startDate) : "N.D.");
             subEndDate.setText(endDate != null ? dateIt.format(endDate) : "N.D.");
-            use.setText(Queries.fetchUsageFromSub(detailedSub.getIdcontratto(), conn).getNome());
-            activation.setText(Queries.fetchActivationFromSub(detailedSub.getIdcontratto(), conn).getNome());
+            use.setText(Queries.fetchUsageFromSub(sub.getIdcontratto(), conn).getNome());
+            activation.setText(Queries.fetchActivationFromSub(sub.getIdcontratto(), conn).getNome());
 
             setClientDetails(conn);
             setPlanDetails();
             setPeopleNo();
-            setStatus(endDate, conn);
+            setStatus();
             setPremisesDetails();
-            setInterruptionTable(conn);
             setEndRequestTable();
             refreshEndRequestTable();
             setOther();
@@ -93,41 +86,33 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
 
     protected abstract void setOther();
 
-    protected ContrattiDettagliati getSubscription() {
-        return detailedSub;
+    protected Contratti getSubscription() {
+        return sub;
     }
 
     private void setClientDetails(final Connection conn) {
-        clientDetails.getChildren().add(new Text(StringUtils.clientToString(detailedSub.getCliente(), conn)));
-    }
+        final Optional<ClientiDettagliati> client = Queries.fetchClientById(sub.getIdcliente(), conn);
 
-    private void setInterruptionTable(Connection conn) {
-        final List<Interruzioni> interruptions = Queries.fetchInterruptions(detailedSub.getIdcontratto(), conn);
-        interruptionTable.setItems(FXCollections.observableList(interruptions));
-        interruptionDate.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatainterruzione())));
-        reactivationDate.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatariattivazione())));
-        interruptionDescription.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getMotivazione()));
+        client.ifPresent(c -> clientDetails.getChildren()
+                .add(new Text(StringUtils.clientToString(c))));
     }
 
     private void setPremisesDetails() {
-        final Immobili estate = Queries.fetchEstateFromMeterNumber(detailedSub.getContatore(), dataSource());
-        final TipiImmobile type = Queries.fetchOne(
-                TIPI_IMMOBILE, TIPI_IMMOBILE.CODICE, estate.getTipo(), TipiImmobile.class, dataSource()
-        ).orElseThrow();
+        final Immobili premise = Queries.fetchPremiseFromSubscription(sub.getIdcontratto(), dataSource());
+        final Text premiseText = new Text(StringUtils.premiseToString(premise));
 
-        final Text premisesText = new Text(StringUtils.premisesToString(estate, type));
-        premisesText.setStyle(FLOW_CSS);
-        premisesDetails.getChildren().add(premisesText);
+        premiseText.setStyle(FLOW_CSS);
+        premisesDetails.getChildren().add(premiseText);
     }
 
     private void setPeopleNo() {
         try (Connection conn = dataSource().getConnection()) {
-            final TipologieUso use = Queries.fetchUsageFromSub(detailedSub.getIdcontratto(), conn);
+            final TipologieUso use = Queries.fetchUsageFromSub(sub.getIdcontratto(), conn);
             if (Checks.requiresPeopleNumber(use)) {
                 peopleNoName.setText(use.getNome().equals("Commerciale")
                                      ? "Numero dipendenti:"
                                      : "Componenti nucleo familiare:");
-                peopleNo.setText(detailedSub.getNumerocomponenti().toString());
+                peopleNo.setText(sub.getNumerocomponenti().toString());
             } else {
                 peopleNoName.setVisible(false);
                 peopleNo.setVisible(false);
@@ -138,28 +123,28 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     }
 
     private void setPlanDetails() {
-        final Offerte plan = Queries.fetchPlanById(detailedSub.getOfferta(), dataSource()).orElseThrow();
+        final Offerte plan = Queries.fetchPlanById(sub.getOfferta(), dataSource()).orElseThrow();
         final Text planText = new Text(StringUtils.planToString(plan));
         planText.setStyle(FLOW_CSS);
         planDetails.getChildren().add(planText);
     }
 
-    protected void setStatus(LocalDate endDate, final Connection conn) {
-        subState.setText(endDate != null ? "Cessato"
-                         : Checks.isSubscriptionActive(detailedSub, conn) ? "Attivo"
-                         : "Interrotto");
+    protected void setStatus() {
+        subState.setText(Checks.isSubscriptionActive(sub) ? "Attivo" :
+                Checks.isSubscriptionBeingReviewed(sub) ? "In gestione" : "Cessato");
     }
 
     private void setEndRequestTable() {
-        reqPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatarichiesta())));
-        reqResultCol.setCellValueFactory(c -> new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
-        reqNotesCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNote()));
+        reqPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue()
+                .getDataaperturarichiesta())));
+        reqResultCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStatorichiesta()));
+        reqNotesCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNoterichiesta()));
     }
 
     protected void refreshEndRequestTable() {
-        List<RichiesteCessazione> requests = Collections.emptyList();
+        List<Cessazioni> requests = Collections.emptyList();
         try (Connection conn = dataSource().getConnection()) {
-            requests = Queries.fetchEndRequestsFor(detailedSub.getIdcontratto(), conn);
+            requests = Queries.fetchEndRequestsFor(sub.getIdcontratto(), conn);
         } catch (Exception e) {
             e.printStackTrace();
         }

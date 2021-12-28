@@ -93,8 +93,8 @@ public class CatalogueController extends AbstractController implements Initializ
                 .from(OFFERTE, COMPATIBILITÀ)
                 .where(OFFERTE.MATERIAPRIMA.eq(utilities.getValue()))
                 .and(OFFERTE.ATTIVA.eq((byte) 1))
-                .and(COMPATIBILITÀ.USO.eq(uses.getValue().getItem().getCodice()))
-                .and(OFFERTE.CODICE.eq(COMPATIBILITÀ.CODICEOFFERTA))
+                .and(COMPATIBILITÀ.USO.eq(uses.getValue().getItem().getCoduso()))
+                .and(OFFERTE.CODOFFERTA.eq(COMPATIBILITÀ.OFFERTA))
                 .fetchInto(Offerte.class);
 
         table.setItems(FXCollections.observableList(plans));
@@ -136,13 +136,14 @@ public class CatalogueController extends AbstractController implements Initializ
 
     @FXML
     private void togglePlanTable() {
-        table.setDisable(activationBox.getValue().getItem().getCodice() == 3);
+        table.setDisable(activationBox.getValue().getItem().getNome().equals("Voltura"));
         table.getSelectionModel().clearSelection();
     }
 
     @FXML
     private void startSubscriptionProcess(ActionEvent e) {
-        if (activationBox.getValue().getItem().getCodice() != 3 && table.getSelectionModel().getSelectedItem() == null) {
+        if (!activationBox.getValue().getItem().getNome().equals("Voltura") &&
+                table.getSelectionModel().getSelectedItem() == null) {
             FXUtils.showBlockingWarning("Non hai selezionato un'offerta.");
         } else if (sessionHolder().session().isEmpty()) {
             FXUtils.showBlockingWarning("Per poter continuare, devi effettuare l'accesso.");

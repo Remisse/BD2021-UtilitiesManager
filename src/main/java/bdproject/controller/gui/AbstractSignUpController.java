@@ -95,7 +95,7 @@ public abstract class AbstractSignUpController extends AbstractController implem
                 if (lastInsertId == 0) {
                     FXUtils.showBlockingWarning("Impossibile creare un nuovo account.");
                 } else {
-                    final int result = abstractInsertRole(lastInsertId, income.getValue().getItem().getCodice(), conn);
+                    final int result = abstractInsertRole(lastInsertId, income.getValue().getItem().getCodreddito(), conn);
                     if (result == 1) {
                         FXUtils.showBlockingWarning("Registrazione completata.");
                         switchTo(HomeController.create(stage(), dataSource(), sessionHolder()));

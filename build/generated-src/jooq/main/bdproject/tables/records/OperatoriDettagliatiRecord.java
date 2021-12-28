@@ -23,40 +23,25 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.Identificativo</code>.
+     * Setter for <code>utenze.operatori_dettagliati.IdPersona</code>.
      */
-    public OperatoriDettagliatiRecord setIdentificativo(Integer value) {
+    public OperatoriDettagliatiRecord setIdpersona(Integer value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Identificativo</code>.
+     * Getter for <code>utenze.operatori_dettagliati.IdPersona</code>.
      */
-    public Integer getIdentificativo() {
+    public Integer getIdpersona() {
         return (Integer) get(0);
-    }
-
-    /**
-     * Setter for <code>utenze.operatori_dettagliati.CodiceFiscale</code>.
-     */
-    public OperatoriDettagliatiRecord setCodicefiscale(String value) {
-        set(1, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>utenze.operatori_dettagliati.CodiceFiscale</code>.
-     */
-    public String getCodicefiscale() {
-        return (String) get(1);
     }
 
     /**
      * Setter for <code>utenze.operatori_dettagliati.Nome</code>.
      */
     public OperatoriDettagliatiRecord setNome(String value) {
-        set(2, value);
+        set(1, value);
         return this;
     }
 
@@ -64,14 +49,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
      * Getter for <code>utenze.operatori_dettagliati.Nome</code>.
      */
     public String getNome() {
-        return (String) get(2);
+        return (String) get(1);
     }
 
     /**
      * Setter for <code>utenze.operatori_dettagliati.Cognome</code>.
      */
     public OperatoriDettagliatiRecord setCognome(String value) {
-        set(3, value);
+        set(2, value);
         return this;
     }
 
@@ -79,6 +64,21 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
      * Getter for <code>utenze.operatori_dettagliati.Cognome</code>.
      */
     public String getCognome() {
+        return (String) get(2);
+    }
+
+    /**
+     * Setter for <code>utenze.operatori_dettagliati.CodiceFiscale</code>.
+     */
+    public OperatoriDettagliatiRecord setCodicefiscale(String value) {
+        set(3, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>utenze.operatori_dettagliati.CodiceFiscale</code>.
+     */
+    public String getCodicefiscale() {
         return (String) get(3);
     }
 
@@ -113,25 +113,10 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.CAP</code>.
-     */
-    public OperatoriDettagliatiRecord setCap(String value) {
-        set(6, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>utenze.operatori_dettagliati.CAP</code>.
-     */
-    public String getCap() {
-        return (String) get(6);
-    }
-
-    /**
      * Setter for <code>utenze.operatori_dettagliati.Comune</code>.
      */
     public OperatoriDettagliatiRecord setComune(String value) {
-        set(7, value);
+        set(6, value);
         return this;
     }
 
@@ -139,6 +124,21 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
      * Getter for <code>utenze.operatori_dettagliati.Comune</code>.
      */
     public String getComune() {
+        return (String) get(6);
+    }
+
+    /**
+     * Setter for <code>utenze.operatori_dettagliati.CAP</code>.
+     */
+    public OperatoriDettagliatiRecord setCap(String value) {
+        set(7, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>utenze.operatori_dettagliati.CAP</code>.
+     */
+    public String getCap() {
         return (String) get(7);
     }
 
@@ -233,22 +233,22 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
 
     @Override
     public Field<Integer> field1() {
-        return OperatoriDettagliati.OPERATORI_DETTAGLIATI.IDENTIFICATIVO;
+        return OperatoriDettagliati.OPERATORI_DETTAGLIATI.IDPERSONA;
     }
 
     @Override
     public Field<String> field2() {
-        return OperatoriDettagliati.OPERATORI_DETTAGLIATI.CODICEFISCALE;
-    }
-
-    @Override
-    public Field<String> field3() {
         return OperatoriDettagliati.OPERATORI_DETTAGLIATI.NOME;
     }
 
     @Override
-    public Field<String> field4() {
+    public Field<String> field3() {
         return OperatoriDettagliati.OPERATORI_DETTAGLIATI.COGNOME;
+    }
+
+    @Override
+    public Field<String> field4() {
+        return OperatoriDettagliati.OPERATORI_DETTAGLIATI.CODICEFISCALE;
     }
 
     @Override
@@ -263,12 +263,12 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
 
     @Override
     public Field<String> field7() {
-        return OperatoriDettagliati.OPERATORI_DETTAGLIATI.CAP;
+        return OperatoriDettagliati.OPERATORI_DETTAGLIATI.COMUNE;
     }
 
     @Override
     public Field<String> field8() {
-        return OperatoriDettagliati.OPERATORI_DETTAGLIATI.COMUNE;
+        return OperatoriDettagliati.OPERATORI_DETTAGLIATI.CAP;
     }
 
     @Override
@@ -298,22 +298,22 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
 
     @Override
     public Integer component1() {
-        return getIdentificativo();
+        return getIdpersona();
     }
 
     @Override
     public String component2() {
-        return getCodicefiscale();
-    }
-
-    @Override
-    public String component3() {
         return getNome();
     }
 
     @Override
-    public String component4() {
+    public String component3() {
         return getCognome();
+    }
+
+    @Override
+    public String component4() {
+        return getCodicefiscale();
     }
 
     @Override
@@ -328,12 +328,12 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
 
     @Override
     public String component7() {
-        return getCap();
+        return getComune();
     }
 
     @Override
     public String component8() {
-        return getComune();
+        return getCap();
     }
 
     @Override
@@ -363,22 +363,22 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
 
     @Override
     public Integer value1() {
-        return getIdentificativo();
+        return getIdpersona();
     }
 
     @Override
     public String value2() {
-        return getCodicefiscale();
-    }
-
-    @Override
-    public String value3() {
         return getNome();
     }
 
     @Override
-    public String value4() {
+    public String value3() {
         return getCognome();
+    }
+
+    @Override
+    public String value4() {
+        return getCodicefiscale();
     }
 
     @Override
@@ -393,12 +393,12 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
 
     @Override
     public String value7() {
-        return getCap();
+        return getComune();
     }
 
     @Override
     public String value8() {
-        return getComune();
+        return getCap();
     }
 
     @Override
@@ -428,25 +428,25 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
 
     @Override
     public OperatoriDettagliatiRecord value1(Integer value) {
-        setIdentificativo(value);
+        setIdpersona(value);
         return this;
     }
 
     @Override
     public OperatoriDettagliatiRecord value2(String value) {
-        setCodicefiscale(value);
-        return this;
-    }
-
-    @Override
-    public OperatoriDettagliatiRecord value3(String value) {
         setNome(value);
         return this;
     }
 
     @Override
-    public OperatoriDettagliatiRecord value4(String value) {
+    public OperatoriDettagliatiRecord value3(String value) {
         setCognome(value);
+        return this;
+    }
+
+    @Override
+    public OperatoriDettagliatiRecord value4(String value) {
+        setCodicefiscale(value);
         return this;
     }
 
@@ -464,13 +464,13 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
 
     @Override
     public OperatoriDettagliatiRecord value7(String value) {
-        setCap(value);
+        setComune(value);
         return this;
     }
 
     @Override
     public OperatoriDettagliatiRecord value8(String value) {
-        setComune(value);
+        setCap(value);
         return this;
     }
 
@@ -536,17 +536,17 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     /**
      * Create a detached, initialised OperatoriDettagliatiRecord
      */
-    public OperatoriDettagliatiRecord(Integer identificativo, String codicefiscale, String nome, String cognome, String via, String numcivico, String cap, String comune, String provincia, LocalDate datanascita, String numerotelefono, String email, String password) {
+    public OperatoriDettagliatiRecord(Integer idpersona, String nome, String cognome, String codicefiscale, String via, String numcivico, String comune, String cap, String provincia, LocalDate datanascita, String numerotelefono, String email, String password) {
         super(OperatoriDettagliati.OPERATORI_DETTAGLIATI);
 
-        setIdentificativo(identificativo);
-        setCodicefiscale(codicefiscale);
+        setIdpersona(idpersona);
         setNome(nome);
         setCognome(cognome);
+        setCodicefiscale(codicefiscale);
         setVia(via);
         setNumcivico(numcivico);
-        setCap(cap);
         setComune(comune);
+        setCap(cap);
         setProvincia(provincia);
         setDatanascita(datanascita);
         setNumerotelefono(numerotelefono);
@@ -561,14 +561,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
         super(OperatoriDettagliati.OPERATORI_DETTAGLIATI);
 
         if (value != null) {
-            setIdentificativo(value.getIdentificativo());
-            setCodicefiscale(value.getCodicefiscale());
+            setIdpersona(value.getIdpersona());
             setNome(value.getNome());
             setCognome(value.getCognome());
+            setCodicefiscale(value.getCodicefiscale());
             setVia(value.getVia());
             setNumcivico(value.getNumcivico());
-            setCap(value.getCap());
             setComune(value.getComune());
+            setCap(value.getCap());
             setProvincia(value.getProvincia());
             setDatanascita(value.getDatanascita());
             setNumerotelefono(value.getNumerotelefono());

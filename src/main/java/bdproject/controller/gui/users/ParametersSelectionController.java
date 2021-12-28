@@ -154,7 +154,7 @@ public class ParametersSelectionController extends AbstractController implements
                         process.setMeter(new Contatori(
                                 0, null, process.plan().orElseThrow().getMateriaprima(), 0
                         ));
-                        switchTo(EstateInsertionController.create(stage(), dataSource(), sessionHolder(), process));
+                        switchTo(PremiseInsertionController.create(stage(), dataSource(), sessionHolder(), process));
                         break;
                     case 2:
                         bySubentro(conn);
@@ -177,7 +177,7 @@ public class ParametersSelectionController extends AbstractController implements
         existingMeter.ifPresentOrElse(m -> {
             process.setMeter(m);
 
-            final Immobili existingEstate = Queries.fetchEstateFromMeterId(m.getMatricola(), dataSource());
+            final Immobili existingEstate = Queries.fetchPremiseFromMeterId(m.getMatricola(), dataSource());
             process.setEstate(existingEstate);
 
             switchTo(SubscriptionConfirmationController.create(stage(), dataSource(), sessionHolder(), process));
@@ -191,7 +191,7 @@ public class ParametersSelectionController extends AbstractController implements
                     meterIdField.getText(),
                     process.plan().orElseThrow().getMateriaprima(),
                     0));
-            switchTo(EstateInsertionController.create(stage(), dataSource(), sessionHolder(), process));
+            switchTo(PremiseInsertionController.create(stage(), dataSource(), sessionHolder(), process));
         });
     }
 

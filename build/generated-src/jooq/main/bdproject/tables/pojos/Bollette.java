@@ -17,47 +17,63 @@ public class Bollette implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer    idcontratto;
+    private final Integer    numerobolletta;
     private final LocalDate  dataemissione;
+    private final LocalDate  datainizioperiodo;
+    private final LocalDate  datafineperiodo;
     private final LocalDate  datascadenza;
-    private final LocalDate  datapagamento;
     private final BigDecimal importo;
-    private final byte[]     dettagliobolletta;
+    private final BigDecimal consumi;
+    private final byte[]     documentodettagliato;
     private final Byte       stimata;
+    private final Integer    idoperatore;
+    private final Integer    idcontratto;
 
     public Bollette(Bollette value) {
-        this.idcontratto = value.idcontratto;
+        this.numerobolletta = value.numerobolletta;
         this.dataemissione = value.dataemissione;
+        this.datainizioperiodo = value.datainizioperiodo;
+        this.datafineperiodo = value.datafineperiodo;
         this.datascadenza = value.datascadenza;
-        this.datapagamento = value.datapagamento;
         this.importo = value.importo;
-        this.dettagliobolletta = value.dettagliobolletta;
+        this.consumi = value.consumi;
+        this.documentodettagliato = value.documentodettagliato;
         this.stimata = value.stimata;
+        this.idoperatore = value.idoperatore;
+        this.idcontratto = value.idcontratto;
     }
 
     public Bollette(
-        Integer    idcontratto,
+        Integer    numerobolletta,
         LocalDate  dataemissione,
+        LocalDate  datainizioperiodo,
+        LocalDate  datafineperiodo,
         LocalDate  datascadenza,
-        LocalDate  datapagamento,
         BigDecimal importo,
-        byte[]     dettagliobolletta,
-        Byte       stimata
+        BigDecimal consumi,
+        byte[]     documentodettagliato,
+        Byte       stimata,
+        Integer    idoperatore,
+        Integer    idcontratto
     ) {
-        this.idcontratto = idcontratto;
+        this.numerobolletta = numerobolletta;
         this.dataemissione = dataemissione;
+        this.datainizioperiodo = datainizioperiodo;
+        this.datafineperiodo = datafineperiodo;
         this.datascadenza = datascadenza;
-        this.datapagamento = datapagamento;
         this.importo = importo;
-        this.dettagliobolletta = dettagliobolletta;
+        this.consumi = consumi;
+        this.documentodettagliato = documentodettagliato;
         this.stimata = stimata;
+        this.idoperatore = idoperatore;
+        this.idcontratto = idcontratto;
     }
 
     /**
-     * Getter for <code>utenze.bollette.IdContratto</code>.
+     * Getter for <code>utenze.bollette.NumeroBolletta</code>.
      */
-    public Integer getIdcontratto() {
-        return this.idcontratto;
+    public Integer getNumerobolletta() {
+        return this.numerobolletta;
     }
 
     /**
@@ -68,17 +84,24 @@ public class Bollette implements Serializable {
     }
 
     /**
+     * Getter for <code>utenze.bollette.DataInizioPeriodo</code>.
+     */
+    public LocalDate getDatainizioperiodo() {
+        return this.datainizioperiodo;
+    }
+
+    /**
+     * Getter for <code>utenze.bollette.DataFinePeriodo</code>.
+     */
+    public LocalDate getDatafineperiodo() {
+        return this.datafineperiodo;
+    }
+
+    /**
      * Getter for <code>utenze.bollette.DataScadenza</code>.
      */
     public LocalDate getDatascadenza() {
         return this.datascadenza;
-    }
-
-    /**
-     * Getter for <code>utenze.bollette.DataPagamento</code>.
-     */
-    public LocalDate getDatapagamento() {
-        return this.datapagamento;
     }
 
     /**
@@ -89,10 +112,17 @@ public class Bollette implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.bollette.DettaglioBolletta</code>.
+     * Getter for <code>utenze.bollette.Consumi</code>.
      */
-    public byte[] getDettagliobolletta() {
-        return this.dettagliobolletta;
+    public BigDecimal getConsumi() {
+        return this.consumi;
+    }
+
+    /**
+     * Getter for <code>utenze.bollette.DocumentoDettagliato</code>.
+     */
+    public byte[] getDocumentodettagliato() {
+        return this.documentodettagliato;
     }
 
     /**
@@ -102,17 +132,35 @@ public class Bollette implements Serializable {
         return this.stimata;
     }
 
+    /**
+     * Getter for <code>utenze.bollette.IdOperatore</code>.
+     */
+    public Integer getIdoperatore() {
+        return this.idoperatore;
+    }
+
+    /**
+     * Getter for <code>utenze.bollette.IdContratto</code>.
+     */
+    public Integer getIdcontratto() {
+        return this.idcontratto;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Bollette (");
 
-        sb.append(idcontratto);
+        sb.append(numerobolletta);
         sb.append(", ").append(dataemissione);
+        sb.append(", ").append(datainizioperiodo);
+        sb.append(", ").append(datafineperiodo);
         sb.append(", ").append(datascadenza);
-        sb.append(", ").append(datapagamento);
         sb.append(", ").append(importo);
+        sb.append(", ").append(consumi);
         sb.append(", ").append("[binary...]");
         sb.append(", ").append(stimata);
+        sb.append(", ").append(idoperatore);
+        sb.append(", ").append(idcontratto);
 
         sb.append(")");
         return sb.toString();

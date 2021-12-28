@@ -48,9 +48,9 @@ public class Compatibilità extends TableImpl<CompatibilitàRecord> {
     }
 
     /**
-     * The column <code>utenze.compatibilità.CodiceOfferta</code>.
+     * The column <code>utenze.compatibilità.Offerta</code>.
      */
-    public final TableField<CompatibilitàRecord, Integer> CODICEOFFERTA = createField(DSL.name("CodiceOfferta"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<CompatibilitàRecord, Integer> OFFERTA = createField(DSL.name("Offerta"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>utenze.compatibilità.Uso</code>.

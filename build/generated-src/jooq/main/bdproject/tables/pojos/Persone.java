@@ -16,14 +16,14 @@ public class Persone implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer   identificativo;
-    private final String    codicefiscale;
+    private final Integer   idpersona;
     private final String    nome;
     private final String    cognome;
+    private final String    codicefiscale;
     private final String    via;
     private final String    numcivico;
-    private final String    cap;
     private final String    comune;
+    private final String    cap;
     private final String    provincia;
     private final LocalDate datanascita;
     private final String    numerotelefono;
@@ -31,14 +31,14 @@ public class Persone implements Serializable {
     private final String    password;
 
     public Persone(Persone value) {
-        this.identificativo = value.identificativo;
-        this.codicefiscale = value.codicefiscale;
+        this.idpersona = value.idpersona;
         this.nome = value.nome;
         this.cognome = value.cognome;
+        this.codicefiscale = value.codicefiscale;
         this.via = value.via;
         this.numcivico = value.numcivico;
-        this.cap = value.cap;
         this.comune = value.comune;
+        this.cap = value.cap;
         this.provincia = value.provincia;
         this.datanascita = value.datanascita;
         this.numerotelefono = value.numerotelefono;
@@ -47,28 +47,28 @@ public class Persone implements Serializable {
     }
 
     public Persone(
-        Integer   identificativo,
-        String    codicefiscale,
+        Integer   idpersona,
         String    nome,
         String    cognome,
+        String    codicefiscale,
         String    via,
         String    numcivico,
-        String    cap,
         String    comune,
+        String    cap,
         String    provincia,
         LocalDate datanascita,
         String    numerotelefono,
         String    email,
         String    password
     ) {
-        this.identificativo = identificativo;
-        this.codicefiscale = codicefiscale;
+        this.idpersona = idpersona;
         this.nome = nome;
         this.cognome = cognome;
+        this.codicefiscale = codicefiscale;
         this.via = via;
         this.numcivico = numcivico;
-        this.cap = cap;
         this.comune = comune;
+        this.cap = cap;
         this.provincia = provincia;
         this.datanascita = datanascita;
         this.numerotelefono = numerotelefono;
@@ -77,17 +77,10 @@ public class Persone implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.persone.Identificativo</code>.
+     * Getter for <code>utenze.persone.IdPersona</code>.
      */
-    public Integer getIdentificativo() {
-        return this.identificativo;
-    }
-
-    /**
-     * Getter for <code>utenze.persone.CodiceFiscale</code>.
-     */
-    public String getCodicefiscale() {
-        return this.codicefiscale;
+    public Integer getIdpersona() {
+        return this.idpersona;
     }
 
     /**
@@ -105,6 +98,13 @@ public class Persone implements Serializable {
     }
 
     /**
+     * Getter for <code>utenze.persone.CodiceFiscale</code>.
+     */
+    public String getCodicefiscale() {
+        return this.codicefiscale;
+    }
+
+    /**
      * Getter for <code>utenze.persone.Via</code>.
      */
     public String getVia() {
@@ -119,17 +119,17 @@ public class Persone implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.persone.CAP</code>.
-     */
-    public String getCap() {
-        return this.cap;
-    }
-
-    /**
      * Getter for <code>utenze.persone.Comune</code>.
      */
     public String getComune() {
         return this.comune;
+    }
+
+    /**
+     * Getter for <code>utenze.persone.CAP</code>.
+     */
+    public String getCap() {
+        return this.cap;
     }
 
     /**
@@ -171,14 +171,14 @@ public class Persone implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("Persone (");
 
-        sb.append(identificativo);
-        sb.append(", ").append(codicefiscale);
+        sb.append(idpersona);
         sb.append(", ").append(nome);
         sb.append(", ").append(cognome);
+        sb.append(", ").append(codicefiscale);
         sb.append(", ").append(via);
         sb.append(", ").append(numcivico);
-        sb.append(", ").append(cap);
         sb.append(", ").append(comune);
+        sb.append(", ").append(cap);
         sb.append(", ").append(provincia);
         sb.append(", ").append(datanascita);
         sb.append(", ").append(numerotelefono);

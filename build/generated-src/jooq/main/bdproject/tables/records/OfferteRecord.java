@@ -24,17 +24,17 @@ public class OfferteRecord extends UpdatableRecordImpl<OfferteRecord> implements
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.offerte.Codice</code>.
+     * Setter for <code>utenze.offerte.CodOfferta</code>.
      */
-    public OfferteRecord setCodice(Integer value) {
+    public OfferteRecord setCodofferta(Integer value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.offerte.Codice</code>.
+     * Getter for <code>utenze.offerte.CodOfferta</code>.
      */
-    public Integer getCodice() {
+    public Integer getCodofferta() {
         return (Integer) get(0);
     }
 
@@ -138,7 +138,7 @@ public class OfferteRecord extends UpdatableRecordImpl<OfferteRecord> implements
 
     @Override
     public Field<Integer> field1() {
-        return Offerte.OFFERTE.CODICE;
+        return Offerte.OFFERTE.CODOFFERTA;
     }
 
     @Override
@@ -168,7 +168,7 @@ public class OfferteRecord extends UpdatableRecordImpl<OfferteRecord> implements
 
     @Override
     public Integer component1() {
-        return getCodice();
+        return getCodofferta();
     }
 
     @Override
@@ -198,7 +198,7 @@ public class OfferteRecord extends UpdatableRecordImpl<OfferteRecord> implements
 
     @Override
     public Integer value1() {
-        return getCodice();
+        return getCodofferta();
     }
 
     @Override
@@ -228,7 +228,7 @@ public class OfferteRecord extends UpdatableRecordImpl<OfferteRecord> implements
 
     @Override
     public OfferteRecord value1(Integer value) {
-        setCodice(value);
+        setCodofferta(value);
         return this;
     }
 
@@ -287,10 +287,10 @@ public class OfferteRecord extends UpdatableRecordImpl<OfferteRecord> implements
     /**
      * Create a detached, initialised OfferteRecord
      */
-    public OfferteRecord(Integer codice, String nome, String descrizione, BigDecimal costomateriaprima, Byte attiva, String materiaprima) {
+    public OfferteRecord(Integer codofferta, String nome, String descrizione, BigDecimal costomateriaprima, Byte attiva, String materiaprima) {
         super(Offerte.OFFERTE);
 
-        setCodice(codice);
+        setCodofferta(codofferta);
         setNome(nome);
         setDescrizione(descrizione);
         setCostomateriaprima(costomateriaprima);
@@ -305,7 +305,7 @@ public class OfferteRecord extends UpdatableRecordImpl<OfferteRecord> implements
         super(Offerte.OFFERTE);
 
         if (value != null) {
-            setCodice(value.getCodice());
+            setCodofferta(value.getCodofferta());
             setNome(value.getNome());
             setDescrizione(value.getDescrizione());
             setCostomateriaprima(value.getCostomateriaprima());

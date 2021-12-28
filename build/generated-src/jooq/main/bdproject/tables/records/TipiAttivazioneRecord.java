@@ -24,17 +24,17 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.tipi_attivazione.Codice</code>.
+     * Setter for <code>utenze.tipi_attivazione.CodAttivazione</code>.
      */
-    public TipiAttivazioneRecord setCodice(Integer value) {
+    public TipiAttivazioneRecord setCodattivazione(Integer value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.tipi_attivazione.Codice</code>.
+     * Getter for <code>utenze.tipi_attivazione.CodAttivazione</code>.
      */
-    public Integer getCodice() {
+    public Integer getCodattivazione() {
         return (Integer) get(0);
     }
 
@@ -93,7 +93,7 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
 
     @Override
     public Field<Integer> field1() {
-        return TipiAttivazione.TIPI_ATTIVAZIONE.CODICE;
+        return TipiAttivazione.TIPI_ATTIVAZIONE.CODATTIVAZIONE;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
 
     @Override
     public Integer component1() {
-        return getCodice();
+        return getCodattivazione();
     }
 
     @Override
@@ -123,7 +123,7 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
 
     @Override
     public Integer value1() {
-        return getCodice();
+        return getCodattivazione();
     }
 
     @Override
@@ -138,7 +138,7 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
 
     @Override
     public TipiAttivazioneRecord value1(Integer value) {
-        setCodice(value);
+        setCodattivazione(value);
         return this;
     }
 
@@ -176,10 +176,10 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
     /**
      * Create a detached, initialised TipiAttivazioneRecord
      */
-    public TipiAttivazioneRecord(Integer codice, String nome, BigDecimal costo) {
+    public TipiAttivazioneRecord(Integer codattivazione, String nome, BigDecimal costo) {
         super(TipiAttivazione.TIPI_ATTIVAZIONE);
 
-        setCodice(codice);
+        setCodattivazione(codattivazione);
         setNome(nome);
         setCosto(costo);
     }
@@ -191,7 +191,7 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
         super(TipiAttivazione.TIPI_ATTIVAZIONE);
 
         if (value != null) {
-            setCodice(value.getCodice());
+            setCodattivazione(value.getCodattivazione());
             setNome(value.getNome());
             setCosto(value.getCosto());
         }

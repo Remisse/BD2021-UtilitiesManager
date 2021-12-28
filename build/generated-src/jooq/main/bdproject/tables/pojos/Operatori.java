@@ -5,6 +5,7 @@ package bdproject.tables.pojos;
 
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 
 /**
@@ -15,30 +16,42 @@ public class Operatori implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer codiceoperatore;
+    private final Integer    idoperatore;
+    private final BigDecimal stipendio;
 
     public Operatori(Operatori value) {
-        this.codiceoperatore = value.codiceoperatore;
+        this.idoperatore = value.idoperatore;
+        this.stipendio = value.stipendio;
     }
 
     public Operatori(
-        Integer codiceoperatore
+        Integer    idoperatore,
+        BigDecimal stipendio
     ) {
-        this.codiceoperatore = codiceoperatore;
+        this.idoperatore = idoperatore;
+        this.stipendio = stipendio;
     }
 
     /**
-     * Getter for <code>utenze.operatori.CodiceOperatore</code>.
+     * Getter for <code>utenze.operatori.IdOperatore</code>.
      */
-    public Integer getCodiceoperatore() {
-        return this.codiceoperatore;
+    public Integer getIdoperatore() {
+        return this.idoperatore;
+    }
+
+    /**
+     * Getter for <code>utenze.operatori.Stipendio</code>.
+     */
+    public BigDecimal getStipendio() {
+        return this.stipendio;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Operatori (");
 
-        sb.append(codiceoperatore);
+        sb.append(idoperatore);
+        sb.append(", ").append(stipendio);
 
         sb.append(")");
         return sb.toString();

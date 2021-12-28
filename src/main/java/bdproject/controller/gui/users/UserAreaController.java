@@ -56,12 +56,12 @@ public class UserAreaController extends AbstractController implements Initializa
     @FXML private TableColumn<Bollette, String> amount;
     @FXML private TableColumn<Bollette, String> estimatedCol;
 
-    @FXML private TableView<RichiesteAttivazione> activationReqTable;
-    @FXML private TableColumn<RichiesteAttivazione, String> reqCreationDateCol;
-    @FXML private TableColumn<RichiesteAttivazione, String> reqUtilityCol;
-    @FXML private TableColumn<RichiesteAttivazione, String> reqResultCol;
+    @FXML private TableView<Contratti> activationReqTable;
+    @FXML private TableColumn<Contratti, String> reqCreationDateCol;
+    @FXML private TableColumn<Contratti, String> reqUtilityCol;
+    @FXML private TableColumn<Contratti, String> reqResultCol;
 
-    @FXML private ComboBox<Choice<Integer, ContrattiDettagliati>> subscriptionChoice;
+    @FXML private ComboBox<Choice<Integer, Contratti>> subscriptionChoice;
     @FXML private Button subDetails;
     @FXML private Button consumptionTrend;
 
@@ -133,12 +133,12 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void populateSubscriptionBox() {
-        List<Choice<Integer, ContrattiDettagliati>> subs;
+        List<Choice<Integer, Contratti>> subs;
         try (Connection conn = dataSource().getConnection()) {
             final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-            subs = Queries.fetchAll(ctx, CONTRATTI_DETTAGLIATI, ContrattiDettagliati.class)
+            subs = Queries.fetchAll(ctx, CONTRATTI, Contratti.class)
                     .stream()
-                    .filter(s -> s.getCliente().equals(sessionHolder().session().orElseThrow().userId()))
+                    .filter(s -> s.getIdcliente().equals(sessionHolder().session().orElseThrow().userId()))
                     .map(s -> new ChoiceImpl<>(s.getIdcontratto(), s, (id, sub) -> id.toString()))
                     .collect(Collectors.toList());
             subscriptionChoice.setItems(FXCollections.observableList(subs));
@@ -248,7 +248,7 @@ public class UserAreaController extends AbstractController implements Initializa
         if (selectedReq != null) {
             try (Connection conn = dataSource().getConnection()) {
                 if (selectedReq.getStato().equals("N") || selectedReq.getStato().equals("E")) {
-                    final int result = Queries.deleteActivationRequest(selectedReq.getNumero(), conn);
+                    final int result = Queries.deleteSubscriptionRequest(selectedReq.getNumero(), conn);
                     if (result == 1) {
                         FXUtils.showBlockingWarning("Richiesta eliminata.");
                         refreshActivationRequestTable();
@@ -305,7 +305,7 @@ public class UserAreaController extends AbstractController implements Initializa
                 lastMeasurement.ifPresentOrElse(m -> {
                     final Text text = new Text("Consumi: " + DECIMAL_FORMAT.format(m.getConsumi())
                             + "\nData: " + m.getDataeffettuazione().format(DATE_FORMAT)
-                            + "\nConfermata: " + StringUtils.byteToYesNo(m.getConfermata()));
+                            + "\nStato: " + m.getStato());
                     lastReading.getChildren().clear();
                     lastReading.getChildren().add(text);
                 }, () -> {

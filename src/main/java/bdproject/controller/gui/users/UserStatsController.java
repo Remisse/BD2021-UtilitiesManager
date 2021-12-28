@@ -80,7 +80,7 @@ public class UserStatsController extends AbstractController implements Initializ
 
     private void updateAverages(final Connection conn) {
         if (startDate.getValue() != null && endDate.getValue() != null) {
-            final Immobili estate = Queries.fetchEstateFromMeterNumber(subscription.getContatore(), dataSource());
+            final Immobili estate = Queries.fetchPremiseFromMeterNumber(subscription.getContatore(), dataSource());
             final String utility = Queries.fetchUtilityFromSubscription(subscription, conn).getNome();
             peopleAvg.setText(Queries.avgConsumptionPerZone(
                     estate,

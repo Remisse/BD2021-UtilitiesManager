@@ -24,40 +24,25 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.persone.Identificativo</code>.
+     * Setter for <code>utenze.persone.IdPersona</code>.
      */
-    public PersoneRecord setIdentificativo(Integer value) {
+    public PersoneRecord setIdpersona(Integer value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.persone.Identificativo</code>.
+     * Getter for <code>utenze.persone.IdPersona</code>.
      */
-    public Integer getIdentificativo() {
+    public Integer getIdpersona() {
         return (Integer) get(0);
-    }
-
-    /**
-     * Setter for <code>utenze.persone.CodiceFiscale</code>.
-     */
-    public PersoneRecord setCodicefiscale(String value) {
-        set(1, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>utenze.persone.CodiceFiscale</code>.
-     */
-    public String getCodicefiscale() {
-        return (String) get(1);
     }
 
     /**
      * Setter for <code>utenze.persone.Nome</code>.
      */
     public PersoneRecord setNome(String value) {
-        set(2, value);
+        set(1, value);
         return this;
     }
 
@@ -65,14 +50,14 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
      * Getter for <code>utenze.persone.Nome</code>.
      */
     public String getNome() {
-        return (String) get(2);
+        return (String) get(1);
     }
 
     /**
      * Setter for <code>utenze.persone.Cognome</code>.
      */
     public PersoneRecord setCognome(String value) {
-        set(3, value);
+        set(2, value);
         return this;
     }
 
@@ -80,6 +65,21 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
      * Getter for <code>utenze.persone.Cognome</code>.
      */
     public String getCognome() {
+        return (String) get(2);
+    }
+
+    /**
+     * Setter for <code>utenze.persone.CodiceFiscale</code>.
+     */
+    public PersoneRecord setCodicefiscale(String value) {
+        set(3, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>utenze.persone.CodiceFiscale</code>.
+     */
+    public String getCodicefiscale() {
         return (String) get(3);
     }
 
@@ -114,25 +114,10 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
     }
 
     /**
-     * Setter for <code>utenze.persone.CAP</code>.
-     */
-    public PersoneRecord setCap(String value) {
-        set(6, value);
-        return this;
-    }
-
-    /**
-     * Getter for <code>utenze.persone.CAP</code>.
-     */
-    public String getCap() {
-        return (String) get(6);
-    }
-
-    /**
      * Setter for <code>utenze.persone.Comune</code>.
      */
     public PersoneRecord setComune(String value) {
-        set(7, value);
+        set(6, value);
         return this;
     }
 
@@ -140,6 +125,21 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
      * Getter for <code>utenze.persone.Comune</code>.
      */
     public String getComune() {
+        return (String) get(6);
+    }
+
+    /**
+     * Setter for <code>utenze.persone.CAP</code>.
+     */
+    public PersoneRecord setCap(String value) {
+        set(7, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>utenze.persone.CAP</code>.
+     */
+    public String getCap() {
         return (String) get(7);
     }
 
@@ -243,22 +243,22 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
 
     @Override
     public Field<Integer> field1() {
-        return Persone.PERSONE.IDENTIFICATIVO;
+        return Persone.PERSONE.IDPERSONA;
     }
 
     @Override
     public Field<String> field2() {
-        return Persone.PERSONE.CODICEFISCALE;
-    }
-
-    @Override
-    public Field<String> field3() {
         return Persone.PERSONE.NOME;
     }
 
     @Override
-    public Field<String> field4() {
+    public Field<String> field3() {
         return Persone.PERSONE.COGNOME;
+    }
+
+    @Override
+    public Field<String> field4() {
+        return Persone.PERSONE.CODICEFISCALE;
     }
 
     @Override
@@ -273,12 +273,12 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
 
     @Override
     public Field<String> field7() {
-        return Persone.PERSONE.CAP;
+        return Persone.PERSONE.COMUNE;
     }
 
     @Override
     public Field<String> field8() {
-        return Persone.PERSONE.COMUNE;
+        return Persone.PERSONE.CAP;
     }
 
     @Override
@@ -308,22 +308,22 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
 
     @Override
     public Integer component1() {
-        return getIdentificativo();
+        return getIdpersona();
     }
 
     @Override
     public String component2() {
-        return getCodicefiscale();
-    }
-
-    @Override
-    public String component3() {
         return getNome();
     }
 
     @Override
-    public String component4() {
+    public String component3() {
         return getCognome();
+    }
+
+    @Override
+    public String component4() {
+        return getCodicefiscale();
     }
 
     @Override
@@ -338,12 +338,12 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
 
     @Override
     public String component7() {
-        return getCap();
+        return getComune();
     }
 
     @Override
     public String component8() {
-        return getComune();
+        return getCap();
     }
 
     @Override
@@ -373,22 +373,22 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
 
     @Override
     public Integer value1() {
-        return getIdentificativo();
+        return getIdpersona();
     }
 
     @Override
     public String value2() {
-        return getCodicefiscale();
-    }
-
-    @Override
-    public String value3() {
         return getNome();
     }
 
     @Override
-    public String value4() {
+    public String value3() {
         return getCognome();
+    }
+
+    @Override
+    public String value4() {
+        return getCodicefiscale();
     }
 
     @Override
@@ -403,12 +403,12 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
 
     @Override
     public String value7() {
-        return getCap();
+        return getComune();
     }
 
     @Override
     public String value8() {
-        return getComune();
+        return getCap();
     }
 
     @Override
@@ -438,25 +438,25 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
 
     @Override
     public PersoneRecord value1(Integer value) {
-        setIdentificativo(value);
+        setIdpersona(value);
         return this;
     }
 
     @Override
     public PersoneRecord value2(String value) {
-        setCodicefiscale(value);
-        return this;
-    }
-
-    @Override
-    public PersoneRecord value3(String value) {
         setNome(value);
         return this;
     }
 
     @Override
-    public PersoneRecord value4(String value) {
+    public PersoneRecord value3(String value) {
         setCognome(value);
+        return this;
+    }
+
+    @Override
+    public PersoneRecord value4(String value) {
+        setCodicefiscale(value);
         return this;
     }
 
@@ -474,13 +474,13 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
 
     @Override
     public PersoneRecord value7(String value) {
-        setCap(value);
+        setComune(value);
         return this;
     }
 
     @Override
     public PersoneRecord value8(String value) {
-        setComune(value);
+        setCap(value);
         return this;
     }
 
@@ -546,17 +546,17 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
     /**
      * Create a detached, initialised PersoneRecord
      */
-    public PersoneRecord(Integer identificativo, String codicefiscale, String nome, String cognome, String via, String numcivico, String cap, String comune, String provincia, LocalDate datanascita, String numerotelefono, String email, String password) {
+    public PersoneRecord(Integer idpersona, String nome, String cognome, String codicefiscale, String via, String numcivico, String comune, String cap, String provincia, LocalDate datanascita, String numerotelefono, String email, String password) {
         super(Persone.PERSONE);
 
-        setIdentificativo(identificativo);
-        setCodicefiscale(codicefiscale);
+        setIdpersona(idpersona);
         setNome(nome);
         setCognome(cognome);
+        setCodicefiscale(codicefiscale);
         setVia(via);
         setNumcivico(numcivico);
-        setCap(cap);
         setComune(comune);
+        setCap(cap);
         setProvincia(provincia);
         setDatanascita(datanascita);
         setNumerotelefono(numerotelefono);
@@ -571,14 +571,14 @@ public class PersoneRecord extends UpdatableRecordImpl<PersoneRecord> implements
         super(Persone.PERSONE);
 
         if (value != null) {
-            setIdentificativo(value.getIdentificativo());
-            setCodicefiscale(value.getCodicefiscale());
+            setIdpersona(value.getIdpersona());
             setNome(value.getNome());
             setCognome(value.getCognome());
+            setCodicefiscale(value.getCodicefiscale());
             setVia(value.getVia());
             setNumcivico(value.getNumcivico());
-            setCap(value.getCap());
             setComune(value.getComune());
+            setCap(value.getCap());
             setProvincia(value.getProvincia());
             setDatanascita(value.getDatanascita());
             setNumerotelefono(value.getNumerotelefono());

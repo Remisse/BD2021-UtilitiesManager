@@ -41,11 +41,11 @@ public class SubscriptionManagementController extends AbstractController impleme
     private static final int REPORT_PERIOD_MONTHS = 2;
     private static final int NO_CLIENT = -1;
 
-    private List<ContrattiDettagliati> subsList = Collections.emptyList();
+    private List<Contratti> subsList = Collections.emptyList();
     private List<TipologieUso> useTypes;
-    private final Map<String, BiPredicate<ContrattiDettagliati, Connection>> statuses = Map.of(
-            "Attivo", (s, c) -> s.getDatacessazione() == null,
-            "Interrotto", (s, c) -> s.getDatacessazione() == null && Queries.hasOngoingInterruption(s, c),
+    private final Map<String, BiPredicate<Contratti, Connection>> statuses = Map.of(
+            "Attivo", (s, c) -> Checks.isSubscriptionActive(s),
+            "In attivazione", (s, c) -> Checks.isSubscriptionBeingReviewed(s),
             "Cessato", (s, c) -> s.getDatacessazione() != null
     );
     private byte[] reportFile = null;
@@ -53,19 +53,16 @@ public class SubscriptionManagementController extends AbstractController impleme
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
 
     @FXML private Button back;
-    @FXML private TableView<ContrattiDettagliati> subsTable;
-    @FXML private TableColumn<ContrattiDettagliati, Integer> clientIdCol;
-    @FXML private TableColumn<ContrattiDettagliati, Integer> subIdCol;
-    @FXML private TableColumn<ContrattiDettagliati, String> zoneCol;
-    @FXML private TableColumn<ContrattiDettagliati, Integer> planIdCol;
-    @FXML private TableColumn<ContrattiDettagliati, String> incomeDiscountCol;
+    @FXML private TableView<Contratti> subsTable;
+    @FXML private TableColumn<Contratti, Integer> clientIdCol;
+    @FXML private TableColumn<Contratti, Integer> subIdCol;
+    @FXML private TableColumn<Contratti, String> zoneCol;
+    @FXML private TableColumn<Contratti, Integer> planIdCol;
+    @FXML private TableColumn<Contratti, String> incomeDiscountCol;
     @FXML private TextField clientIdFilter;
     @FXML private ComboBox<String> statusFilter;
     @FXML private CheckBox lastReportFilter;
     @FXML private CheckBox pastDeadlineFilter;
-    @FXML private Button interruptButton;
-    @FXML private TextField interruptionDescription;
-    @FXML private Button reactivateButton;
 
     @FXML private TableView<Letture> measurementsTable;
     @FXML private TableColumn<Letture, String> measPublishDateCol;
@@ -80,8 +77,11 @@ public class SubscriptionManagementController extends AbstractController impleme
     @FXML private TableColumn<Bollette, String> repCostCol;
     @FXML private TableColumn<Bollette, String> repEstimatedCol;
 
+    @FXML private DatePicker intervalStartDatePicker;
+    @FXML private DatePicker intervalEndDatePicker;
     @FXML private CheckBox estimatedCheckbox;
     @FXML private TextField finalCostField;
+    @FXML private TextField consumptionField;
     @FXML private Label reportFileStatus;
 
     private SubscriptionManagementController(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
@@ -118,19 +118,19 @@ public class SubscriptionManagementController extends AbstractController impleme
     }
 
     private void initSubsTable() {
-        clientIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCliente()).asObject());
+        clientIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getIdcliente()).asObject());
         subIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getIdcontratto()).asObject());
         planIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getOfferta()).asObject());
         incomeDiscountCol.setCellValueFactory(c -> {
             final boolean hasDiscount = useTypes
                     .stream()
-                    .filter(u -> u.getCodice().equals(c.getValue().getUso()))
+                    .filter(u -> u.getCoduso().equals(c.getValue().getUso()))
                     .anyMatch(u -> u.getScontoreddito() == 1);
             return new SimpleStringProperty(hasDiscount ? "Sì" : "No");
         });
 
         zoneCol.setCellValueFactory(c -> {
-            final Immobili estate = Queries.fetchEstateFromMeterNumber(c.getValue().getContatore(), dataSource());
+            final Immobili estate = Queries.fetchPremiseFromSubscription(c.getValue().getIdcontratto(), dataSource());
             return new SimpleStringProperty(estate.getComune() + " (" + estate.getProvincia() + ")");
         });
         subsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldS, newS) -> {
@@ -147,20 +147,17 @@ public class SubscriptionManagementController extends AbstractController impleme
         final String statusChoice = statusFilter.getValue();
 
         try (Connection conn = dataSource().getConnection()) {
-            Map<ContrattiDettagliati, Bollette> subs = Queries.fetchAllSubscriptionsWithLastReport(conn);
+            Map<Contratti, Bollette> subs = Queries.fetchAllSubscriptionsWithLastReport(conn);
+
             subsList = subs.entrySet()
                     .stream()
                     .filter(p -> statuses.get(statusChoice).test(p.getKey(), conn))
-                    .filter(p -> clientId == NO_CLIENT || p.getKey().getCliente().equals(clientId))
+                    .filter(p -> clientId == NO_CLIENT || p.getKey().getIdcliente().equals(clientId))
                     .filter(p -> !lastReportFilter.isSelected()
-                            || (p.getValue().getDataemissione() != null
-                                && p.getValue().getDataemissione().isBefore(LocalDate.now().minus(Period.ofMonths(
+                            || (p.getValue().getDataemissione().isBefore(LocalDate.now().minus(Period.ofMonths(
                                         REPORT_PERIOD_MONTHS)))))
-                    .filter(p -> !pastDeadlineFilter.isSelected()
-                            || (p.getValue().getDatascadenza() != null
-                                && p.getValue().getDatapagamento() == null
-                                && p.getValue().getDatascadenza().isBefore(LocalDate.now().minus(Period.ofDays(
-                                        DEADLINE_DAYS)))))
+                    .filter(p -> !pastDeadlineFilter.isSelected() ||
+                            !Queries.allReportsPaid(p.getKey().getIdcontratto(), conn))
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -170,59 +167,8 @@ public class SubscriptionManagementController extends AbstractController impleme
     }
 
     @FXML
-    private void doInterrupt() {
-        final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
-
-        if (sub != null) {
-            if (!interruptionDescription.getText().equals("")) {
-                try (Connection conn = dataSource().getConnection()) {
-                    final int result = Queries.interruptSubscription(
-                            sub.getIdcontratto(),
-                            interruptionDescription.getText(),
-                            conn);
-                    if (result != 0) {
-                        FXUtils.showBlockingWarning("Contratto interrotto.");
-                        interruptionDescription.setText("");
-                        refreshAll();
-                    } else {
-                        FXUtils.showBlockingWarning("Impossibile interrompere il contratto.");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    FXUtils.showError(e.getMessage());
-                }
-            } else {
-                FXUtils.showBlockingWarning("Inserisci una motivazione.");
-            }
-        } else {
-            FXUtils.showBlockingWarning("Seleziona un contratto.");
-        }
-    }
-
-    @FXML
-    private void doReactivate() {
-        final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
-        if (sub != null) {
-            try (Connection conn = dataSource().getConnection()) {
-                final int result = Queries.reactivateSubscription(sub.getIdcontratto(), conn);
-                if (result != 0) {
-                    FXUtils.showBlockingWarning("Contratto riattivato.");
-                    refreshAll();
-                } else {
-                    FXUtils.showBlockingWarning("Impossibile riattivare il contratto.");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                FXUtils.showError(e.getMessage());
-            }
-        } else {
-            FXUtils.showBlockingWarning("Seleziona un contratto.");
-        }
-    }
-
-    @FXML
     private void showSubDetails() {
-        final ContrattiDettagliati selected = subsTable.getSelectionModel().getSelectedItem();
+        final Contratti selected = subsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             createSubWindow(OperatorSubDetailsController.create(null, dataSource(), sessionHolder(), selected));
         } else {
@@ -233,11 +179,11 @@ public class SubscriptionManagementController extends AbstractController impleme
     private void initMeasurementsTable() {
         measPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDataeffettuazione())));
         measConsumptionCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getConsumi().toString()));
-        measConfirmedCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getConfermata() == 1 ? "Sì" : "No"));
+        measConfirmedCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStato()));
     }
 
     private void doRefreshMeasurements() {
-        final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
+        final Contratti sub = subsTable.getSelectionModel().getSelectedItem();
         if (sub != null) {
             try (Connection conn = dataSource().getConnection()) {
                 final List<Letture> measurements = Queries.fetchMeasurements(sub.getIdcontratto(), conn);
@@ -253,10 +199,10 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     @FXML
     private void doConfirmMeasurement() {
-        final Letture selectedMeas = measurementsTable.getSelectionModel().getSelectedItem();
-        if (selectedMeas != null) {
+        final Letture selected = measurementsTable.getSelectionModel().getSelectedItem();
+        if (selected != null) {
             try (Connection conn = dataSource().getConnection()) {
-                final int result = Queries.confirmMeasurement(selectedMeas.getContatore(), selectedMeas.getDataeffettuazione(), conn);
+                final int result = Queries.setMeasurementStatus(selected.getNumerolettura(), "Approvata", conn);
                 if (result != 0) {
                     FXUtils.showBlockingWarning("Lettura confermata.");
                 } else {
@@ -274,16 +220,27 @@ public class SubscriptionManagementController extends AbstractController impleme
     private void initReportsTable() {
         repPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDataemissione())));
         repDeadlineCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatascadenza())));
-        repPaidDateCol.setCellValueFactory(c -> new SimpleStringProperty(
-                c.getValue().getDatapagamento() == null ? "Non pagata" : dateIt.format(c.getValue().getDatapagamento())));
+
+        repPaidDateCol.setCellValueFactory(c -> {
+            SimpleStringProperty outVal = new SimpleStringProperty("");
+            try (final Connection conn = dataSource().getConnection()) {
+                Optional<Pagamenti> payment = Queries.fetchReportPayment(c.getValue().getNumerobolletta(), conn);
+                if (payment.isPresent()) {
+                    outVal = new SimpleStringProperty(dateIt.format(payment.get().getDatapagamento()));
+                }
+            } catch (SQLException e) {
+                FXUtils.showError(e.getMessage());
+            }
+            return outVal;
+        });
+
         repCostCol.setCellValueFactory(c -> new SimpleStringProperty("€ " + c.getValue().getImporto()));
         repEstimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
                 StringUtils.byteToYesNo(c.getValue().getStimata())));
-
     }
 
     private void doRefreshReports() {
-        final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
+        final Contratti sub = subsTable.getSelectionModel().getSelectedItem();
         if (sub != null) {
             try (Connection conn = dataSource().getConnection()) {
                 final var reports = Queries.fetchSubscriptionReports(sub, conn);
@@ -335,25 +292,24 @@ public class SubscriptionManagementController extends AbstractController impleme
     @FXML
     private void doPublishReport() {
         if (canPublishReport()) {
-            final ContrattiDettagliati sub = subsTable.getSelectionModel().getSelectedItem();
+            final Contratti sub = subsTable.getSelectionModel().getSelectedItem();
             if (sub != null) {
                 try (final Connection conn = dataSource().getConnection()) {
                     final int result = Queries.publishReport(
-                            sub.getIdcontratto(),
-                            1,
+                            intervalStartDatePicker.getValue(),
+                            intervalEndDatePicker.getValue(),
+                            DEADLINE_DAYS,
                             new BigDecimal(finalCostField.getText()),
+                            new BigDecimal(consumptionField.getText()),
                             reportFile,
                             (byte) (estimatedCheckbox.isSelected() ? 1 : 0),
+                            sessionHolder().session().orElseThrow().userId(),
+                            sub.getIdcontratto(),
                             conn);
                     if (result != 0) {
                         FXUtils.showBlockingWarning("Bolletta emessa.");
                         clearReportData();
                         doRefreshReports();
-                        final int resultUpdateRedundant = Queries.updateLastReportRedundant(
-                                sub.getIdcontratto(), LocalDate.now(), conn);
-                        if (resultUpdateRedundant != 1) {
-                            FXUtils.showBlockingWarning("Impossibile aggiornare la data dell'ultima bolletta!");
-                        }
                     } else {
                         FXUtils.showBlockingWarning("Impossibile emettere la bolletta.");
                     }

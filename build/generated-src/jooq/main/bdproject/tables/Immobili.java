@@ -58,7 +58,7 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     /**
      * The column <code>utenze.immobili.Tipo</code>.
      */
-    public final TableField<ImmobiliRecord, Integer> TIPO = createField(DSL.name("Tipo"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<ImmobiliRecord, String> TIPO = createField(DSL.name("Tipo"), SQLDataType.VARCHAR(20).nullable(false), this, "");
 
     /**
      * The column <code>utenze.immobili.Via</code>.
@@ -139,28 +139,11 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     }
 
     @Override
-    public List<UniqueKey<ImmobiliRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_IMMOBILI_IDIMMOBILE_2);
-    }
-
-    @Override
-    public List<ForeignKey<ImmobiliRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_TIPO);
-    }
-
-    private transient TipiImmobile _tipiImmobile;
-
-    public TipiImmobile tipiImmobile() {
-        if (_tipiImmobile == null)
-            _tipiImmobile = new TipiImmobile(this, Keys.FK_TIPO);
-
-        return _tipiImmobile;
-    }
-
-    @Override
     public List<Check<ImmobiliRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("immobili_chk_1"), "(length(`CAP`) = 5)", true)
+            Internal.createCheck(this, DSL.name("immobili_chk_1"), "((`Tipo` = _utf8mb4\\'Fabbricato\\') or (`Tipo` = _utf8mb4\\'Terreno\\'))", true),
+            Internal.createCheck(this, DSL.name("immobili_chk_2"), "(length(`CAP`) = 5)", true),
+            Internal.createCheck(this, DSL.name("immobili_chk_3"), "(((`Tipo` = _utf8mb4\\'Terreno\\') and (`Interno` is null)) or (`Tipo` = _utf8mb4\\'Fabbricato\\'))", true)
         );
     }
 
@@ -195,7 +178,7 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, Integer, String, String, String, String, String, String> fieldsRow() {
+    public Row8<Integer, String, String, String, String, String, String, String> fieldsRow() {
         return (Row8) super.fieldsRow();
     }
 }

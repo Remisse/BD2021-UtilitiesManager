@@ -5,25 +5,25 @@ package bdproject;
 
 
 import bdproject.tables.Bollette;
+import bdproject.tables.Cessazioni;
 import bdproject.tables.Clienti;
 import bdproject.tables.ClientiDettagliati;
 import bdproject.tables.Compatibilità;
 import bdproject.tables.Contatori;
 import bdproject.tables.Contratti;
-import bdproject.tables.ContrattiDettagliati;
 import bdproject.tables.Immobili;
-import bdproject.tables.Interruzioni;
 import bdproject.tables.Letture;
 import bdproject.tables.MateriePrime;
 import bdproject.tables.Offerte;
 import bdproject.tables.Operatori;
+import bdproject.tables.OperatoriCessazioni;
+import bdproject.tables.OperatoriContratti;
 import bdproject.tables.OperatoriDettagliati;
+import bdproject.tables.OperatoriLetture;
+import bdproject.tables.Pagamenti;
 import bdproject.tables.Persone;
 import bdproject.tables.Redditi;
-import bdproject.tables.RichiesteAttivazione;
-import bdproject.tables.RichiesteCessazione;
 import bdproject.tables.TipiAttivazione;
-import bdproject.tables.TipiImmobile;
 import bdproject.tables.TipologieUso;
 
 
@@ -37,6 +37,11 @@ public class Tables {
      * The table <code>utenze.bollette</code>.
      */
     public static final Bollette BOLLETTE = Bollette.BOLLETTE;
+
+    /**
+     * The table <code>utenze.cessazioni</code>.
+     */
+    public static final Cessazioni CESSAZIONI = Cessazioni.CESSAZIONI;
 
     /**
      * The table <code>utenze.clienti</code>.
@@ -64,19 +69,9 @@ public class Tables {
     public static final Contratti CONTRATTI = Contratti.CONTRATTI;
 
     /**
-     * VIEW
-     */
-    public static final ContrattiDettagliati CONTRATTI_DETTAGLIATI = ContrattiDettagliati.CONTRATTI_DETTAGLIATI;
-
-    /**
      * The table <code>utenze.immobili</code>.
      */
     public static final Immobili IMMOBILI = Immobili.IMMOBILI;
-
-    /**
-     * The table <code>utenze.interruzioni</code>.
-     */
-    public static final Interruzioni INTERRUZIONI = Interruzioni.INTERRUZIONI;
 
     /**
      * The table <code>utenze.letture</code>.
@@ -99,9 +94,29 @@ public class Tables {
     public static final Operatori OPERATORI = Operatori.OPERATORI;
 
     /**
+     * The table <code>utenze.operatori cessazioni</code>.
+     */
+    public static final OperatoriCessazioni OPERATORI_CESSAZIONI = OperatoriCessazioni.OPERATORI_CESSAZIONI;
+
+    /**
+     * The table <code>utenze.operatori contratti</code>.
+     */
+    public static final OperatoriContratti OPERATORI_CONTRATTI = OperatoriContratti.OPERATORI_CONTRATTI;
+
+    /**
+     * The table <code>utenze.operatori letture</code>.
+     */
+    public static final OperatoriLetture OPERATORI_LETTURE = OperatoriLetture.OPERATORI_LETTURE;
+
+    /**
      * VIEW
      */
     public static final OperatoriDettagliati OPERATORI_DETTAGLIATI = OperatoriDettagliati.OPERATORI_DETTAGLIATI;
+
+    /**
+     * The table <code>utenze.pagamenti</code>.
+     */
+    public static final Pagamenti PAGAMENTI = Pagamenti.PAGAMENTI;
 
     /**
      * The table <code>utenze.persone</code>.
@@ -114,24 +129,9 @@ public class Tables {
     public static final Redditi REDDITI = Redditi.REDDITI;
 
     /**
-     * The table <code>utenze.richieste_attivazione</code>.
-     */
-    public static final RichiesteAttivazione RICHIESTE_ATTIVAZIONE = RichiesteAttivazione.RICHIESTE_ATTIVAZIONE;
-
-    /**
-     * The table <code>utenze.richieste_cessazione</code>.
-     */
-    public static final RichiesteCessazione RICHIESTE_CESSAZIONE = RichiesteCessazione.RICHIESTE_CESSAZIONE;
-
-    /**
      * The table <code>utenze.tipi_attivazione</code>.
      */
     public static final TipiAttivazione TIPI_ATTIVAZIONE = TipiAttivazione.TIPI_ATTIVAZIONE;
-
-    /**
-     * The table <code>utenze.tipi_immobile</code>.
-     */
-    public static final TipiImmobile TIPI_IMMOBILE = TipiImmobile.TIPI_IMMOBILE;
 
     /**
      * The table <code>utenze.tipologie_uso</code>.
