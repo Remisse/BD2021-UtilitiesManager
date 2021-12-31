@@ -5,7 +5,6 @@ val platforms = listOf("win", "linux", "mac")
 plugins {
     java
     application
-    eclipse
     id("org.openjfx.javafxplugin") version "0.0.9" // https://github.com/openjfx/javafx-gradle-plugin
     id("nu.studer.jooq") version "6.0"
 }
@@ -34,8 +33,8 @@ dependencies {
     }
 
     // MySQL Java Connector
-    implementation("mysql:mysql-connector-java:8.0.26")
-    jooqGenerator("mysql:mysql-connector-java:8.0.26")
+    implementation("mysql:mysql-connector-java:8.0.27")
+    jooqGenerator("mysql:mysql-connector-java:8.0.27")
 
     // https://mvnrepository.com/artifact/commons-validator/commons-validator
     implementation("commons-validator:commons-validator:1.7")

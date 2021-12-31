@@ -77,91 +77,91 @@ public class OperatoriDettagliati implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.IdPersona</code>.
+     * Getter for <code>utenze.operatori dettagliati.IdPersona</code>.
      */
     public Integer getIdpersona() {
         return this.idpersona;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Nome</code>.
+     * Getter for <code>utenze.operatori dettagliati.Nome</code>.
      */
     public String getNome() {
         return this.nome;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Cognome</code>.
+     * Getter for <code>utenze.operatori dettagliati.Cognome</code>.
      */
     public String getCognome() {
         return this.cognome;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.CodiceFiscale</code>.
+     * Getter for <code>utenze.operatori dettagliati.CodiceFiscale</code>.
      */
     public String getCodicefiscale() {
         return this.codicefiscale;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Via</code>.
+     * Getter for <code>utenze.operatori dettagliati.Via</code>.
      */
     public String getVia() {
         return this.via;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.NumCivico</code>.
+     * Getter for <code>utenze.operatori dettagliati.NumCivico</code>.
      */
     public String getNumcivico() {
         return this.numcivico;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Comune</code>.
+     * Getter for <code>utenze.operatori dettagliati.Comune</code>.
      */
     public String getComune() {
         return this.comune;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.CAP</code>.
+     * Getter for <code>utenze.operatori dettagliati.CAP</code>.
      */
     public String getCap() {
         return this.cap;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Provincia</code>.
+     * Getter for <code>utenze.operatori dettagliati.Provincia</code>.
      */
     public String getProvincia() {
         return this.provincia;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.DataNascita</code>.
+     * Getter for <code>utenze.operatori dettagliati.DataNascita</code>.
      */
     public LocalDate getDatanascita() {
         return this.datanascita;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.NumeroTelefono</code>.
+     * Getter for <code>utenze.operatori dettagliati.NumeroTelefono</code>.
      */
     public String getNumerotelefono() {
         return this.numerotelefono;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Email</code>.
+     * Getter for <code>utenze.operatori dettagliati.Email</code>.
      */
     public String getEmail() {
         return this.email;
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Password</code>.
+     * Getter for <code>utenze.operatori dettagliati.Password</code>.
      */
     public String getPassword() {
         return this.password;

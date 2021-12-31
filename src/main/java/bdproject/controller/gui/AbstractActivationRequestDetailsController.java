@@ -25,10 +25,10 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
 
     private static final String FXML_FILE = "requestDetails.fxml";
     private static final String FLOW_CSS = "-fx-font: 16 arial";
-    private final Contratti request;
+    private final RichiesteContratto request;
 
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
-    private final Map<String, String> mUnit = LocaleUtils.getItUtilitiesUnits();
+    private final Map<String, String> mUnit = LocaleUtils.getItPriceUnits();
 
     @FXML private TextFlow clientDetails;
     @FXML private TextFlow planDetails;
@@ -42,7 +42,7 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
     @FXML private Label activation;
 
     protected AbstractActivationRequestDetailsController(final Stage stage, final DataSource dataSource,
-                                                         final SessionHolder holder, final Contratti request) {
+                                                         final SessionHolder holder, final RichiesteContratto request) {
         super(stage, dataSource, holder, FXML_FILE);
         this.request = request;
     }
@@ -113,7 +113,7 @@ public abstract class AbstractActivationRequestDetailsController extends Abstrac
         resultLabel.setText(request.getStatorichiesta());
     }
 
-    protected Contratti getRequest() {
+    protected RichiesteContratto getRequest() {
         return this.request;
     }
 }

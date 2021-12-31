@@ -5,7 +5,7 @@ import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Cessazioni;
-import bdproject.tables.pojos.Contratti;
+import bdproject.tables.pojos.ContrattiApprovati;
 import bdproject.utils.FXUtils;
 import bdproject.view.StringUtils;
 import javafx.fxml.FXML;
@@ -22,13 +22,13 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
     @FXML private TableView<Cessazioni> endRequestTable;
 
     protected UserSubDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final Contratti detailedSub) {
-        super(stage, dataSource, holder, detailedSub);
+            final ContrattiApprovati subscription) {
+        super(stage, dataSource, holder, subscription);
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final Contratti detailedSub) {
-        return new UserSubDetailsController(stage, dataSource, holder, detailedSub);
+            final ContrattiApprovati subscription) {
+        return new UserSubDetailsController(stage, dataSource, holder, subscription);
     }
 
     /**
@@ -40,12 +40,12 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
 
     @Override
     protected Controller getBackController() {
-        return UserAreaController.create(stage(), dataSource(), sessionHolder());
+        return UserAreaController.create(stage(), dataSource(), getSessionHolder());
     }
 
     @Override
     protected void abstractDoInsertEndRequest() {
-        final Contratti subscription = getSubscription();
+        final ContrattiApprovati subscription = getSubscription();
 
         try (Connection conn = dataSource().getConnection()) {
             if (subscription.getDatacessazione() != null) {
@@ -77,6 +77,7 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
                 final int result = Queries.deleteEndRequest(selected.getNumerorichiesta(), conn);
                 if (result == 1) {
                     FXUtils.showBlockingWarning("Richiesta eliminata.");
+                    refreshEndRequestTable();
                 } else {
                     FXUtils.showBlockingWarning(StringUtils.getGenericError());
                 }

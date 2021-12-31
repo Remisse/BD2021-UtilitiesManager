@@ -23,37 +23,37 @@ public class AreaSelectorController extends AbstractController {
 
     @FXML
     private void goToRequestsArea() {
-        switchTo(RequestManagementController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(RequestManagementController.create(stage(), dataSource(), getSessionHolder()));
     }
 
     @FXML
     private void goToSubsArea() {
-        switchTo(SubscriptionManagementController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(SubscriptionManagementController.create(stage(), dataSource(), getSessionHolder()));
     }
 
     @FXML
     private void goToCatalogue() {
-        switchTo(CatalogueManagementController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(CatalogueManagementController.create(stage(), dataSource(), getSessionHolder()));
     }
 
     @FXML
     private void goToNewOperatorSignUp() {
-        switchTo(OperatorSignUpController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(OperatorSignUpController.create(stage(), dataSource(), getSessionHolder()));
     }
 
     @FXML
     private void goToMisc() {
-        switchTo(MiscController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(MiscController.create(stage(), dataSource(), getSessionHolder()));
     }
 
     @FXML
-    private void goToEstatesAndMeters() {}
+    private void goToPremisesAndMeters() {}
 
     @FXML
-    private void goToStats() {switchTo(OperatorStatsController.create(stage(), dataSource(), sessionHolder()));}
+    private void goToStats() {switchTo(OperatorStatsController.create(stage(), dataSource(), getSessionHolder()));}
 
     @FXML
     private void goBack() {
-        switchTo(HomeController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(HomeController.create(stage(), dataSource(), getSessionHolder()));
     }
 }

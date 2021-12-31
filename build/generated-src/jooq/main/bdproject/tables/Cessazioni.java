@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -24,6 +25,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -139,6 +141,13 @@ public class Cessazioni extends TableImpl<CessazioniRecord> {
             _contratti = new Contratti(this, Keys.FK_RIFERIMENTO);
 
         return _contratti;
+    }
+
+    @Override
+    public List<Check<CessazioniRecord>> getChecks() {
+        return Arrays.asList(
+            Internal.createCheck(this, DSL.name("cessazioni_chk_1"), "(`StatoRichiesta` in (_utf8mb4\\'In gestione\\',_utf8mb4\\'Approvata\\',_utf8mb4\\'Respinta\\'))", true)
+        );
     }
 
     @Override

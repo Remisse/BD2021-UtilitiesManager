@@ -84,13 +84,13 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="confirmMeasurement" layoutX="1048.0" layoutY="409.0" mnemonicParsing="false" onAction="#doConfirmMeasurement" prefHeight="31.0" prefWidth="94.0" text="Conferma">
+      <Button fx:id="confirmMeasurement" layoutX="1048.0" layoutY="409.0" mnemonicParsing="false" onAction="#doConfirmMeasurement" prefHeight="31.0" prefWidth="94.0" text="Approva" textFill="#007c1d">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
       <TextField fx:id="clientIdFilter" layoutX="50.0" layoutY="148.0" onAction="#doRefreshSubs" onKeyTyped="#doRefreshSubs" prefHeight="30.0" prefWidth="152.0" promptText="Codice cliente" />
-      <Button layoutX="343.0" layoutY="782.0" mnemonicParsing="false" onAction="#doDeleteReport" prefHeight="31.0" prefWidth="85.0" text="Elimina" textFill="#9a0e0e">
+      <Button layoutX="343.0" layoutY="782.0" mnemonicParsing="false" onAction="#doDeleteReport" prefHeight="31.0" prefWidth="85.0" text="Elimina" textFill="#9a0000">
          <font>
             <Font size="15.0" />
          </font>
@@ -123,5 +123,10 @@
       <TextField fx:id="consumptionField" layoutX="834.0" layoutY="601.0" prefHeight="31.0" prefWidth="164.0" promptText="Consumi" />
       <DatePicker fx:id="intervalStartDatePicker" layoutX="833.0" layoutY="645.0" prefHeight="31.0" prefWidth="191.0" promptText="Inizio periodo" />
       <DatePicker fx:id="intervalEndDatePicker" layoutX="833.0" layoutY="687.0" prefHeight="31.0" prefWidth="191.0" promptText="Fine periodo" />
+      <Button fx:id="rejectMeasurement" layoutX="1155.0" layoutY="409.0" mnemonicParsing="false" onAction="#doRejectMeasurement" prefHeight="31.0" prefWidth="94.0" text="Respingi" textFill="#9e0000">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

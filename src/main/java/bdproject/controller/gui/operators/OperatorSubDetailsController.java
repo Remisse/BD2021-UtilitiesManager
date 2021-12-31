@@ -4,6 +4,7 @@ import bdproject.controller.gui.AbstractSubscriptionDetailsController;
 import bdproject.controller.gui.Controller;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Contratti;
+import bdproject.tables.pojos.ContrattiApprovati;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -17,12 +18,12 @@ public class OperatorSubDetailsController extends AbstractSubscriptionDetailsCon
     @FXML private Button deleteRequestButton;
 
     protected OperatorSubDetailsController(final Stage stage, final DataSource dataSource,
-            final SessionHolder holder, final Contratti subscription) {
+            final SessionHolder holder, final ContrattiApprovati subscription) {
         super(stage, dataSource, holder, subscription);
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final Contratti subscription) {
+            final ContrattiApprovati subscription) {
         return new OperatorSubDetailsController(stage, dataSource, holder, subscription);
     }
 

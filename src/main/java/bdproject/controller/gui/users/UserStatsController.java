@@ -1,11 +1,12 @@
 package bdproject.controller.gui.users;
 
+import bdproject.controller.Checks;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
-import bdproject.tables.pojos.ContrattiDettagliati;
 import bdproject.tables.pojos.Bollette;
+import bdproject.tables.pojos.ContrattiApprovati;
 import bdproject.tables.pojos.Immobili;
 import bdproject.utils.FXUtils;
 import bdproject.utils.LocaleUtils;
@@ -35,30 +36,24 @@ import java.util.ResourceBundle;
 public class UserStatsController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "consumptionTrend.fxml";
-    private final ContrattiDettagliati subscription;
-    @FXML
-    private Button back;
-    @FXML
-    private LineChart<String, BigDecimal> yearlyTrend;
-    @FXML
-    private ComboBox<Integer> yearSelect;
-    @FXML
-    private Label yourAvg;
-    @FXML
-    private Label peopleAvg;
-    @FXML
-    private DatePicker startDate;
-    @FXML
-    private DatePicker endDate;
+    private final ContrattiApprovati subscription;
+
+    @FXML private Button back;
+    @FXML private LineChart<String, BigDecimal> yearlyTrend;
+    @FXML private ComboBox<Integer> yearSelect;
+    @FXML private Label yourAvg;
+    @FXML private Label peopleAvg;
+    @FXML private DatePicker startDate;
+    @FXML private DatePicker endDate;
 
     private UserStatsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiDettagliati subscription) {
+            final ContrattiApprovati subscription) {
         super(stage, dataSource, holder, FXML_FILE);
         this.subscription = subscription;
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiDettagliati subscription) {
+            final ContrattiApprovati subscription) {
         return new UserStatsController(stage, dataSource, holder, subscription);
     }
 
@@ -69,9 +64,9 @@ public class UserStatsController extends AbstractController implements Initializ
     }
 
     private void populateYearSelection() {
-        if (subscription.getDatainizio() != null) {
+        if (Checks.isSubscriptionActive(subscription)) {
             final List<Integer> years = new ArrayList<>();
-            for (int year = LocalDate.now().getYear(); year >= subscription.getDatainizio().getYear(); year--) {
+            for (int year = LocalDate.now().getYear(); year >= subscription.getDatachiusurarichiesta().getYear(); year--) {
                 years.add(year);
             }
             yearSelect.setItems(FXCollections.observableList(years));
@@ -80,15 +75,16 @@ public class UserStatsController extends AbstractController implements Initializ
 
     private void updateAverages(final Connection conn) {
         if (startDate.getValue() != null && endDate.getValue() != null) {
-            final Immobili estate = Queries.fetchPremiseFromMeterNumber(subscription.getContatore(), dataSource());
-            final String utility = Queries.fetchUtilityFromSubscription(subscription, conn).getNome();
+            final Immobili premise = Queries.fetchPremiseFromSubscription(subscription.getIdcontratto(), dataSource());
+            final String utility = Queries.fetchUtilityFromSubscription(subscription.getIdcontratto(), conn).getNome();
+
             peopleAvg.setText(Queries.avgConsumptionPerZone(
-                    estate,
+                    premise,
                     utility,
                     startDate.getValue(),
                     endDate.getValue(),
                     conn).toString());
-            yourAvg.setText(Queries.avgConsumptionFromSub(subscription, startDate.getValue(), endDate.getValue(), conn)
+            yourAvg.setText(Queries.avgConsumptionFromSub(subscription.getIdcontratto(), startDate.getValue(), endDate.getValue(), conn)
                     .toString());
         } else {
             peopleAvg.setText("N.D.");
@@ -113,11 +109,9 @@ public class UserStatsController extends AbstractController implements Initializ
             final var reports = Queries.fetchSubscriptionReports(subscription, conn);
             XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
             for (Bollette report : reports) {
-                if (report.getImporto() != null) {
-                    series.getData().add(new XYChart.Data<>(
-                            report.getDataemissione().format(month_it),
-                            report.getImporto()));
-                }
+                series.getData().add(new XYChart.Data<>(
+                        report.getDataemissione().format(month_it),
+                        report.getConsumi()));
             }
             yearlyTrend.getData().clear();
             yearlyTrend.getData().add(series);
@@ -128,6 +122,6 @@ public class UserStatsController extends AbstractController implements Initializ
 
     @FXML
     private void goBack() {
-        switchTo(UserAreaController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(UserAreaController.create(stage(), dataSource(), getSessionHolder()));
     }
 }

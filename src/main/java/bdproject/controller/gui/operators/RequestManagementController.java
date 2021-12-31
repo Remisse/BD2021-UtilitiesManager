@@ -2,12 +2,12 @@ package bdproject.controller.gui.operators;
 
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
+import bdproject.controller.types.StatusType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
 import bdproject.utils.FXUtils;
 import bdproject.utils.LocaleUtils;
-import bdproject.view.StringUtils;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -26,24 +26,22 @@ import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static bdproject.tables.Cessazioni.CESSAZIONI;
-import static bdproject.tables.Contatori.CONTATORI;
-import static bdproject.tables.Contratti.CONTRATTI;
 import static bdproject.tables.TipiAttivazione.TIPI_ATTIVAZIONE;
 
 public class RequestManagementController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "requestManagement.fxml";
 
-    @FXML private TableView<Contratti> activationRequestTable;
-    @FXML private TableColumn<Contratti, String> activPublishDateCol;
-    @FXML private TableColumn<Contratti, Integer> activClientCol;
-    @FXML private TableColumn<Contratti, String> activStatusCol;
-    @FXML private TableColumn<Contratti, String> activMethodCol;
-    @FXML private TableColumn<Contratti, String> activMeterCol;
-    @FXML private TableColumn<Contratti, String> activOperatorCol;
+    @FXML private TableView<RichiesteContratto> activationRequestTable;
+    @FXML private TableColumn<RichiesteContratto, String> activPublishDateCol;
+    @FXML private TableColumn<RichiesteContratto, Integer> activClientCol;
+    @FXML private TableColumn<RichiesteContratto, String> activStatusCol;
+    @FXML private TableColumn<RichiesteContratto, String> activMethodCol;
+    @FXML private TableColumn<RichiesteContratto, String> activMeterCol;
+    @FXML private TableColumn<RichiesteContratto, String> activOperatorCol;
 
     @FXML private TableView<Cessazioni> endRequestTable;
     @FXML private TableColumn<Cessazioni, String> endPublishDateCol;
@@ -79,31 +77,41 @@ public class RequestManagementController extends AbstractController implements I
                     .findFirst()
                     .orElseThrow()
                     .getNome()));
+
+            activMeterCol.setCellValueFactory(c -> {
+                final Optional<Contatori> meter = Queries.fetchMeterBySubscription(c.getValue().getIdcontratto(), conn);
+                return meter.map(m -> new SimpleStringProperty(m.getMatricola()))
+                        .orElseGet(() -> new SimpleStringProperty("Non inserito"));
+            });
+
+            activOperatorCol.setCellValueFactory(c -> {
+                final Optional<OperatoriContratti> assignment =
+                        Queries.fetchSubscriptionRequestAssignment(c.getValue().getIdcontratto(), conn);
+                return assignment.map(a -> new SimpleStringProperty(a.getIdoperatore().toString()))
+                        .orElseGet(() -> new SimpleStringProperty("N.A."));
+            });
+
+            endOperatorCol.setCellValueFactory(c -> {
+                final Optional<OperatoriCessazioni> assignment =
+                        Queries.fetchEndRequestAssignment(c.getValue().getIdcontratto(), conn);
+                return assignment.map(a -> new SimpleStringProperty(a.getIdoperatore().toString()))
+                        .orElseGet(() -> new SimpleStringProperty("N.A."));
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        activMeterCol.setCellValueFactory(c -> {
-            final Contatori meter = Queries.fetchByKey(
-                    CONTATORI, CONTATORI.MATRICOLA, c.getValue().getContatore(), Contatori.class, dataSource()).orElseThrow();
-            return new SimpleStringProperty(meter.getMatricola() == null ? "Non inserito" : meter.getMatricola());
-        });
-
         activPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(LocaleUtils.getItDateFormatter().format(
-                c.getValue().getDatarichiesta())));
-        activClientCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCliente()).asObject());
+                c.getValue().getDataaperturarichiesta())));
+        activClientCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getIdcliente()).asObject());
         activStatusCol.setCellValueFactory(
-                c -> new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
-        activOperatorCol.setCellValueFactory(c -> new SimpleStringProperty(
-                c.getValue().getOperatore() == null ? "-" : c.getValue().getOperatore().toString()));
+                c -> new SimpleStringProperty(c.getValue().getStatorichiesta()));
 
         endPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(LocaleUtils.getItDateFormatter().format(
-                c.getValue().getDatarichiesta())));
+                c.getValue().getDataaperturarichiesta())));
         endSubscriptionCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getIdcontratto()).asObject());
-        endNotesCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNote()));
-        endStatusCol.setCellValueFactory(c -> new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
-        endOperatorCol.setCellValueFactory(c -> new SimpleStringProperty(
-                c.getValue().getOperatore() == null ? "-" : c.getValue().getOperatore().toString()));
+        endNotesCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNoterichiesta()));
+        endStatusCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStatorichiesta()));
 
         activationRequestTable.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, newItem) -> {
             if (newItem != null) {
@@ -120,9 +128,9 @@ public class RequestManagementController extends AbstractController implements I
 
     private void refreshTables() {
         try (Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-            final List<Contratti> activRequests = Queries.fetchAll(ctx, CONTRATTI, Contratti.class);
-            final List<Cessazioni> endRequests = Queries.fetchAll(ctx, CESSAZIONI, Cessazioni.class);
+            final int operatorId = getSessionHolder().session().orElseThrow().userId();
+            final List<RichiesteContratto> activRequests = Queries.fetchSubscriptionRequestsAssignedToOperator(operatorId, conn);
+            final List<Cessazioni> endRequests = Queries.fetchEndRequestsAssignedToOperator(operatorId, conn);
 
             activationRequestTable.setItems(FXCollections.observableList(activRequests));
             endRequestTable.setItems(FXCollections.observableList(endRequests));
@@ -134,45 +142,38 @@ public class RequestManagementController extends AbstractController implements I
 
     @FXML
     private void doShowDetails() {
-        final Contratti activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        final RichiesteContratto activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
         if (activRequest != null) {
             createSubWindow(OperatorActivationRequestDetailsController.create(
-                    null, dataSource(), sessionHolder(), activRequest));
+                    null, dataSource(), getSessionHolder(), activRequest));
         } else {
             final Cessazioni endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
-                Contratti sub = null;
-                try (Connection conn = dataSource().getConnection()) {
-                    sub = Queries.fetchSubscriptionFromId(endRequest.getIdcontratto(), conn).orElseThrow();
+                ContrattiApprovati sub = null;
+                try (final Connection conn = dataSource().getConnection()) {
+                    sub = Queries.fetchApprovedSubscriptionById(endRequest.getIdcontratto(), conn).orElseThrow();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                createSubWindow(OperatorSubDetailsController.create(stage(), dataSource(), sessionHolder(), sub));
+                createSubWindow(OperatorSubDetailsController.create(stage(), dataSource(), getSessionHolder(), sub));
             }
         }
     }
 
     @FXML
     private void doAccept() {
-        final int operatorId = sessionHolder().session().orElseThrow().userId();
-        final Contratti activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        final RichiesteContratto activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
         int result = 0;
 
         if (activRequest != null) {
             try (Connection conn = dataSource().getConnection()) {
-                Queries.updateOneFieldWhere(CONTRATTI, CONTRATTI.IDCONTRATTO,
-                        activRequest.getIdcontratto(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
-                final Contatori meter = Queries.fetchByKey(CONTATORI, CONTATORI.PROGRESSIVO, activRequest.getContatore(),
-                                Contatori.class, dataSource())
-                        .orElseThrow();
-                if (meter.getMatricola() == null) {
-                    FXUtils.showBlockingWarning("Non è stata ancora inserita la matricola del contatore.");
+                final Optional<Contatori> meter = Queries.fetchMeterBySubscription(activRequest.getIdcontratto(), conn);
+                if (meter.isEmpty()) {
+                    FXUtils.showBlockingWarning("Non è stato ancora aggiunto il contatore.");
                 } else {
-                    result = Queries.updateSubscriptionRequest(activRequest.getNumero(),
-                            activRequest.getContatore(), conn);
+                    result = Queries.activateSubscription(activRequest.getIdcontratto(), conn);
                     if (result == 1) {
                         FXUtils.showBlockingWarning("Contratto creato.");
-                        result += Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), "A", conn);
                     } else {
                         FXUtils.showBlockingWarning("Impossibile creare il contratto.");
                     }
@@ -181,15 +182,17 @@ public class RequestManagementController extends AbstractController implements I
                 e.printStackTrace();
             }
         } else {
-            final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
+            final Cessazioni endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
                 try (Connection conn = dataSource().getConnection()) {
-                    Queries.updateOneFieldWhere(RICHIESTE_CESSAZIONE, RICHIESTE_CESSAZIONE.NUMERO,
-                            endRequest.getNumero(), RICHIESTE_CESSAZIONE.OPERATORE, operatorId, conn);
                     result = Queries.ceaseSubscription(endRequest.getIdcontratto(), conn);
                     if (result == 1) {
                         FXUtils.showBlockingWarning("Contratto cessato.");
-                        result += Queries.setRequestStatus(RICHIESTE_CESSAZIONE, endRequest.getNumero(), "A", conn);
+                        result += Queries.updateEndRequest(endRequest.getNumerorichiesta(), StatusType.APPROVED.toString(),
+                                endRequest.getNoterichiesta(), conn);
+                        if (result != 2) {
+                            FXUtils.showError("Errore nell'aggiornamento della richiesta.");
+                        }
                     } else {
                         FXUtils.showBlockingWarning("Impossibile cessare il contratto.");
                     }
@@ -208,25 +211,22 @@ public class RequestManagementController extends AbstractController implements I
 
     @FXML
     private void doRefuse() {
-        final int operatorId = sessionHolder().session().orElseThrow().userId();
-        final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        final RichiesteContratto activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
         int result = 0;
 
         if (activRequest != null) {
             try (Connection conn = dataSource().getConnection()) {
-                Queries.updateOneFieldWhere(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMERO,
-                        activRequest.getNumero(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
-                result = Queries.setRequestStatus(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), "R", conn);
+                result = Queries.updateSubscriptionRequest(activRequest.getIdcontratto(), StatusType.REJECTED.toString(),
+                        activRequest.getNoterichiesta(), conn);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
+            final Cessazioni endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
                 try (Connection conn = dataSource().getConnection()) {
-                    Queries.updateOneFieldWhere(RICHIESTE_CESSAZIONE, RICHIESTE_CESSAZIONE.NUMERO,
-                            endRequest.getNumero(), RICHIESTE_CESSAZIONE.OPERATORE, operatorId, conn);
-                    result = Queries.setRequestStatus(RICHIESTE_CESSAZIONE, endRequest.getNumero(), "R", conn);
+                    result = Queries.updateEndRequest(endRequest.getNumerorichiesta(), StatusType.REJECTED.toString(),
+                            endRequest.getNoterichiesta(), conn);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -242,18 +242,17 @@ public class RequestManagementController extends AbstractController implements I
 
     @FXML
     private void doSetMeter() {
-        final int operatorId = sessionHolder().session().orElseThrow().userId();
-        final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        final RichiesteContratto activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
 
         if (activRequest != null) {
-            if (activRequest.getStato().equals("N") || activRequest.getStato().equals("E")) {
+            if (activRequest.getStatorichiesta().equals(StatusType.REVIEWING.toString())) {
                 if (meterIdField.getText().length() > 0) {
                     try (Connection conn = dataSource().getConnection()) {
-                        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-                        Queries.updateOneFieldWhere(RICHIESTE_ATTIVAZIONE, RICHIESTE_ATTIVAZIONE.NUMERO,
-                                activRequest.getNumero(), RICHIESTE_ATTIVAZIONE.OPERATORE, operatorId, conn);
+                        final String utility = Queries.fetchUtilityFromSubscription(activRequest.getIdcontratto(), conn)
+                                        .getNome();
+
                         final int result =
-                                Queries.updateMeterId(activRequest.getContatore(), meterIdField.getText(), ctx);
+                                Queries.insertMeter(meterIdField.getText(), utility, activRequest.getIdimmobile(), conn);
                         if (result == 1) {
                             FXUtils.showBlockingWarning("Matricola inserita.");
                             refreshTables();
@@ -276,19 +275,22 @@ public class RequestManagementController extends AbstractController implements I
 
     @FXML
     private void doUpdateNotes() {
-        final RichiesteAttivazione activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        final RichiesteContratto activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
         int result = 0;
+
         if (activRequest != null) {
             try (Connection conn = dataSource().getConnection()) {
-                result = Queries.setRequestNotes(RICHIESTE_ATTIVAZIONE, activRequest.getNumero(), refusalNotes.getText(), conn);
+                result = Queries.updateSubscriptionRequest(activRequest.getIdcontratto(), activRequest.getStatorichiesta(),
+                        refusalNotes.getText(), conn);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            final RichiesteCessazione endRequest = endRequestTable.getSelectionModel().getSelectedItem();
+            final Cessazioni endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
                 try (Connection conn = dataSource().getConnection()) {
-                    result = Queries.setRequestNotes(RICHIESTE_CESSAZIONE, endRequest.getNumero(), refusalNotes.getText(), conn);
+                    result = Queries.updateEndRequest(endRequest.getNumerorichiesta(), endRequest.getStatorichiesta(),
+                            refusalNotes.getText(), conn);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -304,6 +306,6 @@ public class RequestManagementController extends AbstractController implements I
 
     @FXML
     private void goBack() {
-        switchTo(AreaSelectorController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(AreaSelectorController.create(stage(), dataSource(), getSessionHolder()));
     }
 }

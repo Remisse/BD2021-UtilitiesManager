@@ -151,6 +151,9 @@ create table tipi_attivazione (
 	 CodAttivazione integer not null,
      Nome varchar(20) not null,
      Costo decimal(20, 2) not null,
+     RichiedeVecchioIntestatario bool not null,
+     RichiedeMatricolaContatore bool not null,
+     RichiedeLettura bool not null,
      check(Costo >= 0),
      constraint PK_TIPO_ATTIVAZIONE primary key (CodAttivazione));
 
@@ -186,13 +189,13 @@ values(default, "Abitativo non residenziale", 0.7, false);
 
 -- Populate "tipi_attivazione"
 insert into tipi_attivazione
-values (1, "Nuova attivazione", 85.0);
+values (1, "Nuova attivazione", 85.0, false, false, false);
 
 insert into tipi_attivazione
-values (2, "Subentro", 70.0);
+values (2, "Subentro", 70.0, false, true, false);
 
 insert into tipi_attivazione
-values (3, "Voltura", 45.0);
+values (3, "Voltura", 45.0, true, true, true);
 
 
 -- Populate "redditi"
@@ -235,13 +238,13 @@ values (default, "385011111111", date_sub(curdate(), interval 2 month), 35.0, "A
 
 -- Populate "persone", "clienti" and "operatori"
 insert into persone
-values (default, "MRMMRA55R08B963X", "Mario", "Maria Mario", "Via Mario", 64, "Forlì", "47121", "FC", 19551005, "35426324", "trallallero@boh.it", "ucciucci");
+values (default, "Mario", "Maria Mario", "MRMMRA55R08B963X", "Via Mario", 64, "Forlì", "47121", "FC", 19551005, "35426324", "trallallero@boh.it", "ucciucci");
 
 insert into persone
-values (default, "BRTBBB25T87R762U", "Bartolomeo", "Bartolucci", "Via delle Vie", 12, "Cesena", "47521", "FC", 19860621, "38275722", "bartolomeo@gmail.com", "uffiuffi");
+values (default, "Bartolomeo", "Bartolucci", "BRTBBB25T87R762U", "Via delle Vie", 12, "Cesena", "47521", "FC", 19860621, "38275722", "bartolomeo@gmail.com", "uffiuffi");
 
 insert into persone
-values (default, "GAGGUG92F28U275P", "Armando", "Armandini", "Viale Vialone", 73, "Catanzaro", "88100", "CZ", 19951030, "292892992", "amministratore@admin.com", "password");
+values (default, "Armando", "Armandini", "GAGGUG92F28U275P", "Viale Vialone", 73, "Catanzaro", "88100", "CZ", 19951030, "292892992", "amministratore@admin.com", "password");
 
 insert into clienti
 values (1, 3);
@@ -255,7 +258,7 @@ values (3, 900.15);
 
 -- Populate "offerte" and "compatibilità"
 insert into offerte(Nome, Descrizione, CostoMateriaPrima, Attiva, MateriaPrima)
-values ("A tutto gas", "Una generica offerta per la fornitura di gas.", true, 0.3, "Gas");
+values ("A tutto gas", "Una generica offerta per la fornitura di gas.", 0.3, true, "Gas");
 
 insert into compatibilità
 values (last_insert_id(), 1);
@@ -416,13 +419,22 @@ alter table pagamenti add constraint FK_PAGAMENTO
 -- View section
 -- _____________ 
 
-create view clienti_dettagliati as select P.*, C.FasciaReddito
-									 from persone P, clienti C
-									where P.IdPersona = C.CodiceCliente;
+create view `clienti dettagliati` as select P.*, C.FasciaReddito
+									   from persone P, clienti C
+									  where P.IdPersona = C.CodiceCliente;
                                     
-create view operatori_dettagliati as select P.*
-									   from persone P, operatori O
-									  where P.IdPersona = O.IdOperatore;
+create view `operatori dettagliati` as select P.*
+									     from persone P, operatori O
+									    where P.IdPersona = O.IdOperatore;
+                                      
+create view `richieste contratto` as select IdContratto, DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, NumeroComponenti,
+												Uso, Offerta, TipoAttivazione, IdImmobile, IdCliente
+									   from contratti
+									  where DataChiusuraRichiesta is null or (DataChiusuraRichiesta is not null and StatoRichiesta = "Respinta");
+                                      
+create view `contratti approvati` as select C.*
+								       from contratti C
+								      where DataChiusuraRichiesta is not null and StatoRichiesta = "Approvata";
 			
 
 -- Index Section

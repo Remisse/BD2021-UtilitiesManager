@@ -56,7 +56,7 @@ public class MiscController extends AbstractController implements Initializable 
 
     private void populateUserDetails() {
         try (Connection conn = dataSource().getConnection()) {
-            final Persone person = Queries.fetchPersonById(sessionHolder().session().orElseThrow().userId(), conn)
+            final Persone person = Queries.fetchPersonById(getSessionHolder().session().orElseThrow().userId(), conn)
                     .orElseThrow();
 
             street.setText(person.getVia());
@@ -91,7 +91,7 @@ public class MiscController extends AbstractController implements Initializable 
     private boolean isNewPasswordCorrectlySet() {
         Persone person = null;
         try (Connection conn = dataSource().getConnection()) {
-            person = Queries.fetchPersonById(sessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
+            person = Queries.fetchPersonById(getSessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -108,7 +108,7 @@ public class MiscController extends AbstractController implements Initializable 
         if (areUserFieldsInvalid()) {
             FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i nuovi dati.");
         } else {
-            final int operatorId = sessionHolder().session().orElseThrow().userId();
+            final int operatorId = getSessionHolder().session().orElseThrow().userId();
             try (Connection conn = dataSource().getConnection()) {
                 final int resultUpdateData = Queries.updatePerson(
                         email.getText(),
@@ -135,7 +135,7 @@ public class MiscController extends AbstractController implements Initializable 
     @FXML
     private void doUpdatePassword() {
         if (!isAreAllPasswordFieldsBlank() && isNewPasswordCorrectlySet()) {
-            final int operatorId = sessionHolder().session().orElseThrow().userId();
+            final int operatorId = getSessionHolder().session().orElseThrow().userId();
             try (Connection conn = dataSource().getConnection()) {
                 final int resultUpdatePw = Queries.updateOneFieldWhere(PERSONE, PERSONE.IDPERSONA, operatorId,
                         PERSONE.PASSWORD, newPw.getText(), conn);
@@ -155,6 +155,6 @@ public class MiscController extends AbstractController implements Initializable 
 
     @FXML
     private void goBack() {
-        switchTo(AreaSelectorController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(AreaSelectorController.create(stage(), dataSource(), getSessionHolder()));
     }
 }

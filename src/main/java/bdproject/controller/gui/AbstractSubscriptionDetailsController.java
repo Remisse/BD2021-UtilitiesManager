@@ -32,7 +32,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     private static final String FXML_FILE = "subDetails.fxml";
     private static final String FLOW_CSS = "-fx-font: 16 arial";
 
-    private final Contratti sub;
+    private final ContrattiApprovati sub;
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
 
     @FXML private Button back;
@@ -47,6 +47,8 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     @FXML private Label subState;
     @FXML private Label use;
     @FXML private Label activation;
+    @FXML private Label creationDateLabel;
+    @FXML private TextFlow requestNotesFlow;
 
     @FXML private TableView<Cessazioni> endRequestTable;
     @FXML private TableColumn<Cessazioni, String> reqPublishDateCol;
@@ -54,7 +56,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     @FXML private TableColumn<Cessazioni, String> reqNotesCol;
 
     protected AbstractSubscriptionDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final Contratti sub) {
+            final ContrattiApprovati sub) {
         super(stage, dataSource, holder, FXML_FILE);
         this.sub = sub;
     }
@@ -62,13 +64,19 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try (Connection conn = dataSource().getConnection()) {
+            final LocalDate creationDate = sub.getDataaperturarichiesta();
             final LocalDate startDate = sub.getDatachiusurarichiesta();
             final LocalDate endDate = sub.getDatacessazione();
 
+            creationDateLabel.setText(dateIt.format(creationDate));
             subStartDate.setText(startDate != null ? dateIt.format(startDate) : "N.D.");
             subEndDate.setText(endDate != null ? dateIt.format(endDate) : "N.D.");
             use.setText(Queries.fetchUsageFromSub(sub.getIdcontratto(), conn).getNome());
             activation.setText(Queries.fetchActivationFromSub(sub.getIdcontratto(), conn).getNome());
+
+            final Text requestNotes = new Text(sub.getNoterichiesta());
+            requestNotes.setStyle(FLOW_CSS);
+            requestNotesFlow.getChildren().add(requestNotes);
 
             setClientDetails(conn);
             setPlanDetails();
@@ -86,7 +94,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
 
     protected abstract void setOther();
 
-    protected Contratti getSubscription() {
+    protected ContrattiApprovati getSubscription() {
         return sub;
     }
 
@@ -130,8 +138,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     }
 
     protected void setStatus() {
-        subState.setText(Checks.isSubscriptionActive(sub) ? "Attivo" :
-                Checks.isSubscriptionBeingReviewed(sub) ? "In gestione" : "Cessato");
+        subState.setText(Checks.isSubscriptionActive(sub) ? "Attivo" : "Cessato");
     }
 
     private void setEndRequestTable() {

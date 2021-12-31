@@ -42,7 +42,7 @@ public class CatalogueManagementController extends AbstractController implements
     private static final String FXML_FILE = "catalogueManagement.fxml";
     private static final int USE_NAME_LIMIT = 30;
 
-    private final Map<String, String> mUnit = LocaleUtils.getItUtilitiesUnits();
+    private final Map<String, String> mUnit = LocaleUtils.getItPriceUnits();
 
     @FXML private TableView<Offerte> planTable;
     @FXML private TableColumn<Offerte, String> nameCol;
@@ -385,6 +385,6 @@ public class CatalogueManagementController extends AbstractController implements
 
     @FXML
     private void goBack() {
-        switchTo(AreaSelectorController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(AreaSelectorController.create(stage(), dataSource(), getSessionHolder()));
     }
 }

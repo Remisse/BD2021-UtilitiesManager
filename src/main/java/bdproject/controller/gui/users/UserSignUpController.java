@@ -17,7 +17,6 @@ public class UserSignUpController extends AbstractSignUpController {
 
     /**
      * Empty
-     * @param conn
      */
     @Override
     protected void initOther(final Connection conn) {

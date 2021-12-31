@@ -55,7 +55,7 @@ public abstract class AbstractController implements Controller {
     }
 
     @Override
-    public SessionHolder sessionHolder() {
+    public SessionHolder getSessionHolder() {
         return sessionHolder;
     }
 

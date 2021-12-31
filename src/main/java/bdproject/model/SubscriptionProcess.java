@@ -8,7 +8,7 @@ public interface SubscriptionProcess {
 
     void setClientId(int id);
 
-    void setEstate(Immobili premise);
+    void setPremise(Immobili premise);
 
     void setPlan(Offerte plan);
 
@@ -26,7 +26,7 @@ public interface SubscriptionProcess {
 
     int getClientId();
 
-    Optional<Immobili> estate();
+    Optional<Immobili> premise();
 
     Optional<Offerte> plan();
 

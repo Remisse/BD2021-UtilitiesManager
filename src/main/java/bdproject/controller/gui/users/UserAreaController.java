@@ -6,6 +6,7 @@ import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.HomeController;
 import bdproject.controller.gui.Controller;
 import bdproject.controller.Checks;
+import bdproject.controller.types.StatusType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
@@ -17,11 +18,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
@@ -54,19 +52,23 @@ public class UserAreaController extends AbstractController implements Initializa
     @FXML private TableColumn<Bollette, String> deadline;
     @FXML private TableColumn<Bollette, String> paid;
     @FXML private TableColumn<Bollette, String> amount;
+    @FXML private TableColumn<Bollette, String> reportConsumptionCol;
     @FXML private TableColumn<Bollette, String> estimatedCol;
 
-    @FXML private TableView<Contratti> activationReqTable;
-    @FXML private TableColumn<Contratti, String> reqCreationDateCol;
-    @FXML private TableColumn<Contratti, String> reqUtilityCol;
-    @FXML private TableColumn<Contratti, String> reqResultCol;
+    @FXML private TableView<RichiesteContratto> activationReqTable;
+    @FXML private TableColumn<RichiesteContratto, String> reqCreationDateCol;
+    @FXML private TableColumn<RichiesteContratto, String> reqUtilityCol;
+    @FXML private TableColumn<RichiesteContratto, String> reqResultCol;
 
-    @FXML private ComboBox<Choice<Integer, Contratti>> subscriptionChoice;
+    @FXML private ComboBox<Choice<Integer, ContrattiApprovati>> subscriptionChoice;
     @FXML private Button subDetails;
     @FXML private Button consumptionTrend;
 
+    @FXML private TableView<Letture> measurementsTable;
+    @FXML private TableColumn<Letture, String> measurementDateCol;
+    @FXML private TableColumn<Letture, String> measurementConsumpCol;
+    @FXML private TableColumn<Letture, String> measurementStatusCol;
     @FXML private TextField consumption;
-    @FXML private TextFlow lastReading;
     @FXML private Button addMeasurement;
 
     @FXML private TextField street;
@@ -95,13 +97,13 @@ public class UserAreaController extends AbstractController implements Initializa
         populateUserDetails();
         initializeReportTable();
         initializeActivationRequestTable();
-        showLastMeasurement();
+        initializeMeasurementsTable();
         showFullUsername();
     }
 
     private void showFullUsername() {
         try (Connection conn = dataSource().getConnection()) {
-            final Persone client = Queries.fetchPersonById(sessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
+            final Persone client = Queries.fetchPersonById(getSessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
             clientFullName.setText(client.getNome() + " " + client.getCognome());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -111,7 +113,7 @@ public class UserAreaController extends AbstractController implements Initializa
     private void populateUserDetails() {
         try (Connection conn = dataSource().getConnection()) {
             final ClientiDettagliati client = Queries.fetchClientById(
-                    sessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
+                    getSessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
 
             street.setText(client.getVia());
             civic.setText(client.getNumcivico());
@@ -133,12 +135,10 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void populateSubscriptionBox() {
-        List<Choice<Integer, Contratti>> subs;
-        try (Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-            subs = Queries.fetchAll(ctx, CONTRATTI, Contratti.class)
+        List<Choice<Integer, ContrattiApprovati>> subs;
+        try (final Connection conn = dataSource().getConnection()) {
+            subs = Queries.fetchApprovedSubscriptionsByClient(getSessionHolder().session().orElseThrow().userId(), conn)
                     .stream()
-                    .filter(s -> s.getIdcliente().equals(sessionHolder().session().orElseThrow().userId()))
                     .map(s -> new ChoiceImpl<>(s.getIdcontratto(), s, (id, sub) -> id.toString()))
                     .collect(Collectors.toList());
             subscriptionChoice.setItems(FXCollections.observableList(subs));
@@ -155,8 +155,7 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void toggleTrendButton() {
-        consumptionTrend.setDisable(!(subscriptionChoice.getValue() != null
-                && subscriptionChoice.getValue().getValue().getDatainizio() != null));
+        consumptionTrend.setDisable(subscriptionChoice.getValue() == null);
     }
 
     private void toggleMeasurementFields() {
@@ -165,41 +164,51 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void initializeReportTable() {
-        try (Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-            final Persone person = Queries.fetchPersonById(sessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
-            final List<ContrattiDettagliati> userSubs = Queries.fetchAll(ctx, CONTRATTI_DETTAGLIATI, ContrattiDettagliati.class)
-                    .stream()
-                    .filter(s -> s.getCliente().equals(person.getIdentificativo()))
-                    .collect(Collectors.toList());
+        final var subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
 
-            if (!userSubs.isEmpty()) {
-                publishDate.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDataemissione().format(DATE_FORMAT)));
-                deadline.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDatascadenza().format(DATE_FORMAT)));
-                paid.setCellValueFactory(cellData -> {
-                    final LocalDate paidDate = cellData.getValue().getDatapagamento();
-                    return new SimpleStringProperty(paidDate != null ? paidDate.format(DATE_FORMAT) : "Non pagata");
-                });
-                amount.setCellValueFactory(cellData -> new SimpleStringProperty(
-                        "€" + DECIMAL_FORMAT.format(cellData.getValue().getImporto())));
-                estimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
-                        StringUtils.byteToYesNo(c.getValue().getStimata())));
+        if (subChoice != null) {
+            publishDate.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDataemissione().format(DATE_FORMAT)));
+            deadline.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDatascadenza().format(DATE_FORMAT)));
 
-                updateTableItems();
+            paid.setCellValueFactory(cellData -> {
+                Optional<Pagamenti> payment = Optional.empty();
+
+                try (final Connection conn = dataSource().getConnection()) {
+                    payment = Queries.fetchReportPayment(cellData.getValue().getNumerobolletta(), conn);
+                } catch (SQLException e) {
+                    FXUtils.showError(e.getMessage());
+                    e.printStackTrace();
+                }
+                if (payment.isPresent()) {
+                    final LocalDate paymentDate = payment.orElseThrow().getDatapagamento();
+                    return new SimpleStringProperty(paymentDate.format(DATE_FORMAT));
+                }
+                return new SimpleStringProperty("Non pagata");
+            });
+            amount.setCellValueFactory(cellData -> new SimpleStringProperty(
+                    "€" + DECIMAL_FORMAT.format(cellData.getValue().getImporto())));
+
+            String utility = "";
+            try (final Connection conn = dataSource().getConnection()) {
+                utility = Queries.fetchUtilityFromSubscription(subChoice.getValue().getIdcontratto(), conn).getNome();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                FXUtils.showError(e.getMessage());
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            final String unit = LocaleUtils.getItUtilityUnits().getOrDefault(utility, "");
+            reportConsumptionCol.setCellValueFactory(c ->
+                    new SimpleStringProperty(DECIMAL_FORMAT.format(c.getValue().getConsumi()) + " " + unit));
+
+            estimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
+                    StringUtils.byteToYesNo(c.getValue().getStimata())));
+
+            updateReportTable();
         }
     }
 
-    private void updateTableItems() {
+    private void updateReportTable() {
         try (Connection conn = dataSource().getConnection()) {
-            DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-            var reports = query.select(BOLLETTE.asterisk())
-                    .from(CONTRATTI, BOLLETTE)
-                    .where(CONTRATTI.IDCONTRATTO.eq(subscriptionChoice.getValue().getValue().getIdcontratto()))
-                    .and(BOLLETTE.IDCONTRATTO.eq(CONTRATTI.IDCONTRATTO))
-                    .fetchInto(Bollette.class);
+            List<Bollette> reports = Queries.fetchSubscriptionReports(subscriptionChoice.getValue().getValue(), conn);
             reportTable.setItems(FXCollections.observableList(reports));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -207,9 +216,9 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void initializeActivationRequestTable() {
-        reqCreationDateCol.setCellValueFactory(c -> new SimpleStringProperty(DATE_FORMAT.format(c.getValue().getDatarichiesta())));
+        reqCreationDateCol.setCellValueFactory(c -> new SimpleStringProperty(DATE_FORMAT.format(c.getValue().getDataaperturarichiesta())));
         reqResultCol.setCellValueFactory(c ->
-                new SimpleStringProperty(StringUtils.requestStatusToString(c.getValue().getStato())));
+                new SimpleStringProperty(c.getValue().getStatorichiesta()));
         reqUtilityCol.setCellValueFactory(c -> {
             final String utility = Queries.fetchPlanById(c.getValue().getOfferta(), dataSource())
                     .orElseThrow()
@@ -221,11 +230,7 @@ public class UserAreaController extends AbstractController implements Initializa
 
     private void refreshActivationRequestTable() {
         try (Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-            final List<RichiesteAttivazione> reqs = Queries.fetchAll(ctx, RICHIESTE_ATTIVAZIONE, RichiesteAttivazione.class)
-                    .stream()
-                    .filter(r -> r.getCliente().equals(sessionHolder().session().orElseThrow().userId()))
-                    .collect(Collectors.toList());
+            final List<RichiesteContratto> reqs = Queries.fetchSubscriptionRequestsByClient(getSessionHolder().session().orElseThrow().userId(), conn);
             activationReqTable.setItems(FXCollections.observableList(reqs));
         } catch (Exception e) {
             e.printStackTrace();
@@ -234,9 +239,9 @@ public class UserAreaController extends AbstractController implements Initializa
 
     @FXML
     private void doShowActivationReqDetails() {
-        final RichiesteAttivazione request = activationReqTable.getSelectionModel().getSelectedItem();
+        final RichiesteContratto request = activationReqTable.getSelectionModel().getSelectedItem();
         if (request != null) {
-            createSubWindow(UserActivationRequestDetailsController.create(null, dataSource(), sessionHolder(), request));
+            createSubWindow(UserActivationRequestDetailsController.create(null, dataSource(), getSessionHolder(), request));
         } else {
             FXUtils.showBlockingWarning("Seleziona una richiesta.");
         }
@@ -244,11 +249,11 @@ public class UserAreaController extends AbstractController implements Initializa
 
     @FXML
     private void doDeleteActivationReq() {
-        final RichiesteAttivazione selectedReq = activationReqTable.getSelectionModel().getSelectedItem();
+        final RichiesteContratto selectedReq = activationReqTable.getSelectionModel().getSelectedItem();
         if (selectedReq != null) {
             try (Connection conn = dataSource().getConnection()) {
-                if (selectedReq.getStato().equals("N") || selectedReq.getStato().equals("E")) {
-                    final int result = Queries.deleteSubscriptionRequest(selectedReq.getNumero(), conn);
+                if (selectedReq.getDatachiusurarichiesta() == null) {
+                    final int result = Queries.deleteSubscriptionRequest(selectedReq.getIdcontratto(), conn);
                     if (result == 1) {
                         FXUtils.showBlockingWarning("Richiesta eliminata.");
                         refreshActivationRequestTable();
@@ -256,7 +261,7 @@ public class UserAreaController extends AbstractController implements Initializa
                         FXUtils.showBlockingWarning(StringUtils.getGenericError());
                     }
                 } else {
-                    FXUtils.showBlockingWarning("Non puoi eliminare una richiesta già esaminata.");
+                    FXUtils.showBlockingWarning("Non puoi eliminare una richiesta già finalizzata.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -271,17 +276,26 @@ public class UserAreaController extends AbstractController implements Initializa
         final var subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
         if (subChoice != null) {
             try (Connection conn = dataSource().getConnection()) {
-                if (Checks.isSubscriptionActive(subChoice.getValue(), conn)) {
+                if (subChoice.getValue().getDatacessazione() == null) {
                     if (Checks.isValidConsumption(consumption.getText())) {
-                        var measurement = new Letture(
-                                new BigDecimal(consumption.getText()),
-                                subChoice.getValue().getContatore(),
+                        final String meterId = Queries.fetchMeterBySubscription(subChoice.getValue().getIdcontratto(), conn)
+                                .orElseThrow()
+                                .getMatricola();
+                        final Letture measurement = new Letture(
+                                0,
+                                meterId,
                                 LocalDate.now(),
-                                (byte) 0,
-                                sessionHolder().session().orElseThrow().userId()
+                                new BigDecimal(consumption.getText()),
+                                StatusType.REVIEWING.toString(),
+                                getSessionHolder().session().orElseThrow().userId()
                         );
-                        Queries.insertMeasurement(measurement, conn);
-                        showLastMeasurement();
+                        final int result = Queries.insertMeasurement(measurement, conn);
+                        if (result == 1) {
+                            updateMeasurementsTable();
+                            FXUtils.showBlockingWarning("Lettura inserita con successo.");
+                        } else {
+                            FXUtils.showError("Impossibile inserire la lettura.");
+                        }
                     } else {
                         FXUtils.showBlockingWarning("Controlla di aver inserito correttamente la lettura.");
                     }
@@ -297,50 +311,67 @@ public class UserAreaController extends AbstractController implements Initializa
         }
     }
 
-    private void showLastMeasurement() {
-        final var subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+    private void initializeMeasurementsTable() {
+        String utility = "";
+        try (final Connection conn = dataSource().getConnection()) {
+            final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+            if (subChoice != null) {
+                utility = Queries.fetchUtilityFromSubscription(subChoice.getValue().getIdcontratto(), conn)
+                        .getNome();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            FXUtils.showError("Errore nel reperimento delle letture.");
+        }
+
+        final String unit = LocaleUtils.getItUtilityUnits()
+                .getOrDefault(utility, "");
+        measurementDateCol.setCellValueFactory(c -> new SimpleStringProperty(DATE_FORMAT.format(c.getValue()
+                .getDataeffettuazione())));
+        measurementConsumpCol.setCellValueFactory(c -> new SimpleStringProperty(DECIMAL_FORMAT.format(c.getValue()
+                .getConsumi()) + " " + unit));
+        measurementStatusCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStato()));
+        updateMeasurementsTable();
+    }
+
+    private void updateMeasurementsTable() {
+        final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
         if (subChoice != null) {
             try (Connection conn = dataSource().getConnection()) {
-                Optional<Letture> lastMeasurement = Queries.fetchLastMeasurement(subChoice.getValue(), conn);
-                lastMeasurement.ifPresentOrElse(m -> {
-                    final Text text = new Text("Consumi: " + DECIMAL_FORMAT.format(m.getConsumi())
-                            + "\nData: " + m.getDataeffettuazione().format(DATE_FORMAT)
-                            + "\nStato: " + m.getStato());
-                    lastReading.getChildren().clear();
-                    lastReading.getChildren().add(text);
-                }, () -> {
-                    lastReading.getChildren().clear();
-                    lastReading.getChildren().add(new Text("N.D."));
-                });
+                List<Letture> measurements = Queries.fetchMeasurements(subChoice.getValue().getIdcontratto(), conn);
+                measurementsTable.setItems(FXCollections.observableList(measurements));
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError("Errore nella visualizzazione dell'ultima lettura.");
+                FXUtils.showError("Errore nel reperimento delle letture.");
             }
-        } else {
-            lastReading.getChildren().add(new Text("N.D."));
         }
     }
 
     @FXML
     private void showSubDetails() {
-        switchTo(UserSubDetailsController.create(stage(), dataSource(), sessionHolder(), subscriptionChoice.getValue().getValue()));
+        switchTo(UserSubDetailsController.create(stage(), dataSource(), getSessionHolder(), subscriptionChoice.getValue().getValue()));
     }
 
     @FXML
     private void payReport() {
-        var report = reportTable.getSelectionModel().getSelectedItem();
+        final Bollette report = reportTable.getSelectionModel().getSelectedItem();
+
         if (report == null) {
             FXUtils.showBlockingWarning("Seleziona una bolletta da pagare.");
-        } else if (report.getDatapagamento() != null) {
-            FXUtils.showBlockingWarning("La bolletta selezionata risulta già pagata.");
         } else {
             try (Connection conn = dataSource().getConnection()) {
-                final int outcome = Queries.payReport(report.getIdcontratto(), report.getDataemissione(), conn);
-                if (outcome == 1) {
-                    FXUtils.showBlockingWarning("Pagamento effettuato con successo.");
-                    updateTableItems();
+                final Optional<Pagamenti> payment = Queries.fetchReportPayment(report.getNumerobolletta(), conn);
+
+                if (payment.isPresent()) {
+                    FXUtils.showBlockingWarning("La bolletta selezionata risulta già pagata.");
                 } else {
-                    FXUtils.showError("Impossibile procedere al pagamento.");
+                    final int outcome = Queries.payReport(report.getIdcontratto(), conn);
+                    if (outcome == 1) {
+                        FXUtils.showBlockingWarning("Pagamento effettuato con successo.");
+                        updateReportTable();
+                    } else {
+                        FXUtils.showError("Impossibile procedere al pagamento.");
+                    }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -351,7 +382,7 @@ public class UserAreaController extends AbstractController implements Initializa
 
     @FXML
     private void goBack() {
-        switchTo(HomeController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(HomeController.create(stage(), dataSource(), getSessionHolder()));
     }
 
     @FXML
@@ -359,7 +390,7 @@ public class UserAreaController extends AbstractController implements Initializa
         if (areUserFieldsInvalid()) {
             FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i nuovi dati.");
         } else {
-            final int clientId = sessionHolder().session().orElseThrow().userId();
+            final int clientId = getSessionHolder().session().orElseThrow().userId();
             try (Connection conn = dataSource().getConnection()) {
                 int resultUpdateData = Queries.updatePerson(
                             email.getText(),
@@ -372,7 +403,7 @@ public class UserAreaController extends AbstractController implements Initializa
                             clientId,
                             conn);
                 resultUpdateData += Queries.updateOneFieldWhere(CLIENTI, CLIENTI.CODICECLIENTE, clientId,
-                        CLIENTI.FASCIAREDDITO, incomeBracket.getValue().getItem().getCodice(), conn);
+                        CLIENTI.FASCIAREDDITO, incomeBracket.getValue().getItem().getCodreddito(), conn);
                 if (resultUpdateData == 2) {
                     FXUtils.showBlockingWarning("Dati modificati con successo.");
                 } else {
@@ -388,9 +419,9 @@ public class UserAreaController extends AbstractController implements Initializa
     @FXML
     private void doUpdatePassword() {
         if (!isAtLeastOnePasswordFieldBlank() && isNewPasswordCorrectlySet()) {
-            final int clientId = sessionHolder().session().orElseThrow().userId();
+            final int clientId = getSessionHolder().session().orElseThrow().userId();
             try (Connection conn = dataSource().getConnection()) {
-                final int resultUpdatePw = Queries.updateOneFieldWhere(PERSONE, PERSONE.IDENTIFICATIVO, clientId,
+                final int resultUpdatePw = Queries.updateOneFieldWhere(PERSONE, PERSONE.IDPERSONA, clientId,
                         PERSONE.PASSWORD, newPw.getText(), conn);
                 if (resultUpdatePw == 1) {
                     FXUtils.showBlockingWarning("Password modificata con successo.");
@@ -408,15 +439,15 @@ public class UserAreaController extends AbstractController implements Initializa
 
     @FXML
     private void onSubChosen() {
-        updateTableItems();
+        initializeReportTable();
         toggleMeasurementFields();
         toggleTrendButton();
-        showLastMeasurement();
+        initializeMeasurementsTable();
     }
 
     @FXML
     private void showConsumptionTrend() {
-        switchTo(UserStatsController.create(stage(), dataSource(), sessionHolder(), subscriptionChoice.getValue().getValue()));
+        switchTo(UserStatsController.create(stage(), dataSource(), getSessionHolder(), subscriptionChoice.getValue().getValue()));
     }
 
     private boolean areUserFieldsInvalid() {
@@ -439,7 +470,7 @@ public class UserAreaController extends AbstractController implements Initializa
     private boolean isNewPasswordCorrectlySet() {
         Persone person = null;
         try (Connection conn = dataSource().getConnection()) {
-            person = Queries.fetchPersonById(sessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
+            person = Queries.fetchPersonById(getSessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
         } catch (SQLException e) {
             e.printStackTrace();
         }

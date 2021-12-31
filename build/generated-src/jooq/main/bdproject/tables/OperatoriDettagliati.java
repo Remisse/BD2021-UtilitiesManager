@@ -32,7 +32,7 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>utenze.operatori_dettagliati</code>
+     * The reference instance of <code>utenze.operatori dettagliati</code>
      */
     public static final OperatoriDettagliati OPERATORI_DETTAGLIATI = new OperatoriDettagliati();
 
@@ -45,67 +45,67 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     }
 
     /**
-     * The column <code>utenze.operatori_dettagliati.IdPersona</code>.
+     * The column <code>utenze.operatori dettagliati.IdPersona</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, Integer> IDPERSONA = createField(DSL.name("IdPersona"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.Nome</code>.
+     * The column <code>utenze.operatori dettagliati.Nome</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> NOME = createField(DSL.name("Nome"), SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.Cognome</code>.
+     * The column <code>utenze.operatori dettagliati.Cognome</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> COGNOME = createField(DSL.name("Cognome"), SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.CodiceFiscale</code>.
+     * The column <code>utenze.operatori dettagliati.CodiceFiscale</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> CODICEFISCALE = createField(DSL.name("CodiceFiscale"), SQLDataType.VARCHAR(16).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.Via</code>.
+     * The column <code>utenze.operatori dettagliati.Via</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> VIA = createField(DSL.name("Via"), SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.NumCivico</code>.
+     * The column <code>utenze.operatori dettagliati.NumCivico</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> NUMCIVICO = createField(DSL.name("NumCivico"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.Comune</code>.
+     * The column <code>utenze.operatori dettagliati.Comune</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> COMUNE = createField(DSL.name("Comune"), SQLDataType.VARCHAR(30).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.CAP</code>.
+     * The column <code>utenze.operatori dettagliati.CAP</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> CAP = createField(DSL.name("CAP"), SQLDataType.VARCHAR(5).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.Provincia</code>.
+     * The column <code>utenze.operatori dettagliati.Provincia</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> PROVINCIA = createField(DSL.name("Provincia"), SQLDataType.VARCHAR(2).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.DataNascita</code>.
+     * The column <code>utenze.operatori dettagliati.DataNascita</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, LocalDate> DATANASCITA = createField(DSL.name("DataNascita"), SQLDataType.LOCALDATE.nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.NumeroTelefono</code>.
+     * The column <code>utenze.operatori dettagliati.NumeroTelefono</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> NUMEROTELEFONO = createField(DSL.name("NumeroTelefono"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.Email</code>.
+     * The column <code>utenze.operatori dettagliati.Email</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> EMAIL = createField(DSL.name("Email"), SQLDataType.VARCHAR(40).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori_dettagliati.Password</code>.
+     * The column <code>utenze.operatori dettagliati.Password</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, String> PASSWORD = createField(DSL.name("Password"), SQLDataType.VARCHAR(30).nullable(false), this, "");
 
@@ -114,11 +114,11 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     }
 
     private OperatoriDettagliati(Name alias, Table<OperatoriDettagliatiRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `operatori_dettagliati` as select `P`.`IdPersona` AS `IdPersona`,`P`.`Nome` AS `Nome`,`P`.`Cognome` AS `Cognome`,`P`.`CodiceFiscale` AS `CodiceFiscale`,`P`.`Via` AS `Via`,`P`.`NumCivico` AS `NumCivico`,`P`.`Comune` AS `Comune`,`P`.`CAP` AS `CAP`,`P`.`Provincia` AS `Provincia`,`P`.`DataNascita` AS `DataNascita`,`P`.`NumeroTelefono` AS `NumeroTelefono`,`P`.`Email` AS `Email`,`P`.`Password` AS `Password` from `utenze`.`persone` `P` join `utenze`.`operatori` `O` where (`P`.`IdPersona` = `O`.`IdOperatore`)"));
+        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `operatori dettagliati` as select `P`.`IdPersona` AS `IdPersona`,`P`.`Nome` AS `Nome`,`P`.`Cognome` AS `Cognome`,`P`.`CodiceFiscale` AS `CodiceFiscale`,`P`.`Via` AS `Via`,`P`.`NumCivico` AS `NumCivico`,`P`.`Comune` AS `Comune`,`P`.`CAP` AS `CAP`,`P`.`Provincia` AS `Provincia`,`P`.`DataNascita` AS `DataNascita`,`P`.`NumeroTelefono` AS `NumeroTelefono`,`P`.`Email` AS `Email`,`P`.`Password` AS `Password` from `utenze`.`persone` `P` join `utenze`.`operatori` `O` where (`P`.`IdPersona` = `O`.`IdOperatore`)"));
     }
 
     /**
-     * Create an aliased <code>utenze.operatori_dettagliati</code> table
+     * Create an aliased <code>utenze.operatori dettagliati</code> table
      * reference
      */
     public OperatoriDettagliati(String alias) {
@@ -126,7 +126,7 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     }
 
     /**
-     * Create an aliased <code>utenze.operatori_dettagliati</code> table
+     * Create an aliased <code>utenze.operatori dettagliati</code> table
      * reference
      */
     public OperatoriDettagliati(Name alias) {
@@ -134,10 +134,10 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     }
 
     /**
-     * Create a <code>utenze.operatori_dettagliati</code> table reference
+     * Create a <code>utenze.operatori dettagliati</code> table reference
      */
     public OperatoriDettagliati() {
-        this(DSL.name("operatori_dettagliati"), null);
+        this(DSL.name("operatori dettagliati"), null);
     }
 
     public <O extends Record> OperatoriDettagliati(Table<O> child, ForeignKey<O, OperatoriDettagliatiRecord> key) {

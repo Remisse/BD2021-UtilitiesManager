@@ -4,11 +4,15 @@ import bdproject.controller.Choice;
 import bdproject.controller.ChoiceImpl;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
-import bdproject.model.Queries;
+import bdproject.controller.gui.users.parametersselection.ParametersClientChangeController;
+import bdproject.controller.gui.users.parametersselection.ParametersNewActivationController;
+import bdproject.controller.gui.users.parametersselection.ParametersSubentroController;
+import bdproject.controller.gui.users.subscriptionconfirmation.NewActivationConfirmationController;
+import bdproject.controller.gui.users.subscriptionconfirmation.SubentroConfirmationController;
+import bdproject.controller.types.PremiseType;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.Immobili;
-import bdproject.tables.pojos.TipiImmobile;
 import bdproject.utils.FXUtils;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -17,19 +21,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.net.URL;
-import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
-
-import static bdproject.tables.TipiImmobile.TIPI_IMMOBILE;
 
 public class PremiseInsertionController extends AbstractController implements Initializable {
 
@@ -55,7 +52,7 @@ public class PremiseInsertionController extends AbstractController implements In
     @FXML private TextField apartmentNumberField;
     @FXML private TextField provinceField;
 
-    @FXML private ComboBox<Choice<TipiImmobile, String>> typeBox;
+    @FXML private ComboBox<Choice<PremiseType, String>> typeBox;
 
     private PremiseInsertionController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
                                        final String fxml, final SubscriptionProcess process) {
@@ -75,30 +72,26 @@ public class PremiseInsertionController extends AbstractController implements In
         usageLabel.setText(process.usage().orElseThrow().getNome());
         methodLabel.setText(process.activation().orElseThrow().getNome());
 
-        try (Connection conn = dataSource().getConnection()) {
-            DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-            final List<Choice<TipiImmobile, String>> types = Queries.fetchAll(ctx, TIPI_IMMOBILE, TipiImmobile.class)
-                    .stream()
-                    .map(t -> new ChoiceImpl<>(t, t.getNome(), (i, v) -> v))
-                    .collect(Collectors.toList());
-            typeBox.setItems(FXCollections.observableList(types));
-            typeBox.setValue(types.get(0));
-
-            process.estate().ifPresent(p -> {
-                typeBox.setValue(types.stream()
-                        .filter(c -> c.getItem().getCodice().equals(p.getTipo()))
-                        .findFirst()
-                        .orElseThrow());
-                streetField.setText(p.getVia());
-                streetNoField.setText(p.getNumcivico());
-                municipalityField.setText(p.getComune());
-                postcodeField.setText(p.getCap());
-                provinceField.setText(p.getProvincia());
-                apartmentNumberField.setText(p.getInterno() == null ? "" : p.getInterno());
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
+        final List<Choice<PremiseType, String>> types = new ArrayList<>();
+        for (PremiseType type : PremiseType.values()) {
+            types.add(new ChoiceImpl<>(type, type.toString(), (i, v) -> v));
         }
+
+        typeBox.setItems(FXCollections.observableList(types));
+        typeBox.setValue(types.get(0));
+
+        process.premise().ifPresent(p -> {
+            typeBox.setValue(types.stream()
+                    .filter(c -> c.getValue().equals(p.getTipo()))
+                    .findFirst()
+                    .orElseThrow());
+            streetField.setText(p.getVia());
+            streetNoField.setText(p.getNumcivico());
+            municipalityField.setText(p.getComune());
+            postcodeField.setText(p.getCap());
+            provinceField.setText(p.getProvincia());
+            apartmentNumberField.setText(p.getInterno() == null ? "" : p.getInterno());
+        });
     }
 
     private boolean areFieldsValid() {
@@ -112,13 +105,23 @@ public class PremiseInsertionController extends AbstractController implements In
 
     @FXML
     private void toggleApartmentNumberField() {
-        apartmentNumberField.setDisable(typeBox.getValue().getItem().getHainterno() == 0);
+        apartmentNumberField.setDisable(typeBox.getValue().getItem() != PremiseType.FABBRICATO);
         apartmentNumberField.clear();
     }
 
     @FXML
     private void goBack() {
-        switchTo(ParametersSelectionController.create(stage(), dataSource(), sessionHolder(), process));
+        switch (process.activation().orElseThrow().getNome()) {
+            case "Nuova attivazione":
+                switchTo(ParametersNewActivationController.create(stage(), dataSource(), getSessionHolder(), process));
+                break;
+            case "Subentro":
+                switchTo(ParametersSubentroController.create(stage(), dataSource(), getSessionHolder(), process));
+                break;
+            case "Voltura":
+                switchTo(ParametersClientChangeController.create(stage(), dataSource(), getSessionHolder(), process));
+                break;
+        }
     }
 
     @FXML
@@ -126,28 +129,26 @@ public class PremiseInsertionController extends AbstractController implements In
         if (areFieldsValid()) {
             final Immobili newPremises = new Immobili(
                     0,
-                    typeBox.getValue().getItem().getCodice(),
+                    typeBox.getValue().getValue(),
                     streetField.getText(),
                     streetNoField.getText(),
                     apartmentNumberField.getText().equals("") ? null : apartmentNumberField.getText(),
                     municipalityField.getText(),
                     provinceField.getText(),
                     postcodeField.getText());
-            try (Connection conn = dataSource().getConnection()) {
-                final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-                final Optional<Immobili> existingEstate = Queries.fetchPremiseByCandidateKey(
-                        newPremises.getComune(),
-                        newPremises.getNumcivico(),
-                        newPremises.getInterno(),
-                        newPremises.getComune(),
-                        newPremises.getProvincia(),
-                        ctx);
+            process.setPremise(newPremises);
 
-                existingEstate.ifPresentOrElse(process::setEstate, () -> process.setEstate(newPremises));
-            } catch (Exception e) {
-                e.printStackTrace();
+            switch (process.activation().orElseThrow().getNome()) {
+                case "Nuova attivazione":
+                    switchTo(NewActivationConfirmationController.create(stage(), dataSource(), getSessionHolder(), process));
+                    break;
+                case "Subentro":
+                    switchTo(SubentroConfirmationController.create(stage(), dataSource(), getSessionHolder(), process, false, false));
+                    break;
+                case "Voltura":
+                    switchTo(ParametersClientChangeController.create(stage(), dataSource(), getSessionHolder(), process));
+                    break;
             }
-            switchTo(SubscriptionConfirmationController.create(stage(), dataSource(), sessionHolder(), process));
         } else {
             FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");
         }

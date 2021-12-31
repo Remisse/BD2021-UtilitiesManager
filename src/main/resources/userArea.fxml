@@ -10,19 +10,20 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.TextFlow?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="254.0" layoutX="581.0" layoutY="438.0" stroke="#0000003a" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="185.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="254.0" layoutX="581.0" layoutY="438.0" stroke="#0000003a" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="204.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="254.0" layoutX="27.0" layoutY="438.0" stroke="#0000003a" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="548.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="294.0" layoutX="27.0" layoutY="106.0" stroke="#0000003a" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="1220.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="254.0" layoutX="881.0" layoutY="438.0" stroke="#0000003a" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="365.0" />
       <Button fx:id="back" layoutX="40.0" layoutY="28.0" mnemonicParsing="false" onAction="#goBack" text="Torna al menu">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
       <ComboBox fx:id="subscriptionChoice" layoutX="40.0" layoutY="118.0" onAction="#onSubChosen" prefHeight="30.0" prefWidth="173.0" promptText="Seleziona..." />
-      <Label layoutX="40.0" layoutY="84.0" text="I tuoi contratti">
+      <Label layoutX="41.0" layoutY="77.0" text="I tuoi contratti">
          <font>
             <Font size="18.0" />
          </font>
@@ -33,31 +34,32 @@
             <TableColumn fx:id="deadline" prefWidth="109.0" text="Scadenza" />
             <TableColumn fx:id="paid" minWidth="2.0" prefWidth="111.0" text="Pagata" />
           <TableColumn fx:id="amount" prefWidth="100.0" text="Importo" />
-            <TableColumn fx:id="estimatedCol" prefWidth="117.0" text="Stimata" />
+            <TableColumn fx:id="reportConsumptionCol" prefWidth="110.0" text="Consumi" />
+            <TableColumn fx:id="estimatedCol" prefWidth="82.0" text="Stimata" />
         </columns>
       </TableView>
-      <Label layoutX="241.0" layoutY="84.0" text="Le tue bollette">
+      <Label layoutX="242.0" layoutY="77.0" text="Le tue bollette">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="40.0" layoutY="409.0" text="Modifica i tuoi dati anagrafici">
+      <Label layoutX="40.0" layoutY="409.0" text="I tuoi dati anagrafici">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
       <TextField fx:id="street" layoutX="291.0" layoutY="460.0" prefHeight="30.0" prefWidth="218.0" promptText="Via" />
       <TextField fx:id="civic" layoutX="514.0" layoutY="460.0" prefHeight="30.0" prefWidth="53.0" promptText="Civico" />
-      <TextField fx:id="postcode" layoutX="291.0" layoutY="540.0" promptText="CAP" />
+      <TextField fx:id="postcode" layoutX="291.0" layoutY="542.0" prefHeight="30.0" prefWidth="173.0" promptText="CAP" />
       <TextField fx:id="state" layoutX="291.0" layoutY="580.0" prefHeight="30.0" prefWidth="77.0" promptText="Provincia" />
       <TextField fx:id="municipality" layoutX="291.0" layoutY="500.0" prefHeight="30.0" prefWidth="173.0" promptText="Comune" />
-      <Button layoutX="238.0" layoutY="637.0" mnemonicParsing="false" onAction="#doUpdateClient" text="Salva modifiche">
+      <Button layoutX="238.0" layoutY="651.0" mnemonicParsing="false" onAction="#doUpdateClient" text="Salva modifiche">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
       <TextField fx:id="email" layoutX="40.0" layoutY="460.0" prefHeight="30.0" prefWidth="218.0" promptText="Indirizzo e-mail" />
-      <Button fx:id="payReport" layoutX="241.0" layoutY="364.0" mnemonicParsing="false" onAction="#payReport" prefHeight="31.0" prefWidth="66.0" text="Paga">
+      <Button fx:id="payReport" layoutX="241.0" layoutY="364.0" mnemonicParsing="false" onAction="#payReport" prefHeight="24.0" prefWidth="66.0" text="Paga">
          <font>
             <Font size="15.0" />
          </font>
@@ -74,26 +76,20 @@
          </font>
       </Button>
       <TextField fx:id="phone" layoutX="40.0" layoutY="500.0" prefHeight="30.0" prefWidth="218.0" promptText="Numero di telefono" />
-      <Label layoutX="1005.0" layoutY="84.0" text="Nuova autolettura">
+      <Label layoutX="960.0" layoutY="77.0" text="Le tue letture">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <PasswordField fx:id="currentPw" layoutX="587.0" layoutY="460.0" promptText="Password attuale" />
-      <PasswordField fx:id="newPw" layoutX="587.0" layoutY="500.0" promptText="Nuova password" />
-      <PasswordField fx:id="confirmPw" layoutX="587.0" layoutY="540.0" promptText="Conferma password" />
-      <TextField fx:id="consumption" disable="true" layoutX="1005.0" layoutY="118.0" promptText="Consumi" />
-      <Button fx:id="addMeasurement" disable="true" layoutX="1048.0" layoutY="159.0" mnemonicParsing="false" onAction="#doAddMeasurement" text="Comunica">
+      <PasswordField fx:id="currentPw" layoutX="602.0" layoutY="460.0" promptText="Password attuale" />
+      <PasswordField fx:id="newPw" layoutX="602.0" layoutY="503.0" promptText="Nuova password" />
+      <PasswordField fx:id="confirmPw" layoutX="601.0" layoutY="548.0" promptText="Conferma password" />
+      <TextField fx:id="consumption" disable="true" layoutX="958.0" layoutY="367.0" promptText="Consumi" />
+      <Button fx:id="addMeasurement" disable="true" layoutX="1141.0" layoutY="365.0" mnemonicParsing="false" onAction="#doAddMeasurement" text="Comunica">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="1005.0" layoutY="213.0" text="Ultima lettura:">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-      <TextFlow fx:id="lastReading" layoutX="1005.0" layoutY="243.0" prefHeight="114.0" prefWidth="198.0" />
       <Button fx:id="consumptionTrend" disable="true" layoutX="83.0" layoutY="238.0" mnemonicParsing="false" onAction="#showConsumptionTrend" text="Statistiche">
          <font>
             <Font size="15.0" />
@@ -109,32 +105,44 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="825.0" layoutY="409.0" text="Le tue richieste di attivazione">
+      <Label layoutX="896.0" layoutY="409.0" text="Le tue richieste di attivazione">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="activationReqTable" layoutX="825.0" layoutY="436.0" prefHeight="216.0" prefWidth="350.0">
+      <TableView fx:id="activationReqTable" layoutX="896.0" layoutY="448.0" prefHeight="196.0" prefWidth="332.0">
         <columns>
-          <TableColumn fx:id="reqCreationDateCol" prefWidth="106.0" text="Data apertura" />
-            <TableColumn fx:id="reqUtilityCol" prefWidth="97.0" text="Fornitura" />
-            <TableColumn fx:id="reqResultCol" prefWidth="145.0" text="Esito" />
+          <TableColumn fx:id="reqCreationDateCol" prefWidth="105.0" text="Data apertura" />
+            <TableColumn fx:id="reqUtilityCol" prefWidth="113.0" text="Fornitura" />
+            <TableColumn fx:id="reqResultCol" prefWidth="130.0" text="Esito" />
         </columns>
       </TableView>
-      <Button layoutX="825.0" layoutY="662.0" mnemonicParsing="false" onAction="#doShowActivationReqDetails" text="Dettagli">
+      <Button layoutX="896.0" layoutY="651.0" mnemonicParsing="false" onAction="#doShowActivationReqDetails" text="Dettagli">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="915.0" layoutY="662.0" mnemonicParsing="false" onAction="#doDeleteActivationReq" text="Elimina" textFill="#b90000">
+      <Button layoutX="976.0" layoutY="651.0" mnemonicParsing="false" onAction="#doDeleteActivationReq" text="Elimina" textFill="#b90000">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Button>
-      <Button layoutX="605.0" layoutY="637.0" mnemonicParsing="false" onAction="#doUpdatePassword" text="Cambia password">
+      <Button layoutX="640.0" layoutY="651.0" mnemonicParsing="false" onAction="#doUpdatePassword" text="Conferma">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
+      <TableView fx:id="measurementsTable" layoutX="958.0" layoutY="118.0" prefHeight="238.0" prefWidth="271.0">
+        <columns>
+          <TableColumn fx:id="measurementDateCol" prefWidth="96.0" text="Data" />
+          <TableColumn fx:id="measurementConsumpCol" prefWidth="87.0" text="Consumi" />
+            <TableColumn fx:id="measurementStatusCol" prefWidth="87.0" text="Stato" />
+        </columns>
+      </TableView>
+      <Label layoutX="589.0" layoutY="409.0" text="Cambia password">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

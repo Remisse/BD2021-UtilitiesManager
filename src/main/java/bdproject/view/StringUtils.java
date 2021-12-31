@@ -52,7 +52,7 @@ public class StringUtils {
                 .append(plan.getMateriaprima())
                 .append("\nCosto materia prima: ")
                 .append(plan.getCostomateriaprima())
-                .append(LocaleUtils.getItUtilitiesUnits().get(plan.getMateriaprima()))
+                .append(LocaleUtils.getItPriceUnits().get(plan.getMateriaprima()))
                 .toString();
     }
 

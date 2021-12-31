@@ -11,6 +11,7 @@ import bdproject.tables.ClientiDettagliati;
 import bdproject.tables.Compatibilità;
 import bdproject.tables.Contatori;
 import bdproject.tables.Contratti;
+import bdproject.tables.ContrattiApprovati;
 import bdproject.tables.Immobili;
 import bdproject.tables.Letture;
 import bdproject.tables.MateriePrime;
@@ -23,6 +24,7 @@ import bdproject.tables.OperatoriLetture;
 import bdproject.tables.Pagamenti;
 import bdproject.tables.Persone;
 import bdproject.tables.Redditi;
+import bdproject.tables.RichiesteContratto;
 import bdproject.tables.TipiAttivazione;
 import bdproject.tables.TipologieUso;
 
@@ -69,6 +71,11 @@ public class Tables {
     public static final Contratti CONTRATTI = Contratti.CONTRATTI;
 
     /**
+     * VIEW
+     */
+    public static final ContrattiApprovati CONTRATTI_APPROVATI = ContrattiApprovati.CONTRATTI_APPROVATI;
+
+    /**
      * The table <code>utenze.immobili</code>.
      */
     public static final Immobili IMMOBILI = Immobili.IMMOBILI;
@@ -104,14 +111,14 @@ public class Tables {
     public static final OperatoriContratti OPERATORI_CONTRATTI = OperatoriContratti.OPERATORI_CONTRATTI;
 
     /**
-     * The table <code>utenze.operatori letture</code>.
-     */
-    public static final OperatoriLetture OPERATORI_LETTURE = OperatoriLetture.OPERATORI_LETTURE;
-
-    /**
      * VIEW
      */
     public static final OperatoriDettagliati OPERATORI_DETTAGLIATI = OperatoriDettagliati.OPERATORI_DETTAGLIATI;
+
+    /**
+     * The table <code>utenze.operatori letture</code>.
+     */
+    public static final OperatoriLetture OPERATORI_LETTURE = OperatoriLetture.OPERATORI_LETTURE;
 
     /**
      * The table <code>utenze.pagamenti</code>.
@@ -127,6 +134,11 @@ public class Tables {
      * The table <code>utenze.redditi</code>.
      */
     public static final Redditi REDDITI = Redditi.REDDITI;
+
+    /**
+     * VIEW
+     */
+    public static final RichiesteContratto RICHIESTE_CONTRATTO = RichiesteContratto.RICHIESTE_CONTRATTO;
 
     /**
      * The table <code>utenze.tipi_attivazione</code>.

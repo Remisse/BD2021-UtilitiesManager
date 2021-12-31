@@ -23,7 +23,7 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.IdPersona</code>.
+     * Setter for <code>utenze.operatori dettagliati.IdPersona</code>.
      */
     public OperatoriDettagliatiRecord setIdpersona(Integer value) {
         set(0, value);
@@ -31,14 +31,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.IdPersona</code>.
+     * Getter for <code>utenze.operatori dettagliati.IdPersona</code>.
      */
     public Integer getIdpersona() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.Nome</code>.
+     * Setter for <code>utenze.operatori dettagliati.Nome</code>.
      */
     public OperatoriDettagliatiRecord setNome(String value) {
         set(1, value);
@@ -46,14 +46,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Nome</code>.
+     * Getter for <code>utenze.operatori dettagliati.Nome</code>.
      */
     public String getNome() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.Cognome</code>.
+     * Setter for <code>utenze.operatori dettagliati.Cognome</code>.
      */
     public OperatoriDettagliatiRecord setCognome(String value) {
         set(2, value);
@@ -61,14 +61,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Cognome</code>.
+     * Getter for <code>utenze.operatori dettagliati.Cognome</code>.
      */
     public String getCognome() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.CodiceFiscale</code>.
+     * Setter for <code>utenze.operatori dettagliati.CodiceFiscale</code>.
      */
     public OperatoriDettagliatiRecord setCodicefiscale(String value) {
         set(3, value);
@@ -76,14 +76,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.CodiceFiscale</code>.
+     * Getter for <code>utenze.operatori dettagliati.CodiceFiscale</code>.
      */
     public String getCodicefiscale() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.Via</code>.
+     * Setter for <code>utenze.operatori dettagliati.Via</code>.
      */
     public OperatoriDettagliatiRecord setVia(String value) {
         set(4, value);
@@ -91,14 +91,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Via</code>.
+     * Getter for <code>utenze.operatori dettagliati.Via</code>.
      */
     public String getVia() {
         return (String) get(4);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.NumCivico</code>.
+     * Setter for <code>utenze.operatori dettagliati.NumCivico</code>.
      */
     public OperatoriDettagliatiRecord setNumcivico(String value) {
         set(5, value);
@@ -106,14 +106,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.NumCivico</code>.
+     * Getter for <code>utenze.operatori dettagliati.NumCivico</code>.
      */
     public String getNumcivico() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.Comune</code>.
+     * Setter for <code>utenze.operatori dettagliati.Comune</code>.
      */
     public OperatoriDettagliatiRecord setComune(String value) {
         set(6, value);
@@ -121,14 +121,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Comune</code>.
+     * Getter for <code>utenze.operatori dettagliati.Comune</code>.
      */
     public String getComune() {
         return (String) get(6);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.CAP</code>.
+     * Setter for <code>utenze.operatori dettagliati.CAP</code>.
      */
     public OperatoriDettagliatiRecord setCap(String value) {
         set(7, value);
@@ -136,14 +136,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.CAP</code>.
+     * Getter for <code>utenze.operatori dettagliati.CAP</code>.
      */
     public String getCap() {
         return (String) get(7);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.Provincia</code>.
+     * Setter for <code>utenze.operatori dettagliati.Provincia</code>.
      */
     public OperatoriDettagliatiRecord setProvincia(String value) {
         set(8, value);
@@ -151,14 +151,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Provincia</code>.
+     * Getter for <code>utenze.operatori dettagliati.Provincia</code>.
      */
     public String getProvincia() {
         return (String) get(8);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.DataNascita</code>.
+     * Setter for <code>utenze.operatori dettagliati.DataNascita</code>.
      */
     public OperatoriDettagliatiRecord setDatanascita(LocalDate value) {
         set(9, value);
@@ -166,14 +166,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.DataNascita</code>.
+     * Getter for <code>utenze.operatori dettagliati.DataNascita</code>.
      */
     public LocalDate getDatanascita() {
         return (LocalDate) get(9);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.NumeroTelefono</code>.
+     * Setter for <code>utenze.operatori dettagliati.NumeroTelefono</code>.
      */
     public OperatoriDettagliatiRecord setNumerotelefono(String value) {
         set(10, value);
@@ -181,14 +181,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.NumeroTelefono</code>.
+     * Getter for <code>utenze.operatori dettagliati.NumeroTelefono</code>.
      */
     public String getNumerotelefono() {
         return (String) get(10);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.Email</code>.
+     * Setter for <code>utenze.operatori dettagliati.Email</code>.
      */
     public OperatoriDettagliatiRecord setEmail(String value) {
         set(11, value);
@@ -196,14 +196,14 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Email</code>.
+     * Getter for <code>utenze.operatori dettagliati.Email</code>.
      */
     public String getEmail() {
         return (String) get(11);
     }
 
     /**
-     * Setter for <code>utenze.operatori_dettagliati.Password</code>.
+     * Setter for <code>utenze.operatori dettagliati.Password</code>.
      */
     public OperatoriDettagliatiRecord setPassword(String value) {
         set(12, value);
@@ -211,7 +211,7 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     /**
-     * Getter for <code>utenze.operatori_dettagliati.Password</code>.
+     * Getter for <code>utenze.operatori dettagliati.Password</code>.
      */
     public String getPassword() {
         return (String) get(12);

@@ -8,7 +8,7 @@ public interface Controller {
 
     void createSubWindow(Controller controller);
 
-    SessionHolder sessionHolder();
+    SessionHolder getSessionHolder();
 
     String fxml();
 }

@@ -98,7 +98,7 @@ public abstract class AbstractSignUpController extends AbstractController implem
                     final int result = abstractInsertRole(lastInsertId, income.getValue().getItem().getCodreddito(), conn);
                     if (result == 1) {
                         FXUtils.showBlockingWarning("Registrazione completata.");
-                        switchTo(HomeController.create(stage(), dataSource(), sessionHolder()));
+                        switchTo(HomeController.create(stage(), dataSource(), getSessionHolder()));
                     } else {
                         FXUtils.showError("Creazione dell'account non riuscita.");
                     }
@@ -136,6 +136,6 @@ public abstract class AbstractSignUpController extends AbstractController implem
     private void backToHome(ActionEvent event) {
         FXUtils.showConfirmationDialog(
                 "Vuoi davvero tornare al menu principale? Tutti i dati inseriti verranno persi.",
-                () -> switchTo(HomeController.create(stage(), dataSource(), sessionHolder())));
+                () -> switchTo(HomeController.create(stage(), dataSource(), getSessionHolder())));
     }
 }

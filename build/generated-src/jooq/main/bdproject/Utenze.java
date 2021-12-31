@@ -11,6 +11,7 @@ import bdproject.tables.ClientiDettagliati;
 import bdproject.tables.Compatibilità;
 import bdproject.tables.Contatori;
 import bdproject.tables.Contratti;
+import bdproject.tables.ContrattiApprovati;
 import bdproject.tables.Immobili;
 import bdproject.tables.Letture;
 import bdproject.tables.MateriePrime;
@@ -23,6 +24,7 @@ import bdproject.tables.OperatoriLetture;
 import bdproject.tables.Pagamenti;
 import bdproject.tables.Persone;
 import bdproject.tables.Redditi;
+import bdproject.tables.RichiesteContratto;
 import bdproject.tables.TipiAttivazione;
 import bdproject.tables.TipologieUso;
 
@@ -83,6 +85,11 @@ public class Utenze extends SchemaImpl {
     public final Contratti CONTRATTI = Contratti.CONTRATTI;
 
     /**
+     * VIEW
+     */
+    public final ContrattiApprovati CONTRATTI_APPROVATI = ContrattiApprovati.CONTRATTI_APPROVATI;
+
+    /**
      * The table <code>utenze.immobili</code>.
      */
     public final Immobili IMMOBILI = Immobili.IMMOBILI;
@@ -118,14 +125,14 @@ public class Utenze extends SchemaImpl {
     public final OperatoriContratti OPERATORI_CONTRATTI = OperatoriContratti.OPERATORI_CONTRATTI;
 
     /**
-     * The table <code>utenze.operatori letture</code>.
-     */
-    public final OperatoriLetture OPERATORI_LETTURE = OperatoriLetture.OPERATORI_LETTURE;
-
-    /**
      * VIEW
      */
     public final OperatoriDettagliati OPERATORI_DETTAGLIATI = OperatoriDettagliati.OPERATORI_DETTAGLIATI;
+
+    /**
+     * The table <code>utenze.operatori letture</code>.
+     */
+    public final OperatoriLetture OPERATORI_LETTURE = OperatoriLetture.OPERATORI_LETTURE;
 
     /**
      * The table <code>utenze.pagamenti</code>.
@@ -141,6 +148,11 @@ public class Utenze extends SchemaImpl {
      * The table <code>utenze.redditi</code>.
      */
     public final Redditi REDDITI = Redditi.REDDITI;
+
+    /**
+     * VIEW
+     */
+    public final RichiesteContratto RICHIESTE_CONTRATTO = RichiesteContratto.RICHIESTE_CONTRATTO;
 
     /**
      * The table <code>utenze.tipi_attivazione</code>.
@@ -175,6 +187,7 @@ public class Utenze extends SchemaImpl {
             Compatibilità.COMPATIBILITÀ,
             Contatori.CONTATORI,
             Contratti.CONTRATTI,
+            ContrattiApprovati.CONTRATTI_APPROVATI,
             Immobili.IMMOBILI,
             Letture.LETTURE,
             MateriePrime.MATERIE_PRIME,
@@ -182,11 +195,12 @@ public class Utenze extends SchemaImpl {
             Operatori.OPERATORI,
             OperatoriCessazioni.OPERATORI_CESSAZIONI,
             OperatoriContratti.OPERATORI_CONTRATTI,
-            OperatoriLetture.OPERATORI_LETTURE,
             OperatoriDettagliati.OPERATORI_DETTAGLIATI,
+            OperatoriLetture.OPERATORI_LETTURE,
             Pagamenti.PAGAMENTI,
             Persone.PERSONE,
             Redditi.REDDITI,
+            RichiesteContratto.RICHIESTE_CONTRATTO,
             TipiAttivazione.TIPI_ATTIVAZIONE,
             TipologieUso.TIPOLOGIE_USO
         );

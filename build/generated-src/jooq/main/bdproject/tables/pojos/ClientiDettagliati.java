@@ -81,98 +81,98 @@ public class ClientiDettagliati implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.IdPersona</code>.
+     * Getter for <code>utenze.clienti dettagliati.IdPersona</code>.
      */
     public Integer getIdpersona() {
         return this.idpersona;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.Nome</code>.
+     * Getter for <code>utenze.clienti dettagliati.Nome</code>.
      */
     public String getNome() {
         return this.nome;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.Cognome</code>.
+     * Getter for <code>utenze.clienti dettagliati.Cognome</code>.
      */
     public String getCognome() {
         return this.cognome;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.CodiceFiscale</code>.
+     * Getter for <code>utenze.clienti dettagliati.CodiceFiscale</code>.
      */
     public String getCodicefiscale() {
         return this.codicefiscale;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.Via</code>.
+     * Getter for <code>utenze.clienti dettagliati.Via</code>.
      */
     public String getVia() {
         return this.via;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.NumCivico</code>.
+     * Getter for <code>utenze.clienti dettagliati.NumCivico</code>.
      */
     public String getNumcivico() {
         return this.numcivico;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.Comune</code>.
+     * Getter for <code>utenze.clienti dettagliati.Comune</code>.
      */
     public String getComune() {
         return this.comune;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.CAP</code>.
+     * Getter for <code>utenze.clienti dettagliati.CAP</code>.
      */
     public String getCap() {
         return this.cap;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.Provincia</code>.
+     * Getter for <code>utenze.clienti dettagliati.Provincia</code>.
      */
     public String getProvincia() {
         return this.provincia;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.DataNascita</code>.
+     * Getter for <code>utenze.clienti dettagliati.DataNascita</code>.
      */
     public LocalDate getDatanascita() {
         return this.datanascita;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.NumeroTelefono</code>.
+     * Getter for <code>utenze.clienti dettagliati.NumeroTelefono</code>.
      */
     public String getNumerotelefono() {
         return this.numerotelefono;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.Email</code>.
+     * Getter for <code>utenze.clienti dettagliati.Email</code>.
      */
     public String getEmail() {
         return this.email;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.Password</code>.
+     * Getter for <code>utenze.clienti dettagliati.Password</code>.
      */
     public String getPassword() {
         return this.password;
     }
 
     /**
-     * Getter for <code>utenze.clienti_dettagliati.FasciaReddito</code>.
+     * Getter for <code>utenze.clienti dettagliati.FasciaReddito</code>.
      */
     public Integer getFasciareddito() {
         return this.fasciareddito;

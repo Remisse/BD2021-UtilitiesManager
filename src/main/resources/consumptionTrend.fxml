@@ -17,7 +17,7 @@
           <CategoryAxis fx:id="yearlyX" animated="false" label="Mesi" side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis fx:id="yearlyY" animated="false" label="Importi" side="LEFT" />
+          <NumberAxis fx:id="yearlyY" animated="false" label="Consumi" side="LEFT" />
         </yAxis>
       </LineChart>
       <Label layoutX="585.0" layoutY="39.0" text="Statistiche">
@@ -38,7 +38,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label layoutX="720.0" layoutY="261.0" prefHeight="61.0" prefWidth="171.0" text="Media delle tue bollette" wrapText="true">
+      <Label layoutX="720.0" layoutY="261.0" prefHeight="61.0" prefWidth="171.0" text="Media dei tuoi consumi" wrapText="true">
          <font>
             <Font size="16.0" />
          </font>

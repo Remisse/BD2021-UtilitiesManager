@@ -55,7 +55,7 @@ public class HomeController extends AbstractController implements Initializable 
     }
 
     private void updateSignInElements() {
-        sessionHolder().session().ifPresentOrElse(s -> {
+        getSessionHolder().session().ifPresentOrElse(s -> {
             email.setVisible(false);
             password.setVisible(false);
             password.setText("");
@@ -100,12 +100,12 @@ public class HomeController extends AbstractController implements Initializable 
 
     @FXML
     private void viewCatalogue(ActionEvent event) {
-        switchTo(CatalogueController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(CatalogueController.create(stage(), dataSource(), getSessionHolder()));
     }
 
     @FXML
     private void viewSignupPage(ActionEvent event) {
-        switchTo(UserSignUpController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(UserSignUpController.create(stage(), dataSource(), getSessionHolder()));
     }
 
     @FXML
@@ -135,11 +135,11 @@ public class HomeController extends AbstractController implements Initializable 
 
     @FXML
     private void toUserArea(ActionEvent e) {
-        switchTo(UserAreaController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(UserAreaController.create(stage(), dataSource(), getSessionHolder()));
     }
 
     @FXML
     private void toAdminArea(ActionEvent e) {
-        switchTo(AreaSelectorController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(AreaSelectorController.create(stage(), dataSource(), getSessionHolder()));
     }
 }

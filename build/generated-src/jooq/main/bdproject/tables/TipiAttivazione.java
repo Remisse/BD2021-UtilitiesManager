@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -64,6 +64,23 @@ public class TipiAttivazione extends TableImpl<TipiAttivazioneRecord> {
      * The column <code>utenze.tipi_attivazione.Costo</code>.
      */
     public final TableField<TipiAttivazioneRecord, BigDecimal> COSTO = createField(DSL.name("Costo"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
+
+    /**
+     * The column
+     * <code>utenze.tipi_attivazione.RichiedeVecchioIntestatario</code>.
+     */
+    public final TableField<TipiAttivazioneRecord, Byte> RICHIEDEVECCHIOINTESTATARIO = createField(DSL.name("RichiedeVecchioIntestatario"), SQLDataType.TINYINT.nullable(false), this, "");
+
+    /**
+     * The column
+     * <code>utenze.tipi_attivazione.RichiedeMatricolaContatore</code>.
+     */
+    public final TableField<TipiAttivazioneRecord, Byte> RICHIEDEMATRICOLACONTATORE = createField(DSL.name("RichiedeMatricolaContatore"), SQLDataType.TINYINT.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.tipi_attivazione.RichiedeLettura</code>.
+     */
+    public final TableField<TipiAttivazioneRecord, Byte> RICHIEDELETTURA = createField(DSL.name("RichiedeLettura"), SQLDataType.TINYINT.nullable(false), this, "");
 
     private TipiAttivazione(Name alias, Table<TipiAttivazioneRecord> aliased) {
         this(alias, aliased, null);
@@ -142,11 +159,11 @@ public class TipiAttivazione extends TableImpl<TipiAttivazioneRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Integer, String, BigDecimal> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row6<Integer, String, BigDecimal, Byte, Byte, Byte> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

@@ -5,6 +5,9 @@ import bdproject.controller.ChoiceImpl;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.HomeController;
 import bdproject.controller.gui.Controller;
+import bdproject.controller.gui.users.parametersselection.ParametersClientChangeController;
+import bdproject.controller.gui.users.parametersselection.ParametersNewActivationController;
+import bdproject.controller.gui.users.parametersselection.ParametersSubentroController;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
@@ -40,7 +43,7 @@ public class CatalogueController extends AbstractController implements Initializ
 
     private static final String FXML_FILE = "catalogue.fxml";
     private SubscriptionProcess process;
-    private final Map<String, String> measurementUnit = LocaleUtils.getItUtilitiesUnits();
+    private final Map<String, String> measurementUnit = LocaleUtils.getItPriceUnits();
 
     @FXML private Button back;
     @FXML private Button activate;
@@ -62,7 +65,7 @@ public class CatalogueController extends AbstractController implements Initializ
 
     @FXML
     private void backToHome(ActionEvent e) {
-        switchTo(HomeController.create(stage(), dataSource(), sessionHolder()));
+        switchTo(HomeController.create(stage(), dataSource(), getSessionHolder()));
     }
 
     @Override
@@ -83,6 +86,7 @@ public class CatalogueController extends AbstractController implements Initializ
             populatePlanTable(conn);
         } catch (SQLException e) {
             FXUtils.showError(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -145,17 +149,28 @@ public class CatalogueController extends AbstractController implements Initializ
         if (!activationBox.getValue().getItem().getNome().equals("Voltura") &&
                 table.getSelectionModel().getSelectedItem() == null) {
             FXUtils.showBlockingWarning("Non hai selezionato un'offerta.");
-        } else if (sessionHolder().session().isEmpty()) {
+        } else if (getSessionHolder().session().isEmpty()) {
             FXUtils.showBlockingWarning("Per poter continuare, devi effettuare l'accesso.");
         } else {
             if (process == null) {
                 process = new SubscriptionProcessImpl();
             }
-            process.setClientId(sessionHolder().session().orElseThrow().userId());
+            process.setClientId(getSessionHolder().session().orElseThrow().userId());
             process.setPlan(table.isDisabled() ? null : table.getSelectionModel().getSelectedItem());
             process.setUse(uses.getValue().getItem());
             process.setActivationMethod(activationBox.getValue().getItem());
-            switchTo(ParametersSelectionController.create(stage(), dataSource(), sessionHolder(), process));
+
+            switch (activationBox.getValue().getItem().getNome()) {
+                case "Nuova attivazione":
+                    switchTo(ParametersNewActivationController.create(stage(), dataSource(), getSessionHolder(), process));
+                    break;
+                case "Subentro":
+                    switchTo(ParametersSubentroController.create(stage(), dataSource(), getSessionHolder(), process));
+                    break;
+                case "Voltura":
+                    switchTo(ParametersClientChangeController.create(stage(), dataSource(), getSessionHolder(), process));
+                    break;
+            }
         }
     }
 }
