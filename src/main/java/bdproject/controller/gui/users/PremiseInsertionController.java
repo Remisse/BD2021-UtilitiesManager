@@ -9,11 +9,14 @@ import bdproject.controller.gui.users.parametersselection.ParametersNewActivatio
 import bdproject.controller.gui.users.parametersselection.ParametersSubentroController;
 import bdproject.controller.gui.users.subscriptionconfirmation.NewActivationConfirmationController;
 import bdproject.controller.gui.users.subscriptionconfirmation.SubentroConfirmationController;
-import bdproject.controller.types.PremiseType;
+import bdproject.model.types.ActivationType;
+import bdproject.model.types.PremiseType;
+import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.Immobili;
 import bdproject.utils.FXUtils;
+import bdproject.view.StringUtils;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,8 +27,11 @@ import javafx.stage.Stage;
 
 import javax.sql.DataSource;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PremiseInsertionController extends AbstractController implements Initializable {
@@ -90,7 +96,7 @@ public class PremiseInsertionController extends AbstractController implements In
             municipalityField.setText(p.getComune());
             postcodeField.setText(p.getCap());
             provinceField.setText(p.getProvincia());
-            apartmentNumberField.setText(p.getInterno() == null ? "" : p.getInterno());
+            apartmentNumberField.setText(p.getInterno());
         });
     }
 
@@ -111,43 +117,64 @@ public class PremiseInsertionController extends AbstractController implements In
 
     @FXML
     private void goBack() {
-        switch (process.activation().orElseThrow().getNome()) {
-            case "Nuova attivazione":
-                switchTo(ParametersNewActivationController.create(stage(), dataSource(), getSessionHolder(), process));
-                break;
-            case "Subentro":
-                switchTo(ParametersSubentroController.create(stage(), dataSource(), getSessionHolder(), process));
-                break;
-            case "Voltura":
-                switchTo(ParametersClientChangeController.create(stage(), dataSource(), getSessionHolder(), process));
-                break;
+        final String activation = process.activation().orElseThrow().getNome();
+
+        if (activation.equals(ActivationType.NEW_ACTIVATION.toString())) {
+            switchTo(ParametersNewActivationController.create(stage(), dataSource(), getSessionHolder(), process));
+        } else if (activation.equals(ActivationType.SUBENTRO.toString())) {
+            switchTo(ParametersSubentroController.create(stage(), dataSource(), getSessionHolder(), process));
+        } else if (activation.equals(ActivationType.VOLTURA.toString())) {
+            switchTo(ParametersClientChangeController.create(stage(), dataSource(), getSessionHolder(), process));
+        } else {
+            FXUtils.showError("Metodo di attivazione non gestito!");
         }
     }
 
     @FXML
     private void nextScreen() {
         if (areFieldsValid()) {
-            final Immobili newPremises = new Immobili(
-                    0,
+            Optional<Immobili> existingPremise = Optional.empty();
+
+            /*
+             * Search for an existing premise with the exact same data
+             */
+            try (final Connection conn = dataSource().getConnection()) {
+                existingPremise = Queries.fetchPremiseByCandidateKey(
                     typeBox.getValue().getValue(),
                     streetField.getText(),
                     streetNoField.getText(),
-                    apartmentNumberField.getText().equals("") ? null : apartmentNumberField.getText(),
+                    apartmentNumberField.getText(),
                     municipalityField.getText(),
+                    postcodeField.getText(),
                     provinceField.getText(),
-                    postcodeField.getText());
-            process.setPremise(newPremises);
+                    conn);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                FXUtils.showError(StringUtils.getGenericError());
+            }
 
-            switch (process.activation().orElseThrow().getNome()) {
-                case "Nuova attivazione":
-                    switchTo(NewActivationConfirmationController.create(stage(), dataSource(), getSessionHolder(), process));
-                    break;
-                case "Subentro":
-                    switchTo(SubentroConfirmationController.create(stage(), dataSource(), getSessionHolder(), process, false, false));
-                    break;
-                case "Voltura":
-                    switchTo(ParametersClientChangeController.create(stage(), dataSource(), getSessionHolder(), process));
-                    break;
+            existingPremise.ifPresentOrElse(process::setPremise, () -> process.setPremise(new Immobili(
+                            0,
+                            typeBox.getValue().getValue(),
+                            streetField.getText(),
+                            streetNoField.getText(),
+                            apartmentNumberField.getText(),
+                            municipalityField.getText(),
+                            provinceField.getText(),
+                            postcodeField.getText())
+            ));
+
+            final String activation = process.activation().orElseThrow().getNome();
+            if (activation.equals(ActivationType.NEW_ACTIVATION.toString())) {
+                switchTo(NewActivationConfirmationController.create(stage(), dataSource(), getSessionHolder(), process,
+                        existingPremise.isPresent()));
+            } else if (activation.equals(ActivationType.SUBENTRO.toString())) {
+                switchTo(SubentroConfirmationController.create(stage(), dataSource(), getSessionHolder(), process,
+                        existingPremise.isPresent(), false));
+            } else if (activation.equals(ActivationType.VOLTURA.toString())) {
+                switchTo(ParametersClientChangeController.create(stage(), dataSource(), getSessionHolder(), process));
+            } else {
+                FXUtils.showError("Metodo di attivazione non gestito!");
             }
         } else {
             FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");

@@ -1,4 +1,4 @@
-package bdproject.controller.types;
+package bdproject.model.types;
 
 public enum ActivationType {
 

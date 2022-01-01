@@ -49,15 +49,6 @@ public class ParametersNewActivationController extends AbstractParametersSelecti
 
     @Override
     protected void abstractNextScreen() {
-        final SubscriptionProcess process = getProcess();
-
-        /*
-         * Placeholder
-         */
-        process.setMeter(new Contatori(
-                "",
-                process.plan().orElseThrow().getMateriaprima(),
-                0));
-        switchTo(PremiseInsertionController.create(stage(), dataSource(), getSessionHolder(), process));
+        switchTo(PremiseInsertionController.create(stage(), dataSource(), getSessionHolder(), getProcess()));
     }
 }

@@ -6,13 +6,14 @@ import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.HomeController;
 import bdproject.controller.gui.Controller;
 import bdproject.controller.Checks;
-import bdproject.controller.types.StatusType;
+import bdproject.model.types.StatusType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
 import bdproject.utils.FXUtils;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -104,7 +105,8 @@ public class UserAreaController extends AbstractController implements Initializa
     private void showFullUsername() {
         try (Connection conn = dataSource().getConnection()) {
             final Persone client = Queries.fetchPersonById(getSessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
-            clientFullName.setText(client.getNome() + " " + client.getCognome());
+
+            Platform.runLater(() -> clientFullName.setText(client.getNome() + " " + client.getCognome()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -114,21 +116,23 @@ public class UserAreaController extends AbstractController implements Initializa
         try (Connection conn = dataSource().getConnection()) {
             final ClientiDettagliati client = Queries.fetchClientById(
                     getSessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
-
-            street.setText(client.getVia());
-            civic.setText(client.getNumcivico());
-            postcode.setText(client.getCap());
-            municipality.setText(client.getComune());
-            state.setText(client.getProvincia());
-            email.setText(client.getEmail());
-            phone.setText(client.getNumerotelefono());
-
             final List<Redditi> brackets = Queries.fetchAll(DSL.using(conn, SQLDialect.MYSQL), REDDITI, Redditi.class);
             final List<Choice<Redditi, String>> list = brackets.stream()
                     .map(r -> new ChoiceImpl<>(r, r.getFascia(), (i, v) -> v))
                     .collect(Collectors.toList());
-            incomeBracket.setItems(FXCollections.observableList(list));
-            incomeBracket.setValue(list.get(client.getFasciareddito() - 1));
+
+            Platform.runLater(() -> {
+                street.setText(client.getVia());
+                civic.setText(client.getNumcivico());
+                postcode.setText(client.getCap());
+                municipality.setText(client.getComune());
+                state.setText(client.getProvincia());
+                email.setText(client.getEmail());
+                phone.setText(client.getNumerotelefono());
+
+                incomeBracket.setItems(FXCollections.observableList(list));
+                incomeBracket.setValue(list.get(client.getFasciareddito() - 1));
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -141,6 +145,7 @@ public class UserAreaController extends AbstractController implements Initializa
                     .stream()
                     .map(s -> new ChoiceImpl<>(s.getIdcontratto(), s, (id, sub) -> id.toString()))
                     .collect(Collectors.toList());
+
             subscriptionChoice.setItems(FXCollections.observableList(subs));
             if (!subs.isEmpty()) {
                 subscriptionChoice.setValue(subs.get(0));
@@ -155,21 +160,20 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void toggleTrendButton() {
-        consumptionTrend.setDisable(subscriptionChoice.getValue() == null);
+        Platform.runLater(() -> consumptionTrend.setDisable(subscriptionChoice.getValue() == null));
     }
 
     private void toggleMeasurementFields() {
-        consumption.setDisable(false);
-        consumption.setText("");
+        Platform.runLater(() -> {
+            consumption.setDisable(false);
+            consumption.setText("");
+        });
     }
 
     private void initializeReportTable() {
-        final var subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+        final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
 
         if (subChoice != null) {
-            publishDate.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDataemissione().format(DATE_FORMAT)));
-            deadline.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDatascadenza().format(DATE_FORMAT)));
-
             paid.setCellValueFactory(cellData -> {
                 Optional<Pagamenti> payment = Optional.empty();
 
@@ -185,8 +189,6 @@ public class UserAreaController extends AbstractController implements Initializa
                 }
                 return new SimpleStringProperty("Non pagata");
             });
-            amount.setCellValueFactory(cellData -> new SimpleStringProperty(
-                    "€" + DECIMAL_FORMAT.format(cellData.getValue().getImporto())));
 
             String utility = "";
             try (final Connection conn = dataSource().getConnection()) {
@@ -196,11 +198,19 @@ public class UserAreaController extends AbstractController implements Initializa
                 FXUtils.showError(e.getMessage());
             }
             final String unit = LocaleUtils.getItUtilityUnits().getOrDefault(utility, "");
-            reportConsumptionCol.setCellValueFactory(c ->
-                    new SimpleStringProperty(DECIMAL_FORMAT.format(c.getValue().getConsumi()) + " " + unit));
 
-            estimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
-                    StringUtils.byteToYesNo(c.getValue().getStimata())));
+            Platform.runLater(() -> {
+                publishDate.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDataemissione()
+                        .format(DATE_FORMAT)));
+                deadline.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDatascadenza()
+                        .format(DATE_FORMAT)));
+                amount.setCellValueFactory(cellData -> new SimpleStringProperty(
+                        "€" + DECIMAL_FORMAT.format(cellData.getValue().getImporto())));
+                estimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
+                        StringUtils.byteToYesNo(c.getValue().getStimata())));
+                reportConsumptionCol.setCellValueFactory(c ->
+                        new SimpleStringProperty(DECIMAL_FORMAT.format(c.getValue().getConsumi()) + " " + unit));
+            });
 
             updateReportTable();
         }
@@ -209,16 +219,19 @@ public class UserAreaController extends AbstractController implements Initializa
     private void updateReportTable() {
         try (Connection conn = dataSource().getConnection()) {
             List<Bollette> reports = Queries.fetchSubscriptionReports(subscriptionChoice.getValue().getValue(), conn);
-            reportTable.setItems(FXCollections.observableList(reports));
+
+            Platform.runLater(() -> reportTable.setItems(FXCollections.observableList(reports)));
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private void initializeActivationRequestTable() {
-        reqCreationDateCol.setCellValueFactory(c -> new SimpleStringProperty(DATE_FORMAT.format(c.getValue().getDataaperturarichiesta())));
-        reqResultCol.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getStatorichiesta()));
+        Platform.runLater(() -> {
+            reqCreationDateCol.setCellValueFactory(c -> new SimpleStringProperty(DATE_FORMAT.format(c.getValue().getDataaperturarichiesta())));
+            reqResultCol.setCellValueFactory(c ->
+                    new SimpleStringProperty(c.getValue().getStatorichiesta()));
+        });
         reqUtilityCol.setCellValueFactory(c -> {
             final String utility = Queries.fetchPlanById(c.getValue().getOfferta(), dataSource())
                     .orElseThrow()
@@ -231,7 +244,8 @@ public class UserAreaController extends AbstractController implements Initializa
     private void refreshActivationRequestTable() {
         try (Connection conn = dataSource().getConnection()) {
             final List<RichiesteContratto> reqs = Queries.fetchSubscriptionRequestsByClient(getSessionHolder().session().orElseThrow().userId(), conn);
-            activationReqTable.setItems(FXCollections.observableList(reqs));
+
+            Platform.runLater(() -> activationReqTable.setItems(FXCollections.observableList(reqs)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -275,9 +289,9 @@ public class UserAreaController extends AbstractController implements Initializa
     private void doAddMeasurement() {
         final var subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
         if (subChoice != null) {
-            try (Connection conn = dataSource().getConnection()) {
-                if (subChoice.getValue().getDatacessazione() == null) {
-                    if (Checks.isValidConsumption(consumption.getText())) {
+            if (subChoice.getValue().getDatacessazione() == null) {
+                if (Checks.isValidConsumption(consumption.getText())) {
+                    try (Connection conn = dataSource().getConnection()) {
                         final String meterId = Queries.fetchMeterBySubscription(subChoice.getValue().getIdcontratto(), conn)
                                 .orElseThrow()
                                 .getMatricola();
@@ -289,22 +303,18 @@ public class UserAreaController extends AbstractController implements Initializa
                                 StatusType.REVIEWING.toString(),
                                 getSessionHolder().session().orElseThrow().userId()
                         );
-                        final int result = Queries.insertMeasurement(measurement, conn);
-                        if (result == 1) {
-                            updateMeasurementsTable();
-                            FXUtils.showBlockingWarning("Lettura inserita con successo.");
-                        } else {
-                            FXUtils.showError("Impossibile inserire la lettura.");
-                        }
-                    } else {
-                        FXUtils.showBlockingWarning("Controlla di aver inserito correttamente la lettura.");
+
+                        Queries.insertMeasurement(measurement, conn);
+                        updateMeasurementsTable();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        FXUtils.showError("Impossibile inserire la lettura: " + e.getMessage());
                     }
                 } else {
-                    FXUtils.showBlockingWarning("Il contratto risulta non attivo. Non puoi comunicare nuove letture.");
+                    FXUtils.showBlockingWarning("Controlla di aver inserito correttamente la lettura.");
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                FXUtils.showError("Impossibile inserire la lettura.");
+            } else {
+                FXUtils.showBlockingWarning("Il contratto risulta non attivo. Non puoi comunicare nuove letture.");
             }
         } else {
             FXUtils.showBlockingWarning("Seleziona un contratto.");
@@ -326,16 +336,20 @@ public class UserAreaController extends AbstractController implements Initializa
 
         final String unit = LocaleUtils.getItUtilityUnits()
                 .getOrDefault(utility, "");
-        measurementDateCol.setCellValueFactory(c -> new SimpleStringProperty(DATE_FORMAT.format(c.getValue()
-                .getDataeffettuazione())));
-        measurementConsumpCol.setCellValueFactory(c -> new SimpleStringProperty(DECIMAL_FORMAT.format(c.getValue()
-                .getConsumi()) + " " + unit));
-        measurementStatusCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStato()));
-        updateMeasurementsTable();
+
+        Platform.runLater(() -> {
+            measurementDateCol.setCellValueFactory(c -> new SimpleStringProperty(DATE_FORMAT.format(c.getValue()
+                    .getDataeffettuazione())));
+            measurementConsumpCol.setCellValueFactory(c -> new SimpleStringProperty(DECIMAL_FORMAT.format(c.getValue()
+                    .getConsumi()) + " " + unit));
+            measurementStatusCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStato()));
+            updateMeasurementsTable();
+        });
     }
 
     private void updateMeasurementsTable() {
         final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+
         if (subChoice != null) {
             try (Connection conn = dataSource().getConnection()) {
                 List<Letture> measurements = Queries.fetchMeasurements(subChoice.getValue().getIdcontratto(), conn);

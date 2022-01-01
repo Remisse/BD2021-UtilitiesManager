@@ -1,6 +1,6 @@
 package bdproject.model;
 
-import bdproject.controller.types.StatusType;
+import bdproject.model.types.StatusType;
 import bdproject.tables.pojos.*;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -311,47 +311,55 @@ public class Queries {
                 .component1() == 0;
     }
 
-    // From https://stackoverflow.com/a/31882656
     private static BigDecimal averageBigDecimal(List<BigDecimal> list) {
-        Optional<BigDecimal[]> totalWithCount = list.stream()
-                .filter(Objects::nonNull)
-                .map(bd -> new BigDecimal[]{bd, BigDecimal.ONE})
-                .reduce((a, b) -> new BigDecimal[]{a[0].add(b[0]), a[1].add(BigDecimal.ONE)});
-        return totalWithCount.map(bigDecimals -> bigDecimals[0].divide(bigDecimals[1], RoundingMode.HALF_EVEN))
-                .orElse(BigDecimal.ZERO);
+        final BigDecimal n = new BigDecimal(list.size());
+
+        return list.stream()
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO)
+                .divide(n, RoundingMode.HALF_EVEN);
     }
 
     public static BigDecimal avgConsumptionPerZone(final Immobili premise, final String utility, final LocalDate start,
-            final LocalDate end, final Connection conn) {
-        final bdproject.tables.Bollette B1 = BOLLETTE;
-        final bdproject.tables.Contratti C1 = CONTRATTI;
-        final bdproject.tables.Contatori M1 = CONTATORI;
-        final bdproject.tables.Contatori M = CONTATORI;
-        final bdproject.tables.Immobili I = IMMOBILI;
-        final bdproject.tables.Immobili I1 = IMMOBILI;
+                                                   final LocalDate end, final Connection conn) {
+        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
 
+        final var sums = query.select(CONTRATTI_APPROVATI.IDCONTRATTO,
+                        sum(BOLLETTE.CONSUMI), count(BOLLETTE.NUMEROBOLLETTA))
+                .from(BOLLETTE, CONTRATTI_APPROVATI, IMMOBILI, OFFERTE)
+                .where(OFFERTE.MATERIAPRIMA.eq(utility))
+                .and(CONTRATTI_APPROVATI.OFFERTA.eq(OFFERTE.CODOFFERTA))
+                .and(IMMOBILI.COMUNE.eq(premise.getComune()))
+                .and(IMMOBILI.PROVINCIA.eq(premise.getProvincia()))
+                .and(CONTRATTI_APPROVATI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
+                .and(CONTRATTI_APPROVATI.IDCONTRATTO.eq(BOLLETTE.IDCONTRATTO))
+                .and(BOLLETTE.DATAEMISSIONE.greaterOrEqual(start))
+                .and(BOLLETTE.DATAEMISSIONE.lessOrEqual(end))
+                .groupBy(CONTRATTI_APPROVATI.IDCONTRATTO)
+                .fetch();
+
+        final List<BigDecimal> averages = sums.stream()
+                .map(r -> r.component2().divide(new BigDecimal(r.component3()), RoundingMode.HALF_EVEN))
+                .collect(Collectors.toList());
+
+        return averageBigDecimal(averages);
+    }
+
+    public static BigDecimal avgConsumptionFromSub(final int subId, final LocalDate start, final LocalDate end,
+                                                   final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        final Table<Record2<String, BigDecimal>> T = table(query.select(M1.MATRICOLA, sum(B1.CONSUMI)
-                        .as("SommaConsumi"))
-                .from(B1, C1, I1, M1)
-                .where(B1.IDCONTRATTO.eq(C1.IDCONTRATTO))
-                .and(C1.IDIMMOBILE.eq(I1.IDIMMOBILE))
-                .and(I1.IDIMMOBILE.eq(M1.IDIMMOBILE))
-                .and(M1.MATRICOLA.in(selectDistinct(M.MATRICOLA)
-                        .from(M, I)
-                        .where(M.IDIMMOBILE.eq(I.IDIMMOBILE))
-                        .and(M.MATERIAPRIMA.eq(utility))
-                        .and(I.COMUNE.eq(premise.getComune()))
-                        .and(I.PROVINCIA.eq(premise.getProvincia()))))
+        final var B1 = BOLLETTE;
+        final var C1 = CONTRATTI_APPROVATI;
+
+        final List<BigDecimal> sum = query.select(B1.CONSUMI)
+                .from(B1, C1)
+                .where(C1.IDCONTRATTO.eq(subId))
+                .and(B1.IDCONTRATTO.eq(C1.IDCONTRATTO))
                 .and(B1.DATAEMISSIONE.greaterOrEqual(start))
                 .and(B1.DATAEMISSIONE.lessOrEqual(end))
-                .groupBy(M1.MATRICOLA)).as("T");
-
-        final var sums = query.select(T.field("SommaConsumi"))
-                .from(T)
                 .fetchInto(BigDecimal.class);
 
-        return averageBigDecimal(sums);
+        return averageBigDecimal(sum);
     }
 
     public static Map<ContrattiApprovati, Bollette> fetchAllSubscriptionsWithLastReport(final Connection conn) {
@@ -395,24 +403,6 @@ public class Queries {
                                 r.get(BOLLETTE.IDOPERATORE),
                                 r.get(BOLLETTE.IDCONTRATTO)))
                 );
-    }
-
-    public static BigDecimal avgConsumptionFromSub(final int subId, final LocalDate start, final LocalDate end,
-            final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        final bdproject.tables.Bollette B1 = BOLLETTE;
-        final bdproject.tables.Contratti C1 = CONTRATTI;
-        final Table<Record1<BigDecimal>> T = table(query.select(sum(B1.IMPORTO).as("SommaImporti"))
-                .from(B1, C1)
-                .where(C1.IDCONTRATTO.eq(subId))
-                .and(B1.IDCONTRATTO.eq(C1.IDCONTRATTO))
-                .and(B1.DATAEMISSIONE.greaterOrEqual(start))
-                .and(B1.DATAEMISSIONE.lessOrEqual(end)));
-
-        final var sum = query.select(T.field("SommaImporti"))
-                .from(T)
-                .fetchInto(BigDecimal.class);
-        return averageBigDecimal(sum);
     }
 
     public static int payReport(final int reportId, final Connection conn) {
@@ -555,11 +545,11 @@ public class Queries {
                 .fetchOptionalInto(Contratti.class);
     }
 
-    public static Optional<Immobili> fetchPremiseById(final int estateId, final Connection conn) {
+    public static Optional<Immobili> fetchPremiseById(final int premiseId, final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         return query.select()
                 .from(IMMOBILI)
-                .where(IMMOBILI.IDIMMOBILE.eq(estateId))
+                .where(IMMOBILI.IDIMMOBILE.eq(premiseId))
                 .fetchOptionalInto(Immobili.class);
     }
 
@@ -761,5 +751,52 @@ public class Queries {
                 .set(CONTRATTI.STATORICHIESTA, StatusType.APPROVED.toString())
                 .where(CONTRATTI.IDCONTRATTO.eq(requestId))
                 .execute();
+    }
+
+    public static int updatePremise(final int premiseId, final String type, final String street, final String civic,
+                                    final String unit, final String municipality, final String postcode,
+                                    final String province, final Connection conn) {
+        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        return ctx.update(IMMOBILI)
+                .set(IMMOBILI.TIPO, type)
+                .set(IMMOBILI.VIA, street)
+                .set(IMMOBILI.NUMCIVICO, civic)
+                .set(IMMOBILI.INTERNO, unit)
+                .set(IMMOBILI.COMUNE, municipality)
+                .set(IMMOBILI.CAP, postcode)
+                .set(IMMOBILI.PROVINCIA, province)
+                .where(IMMOBILI.IDIMMOBILE.eq(premiseId))
+                .execute();
+    }
+
+    public static Optional<Immobili> fetchPremiseByCandidateKey(final String type, final String street, final String civic,
+                                                                final String unit, final String municipality,
+                                                                final String postcode, final String province,
+                                                                final Connection conn) {
+        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+
+        return ctx.select()
+                .from(IMMOBILI)
+                .where(IMMOBILI.TIPO.eq(type))
+                .and(IMMOBILI.VIA.eq(street))
+                .and(IMMOBILI.NUMCIVICO.eq(civic))
+                .and(IMMOBILI.INTERNO.eq(unit))
+                .and(IMMOBILI.COMUNE.eq(municipality))
+                .and(IMMOBILI.CAP.eq(postcode))
+                .and(IMMOBILI.PROVINCIA.eq(province))
+                .fetchOptionalInto(Immobili.class);
+    }
+
+    public static Optional<Contatori> fetchMeterByPremiseIdAndUtility(final int premiseId, final String utility,
+                                                                      final Connection conn) {
+        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+
+        return ctx.select(CONTATORI.asterisk())
+                .from(IMMOBILI, CONTATORI, MATERIE_PRIME)
+                .where(IMMOBILI.IDIMMOBILE.eq(premiseId))
+                .and(IMMOBILI.IDIMMOBILE.eq(CONTATORI.IDIMMOBILE))
+                .and(MATERIE_PRIME.NOME.eq(utility))
+                .and(MATERIE_PRIME.NOME.eq(CONTATORI.MATERIAPRIMA))
+                .fetchOptionalInto(Contatori.class);
     }
 }

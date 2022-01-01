@@ -146,7 +146,7 @@ public class Cessazioni extends TableImpl<CessazioniRecord> {
     @Override
     public List<Check<CessazioniRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("cessazioni_chk_1"), "(`StatoRichiesta` in (_utf8mb4\\'In gestione\\',_utf8mb4\\'Approvata\\',_utf8mb4\\'Respinta\\'))", true)
+            Internal.createCheck(this, DSL.name("cessazioni_chk_1"), "(`StatoRichiesta` in (_utf8mb4\\'In lavorazione\\',_utf8mb4\\'Approvata\\',_utf8mb4\\'Respinta\\'))", true)
         );
     }
 

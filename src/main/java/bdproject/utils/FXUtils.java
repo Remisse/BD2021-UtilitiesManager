@@ -1,5 +1,6 @@
 package bdproject.utils;
 
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
@@ -9,12 +10,12 @@ public class FXUtils {
 
     private static void showBlocking(final Alert.AlertType type, final String message) {
         Alert alert = new Alert(type, message, ButtonType.CLOSE);
-        alert.showAndWait();
+        Platform.runLater(alert::showAndWait);
     }
 
     private static void showNonblocking(final Alert.AlertType type, final String message) {
         Alert alert = new Alert(type, message, ButtonType.CLOSE);
-        alert.show();
+        Platform.runLater(alert::show);
     }
 
     public static void showBlockingWarning(final String message) {
@@ -31,10 +32,10 @@ public class FXUtils {
 
     public static void showConfirmationDialog(final String text, final Runnable yesAction) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, text, ButtonType.YES, ButtonType.NO);
-        alert.showAndWait().ifPresent(b -> {
+        Platform.runLater(() -> alert.showAndWait().ifPresent(b -> {
             if (b == ButtonType.YES) {
                 yesAction.run();
             }
-        });
+        }));
     }
 }

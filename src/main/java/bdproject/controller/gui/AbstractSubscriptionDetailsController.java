@@ -7,6 +7,7 @@ import bdproject.tables.pojos.*;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
 import bdproject.utils.FXUtils;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -68,15 +69,18 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
             final LocalDate startDate = sub.getDatachiusurarichiesta();
             final LocalDate endDate = sub.getDatacessazione();
 
-            creationDateLabel.setText(dateIt.format(creationDate));
-            subStartDate.setText(startDate != null ? dateIt.format(startDate) : "N.D.");
-            subEndDate.setText(endDate != null ? dateIt.format(endDate) : "N.D.");
+            final Text requestNotes = new Text(sub.getNoterichiesta());
+
+            Platform.runLater(() -> {
+                creationDateLabel.setText(dateIt.format(creationDate));
+                subStartDate.setText(startDate != null ? dateIt.format(startDate) : "N.D.");
+                subEndDate.setText(endDate != null ? dateIt.format(endDate) : "N.D.");
+
+                requestNotes.setStyle(FLOW_CSS);
+                requestNotesFlow.getChildren().add(requestNotes);
+            });
             use.setText(Queries.fetchUsageFromSub(sub.getIdcontratto(), conn).getNome());
             activation.setText(Queries.fetchActivationFromSub(sub.getIdcontratto(), conn).getNome());
-
-            final Text requestNotes = new Text(sub.getNoterichiesta());
-            requestNotes.setStyle(FLOW_CSS);
-            requestNotesFlow.getChildren().add(requestNotes);
 
             setClientDetails(conn);
             setPlanDetails();
@@ -109,22 +113,27 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
         final Immobili premise = Queries.fetchPremiseFromSubscription(sub.getIdcontratto(), dataSource());
         final Text premiseText = new Text(StringUtils.premiseToString(premise));
 
-        premiseText.setStyle(FLOW_CSS);
-        premisesDetails.getChildren().add(premiseText);
+        Platform.runLater(() -> {
+            premiseText.setStyle(FLOW_CSS);
+            premisesDetails.getChildren().add(premiseText);
+        });
     }
 
     private void setPeopleNo() {
         try (Connection conn = dataSource().getConnection()) {
             final TipologieUso use = Queries.fetchUsageFromSub(sub.getIdcontratto(), conn);
-            if (Checks.requiresPeopleNumber(use)) {
-                peopleNoName.setText(use.getNome().equals("Commerciale")
-                                     ? "Numero dipendenti:"
-                                     : "Componenti nucleo familiare:");
-                peopleNo.setText(sub.getNumerocomponenti().toString());
-            } else {
-                peopleNoName.setVisible(false);
-                peopleNo.setVisible(false);
-            }
+
+            Platform.runLater(() -> {
+                if (Checks.requiresPeopleNumber(use)) {
+                    peopleNoName.setText(use.getNome().equals("Commerciale")
+                            ? "Numero dipendenti:"
+                            : "Componenti nucleo familiare:");
+                    peopleNo.setText(sub.getNumerocomponenti().toString());
+                } else {
+                    peopleNoName.setVisible(false);
+                    peopleNo.setVisible(false);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -133,8 +142,11 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     private void setPlanDetails() {
         final Offerte plan = Queries.fetchPlanById(sub.getOfferta(), dataSource()).orElseThrow();
         final Text planText = new Text(StringUtils.planToString(plan));
-        planText.setStyle(FLOW_CSS);
-        planDetails.getChildren().add(planText);
+
+        Platform.runLater(() -> {
+            planText.setStyle(FLOW_CSS);
+            planDetails.getChildren().add(planText);
+        });
     }
 
     protected void setStatus() {
@@ -142,10 +154,12 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     }
 
     private void setEndRequestTable() {
-        reqPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue()
-                .getDataaperturarichiesta())));
-        reqResultCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStatorichiesta()));
-        reqNotesCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNoterichiesta()));
+        Platform.runLater(() -> {
+            reqPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue()
+                    .getDataaperturarichiesta())));
+            reqResultCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStatorichiesta()));
+            reqNotesCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNoterichiesta()));
+        });
     }
 
     protected void refreshEndRequestTable() {
@@ -155,7 +169,9 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
         } catch (Exception e) {
             e.printStackTrace();
         }
-        endRequestTable.setItems(FXCollections.observableList(requests));
+
+        List<Cessazioni> finalRequests = requests;
+        Platform.runLater(() -> endRequestTable.setItems(FXCollections.observableList(finalRequests)));
     }
 
     @FXML

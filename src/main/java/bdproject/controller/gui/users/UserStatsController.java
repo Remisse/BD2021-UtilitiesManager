@@ -10,6 +10,7 @@ import bdproject.tables.pojos.ContrattiApprovati;
 import bdproject.tables.pojos.Immobili;
 import bdproject.utils.FXUtils;
 import bdproject.utils.LocaleUtils;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,8 +31,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class UserStatsController extends AbstractController implements Initializable {
 
@@ -69,54 +72,71 @@ public class UserStatsController extends AbstractController implements Initializ
             for (int year = LocalDate.now().getYear(); year >= subscription.getDatachiusurarichiesta().getYear(); year--) {
                 years.add(year);
             }
-            yearSelect.setItems(FXCollections.observableList(years));
+
+            Platform.runLater(() -> yearSelect.setItems(FXCollections.observableList(years)));
         }
     }
 
-    private void updateAverages(final Connection conn) {
-        if (startDate.getValue() != null && endDate.getValue() != null) {
+    private void updateAverages() {
+        try (final Connection conn = dataSource().getConnection()) {
             final Immobili premise = Queries.fetchPremiseFromSubscription(subscription.getIdcontratto(), dataSource());
             final String utility = Queries.fetchUtilityFromSubscription(subscription.getIdcontratto(), conn).getNome();
 
-            peopleAvg.setText(Queries.avgConsumptionPerZone(
-                    premise,
-                    utility,
-                    startDate.getValue(),
-                    endDate.getValue(),
-                    conn).toString());
-            yourAvg.setText(Queries.avgConsumptionFromSub(subscription.getIdcontratto(), startDate.getValue(), endDate.getValue(), conn)
-                    .toString());
-        } else {
-            peopleAvg.setText("N.D.");
-            yourAvg.setText("N.D.");
+            final BigDecimal zoneAvgBigDecimal = Queries.avgConsumptionPerZone(premise, utility, startDate.getValue(),
+                            endDate.getValue(), conn);
+            final BigDecimal userAvgBigDecimal = Queries.avgConsumptionFromSub(subscription.getIdcontratto(),
+                    startDate.getValue(), endDate.getValue(), conn);
+
+            Platform.runLater(() -> {
+                peopleAvg.setText(zoneAvgBigDecimal.toString());
+                yourAvg.setText(userAvgBigDecimal.toString());
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+            FXUtils.showError(e.getCause().getMessage());
         }
     }
 
     @FXML
-    private void onDateSelect(ActionEvent event) {
-        try (Connection conn = dataSource().getConnection()) {
-            updateAverages(conn);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            FXUtils.showError(e.getSQLState());
+    private void onDateSelect() {
+        if (startDate.getValue() != null && endDate.getValue() != null) {
+            updateAverages();
+        } else {
+            Platform.runLater(() -> {
+                peopleAvg.setText("N.D.");
+                yourAvg.setText("N.D.");
+            });
         }
     }
 
     @FXML
     private void onYearSelect() {
-        final DateTimeFormatter month_it = LocaleUtils.getItLongMonthFormatter();
-        try (Connection conn = dataSource().getConnection()) {
-            final var reports = Queries.fetchSubscriptionReports(subscription, conn);
-            XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
-            for (Bollette report : reports) {
-                series.getData().add(new XYChart.Data<>(
-                        report.getDataemissione().format(month_it),
-                        report.getConsumi()));
+        if (!yearSelect.getSelectionModel().isEmpty()) {
+            List<Bollette> reports = Collections.emptyList();
+
+            try (Connection conn = dataSource().getConnection()) {
+                reports = Queries.fetchSubscriptionReports(subscription, conn);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            yearlyTrend.getData().clear();
-            yearlyTrend.getData().add(series);
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+            final int selectedYear = yearSelect.getSelectionModel().getSelectedItem();
+            final DateTimeFormatter month_it = LocaleUtils.getItLongMonthFormatter();
+            final XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
+
+            for (Bollette report : reports) {
+                if (report.getDataemissione().getYear() == selectedYear) {
+                    series.getData().add(new XYChart.Data<>(
+                            report.getDataemissione().format(month_it),
+                            report.getConsumi()));
+                }
+            }
+            Platform.runLater(() -> {
+                yearlyTrend.getData().clear();
+                yearlyTrend.getData().add(series);
+            });
+        } else {
+            FXUtils.showBlockingWarning("Seleziona un anno dal menu a tendina.");
         }
     }
 

@@ -161,7 +161,7 @@ public class Letture extends TableImpl<LettureRecord> {
     public List<Check<LettureRecord>> getChecks() {
         return Arrays.asList(
             Internal.createCheck(this, DSL.name("letture_chk_1"), "(`Consumi` >= 0)", true),
-            Internal.createCheck(this, DSL.name("letture_chk_2"), "(`Stato` in (_utf8mb4\\'In gestione\\',_utf8mb4\\'Approvata\\',_utf8mb4\\'Respinta\\'))", true)
+            Internal.createCheck(this, DSL.name("letture_chk_2"), "(`Stato` in (_utf8mb4\\'In lavorazione\\',_utf8mb4\\'Approvata\\',_utf8mb4\\'Respinta\\'))", true)
         );
     }
 

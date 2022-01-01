@@ -208,7 +208,7 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     @Override
     public List<Check<ContrattiRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("contratti_chk_1"), "(`StatoRichiesta` in (_utf8mb4\\'In gestione\\',_utf8mb4\\'Approvata\\',_utf8mb4\\'Respinta\\'))", true),
+            Internal.createCheck(this, DSL.name("contratti_chk_1"), "(`StatoRichiesta` in (_utf8mb4\\'In lavorazione\\',_utf8mb4\\'Approvata\\',_utf8mb4\\'Respinta\\'))", true),
             Internal.createCheck(this, DSL.name("contratti_chk_2"), "(`NumeroComponenti` > 0)", true)
         );
     }

@@ -18,6 +18,8 @@ import java.time.LocalDate;
 
 public class NewActivationConfirmationController extends AbstractSubscriptionConfirmationController {
 
+    private final boolean isPremiseAlreadyPresent;
+
     @FXML private Label planText;
     @FXML private Label utilityText;
     @FXML private Label useText;
@@ -27,13 +29,14 @@ public class NewActivationConfirmationController extends AbstractSubscriptionCon
     @FXML private TextFlow currentClientFlow;
 
     private NewActivationConfirmationController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-                                                final SubscriptionProcess process) {
+                                                final SubscriptionProcess process, final boolean isPremiseAlreadyPresent) {
         super(stage, dataSource, holder, process);
+        this.isPremiseAlreadyPresent = isPremiseAlreadyPresent;
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-                                    final SubscriptionProcess process) {
-        return new NewActivationConfirmationController(stage, dataSource, holder, process);
+                                    final SubscriptionProcess process, final boolean isPremiseAlreadyPresent) {
+        return new NewActivationConfirmationController(stage, dataSource, holder, process, isPremiseAlreadyPresent);
     }
 
     @Override
@@ -53,17 +56,23 @@ public class NewActivationConfirmationController extends AbstractSubscriptionCon
 
         try (Connection conn = dataSource().getConnection()) {
             final SubscriptionProcess process = getProcess();
-            final Immobili pTemp = process.premise().orElseThrow();
-            Queries.insertPremise(
-                    pTemp.getTipo(),
-                    pTemp.getVia(),
-                    pTemp.getNumcivico(),
-                    pTemp.getComune(),
-                    pTemp.getCap(),
-                    pTemp.getProvincia(),
-                    pTemp.getInterno(),
-                    conn);
-            final int premiseId = Queries.fetchLastInsertId(conn);
+            int premiseId;
+
+            if (!isPremiseAlreadyPresent) {
+                final Immobili pTemp = process.premise().orElseThrow();
+                Queries.insertPremise(
+                        pTemp.getTipo(),
+                        pTemp.getVia(),
+                        pTemp.getNumcivico(),
+                        pTemp.getInterno(),
+                        pTemp.getComune(),
+                        pTemp.getCap(),
+                        pTemp.getProvincia(),
+                        conn);
+                premiseId = Queries.fetchLastInsertId(conn);
+            } else {
+                premiseId = process.premise().orElseThrow().getIdimmobile();
+            }
 
             result = Queries.insertSubscriptionRequest(
                     LocalDate.now(),

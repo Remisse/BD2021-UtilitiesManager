@@ -75,10 +75,10 @@ public class SubentroConfirmationController extends AbstractSubscriptionConfirma
                         pTemp.getTipo(),
                         pTemp.getVia(),
                         pTemp.getNumcivico(),
+                        pTemp.getInterno(),
                         pTemp.getComune(),
                         pTemp.getCap(),
                         pTemp.getProvincia(),
-                        pTemp.getInterno(),
                         conn);
                 premiseId = Queries.fetchLastInsertId(conn);
             } else {

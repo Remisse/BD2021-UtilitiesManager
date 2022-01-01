@@ -26,7 +26,7 @@ create table cessazioni (
      NumeroRichiesta integer not null auto_increment,
      DataAperturaRichiesta date not null,
      DataChiusuraRichiesta date default null,
-     StatoRichiesta varchar(30) not null check (StatoRichiesta in ("In gestione", "Approvata", "Respinta")),
+     StatoRichiesta varchar(30) not null check (StatoRichiesta in ("In lavorazione", "Approvata", "Respinta")),
      NoteRichiesta varchar(500) not null,
      IdContratto integer not null,
      constraint PK_RIC_CESSAZIONE primary key (NumeroRichiesta));
@@ -52,7 +52,7 @@ create table contratti (
      IdContratto integer not null auto_increment,
      DataAperturaRichiesta date not null,
      DataChiusuraRichiesta date default null,
-     StatoRichiesta varchar(30) not null check (StatoRichiesta in ("In gestione", "Approvata", "Respinta")),
+     StatoRichiesta varchar(30) not null check (StatoRichiesta in ("In lavorazione", "Approvata", "Respinta")),
      NoteRichiesta varchar(500) not null,
      NumeroComponenti integer not null check (NumeroComponenti > 0),
      Uso integer not null,
@@ -68,19 +68,20 @@ create table immobili (
      Tipo varchar(20) not null check (Tipo = "Fabbricato" or Tipo = "Terreno"),
      Via varchar(50) not null,
      NumCivico varchar(10) not null,
-     Interno varchar(10),
+     Interno varchar(10) not null default "",
 	 Comune varchar(50) not null,
      Provincia varchar(2) not null,
      CAP varchar(5) not null check (length(CAP) = 5),
-     check ((Tipo = "Terreno" and Interno is null) or (Tipo = "Fabbricato")),
-     constraint IDIMMOBILE primary key (IdImmobile));
+     constraint TERRAIN_NO_UNIT check ((Tipo = "Terreno" and Interno = "") or (Tipo = "Fabbricato")),
+     constraint IDIMMOBILE primary key (IdImmobile),
+     constraint AK_IMMOBILE unique (Tipo, Via, NumCivico, Interno, Comune, Provincia, CAP));
 
 create table letture (
     NumeroLettura integer auto_increment not null,
     MatricolaContatore varchar(20) not null,
     DataEffettuazione date not null,
     Consumi decimal(20, 4) not null check (Consumi >= 0),
-    Stato varchar(30) not null check (Stato in ("In gestione", "Approvata", "Respinta")),
+    Stato varchar(30) not null check (Stato in ("In lavorazione", "Approvata", "Respinta")),
     IdPersona integer not null,
     constraint PK_LETTURE primary key (NumeroLettura),
     constraint AK_LETTURE unique (MatricolaContatore, DataEffettuazione));
@@ -217,7 +218,7 @@ insert into immobili (Tipo, Via, NumCivico, Interno, Comune, CAP, Provincia)
 values ("Fabbricato", "Via Bongo", 69, 1, "Forlì", "47121", "FC");
 
 insert into immobili (Tipo, Via, NumCivico, Interno, Comune, CAP, Provincia)
-values ("Fabbricato", "Via Roma", 11, null, "Cesena", "47521", "FC");
+values ("Fabbricato", "Via Roma", 11, "", "Cesena", "47521", "FC");
 
 
 -- Populate "contatori"
@@ -290,7 +291,7 @@ insert into contratti(DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichies
 values (date_sub(curdate(), interval 123 day), date_sub(curdate(), interval 122 day), "Approvata", " ", 1, 1, 1, 4, 1, 1);
 
 insert into contratti(DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, Offerta, Uso, TipoAttivazione, NumeroComponenti, IdImmobile, IdCliente)
-values (date_sub(curdate(), interval 2 day), date_sub(curdate(), interval 122 day), "In gestione", " ", 2, 1, 1, 1, 2, 2);
+values (date_sub(curdate(), interval 2 day), date_sub(curdate(), interval 122 day), "In lavorazione", " ", 2, 1, 1, 1, 2, 2);
 
 
 -- operatori contratti

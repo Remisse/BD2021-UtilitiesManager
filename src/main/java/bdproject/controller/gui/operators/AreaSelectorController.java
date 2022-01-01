@@ -47,10 +47,14 @@ public class AreaSelectorController extends AbstractController {
     }
 
     @FXML
-    private void goToPremisesAndMeters() {}
+    private void goToPremisesAndMeters() {
+        switchTo(PremiseManagementController.create(stage(), dataSource(), getSessionHolder()));
+    }
 
     @FXML
-    private void goToStats() {switchTo(OperatorStatsController.create(stage(), dataSource(), getSessionHolder()));}
+    private void goToStats() {
+        switchTo(OperatorStatsController.create(stage(), dataSource(), getSessionHolder()));
+    }
 
     @FXML
     private void goBack() {

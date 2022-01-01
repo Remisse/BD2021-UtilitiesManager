@@ -7,6 +7,7 @@ import bdproject.controller.gui.users.UserSignUpController;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.utils.FXUtils;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -55,7 +56,7 @@ public class HomeController extends AbstractController implements Initializable 
     }
 
     private void updateSignInElements() {
-        getSessionHolder().session().ifPresentOrElse(s -> {
+        getSessionHolder().session().ifPresentOrElse(s -> Platform.runLater(() -> {
             email.setVisible(false);
             password.setVisible(false);
             password.setText("");
@@ -75,7 +76,7 @@ public class HomeController extends AbstractController implements Initializable 
 
             adminArea.setVisible(s.isOperator());
             userArea.setVisible(!s.isOperator());
-        }, () -> {
+        }), () -> Platform.runLater(() -> {
             email.setVisible(true);
             password.setVisible(true);
             password.setText("");
@@ -95,7 +96,7 @@ public class HomeController extends AbstractController implements Initializable 
 
             adminArea.setVisible(false);
             userArea.setVisible(false);
-        });
+        }));
     }
 
     @FXML

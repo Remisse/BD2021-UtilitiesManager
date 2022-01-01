@@ -73,7 +73,7 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     /**
      * The column <code>utenze.immobili.Interno</code>.
      */
-    public final TableField<ImmobiliRecord, String> INTERNO = createField(DSL.name("Interno"), SQLDataType.VARCHAR(10), this, "");
+    public final TableField<ImmobiliRecord, String> INTERNO = createField(DSL.name("Interno"), SQLDataType.VARCHAR(10).nullable(false).defaultValue(DSL.inline("", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>utenze.immobili.Comune</code>.
@@ -139,11 +139,16 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     }
 
     @Override
+    public List<UniqueKey<ImmobiliRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.KEY_IMMOBILI_AK_IMMOBILE);
+    }
+
+    @Override
     public List<Check<ImmobiliRecord>> getChecks() {
         return Arrays.asList(
             Internal.createCheck(this, DSL.name("immobili_chk_1"), "((`Tipo` = _utf8mb4\\'Fabbricato\\') or (`Tipo` = _utf8mb4\\'Terreno\\'))", true),
             Internal.createCheck(this, DSL.name("immobili_chk_2"), "(length(`CAP`) = 5)", true),
-            Internal.createCheck(this, DSL.name("immobili_chk_3"), "(((`Tipo` = _utf8mb4\\'Terreno\\') and (`Interno` is null)) or (`Tipo` = _utf8mb4\\'Fabbricato\\'))", true)
+            Internal.createCheck(this, DSL.name("TERRAIN_NO_UNIT"), "(((`Tipo` = _utf8mb4\\'Terreno\\') and (`Interno` = _utf8mb4\\'\\')) or (`Tipo` = _utf8mb4\\'Fabbricato\\'))", true)
         );
     }
 

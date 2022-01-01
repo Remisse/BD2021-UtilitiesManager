@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0">
+         <children>
+            <Separator orientation="VERTICAL" prefHeight="200.0" />
+            <AnchorPane prefHeight="720.0" prefWidth="1267.0">
+               <children>
+                  <Label layoutX="492.0" layoutY="16.0" text="Gestione immobili e contatori">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="streetField" layoutX="102.0" layoutY="509.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextField>
+                  <Label layoutX="102.0" layoutY="480.0" text="Via">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="streetNoField" layoutX="315.0" layoutY="509.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextField>
+                  <Label layoutX="315.0" layoutY="480.0" text="Numero civico">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="apartmentNumberField" layoutX="102.0" layoutY="584.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextField>
+                  <Label layoutX="102.0" layoutY="553.0" text="Interno">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="municipalityField" layoutX="529.0" layoutY="509.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextField>
+                  <Label layoutX="529.0" layoutY="480.0" text="Comune">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="provinceField" layoutX="315.0" layoutY="584.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="postcodeField" layoutX="529.0" layoutY="584.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextField>
+                  <Label layoutX="529.0" layoutY="553.0" text="CAP">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="typeBox" layoutX="102.0" layoutY="653.0" prefHeight="30.0" prefWidth="150.0" />
+                  <Label layoutX="102.0" layoutY="627.0" text="Tipo">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="339.0" layoutY="553.0" text="Provincia">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="editPremise" layoutX="315.0" layoutY="653.0" mnemonicParsing="false" onAction="#doEditPremise" text="Modifica dati">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="back" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" text="Indietro">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+                  <TableView fx:id="premiseTable" layoutX="102.0" layoutY="78.0" prefHeight="347.0" prefWidth="666.0">
+                    <columns>
+                      <TableColumn fx:id="premiseIdCol" prefWidth="58.0" text="Id" />
+                      <TableColumn fx:id="premiseStreetAndCivicCol" prefWidth="202.0" text="Via e civico" />
+                        <TableColumn fx:id="premiseUnitCol" minWidth="0.0" prefWidth="54.0" text="Interno" />
+                        <TableColumn fx:id="premiseMunicipCol" prefWidth="108.0" text="Comune" />
+                        <TableColumn fx:id="premisePostcodeCol" prefWidth="71.0" text="CAP" />
+                        <TableColumn fx:id="premiseProvinceCol" prefWidth="68.0" text="Provincia" />
+                        <TableColumn fx:id="premiseTypeCol" prefWidth="103.0" text="Tipo" />
+                    </columns>
+                  </TableView>
+                  <Button layoutX="101.0" layoutY="432.0" mnemonicParsing="false" onAction="#copyRowIntoFields" prefHeight="30.0" prefWidth="102.0" text="Ricopia dati">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+                  <TableView fx:id="meterTable" layoutX="801.0" layoutY="78.0" prefHeight="347.0" prefWidth="384.0">
+                    <columns>
+                      <TableColumn fx:id="meterIdCol" prefWidth="184.0" text="Matricola" />
+                      <TableColumn fx:id="meterUtilityCol" prefWidth="93.0" text="Materia prima" />
+                        <TableColumn fx:id="meterPremiseCol" prefWidth="105.0" text="Immobile" />
+                    </columns>
+                  </TableView>
+                  <Label layoutX="102.0" layoutY="51.0" text="Immobili">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="801.0" layoutY="51.0" text="Contatori">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="469.0" layoutY="432.0" mnemonicParsing="false" onAction="#findMeter" prefHeight="30.0" prefWidth="140.0" text="Trova contatore">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+                  <ComboBox fx:id="findMeterUtilityBox" layoutX="618.0" layoutY="432.0" prefHeight="30.0" prefWidth="150.0" promptText="materia prima..." />
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+   </children>
+</VBox>
