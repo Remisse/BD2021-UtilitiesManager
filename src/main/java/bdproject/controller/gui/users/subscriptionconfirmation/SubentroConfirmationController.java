@@ -7,7 +7,7 @@ import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.Contatori;
 import bdproject.tables.pojos.Immobili;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
@@ -104,7 +104,7 @@ public class SubentroConfirmationController extends AbstractSubscriptionConfirma
                     process.getClientId(),
                     conn);
         } catch (SQLException e) {
-            FXUtils.showError(e.getMessage());
+            ViewUtils.showError(e.getMessage());
         }
 
         return result;

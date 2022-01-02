@@ -6,7 +6,7 @@ import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -92,7 +92,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
             setOther();
         } catch (SQLException e) {
             e.printStackTrace();
-            FXUtils.showError(e.getSQLState() + "\n" + e.getMessage());
+            ViewUtils.showError(e.getSQLState() + "\n" + e.getMessage());
         }
     }
 

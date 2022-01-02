@@ -3,13 +3,15 @@ package bdproject.controller.gui.operators;
 import bdproject.controller.Checks;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
+import bdproject.controller.gui.admin.AreaSelectorController;
 import bdproject.model.types.StatusType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -26,6 +28,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +55,6 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
 
-    @FXML private Button back;
     @FXML private TableView<ContrattiApprovati> subsTable;
     @FXML private TableColumn<ContrattiApprovati, Integer> clientIdCol;
     @FXML private TableColumn<ContrattiApprovati, Integer> subIdCol;
@@ -68,7 +70,6 @@ public class SubscriptionManagementController extends AbstractController impleme
     @FXML private TableColumn<Letture, String> measPublishDateCol;
     @FXML private TableColumn<Letture, String> measConsumptionCol;
     @FXML private TableColumn<Letture, String> measConfirmedCol;
-    @FXML private Button confirmMeasurement;
 
     @FXML private TableView<Bollette> reportsTable;
     @FXML private TableColumn<Bollette, String> repPublishDateCol;
@@ -76,6 +77,9 @@ public class SubscriptionManagementController extends AbstractController impleme
     @FXML private TableColumn<Bollette, String> repPaidDateCol;
     @FXML private TableColumn<Bollette, String> repCostCol;
     @FXML private TableColumn<Bollette, String> repEstimatedCol;
+    @FXML private TableColumn<Bollette, String> repIntervalStartCol;
+    @FXML private TableColumn<Bollette, String> repIntervalEndCol;
+    @FXML private TableColumn<Bollette, String> repConsumptionCol;
 
     @FXML private DatePicker intervalStartDatePicker;
     @FXML private DatePicker intervalEndDatePicker;
@@ -172,14 +176,16 @@ public class SubscriptionManagementController extends AbstractController impleme
         if (selected != null) {
             createSubWindow(OperatorSubDetailsController.create(null, dataSource(), getSessionHolder(), selected));
         } else {
-            FXUtils.showBlockingWarning("Seleziona un contratto.");
+            ViewUtils.showBlockingWarning("Seleziona un contratto.");
         }
     }
 
     private void initMeasurementsTable() {
-        measPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDataeffettuazione())));
-        measConsumptionCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getConsumi().toString()));
-        measConfirmedCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStato()));
+        Platform.runLater(() -> {
+            measPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDataeffettuazione())));
+            measConsumptionCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getConsumi().toString()));
+            measConfirmedCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStato()));
+        });
     }
 
     private void doRefreshMeasurements() {
@@ -190,7 +196,7 @@ public class SubscriptionManagementController extends AbstractController impleme
                 measurementsTable.setItems(FXCollections.observableList(measurements));
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError("Impossibile aggiornare la tabella delle letture.");
+                ViewUtils.showError("Impossibile aggiornare la tabella delle letture.");
             }
         } else {
             measurementsTable.setItems(FXCollections.emptyObservableList());
@@ -213,39 +219,57 @@ public class SubscriptionManagementController extends AbstractController impleme
             try (Connection conn = dataSource().getConnection()) {
                 final int result = Queries.setMeasurementStatus(selected.getNumerolettura(), newStatus.toString(), conn);
                 if (result != 0) {
-                    FXUtils.showBlockingWarning("Lettura aggiornata.");
+                    ViewUtils.showBlockingWarning("Lettura aggiornata.");
+                    doRefreshMeasurements();
                 } else {
-                    FXUtils.showBlockingWarning("Lettura già aggiornata.");
+                    ViewUtils.showBlockingWarning("Lettura già aggiornata.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                ViewUtils.showBlockingWarning(StringUtils.getGenericError());
             }
         } else {
-            FXUtils.showBlockingWarning("Seleziona una lettura.");
+            ViewUtils.showBlockingWarning("Seleziona una lettura.");
         }
     }
 
+    @FXML
+    private void deleteMeasurement() {
+
+    }
+
     private void initReportsTable() {
-        repPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDataemissione())));
-        repDeadlineCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDatascadenza())));
+        final DecimalFormat decimalFormat = LocaleUtils.getItDecimalFormat();
+
+        Platform.runLater(() -> {
+            repPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue()
+                    .getDataemissione())));
+            repDeadlineCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue()
+                    .getDatascadenza())));
+            repCostCol.setCellValueFactory(c -> new SimpleStringProperty("€ " + decimalFormat.format(c.getValue()
+                    .getImporto())));
+            repEstimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
+                    StringUtils.byteToYesNo(c.getValue().getStimata())));
+            repIntervalStartCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue()
+                    .getDatainizioperiodo())));
+            repIntervalEndCol.setCellValueFactory(c -> new SimpleStringProperty((dateIt.format(c.getValue()
+                    .getDatafineperiodo()))));
+            repConsumptionCol.setCellValueFactory(c -> new SimpleStringProperty(decimalFormat.format(c.getValue()
+                    .getConsumi())));
+        });
 
         repPaidDateCol.setCellValueFactory(c -> {
-            SimpleStringProperty outVal = new SimpleStringProperty("");
+            String outVal = "Non pagata";
             try (final Connection conn = dataSource().getConnection()) {
                 Optional<Pagamenti> payment = Queries.fetchReportPayment(c.getValue().getNumerobolletta(), conn);
                 if (payment.isPresent()) {
-                    outVal = new SimpleStringProperty(dateIt.format(payment.get().getDatapagamento()));
+                    outVal = dateIt.format(payment.get().getDatapagamento());
                 }
             } catch (SQLException e) {
-                FXUtils.showError(e.getMessage());
+                ViewUtils.showError(e.getMessage());
             }
-            return outVal;
+            return new SimpleStringProperty(outVal);
         });
-
-        repCostCol.setCellValueFactory(c -> new SimpleStringProperty("€ " + c.getValue().getImporto()));
-        repEstimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
-                StringUtils.byteToYesNo(c.getValue().getStimata())));
     }
 
     private void doRefreshReports() {
@@ -253,13 +277,14 @@ public class SubscriptionManagementController extends AbstractController impleme
         if (sub != null) {
             try (Connection conn = dataSource().getConnection()) {
                 final var reports = Queries.fetchSubscriptionReports(sub, conn);
-                reportsTable.setItems(FXCollections.observableList(reports));
+
+                Platform.runLater(() -> reportsTable.setItems(FXCollections.observableList(reports)));
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showBlockingWarning("Impossibile aggiornare la tabella delle bollette.");
+                ViewUtils.showBlockingWarning("Impossibile aggiornare la tabella delle bollette.");
             }
         } else {
-            reportsTable.setItems(FXCollections.emptyObservableList());
+            Platform.runLater(() -> reportsTable.setItems(FXCollections.emptyObservableList()));
         }
     }
 
@@ -268,7 +293,7 @@ public class SubscriptionManagementController extends AbstractController impleme
      */
     @FXML
     private void doDownloadFile() {
-        FXUtils.showBlockingWarning("File scaricato.");
+        ViewUtils.showBlockingWarning("File scaricato.");
     }
 
     @FXML
@@ -278,13 +303,13 @@ public class SubscriptionManagementController extends AbstractController impleme
             try (Connection conn = dataSource().getConnection()) {
                 final int result = Queries.deleteReport(report.getNumerobolletta(), conn);
                 if (result != 0) {
-                    FXUtils.showBlockingWarning("Bolletta eliminata.");
+                    ViewUtils.showBlockingWarning("Bolletta eliminata.");
                 } else {
-                    FXUtils.showBlockingWarning("Impossibile eliminare la bolletta.");
+                    ViewUtils.showBlockingWarning("Impossibile eliminare la bolletta.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showBlockingWarning("Seleziona una bolletta.");
+                ViewUtils.showBlockingWarning("Seleziona una bolletta.");
             }
         }
     }
@@ -295,7 +320,8 @@ public class SubscriptionManagementController extends AbstractController impleme
     @FXML
     private void loadReportFile() {
         reportFile = new byte[] {'T', 'E', 'S', 'T'};
-        reportFileStatus.setText("caricato");
+
+        Platform.runLater(() -> reportFileStatus.setText("caricato"));
     }
 
     @FXML
@@ -316,28 +342,29 @@ public class SubscriptionManagementController extends AbstractController impleme
                             sub.getIdcontratto(),
                             conn);
                     if (result != 0) {
-                        FXUtils.showBlockingWarning("Bolletta emessa.");
+                        ViewUtils.showBlockingWarning("Bolletta emessa.");
                         clearReportData();
                         doRefreshReports();
                     } else {
-                        FXUtils.showBlockingWarning("Impossibile emettere la bolletta.");
+                        ViewUtils.showBlockingWarning("Impossibile emettere la bolletta.");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                    ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                 }
             } else {
-                FXUtils.showBlockingWarning("Seleziona il contratto per il quale vuoi emettere una bolletta.");
+                ViewUtils.showBlockingWarning("Seleziona il contratto per il quale vuoi emettere una bolletta.");
             }
         } else {
-            FXUtils.showBlockingWarning("Controlla che i dati inseriti siano corretti e che il file di dettaglio sia" +
+            ViewUtils.showBlockingWarning("Controlla che i dati inseriti siano corretti e che il file di dettaglio sia" +
                     "stato caricato.");
         }
     }
 
     private void clearReportData() {
         reportFile = null;
-        finalCostField.setText("");
+
+        Platform.runLater(() -> finalCostField.setText(""));
     }
 
     private boolean canPublishReport() {

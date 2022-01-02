@@ -1,8 +1,7 @@
 package bdproject.controller.gui;
 
-import bdproject.model.Session;
 import bdproject.model.SessionHolder;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -33,7 +32,7 @@ public abstract class AbstractController implements Controller {
         try {
             pane = loader.load();
         } catch (IOException e) {
-            FXUtils.showError(e.getMessage());
+            ViewUtils.showError(e.getMessage());
         }
         if (pane == null) {
             throw new IllegalStateException("Pane should not be null!");

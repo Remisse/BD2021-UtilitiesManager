@@ -15,7 +15,7 @@ import bdproject.model.SubscriptionProcessImpl;
 import bdproject.tables.pojos.Offerte;
 import bdproject.tables.pojos.TipiAttivazione;
 import bdproject.tables.pojos.TipologieUso;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -85,7 +85,7 @@ public class CatalogueController extends AbstractController implements Initializ
             populateComboBoxes(conn);
             populatePlanTable(conn);
         } catch (SQLException e) {
-            FXUtils.showError(e.getMessage());
+            ViewUtils.showError(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -134,7 +134,7 @@ public class CatalogueController extends AbstractController implements Initializ
         try (Connection conn = dataSource().getConnection()) {
             populatePlanTable(conn);
         } catch (SQLException ex) {
-            FXUtils.showError(ex.getMessage());
+            ViewUtils.showError(ex.getMessage());
         }
     }
 
@@ -148,9 +148,9 @@ public class CatalogueController extends AbstractController implements Initializ
     private void startSubscriptionProcess(ActionEvent e) {
         if (!activationBox.getValue().getItem().getNome().equals("Voltura") &&
                 table.getSelectionModel().getSelectedItem() == null) {
-            FXUtils.showBlockingWarning("Non hai selezionato un'offerta.");
+            ViewUtils.showBlockingWarning("Non hai selezionato un'offerta.");
         } else if (getSessionHolder().session().isEmpty()) {
-            FXUtils.showBlockingWarning("Per poter continuare, devi effettuare l'accesso.");
+            ViewUtils.showBlockingWarning("Per poter continuare, devi effettuare l'accesso.");
         } else {
             if (process == null) {
                 process = new SubscriptionProcessImpl();

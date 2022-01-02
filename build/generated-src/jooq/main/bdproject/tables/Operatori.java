@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row2;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -54,6 +54,11 @@ public class Operatori extends TableImpl<OperatoriRecord> {
      * The column <code>utenze.operatori.IdOperatore</code>.
      */
     public final TableField<OperatoriRecord, Integer> IDOPERATORE = createField(DSL.name("IdOperatore"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.operatori.Tipo</code>.
+     */
+    public final TableField<OperatoriRecord, String> TIPO = createField(DSL.name("Tipo"), SQLDataType.VARCHAR(30).nullable(false), this, "");
 
     /**
      * The column <code>utenze.operatori.Stipendio</code>.
@@ -120,7 +125,8 @@ public class Operatori extends TableImpl<OperatoriRecord> {
     @Override
     public List<Check<OperatoriRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("operatori_chk_1"), "(`Stipendio` >= 0)", true)
+            Internal.createCheck(this, DSL.name("operatori_chk_1"), "(`Tipo` in (_utf8mb4\\'Amministratore\\',_utf8mb4\\'Operatore\\'))", true),
+            Internal.createCheck(this, DSL.name("operatori_chk_2"), "(`Stipendio` >= 0)", true)
         );
     }
 
@@ -151,11 +157,11 @@ public class Operatori extends TableImpl<OperatoriRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Integer, BigDecimal> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<Integer, String, BigDecimal> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

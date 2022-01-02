@@ -8,11 +8,10 @@ import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Bollette;
 import bdproject.tables.pojos.ContrattiApprovati;
 import bdproject.tables.pojos.Immobili;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
@@ -34,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class UserStatsController extends AbstractController implements Initializable {
 
@@ -93,7 +91,7 @@ public class UserStatsController extends AbstractController implements Initializ
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            FXUtils.showError(e.getCause().getMessage());
+            ViewUtils.showError(e.getCause().getMessage());
         }
     }
 
@@ -136,7 +134,7 @@ public class UserStatsController extends AbstractController implements Initializ
                 yearlyTrend.getData().add(series);
             });
         } else {
-            FXUtils.showBlockingWarning("Seleziona un anno dal menu a tendina.");
+            ViewUtils.showBlockingWarning("Seleziona un anno dal menu a tendina.");
         }
     }
 

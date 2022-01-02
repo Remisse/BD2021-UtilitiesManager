@@ -6,7 +6,7 @@ import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Cessazioni;
 import bdproject.tables.pojos.ContrattiApprovati;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.view.StringUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,22 +49,22 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
 
         try (Connection conn = dataSource().getConnection()) {
             if (subscription.getDatacessazione() != null) {
-                FXUtils.showBlockingWarning("Il contratto risulta già cessato.");
+                ViewUtils.showBlockingWarning("Il contratto risulta già cessato.");
             } else if (!Queries.allReportsPaid(subscription.getIdcontratto(), conn)) {
-                FXUtils.showBlockingWarning("Risultano bollette non pagate. Non è attualmente" +
+                ViewUtils.showBlockingWarning("Risultano bollette non pagate. Non è attualmente" +
                         "possibile richiedere la cessazione.");
             } else {
                 final int result = Queries.insertEndRequest(getSubscription().getIdcontratto(), conn);
                 if (result == 1) {
-                    FXUtils.showBlockingWarning("Richiesta di cessazione inviata.");
+                    ViewUtils.showBlockingWarning("Richiesta di cessazione inviata.");
                     refreshEndRequestTable();
                 } else {
-                    FXUtils.showBlockingWarning("Impossibile inviare la richiesta.");
+                    ViewUtils.showBlockingWarning("Impossibile inviare la richiesta.");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            FXUtils.showError(e.getSQLState());
+            ViewUtils.showError(e.getSQLState());
         }
     }
 
@@ -76,17 +76,17 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
             try (Connection conn = dataSource().getConnection()) {
                 final int result = Queries.deleteEndRequest(selected.getNumerorichiesta(), conn);
                 if (result == 1) {
-                    FXUtils.showBlockingWarning("Richiesta eliminata.");
+                    ViewUtils.showBlockingWarning("Richiesta eliminata.");
                     refreshEndRequestTable();
                 } else {
-                    FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                    ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError(e.getSQLState());
+                ViewUtils.showError(e.getSQLState());
             }
         } else {
-            FXUtils.showBlockingWarning("Seleziona una richiesta valida.");
+            ViewUtils.showBlockingWarning("Seleziona una richiesta valida.");
         }
     }
 }

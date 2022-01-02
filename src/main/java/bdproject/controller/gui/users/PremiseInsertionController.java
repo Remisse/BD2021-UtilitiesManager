@@ -15,7 +15,7 @@ import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.Immobili;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.view.StringUtils;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -126,7 +126,7 @@ public class PremiseInsertionController extends AbstractController implements In
         } else if (activation.equals(ActivationType.VOLTURA.toString())) {
             switchTo(ParametersClientChangeController.create(stage(), dataSource(), getSessionHolder(), process));
         } else {
-            FXUtils.showError("Metodo di attivazione non gestito!");
+            ViewUtils.showError("Metodo di attivazione non gestito!");
         }
     }
 
@@ -150,7 +150,7 @@ public class PremiseInsertionController extends AbstractController implements In
                     conn);
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError(StringUtils.getGenericError());
+                ViewUtils.showError(StringUtils.getGenericError());
             }
 
             existingPremise.ifPresentOrElse(process::setPremise, () -> process.setPremise(new Immobili(
@@ -174,10 +174,10 @@ public class PremiseInsertionController extends AbstractController implements In
             } else if (activation.equals(ActivationType.VOLTURA.toString())) {
                 switchTo(ParametersClientChangeController.create(stage(), dataSource(), getSessionHolder(), process));
             } else {
-                FXUtils.showError("Metodo di attivazione non gestito!");
+                ViewUtils.showError("Metodo di attivazione non gestito!");
             }
         } else {
-            FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");
+            ViewUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");
         }
     }
 }

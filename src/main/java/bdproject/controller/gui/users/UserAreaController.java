@@ -10,7 +10,7 @@ import bdproject.model.types.StatusType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
 import javafx.application.Platform;
@@ -180,7 +180,7 @@ public class UserAreaController extends AbstractController implements Initializa
                 try (final Connection conn = dataSource().getConnection()) {
                     payment = Queries.fetchReportPayment(cellData.getValue().getNumerobolletta(), conn);
                 } catch (SQLException e) {
-                    FXUtils.showError(e.getMessage());
+                    ViewUtils.showError(e.getMessage());
                     e.printStackTrace();
                 }
                 if (payment.isPresent()) {
@@ -195,7 +195,7 @@ public class UserAreaController extends AbstractController implements Initializa
                 utility = Queries.fetchUtilityFromSubscription(subChoice.getValue().getIdcontratto(), conn).getNome();
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError(e.getMessage());
+                ViewUtils.showError(e.getMessage());
             }
             final String unit = LocaleUtils.getItUtilityUnits().getOrDefault(utility, "");
 
@@ -257,7 +257,7 @@ public class UserAreaController extends AbstractController implements Initializa
         if (request != null) {
             createSubWindow(UserActivationRequestDetailsController.create(null, dataSource(), getSessionHolder(), request));
         } else {
-            FXUtils.showBlockingWarning("Seleziona una richiesta.");
+            ViewUtils.showBlockingWarning("Seleziona una richiesta.");
         }
     }
 
@@ -269,19 +269,19 @@ public class UserAreaController extends AbstractController implements Initializa
                 if (selectedReq.getDatachiusurarichiesta() == null) {
                     final int result = Queries.deleteSubscriptionRequest(selectedReq.getIdcontratto(), conn);
                     if (result == 1) {
-                        FXUtils.showBlockingWarning("Richiesta eliminata.");
+                        ViewUtils.showBlockingWarning("Richiesta eliminata.");
                         refreshActivationRequestTable();
                     } else {
-                        FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                        ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                     }
                 } else {
-                    FXUtils.showBlockingWarning("Non puoi eliminare una richiesta già finalizzata.");
+                    ViewUtils.showBlockingWarning("Non puoi eliminare una richiesta già finalizzata.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            FXUtils.showBlockingWarning("Seleziona una richiesta da eliminare.");
+            ViewUtils.showBlockingWarning("Seleziona una richiesta da eliminare.");
         }
     }
 
@@ -308,16 +308,16 @@ public class UserAreaController extends AbstractController implements Initializa
                         updateMeasurementsTable();
                     } catch (SQLException e) {
                         e.printStackTrace();
-                        FXUtils.showError("Impossibile inserire la lettura: " + e.getMessage());
+                        ViewUtils.showError("Impossibile inserire la lettura: " + e.getMessage());
                     }
                 } else {
-                    FXUtils.showBlockingWarning("Controlla di aver inserito correttamente la lettura.");
+                    ViewUtils.showBlockingWarning("Controlla di aver inserito correttamente la lettura.");
                 }
             } else {
-                FXUtils.showBlockingWarning("Il contratto risulta non attivo. Non puoi comunicare nuove letture.");
+                ViewUtils.showBlockingWarning("Il contratto risulta non attivo. Non puoi comunicare nuove letture.");
             }
         } else {
-            FXUtils.showBlockingWarning("Seleziona un contratto.");
+            ViewUtils.showBlockingWarning("Seleziona un contratto.");
         }
     }
 
@@ -331,7 +331,7 @@ public class UserAreaController extends AbstractController implements Initializa
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            FXUtils.showError("Errore nel reperimento delle letture.");
+            ViewUtils.showError("Errore nel reperimento delle letture.");
         }
 
         final String unit = LocaleUtils.getItUtilityUnits()
@@ -356,7 +356,7 @@ public class UserAreaController extends AbstractController implements Initializa
                 measurementsTable.setItems(FXCollections.observableList(measurements));
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError("Errore nel reperimento delle letture.");
+                ViewUtils.showError("Errore nel reperimento delle letture.");
             }
         }
     }
@@ -371,25 +371,25 @@ public class UserAreaController extends AbstractController implements Initializa
         final Bollette report = reportTable.getSelectionModel().getSelectedItem();
 
         if (report == null) {
-            FXUtils.showBlockingWarning("Seleziona una bolletta da pagare.");
+            ViewUtils.showBlockingWarning("Seleziona una bolletta da pagare.");
         } else {
             try (Connection conn = dataSource().getConnection()) {
                 final Optional<Pagamenti> payment = Queries.fetchReportPayment(report.getNumerobolletta(), conn);
 
                 if (payment.isPresent()) {
-                    FXUtils.showBlockingWarning("La bolletta selezionata risulta già pagata.");
+                    ViewUtils.showBlockingWarning("La bolletta selezionata risulta già pagata.");
                 } else {
                     final int outcome = Queries.payReport(report.getIdcontratto(), conn);
                     if (outcome == 1) {
-                        FXUtils.showBlockingWarning("Pagamento effettuato con successo.");
+                        ViewUtils.showBlockingWarning("Pagamento effettuato con successo.");
                         updateReportTable();
                     } else {
-                        FXUtils.showError("Impossibile procedere al pagamento.");
+                        ViewUtils.showError("Impossibile procedere al pagamento.");
                     }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError("Impossibile procedere al pagamento.");
+                ViewUtils.showError("Impossibile procedere al pagamento.");
             }
         }
     }
@@ -402,7 +402,7 @@ public class UserAreaController extends AbstractController implements Initializa
     @FXML
     private void doUpdateClient() {
         if (areUserFieldsInvalid()) {
-            FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i nuovi dati.");
+            ViewUtils.showBlockingWarning("Verifica di aver inserito correttamente i nuovi dati.");
         } else {
             final int clientId = getSessionHolder().session().orElseThrow().userId();
             try (Connection conn = dataSource().getConnection()) {
@@ -419,13 +419,13 @@ public class UserAreaController extends AbstractController implements Initializa
                 resultUpdateData += Queries.updateOneFieldWhere(CLIENTI, CLIENTI.CODICECLIENTE, clientId,
                         CLIENTI.FASCIAREDDITO, incomeBracket.getValue().getItem().getCodreddito(), conn);
                 if (resultUpdateData == 2) {
-                    FXUtils.showBlockingWarning("Dati modificati con successo.");
+                    ViewUtils.showBlockingWarning("Dati modificati con successo.");
                 } else {
-                    FXUtils.showBlockingWarning("Operazione non riuscita.");
+                    ViewUtils.showBlockingWarning("Operazione non riuscita.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError(StringUtils.getGenericError());
+                ViewUtils.showError(StringUtils.getGenericError());
             }
         }
     }
@@ -438,16 +438,16 @@ public class UserAreaController extends AbstractController implements Initializa
                 final int resultUpdatePw = Queries.updateOneFieldWhere(PERSONE, PERSONE.IDPERSONA, clientId,
                         PERSONE.PASSWORD, newPw.getText(), conn);
                 if (resultUpdatePw == 1) {
-                    FXUtils.showBlockingWarning("Password modificata con successo.");
+                    ViewUtils.showBlockingWarning("Password modificata con successo.");
                 } else {
-                    FXUtils.showBlockingWarning("Impossibile modificare la password.");
+                    ViewUtils.showBlockingWarning("Impossibile modificare la password.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError(StringUtils.getGenericError());
+                ViewUtils.showError(StringUtils.getGenericError());
             }
         } else {
-            FXUtils.showBlockingWarning("Verifica i dati inseriti.");
+            ViewUtils.showBlockingWarning("Verifica i dati inseriti.");
         }
     }
 
@@ -503,9 +503,9 @@ public class UserAreaController extends AbstractController implements Initializa
     private void doDownloadFile() {
         Bollette report = reportTable.getSelectionModel().getSelectedItem();
         if (report == null) {
-            FXUtils.showBlockingWarning("Seleziona una bolletta.");
+            ViewUtils.showBlockingWarning("Seleziona una bolletta.");
         } else {
-            FXUtils.showBlockingWarning("File scaricato.");
+            ViewUtils.showBlockingWarning("File scaricato.");
         }
     }
 }

@@ -2,11 +2,12 @@ package bdproject.controller.gui.operators;
 
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
+import bdproject.controller.gui.admin.AreaSelectorController;
 import bdproject.model.types.StatusType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -136,7 +137,7 @@ public class RequestManagementController extends AbstractController implements I
             endRequestTable.setItems(FXCollections.observableList(endRequests));
         } catch (Exception e) {
             e.printStackTrace();
-            FXUtils.showError(e.getMessage());
+            ViewUtils.showError(e.getMessage());
         }
     }
 
@@ -169,13 +170,13 @@ public class RequestManagementController extends AbstractController implements I
             try (Connection conn = dataSource().getConnection()) {
                 final Optional<Contatori> meter = Queries.fetchMeterBySubscription(activRequest.getIdcontratto(), conn);
                 if (meter.isEmpty()) {
-                    FXUtils.showBlockingWarning("Non è stato ancora aggiunto il contatore.");
+                    ViewUtils.showBlockingWarning("Non è stato ancora aggiunto il contatore.");
                 } else {
                     result = Queries.activateSubscription(activRequest.getIdcontratto(), conn);
                     if (result == 1) {
-                        FXUtils.showBlockingWarning("Contratto creato.");
+                        ViewUtils.showBlockingWarning("Contratto creato.");
                     } else {
-                        FXUtils.showBlockingWarning("Impossibile creare il contratto.");
+                        ViewUtils.showBlockingWarning("Impossibile creare il contratto.");
                     }
                 }
             } catch (Exception e) {
@@ -187,14 +188,14 @@ public class RequestManagementController extends AbstractController implements I
                 try (Connection conn = dataSource().getConnection()) {
                     result = Queries.ceaseSubscription(endRequest.getIdcontratto(), conn);
                     if (result == 1) {
-                        FXUtils.showBlockingWarning("Contratto cessato.");
+                        ViewUtils.showBlockingWarning("Contratto cessato.");
                         result += Queries.updateEndRequest(endRequest.getNumerorichiesta(), StatusType.APPROVED.toString(),
                                 endRequest.getNoterichiesta(), conn);
                         if (result != 2) {
-                            FXUtils.showError("Errore nell'aggiornamento della richiesta.");
+                            ViewUtils.showError("Errore nell'aggiornamento della richiesta.");
                         }
                     } else {
-                        FXUtils.showBlockingWarning("Impossibile cessare il contratto.");
+                        ViewUtils.showBlockingWarning("Impossibile cessare il contratto.");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -202,10 +203,10 @@ public class RequestManagementController extends AbstractController implements I
             }
         }
         if (result == 2) {
-            FXUtils.showBlockingWarning("Richiesta aggiornata");
+            ViewUtils.showBlockingWarning("Richiesta aggiornata");
             refreshTables();
         } else {
-            FXUtils.showBlockingWarning("Impossibile aggiornare la richiesta");
+            ViewUtils.showBlockingWarning("Impossibile aggiornare la richiesta");
         }
     }
 
@@ -233,10 +234,10 @@ public class RequestManagementController extends AbstractController implements I
             }
         }
         if (result != 0) {
-            FXUtils.showBlockingWarning("Richiesta aggiornata");
+            ViewUtils.showBlockingWarning("Richiesta aggiornata");
             refreshTables();
         } else {
-            FXUtils.showBlockingWarning("Impossibile aggiornare la richiesta");
+            ViewUtils.showBlockingWarning("Impossibile aggiornare la richiesta");
         }
     }
 
@@ -254,22 +255,22 @@ public class RequestManagementController extends AbstractController implements I
                         final int result =
                                 Queries.insertMeter(meterIdField.getText(), utility, activRequest.getIdimmobile(), conn);
                         if (result == 1) {
-                            FXUtils.showBlockingWarning("Matricola inserita.");
+                            ViewUtils.showBlockingWarning("Matricola inserita.");
                             refreshTables();
                         } else {
-                            FXUtils.showBlockingWarning("Impossibile inserire la matricola.");
+                            ViewUtils.showBlockingWarning("Impossibile inserire la matricola.");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    FXUtils.showBlockingWarning("Verifica che la matricola sia stata scritta correttamente.");
+                    ViewUtils.showBlockingWarning("Verifica che la matricola sia stata scritta correttamente.");
                 }
             } else {
-                FXUtils.showBlockingWarning("La richiesta è già stata finalizzata.");
+                ViewUtils.showBlockingWarning("La richiesta è già stata finalizzata.");
             }
         } else {
-            FXUtils.showBlockingWarning("Seleziona una richiesta di attivazione.");
+            ViewUtils.showBlockingWarning("Seleziona una richiesta di attivazione.");
         }
     }
 
@@ -297,10 +298,10 @@ public class RequestManagementController extends AbstractController implements I
             }
         }
         if (result == 1) {
-            FXUtils.showBlockingWarning("Note aggiornate.");
+            ViewUtils.showBlockingWarning("Note aggiornate.");
             refreshTables();
         } else {
-            FXUtils.showBlockingWarning("Impossibile aggiornare le note.");
+            ViewUtils.showBlockingWarning("Impossibile aggiornare le note.");
         }
     }
 

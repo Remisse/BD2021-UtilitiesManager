@@ -14,7 +14,7 @@
 
 <AnchorPane fx:id="repFileStatusLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="247.0" layoutX="821.0" layoutY="520.0" stroke="#00000034" strokeType="INSIDE" width="428.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="247.0" layoutX="1048.0" layoutY="520.0" stroke="#00000034" strokeType="INSIDE" width="428.0" />
       <Label layoutX="233.0" layoutY="106.0" text="Contratti">
          <font>
             <Font size="18.0" />
@@ -50,16 +50,16 @@
          <columns>
             <TableColumn fx:id="measPublishDateCol" prefWidth="158.0" text="Data effettuazione" />
             <TableColumn fx:id="measConsumptionCol" prefWidth="169.0" text="Consumi" />
-            <TableColumn fx:id="measConfirmedCol" prefWidth="147.0" text="Confermata" />
+            <TableColumn fx:id="measConfirmedCol" prefWidth="147.0" text="Stato" />
          </columns>
       </TableView>
-      <Label layoutX="833.0" layoutY="482.0" text="Nuova bolletta">
+      <Label layoutX="1047.0" layoutY="482.0" text="Nuova bolletta">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="finalCostField" layoutX="833.0" layoutY="563.0" prefHeight="31.0" prefWidth="165.0" promptText="Importo" />
-      <Button fx:id="publishReport" layoutX="993.0" layoutY="782.0" mnemonicParsing="false" onAction="#doPublishReport" prefHeight="31.0" prefWidth="85.0" text="Emetti">
+      <TextField fx:id="finalCostField" layoutX="1060.0" layoutY="574.0" prefHeight="31.0" prefWidth="165.0" promptText="Importo" />
+      <Button fx:id="publishReport" layoutX="1220.0" layoutY="782.0" mnemonicParsing="false" onAction="#doPublishReport" prefHeight="31.0" prefWidth="85.0" text="Emetti">
          <font>
             <Font size="15.0" />
          </font>
@@ -70,13 +70,16 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="reportsTable" layoutX="233.0" layoutY="521.0" prefHeight="247.0" prefWidth="502.0">
+      <TableView fx:id="reportsTable" layoutX="233.0" layoutY="521.0" prefHeight="247.0" prefWidth="753.0">
          <columns>
-            <TableColumn fx:id="repPublishDateCol" prefWidth="104.0" text="Emessa" />
-            <TableColumn fx:id="repDeadlineCol" prefWidth="98.0" text="Scadenza" />
-            <TableColumn fx:id="repPaidDateCol" prefWidth="102.0" text="Pagata" />
-            <TableColumn fx:id="repCostCol" prefWidth="119.0" text="Importo" />
-            <TableColumn fx:id="repEstimatedCol" prefWidth="77.0" text="Stimata" />
+            <TableColumn fx:id="repPublishDateCol" prefWidth="94.0" text="Emessa" />
+            <TableColumn fx:id="repIntervalStartCol" prefWidth="103.0" text="Inizio periodo" />
+            <TableColumn fx:id="repIntervalEndCol" prefWidth="91.0" text="Fine periodo" />
+            <TableColumn fx:id="repDeadlineCol" prefWidth="94.0" text="Scadenza" />
+            <TableColumn fx:id="repPaidDateCol" prefWidth="101.0" text="Pagata" />
+            <TableColumn fx:id="repCostCol" prefWidth="114.0" text="Importo" />
+            <TableColumn fx:id="repConsumptionCol" prefWidth="97.0" text="Consumi" />
+            <TableColumn fx:id="repEstimatedCol" prefWidth="57.0" text="Stimata" />
          </columns>
       </TableView>
       <Button fx:id="subInfo" layoutX="233.0" layoutY="409.0" mnemonicParsing="false" onAction="#showSubDetails" prefHeight="31.0" prefWidth="94.0" text="Dettagli">
@@ -90,40 +93,45 @@
          </font>
       </Button>
       <TextField fx:id="clientIdFilter" layoutX="50.0" layoutY="148.0" onAction="#doRefreshSubs" onKeyTyped="#doRefreshSubs" prefHeight="30.0" prefWidth="152.0" promptText="Codice cliente" />
-      <Button layoutX="343.0" layoutY="782.0" mnemonicParsing="false" onAction="#doDeleteReport" prefHeight="31.0" prefWidth="85.0" text="Elimina" textFill="#9a0000">
+      <Button layoutX="342.0" layoutY="782.0" mnemonicParsing="false" onAction="#doDeleteReport" prefHeight="31.0" prefWidth="85.0" text="Elimina" textFill="#9a0000">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="1060.0" layoutY="617.0" mnemonicParsing="false" onAction="#loadReportFile" prefHeight="31.0" prefWidth="165.0" text="Carica file di dettaglio">
+      <Button layoutX="1287.0" layoutY="617.0" mnemonicParsing="false" onAction="#loadReportFile" prefHeight="31.0" prefWidth="165.0" text="Carica file di dettaglio">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="1056.0" layoutY="569.0" text="Stato:">
+      <Label layoutX="1285.0" layoutY="580.0" text="Stato:">
          <font>
             <Font size="17.0" />
          </font>
       </Label>
-      <Label fx:id="reportFileStatus" layoutX="1132.0" layoutY="569.0" text="non caricato">
+      <Label fx:id="reportFileStatus" layoutX="1361.0" layoutY="580.0" text="non caricato">
          <font>
             <Font size="17.0" />
          </font>
       </Label>
-      <Button layoutX="233.0" layoutY="782.0" mnemonicParsing="false" onAction="#doDownloadFile" prefHeight="31.0" prefWidth="93.0" text="Scarica file">
+      <Button layoutX="233.0" layoutY="782.0" mnemonicParsing="false" onAction="#doDownloadFile" prefHeight="31.0" prefWidth="94.0" text="Scarica file">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <CheckBox fx:id="estimatedCheckbox" layoutX="833.0" layoutY="535.0" mnemonicParsing="false" text="Stimata">
+      <CheckBox fx:id="estimatedCheckbox" layoutX="1060.0" layoutY="535.0" mnemonicParsing="false" text="Stimata">
          <font>
             <Font size="16.0" />
          </font>
       </CheckBox>
-      <TextField fx:id="consumptionField" layoutX="834.0" layoutY="601.0" prefHeight="31.0" prefWidth="164.0" promptText="Consumi" />
-      <DatePicker fx:id="intervalStartDatePicker" layoutX="833.0" layoutY="645.0" prefHeight="31.0" prefWidth="191.0" promptText="Inizio periodo" />
-      <DatePicker fx:id="intervalEndDatePicker" layoutX="833.0" layoutY="687.0" prefHeight="31.0" prefWidth="191.0" promptText="Fine periodo" />
+      <TextField fx:id="consumptionField" layoutX="1060.0" layoutY="617.0" prefHeight="31.0" prefWidth="164.0" promptText="Consumi" />
+      <DatePicker fx:id="intervalStartDatePicker" layoutX="1060.0" layoutY="664.0" prefHeight="31.0" prefWidth="191.0" promptText="Inizio periodo" />
+      <DatePicker fx:id="intervalEndDatePicker" layoutX="1060.0" layoutY="714.0" prefHeight="31.0" prefWidth="191.0" promptText="Fine periodo" />
       <Button fx:id="rejectMeasurement" layoutX="1155.0" layoutY="409.0" mnemonicParsing="false" onAction="#doRejectMeasurement" prefHeight="31.0" prefWidth="94.0" text="Respingi" textFill="#9e0000">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button layoutX="1261.0" layoutY="409.0" mnemonicParsing="false" onAction="#deleteMeasurement" prefHeight="31.0" prefWidth="94.0" text="Elimina">
          <font>
             <Font size="15.0" />
          </font>

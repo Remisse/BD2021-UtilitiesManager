@@ -1,12 +1,12 @@
 package bdproject.controller.gui;
 
-import bdproject.controller.gui.operators.AreaSelectorController;
+import bdproject.controller.gui.admin.AreaSelectorController;
 import bdproject.controller.gui.users.CatalogueController;
 import bdproject.controller.gui.users.UserAreaController;
 import bdproject.controller.gui.users.UserSignUpController;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -71,11 +71,11 @@ public class HomeController extends AbstractController implements Initializable 
             signupLabel.setVisible(false);
             signupButton.setVisible(false);
 
-            catalogueLabel.setVisible(!s.isOperator());
-            catalogueButton.setVisible(!s.isOperator());
+            catalogueLabel.setVisible(!s.isEmployee());
+            catalogueButton.setVisible(!s.isEmployee());
 
-            adminArea.setVisible(s.isOperator());
-            userArea.setVisible(!s.isOperator());
+            adminArea.setVisible(s.isEmployee());
+            userArea.setVisible(!s.isEmployee());
         }), () -> Platform.runLater(() -> {
             email.setVisible(true);
             password.setVisible(true);
@@ -122,16 +122,16 @@ public class HomeController extends AbstractController implements Initializable 
                             u.component2(),
                             isOperator
                     )));
-                }, () -> FXUtils.showBlockingWarning("Indirizzo e-mail o password errati."));
+                }, () -> ViewUtils.showBlockingWarning("Indirizzo e-mail o password errati."));
         } catch (Exception e) {
-            FXUtils.showError(e.getMessage());
+            ViewUtils.showError(e.getMessage());
         }
     }
 
     @FXML
     private void doLogout(ActionEvent event) {
         switchTo(HomeController.create(stage(), dataSource(), SessionHolder.empty()));
-        FXUtils.showBlockingWarning("Disconnessione avvenuta con successo.");
+        ViewUtils.showBlockingWarning("Disconnessione avvenuta con successo.");
     }
 
     @FXML

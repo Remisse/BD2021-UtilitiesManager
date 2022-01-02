@@ -4,15 +4,15 @@ import bdproject.controller.Choice;
 import bdproject.controller.ChoiceImpl;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
+import bdproject.controller.gui.admin.AreaSelectorController;
 import bdproject.model.types.PremiseType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Contatori;
 import bdproject.tables.pojos.Immobili;
 import bdproject.tables.pojos.MateriePrime;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.view.StringUtils;
-import com.sun.glass.ui.PlatformFactory;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -99,7 +99,7 @@ public class PremiseManagementController extends AbstractController implements I
             findMeterUtilityBox.setItems(FXCollections.observableList(choices));
         } catch (SQLException e) {
             e.printStackTrace();
-            FXUtils.showError(e.getMessage());
+            ViewUtils.showError(e.getMessage());
         }
 
         final List<Choice<PremiseType, String>> types = new ArrayList<>();
@@ -139,7 +139,7 @@ public class PremiseManagementController extends AbstractController implements I
             premiseTable.setItems(FXCollections.observableList(premises));
         } catch (SQLException e) {
             e.printStackTrace();
-            FXUtils.showError(StringUtils.getGenericError());
+            ViewUtils.showError(StringUtils.getGenericError());
         }
     }
 
@@ -157,7 +157,7 @@ public class PremiseManagementController extends AbstractController implements I
             meterTable.setItems(FXCollections.observableList(meters));
         } catch (SQLException e) {
             e.printStackTrace();
-            FXUtils.showError(e.getMessage());
+            ViewUtils.showError(e.getMessage());
         }
     }
 
@@ -183,7 +183,7 @@ public class PremiseManagementController extends AbstractController implements I
 
     @FXML
     private void doEditPremise() {
-        FXUtils.showConfirmationDialog("Vuoi davvero modificare i dati dell'immobile?", () -> {
+        ViewUtils.showConfirmationDialog("Vuoi davvero modificare i dati dell'immobile?", () -> {
             final Immobili selected = premiseTable.getSelectionModel().getSelectedItem();
 
             if (selected != null) {
@@ -201,19 +201,19 @@ public class PremiseManagementController extends AbstractController implements I
                                 conn);
                         if (result == 1) {
                             updatePremiseTable();
-                            FXUtils.showBlockingWarning("Dati dell'immobile modificati.");
+                            ViewUtils.showBlockingWarning("Dati dell'immobile modificati.");
                         } else {
-                            FXUtils.showError("Impossibile modificati i dati.");
+                            ViewUtils.showError("Impossibile modificati i dati.");
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
-                        FXUtils.showError(e.getMessage());
+                        ViewUtils.showError(e.getMessage());
                     }
                 } else {
-                    FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");
+                    ViewUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");
                 }
             } else {
-                FXUtils.showBlockingWarning("Seleziona un immobile.");
+                ViewUtils.showBlockingWarning("Seleziona un immobile.");
             }
         });
     }
@@ -243,17 +243,17 @@ public class PremiseManagementController extends AbstractController implements I
                             meterTable.getSelectionModel().select(toSelect);
                             meterTable.scrollTo(m);
                         });
-                    }, () -> FXUtils.showBlockingWarning("A questo immobile non è associato un contatore per " +
+                    }, () -> ViewUtils.showBlockingWarning("A questo immobile non è associato un contatore per " +
                                     "la misurazione della materia prima selezionata."));
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    FXUtils.showError(e.getMessage());
+                    ViewUtils.showError(e.getMessage());
                 }
             } else {
-                FXUtils.showBlockingWarning("Seleziona una materia prima dal menu a tendina.");
+                ViewUtils.showBlockingWarning("Seleziona una materia prima dal menu a tendina.");
             }
         } else {
-            FXUtils.showBlockingWarning("Seleziona un immobile.");
+            ViewUtils.showBlockingWarning("Seleziona un immobile.");
         }
     }
 

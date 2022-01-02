@@ -3,14 +3,16 @@ package bdproject.controller.gui.operators;
 import bdproject.controller.Checks;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
+import bdproject.controller.gui.admin.AreaSelectorController;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.MateriePrime;
 import bdproject.tables.pojos.Offerte;
 import bdproject.tables.pojos.TipologieUso;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -29,6 +31,8 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -103,23 +107,30 @@ public class CatalogueManagementController extends AbstractController implements
     }
 
     private void initPlanTable() {
-        nameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNome()));
-        idCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCodofferta()).asObject());
-        descriptionCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDescrizione()));
-        utilityCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getMateriaprima()));
-        costCol.setCellValueFactory(c -> new SimpleStringProperty(
-                DecimalFormat.getInstance().format(c.getValue().getCostomateriaprima()) + " " +
-                        mUnit.get(c.getValue().getMateriaprima())));
-        activeCol.setCellValueFactory(c -> new SimpleStringProperty(StringUtils.byteToYesNo(c.getValue().getAttiva())));
+        Platform.runLater(() -> {
+            nameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNome()));
+            idCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCodofferta()).asObject());
+            descriptionCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDescrizione()));
+            utilityCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getMateriaprima()));
+            costCol.setCellValueFactory(c -> new SimpleStringProperty(
+                    DecimalFormat.getInstance().format(c.getValue().getCostomateriaprima()) + " " +
+                            mUnit.get(c.getValue().getMateriaprima())));
+            activeCol.setCellValueFactory(c -> new SimpleStringProperty(StringUtils.byteToYesNo(c.getValue().getAttiva())));
+        });
     }
 
     private void refreshPlanTable() {
+        List<Offerte> plans = Collections.emptyList();
+
         try (Connection conn = dataSource().getConnection()) {
             final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-            planTable.setItems(FXCollections.observableList(Queries.fetchAll(ctx, OFFERTE, Offerte.class)));
+            plans = Queries.fetchAll(ctx, OFFERTE, Offerte.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        final List<Offerte> finalPlans = plans;
+        Platform.runLater(() -> planTable.setItems(FXCollections.observableList(finalPlans)));
     }
 
     private boolean arePlanFieldsValid() {
@@ -142,16 +153,16 @@ public class CatalogueManagementController extends AbstractController implements
                         ctx
                         );
                 if (result == 1) {
-                    FXUtils.showBlockingWarning("Offerta inserita.");
+                    ViewUtils.showBlockingWarning("Offerta inserita.");
                     refreshPlanTable();
                 } else {
-                    FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                    ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            FXUtils.showBlockingWarning("Controlla i dati immessi.");
+            ViewUtils.showBlockingWarning("Controlla i dati immessi.");
         }
     }
 
@@ -159,7 +170,7 @@ public class CatalogueManagementController extends AbstractController implements
     private void doEdit() {
         final Offerte selectedPlan = planTable.getSelectionModel().getSelectedItem();
         if (selectedPlan != null && arePlanFieldsValid()) {
-            FXUtils.showConfirmationDialog("Verranno modificati nome, descrizione e stato di attivazione. Vuoi continuare?", () -> {
+            ViewUtils.showConfirmationDialog("Verranno modificati nome, descrizione e stato di attivazione. Vuoi continuare?", () -> {
                 try (Connection conn = dataSource().getConnection()) {
                     final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
                     final int result = Queries.updatePlan(
@@ -170,10 +181,10 @@ public class CatalogueManagementController extends AbstractController implements
                             ctx
                     );
                     if (result == 1) {
-                        FXUtils.showBlockingWarning("Offerta aggiornata.");
+                        ViewUtils.showBlockingWarning("Offerta aggiornata.");
                         refreshPlanTable();
                     } else {
-                        FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                        ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -181,9 +192,9 @@ public class CatalogueManagementController extends AbstractController implements
             });
         } else {
             if (selectedPlan == null) {
-                FXUtils.showBlockingWarning("Seleziona un'offerta da modificare.");
+                ViewUtils.showBlockingWarning("Seleziona un'offerta da modificare.");
             } else {
-                FXUtils.showBlockingWarning("Controlla i dati immessi.");
+                ViewUtils.showBlockingWarning("Controlla i dati immessi.");
             }
         }
     }
@@ -196,19 +207,19 @@ public class CatalogueManagementController extends AbstractController implements
                 final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
                 final int result = Queries.deleteGeneric(OFFERTE, OFFERTE.CODOFFERTA, selectedPlan.getCodofferta(), ctx);
                 if (result == 1) {
-                    FXUtils.showBlockingWarning("Offerta eliminata.");
+                    ViewUtils.showBlockingWarning("Offerta eliminata.");
                     refreshPlanTable();
                 } else {
-                    FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                    ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                 }
             } catch (DataAccessException e1) {
-                FXUtils.showBlockingWarning("L'offerta è associata a richieste, contratti e/o compatibilità. " +
+                ViewUtils.showBlockingWarning("L'offerta è associata a richieste, contratti e/o compatibilità. " +
                         "Impossibile eliminare.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            FXUtils.showBlockingWarning("Seleziona un'offerta da eliminare.");
+            ViewUtils.showBlockingWarning("Seleziona un'offerta da eliminare.");
         }
     }
 
@@ -216,29 +227,36 @@ public class CatalogueManagementController extends AbstractController implements
     private void doPasteIntoFields() {
         final Offerte selectedPlan = planTable.getSelectionModel().getSelectedItem();
         if (selectedPlan != null) {
-            nameField.setText(selectedPlan.getNome());
-            descriptionArea.setText(selectedPlan.getDescrizione());
-            utilityBox.setValue(selectedPlan.getMateriaprima());
-            costField.setText(selectedPlan.getCostomateriaprima().toString());
-            if (selectedPlan.getAttiva() == 1) {
-                activeYes.setSelected(true);
-            } else {
-                activeNo.setSelected(true);
-            }
+            Platform.runLater(() -> {
+                nameField.setText(selectedPlan.getNome());
+                descriptionArea.setText(selectedPlan.getDescrizione());
+                utilityBox.setValue(selectedPlan.getMateriaprima());
+                costField.setText(selectedPlan.getCostomateriaprima().toString());
+                if (selectedPlan.getAttiva() == 1) {
+                    activeYes.setSelected(true);
+                } else {
+                    activeNo.setSelected(true);
+                }
+            });
         }
     }
 
     private void initUseTable() {
-        useIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCoduso()).asObject());
-        useNameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNome()));
-        useEstimateCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStimaperpersona().toString()));
-        useDiscountCol.setCellValueFactory(c -> new SimpleStringProperty(StringUtils.byteToYesNo(c.getValue().getScontoreddito())));
+        Platform.runLater(() -> {
+            useIdCol.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCoduso()).asObject());
+            useNameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNome()));
+            useEstimateCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStimaperpersona().toString()));
+            useDiscountCol.setCellValueFactory(c -> new SimpleStringProperty(StringUtils.byteToYesNo(c.getValue()
+                    .getScontoreddito())));
+        });
     }
 
     private void refreshUseTable() {
         try (Connection conn = dataSource().getConnection()) {
             final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-            useTable.setItems(FXCollections.observableList(Queries.fetchAll(ctx, TIPOLOGIE_USO, TipologieUso.class)));
+            final List<TipologieUso> uses = Queries.fetchAll(ctx, TIPOLOGIE_USO, TipologieUso.class);
+
+            Platform.runLater(() ->useTable.setItems(FXCollections.observableList(uses)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -255,16 +273,16 @@ public class CatalogueManagementController extends AbstractController implements
                         discountApplicable.isSelected() ? (byte) 1 : (byte) 0,
                         ctx);
                 if (result == 1) {
-                    FXUtils.showBlockingWarning("Uso inserito.");
+                    ViewUtils.showBlockingWarning("Uso inserito.");
                     refreshUseTable();
                 } else {
-                    FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                    ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");
+            ViewUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");
         }
     }
 
@@ -287,19 +305,19 @@ public class CatalogueManagementController extends AbstractController implements
                             discountApplicable.isSelected() ? (byte) 1 : (byte) 0,
                             ctx);
                     if (result == 1) {
-                        FXUtils.showBlockingWarning("Tipologia d'uso aggiornata.");
+                        ViewUtils.showBlockingWarning("Tipologia d'uso aggiornata.");
                         refreshUseTable();
                     } else {
-                        FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                        ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");
+                ViewUtils.showBlockingWarning("Verifica di aver inserito correttamente i dati.");
             }
         } else {
-            FXUtils.showBlockingWarning("Seleziona una tipologia d'uso.");
+            ViewUtils.showBlockingWarning("Seleziona una tipologia d'uso.");
         }
     }
 
@@ -311,30 +329,34 @@ public class CatalogueManagementController extends AbstractController implements
                 final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
                 final int result = Queries.deleteGeneric(TIPOLOGIE_USO, TIPOLOGIE_USO.CODUSO, selectedUse.getCoduso(), ctx);
                 if (result == 1) {
-                    FXUtils.showBlockingWarning("Tipologia d'uso eliminata.");
+                    ViewUtils.showBlockingWarning("Tipologia d'uso eliminata.");
                     refreshUseTable();
                 } else {
-                    FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                    ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                 }
             } catch (DataAccessException e1) {
-                FXUtils.showBlockingWarning("L'uso è associato a richieste e/o compatibilità. Impossibile eliminare.");
+                ViewUtils.showBlockingWarning("L'uso è associato a richieste e/o compatibilità. Impossibile eliminare.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            FXUtils.showBlockingWarning("Seleziona una tipologia d'uso.");
+            ViewUtils.showBlockingWarning("Seleziona una tipologia d'uso.");
         }
     }
 
     private void initCompatibilityTable() {
-        compatUseCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().value2()));
-        compatPlanCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().value4()));
+        Platform.runLater(() -> {
+            compatUseCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().value2()));
+            compatPlanCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().value4()));
+        });
     }
 
     private void refreshCompatibilityTable() {
         try (Connection conn = dataSource().getConnection()) {
             final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-            compatibilityTable.setItems(FXCollections.observableList(Queries.fetchCompatibilities(ctx)));
+            final var compats = Queries.fetchCompatibilities(ctx);
+
+            Platform.runLater(() -> compatibilityTable.setItems(FXCollections.observableList(compats)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -344,23 +366,24 @@ public class CatalogueManagementController extends AbstractController implements
     private void doAddCompatibility() {
         final Offerte selectedPlan = planTable.getSelectionModel().getSelectedItem();
         final TipologieUso selectedUse = useTable.getSelectionModel().getSelectedItem();
+
         if (selectedPlan != null && selectedUse != null) {
             try (Connection conn = dataSource().getConnection()) {
                 final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
                 final int result = Queries.insertCompatibility(selectedUse.getCoduso(), selectedPlan.getCodofferta(), ctx);
                 if (result == 1) {
-                    FXUtils.showBlockingWarning("Compatibilità aggiunta.");
+                    ViewUtils.showBlockingWarning("Compatibilità aggiunta.");
                     refreshCompatibilityTable();
                 } else {
-                    FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                    ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                 }
             } catch (DataAccessException e1) {
-                FXUtils.showBlockingWarning("Probabile duplicato.");
+                ViewUtils.showBlockingWarning("Probabile duplicato.");
             }catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            FXUtils.showBlockingWarning("Seleziona un'offerta ed una tipologia d'uso.");
+            ViewUtils.showBlockingWarning("Seleziona un'offerta ed una tipologia d'uso.");
         }
     }
 
@@ -372,10 +395,10 @@ public class CatalogueManagementController extends AbstractController implements
                 final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
                 final int result = Queries.deleteCompatibility(selectedComp.component1(), selectedComp.component3(), ctx);
                 if (result == 1) {
-                    FXUtils.showBlockingWarning("Compatibilità eliminata.");
+                    ViewUtils.showBlockingWarning("Compatibilità eliminata.");
                     refreshCompatibilityTable();
                 } else {
-                    FXUtils.showBlockingWarning(StringUtils.getGenericError());
+                    ViewUtils.showBlockingWarning(StringUtils.getGenericError());
                 }
             } catch (Exception e) {
                 e.printStackTrace();

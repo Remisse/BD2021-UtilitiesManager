@@ -101,6 +101,7 @@ create table offerte (
 
 create table operatori (
 	 IdOperatore integer not null,
+     Tipo varchar(30) not null check (Tipo in ("Amministratore", "Operatore")),
      Stipendio decimal(20, 2) not null check (Stipendio >= 0),
      constraint PK_OPERATORE primary key (IdOperatore));
      
@@ -239,13 +240,16 @@ values (default, "385011111111", date_sub(curdate(), interval 2 month), 35.0, "A
 
 -- Populate "persone", "clienti" and "operatori"
 insert into persone
-values (default, "Mario", "Maria Mario", "MRMMRA55R08B963X", "Via Mario", 64, "Forlì", "47121", "FC", 19551005, "35426324", "trallallero@boh.it", "ucciucci");
+values (default, "Mario", "Maria Mario", "MRMMRA55R08B963X", "Via Mario", 64, "Forlì", "47121", "FC", 19551005, "3542632412", "trallallero@boh.it", "ucciucci");
 
 insert into persone
-values (default, "Bartolomeo", "Bartolucci", "BRTBBB25T87R762U", "Via delle Vie", 12, "Cesena", "47521", "FC", 19860621, "38275722", "bartolomeo@gmail.com", "uffiuffi");
+values (default, "Bartolomeo", "Bartolucci", "BRTBBB25T87R762U", "Via delle Vie", 12, "Cesena", "47521", "FC", 19860621, "3801985090", "bartolomeo@gmail.com", "uffiuffi");
 
 insert into persone
-values (default, "Armando", "Armandini", "GAGGUG92F28U275P", "Viale Vialone", 73, "Catanzaro", "88100", "CZ", 19951030, "292892992", "amministratore@admin.com", "password");
+values (default, "Armando", "Armandini", "GAGGUG92F28U275P", "Viale Vialone", 73, "Catanzaro", "88100", "CZ", 19910717, "3472850772", "amministratore@admin.com", "password");
+
+insert into persone
+values (default, "Osvaldo", "Ostrazio", "OSVOST29I17F762P", "Corso Corsini", 18, "Godo", "48026", "RA", 19890131, "3339920275", "operatore@op.com", "password");
 
 insert into clienti
 values (1, 3);
@@ -254,7 +258,10 @@ insert into clienti
 values (2, 1);
 
 insert into operatori
-values (3, 900.15);
+values (3, "Amministratore", 1640.83);
+
+insert into operatori
+values (4, "Operatore", 900.15);
 
 
 -- Populate "offerte" and "compatibilità"
@@ -296,32 +303,32 @@ values (date_sub(curdate(), interval 2 day), date_sub(curdate(), interval 122 da
 
 -- operatori contratti
 insert into `operatori contratti`
-values (1, 3);
+values (1, 4);
 
 insert into `operatori contratti`
-values (2, 3);
+values (2, 4);
 
 
 -- operatori letture
 insert into `operatori letture`
-values (1, 3);
+values (1, 4);
 
 insert into `operatori letture`
-values (2, 3);
+values (2, 4);
 
 
 -- Populate "bollette"
 insert into bollette(IdContratto, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore)
-values (1, date_sub(curdate(), interval 120 day), date_sub(curdate(), interval 185 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 90 day), 124.64, 18.0, unhex("54657374"), false, 3);
+values (1, date_sub(curdate(), interval 120 day), date_sub(curdate(), interval 185 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 90 day), 124.64, 18.0, unhex("54657374"), false, 4);
 
 insert into bollette(IdContratto, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore)
-values (2, date_sub(curdate(), interval 120 day), date_sub(curdate(), interval 185 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 90 day), 133.0, 35.0, unhex("54657374"), false, 3);
+values (2, date_sub(curdate(), interval 120 day), date_sub(curdate(), interval 185 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 90 day), 133.0, 35.0, unhex("54657374"), false, 4);
 
 insert into bollette(IdContratto, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore)
-values (1, date_sub(curdate(), interval 60 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 65 day), date_sub(curdate(), interval 30 day), 19.97, 33.0, unhex("54657374"), true, 3);
+values (1, date_sub(curdate(), interval 60 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 65 day), date_sub(curdate(), interval 30 day), 19.97, 33.0, unhex("54657374"), true, 4);
 
 insert into bollette(IdContratto, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore)
-values (2, date_sub(curdate(), interval 60 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 65 day), date_sub(curdate(), interval 30 day), 48.0, 50.0, unhex("54657374"), true, 3);
+values (2, date_sub(curdate(), interval 60 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 65 day), date_sub(curdate(), interval 30 day), 48.0, 50.0, unhex("54657374"), true, 4);
 
 
 -- Populate "pagamenti"
@@ -436,8 +443,3 @@ create view `richieste contratto` as select IdContratto, DataAperturaRichiesta, 
 create view `contratti approvati` as select C.*
 								       from contratti C
 								      where DataChiusuraRichiesta is not null and StatoRichiesta = "Approvata";
-			
-
--- Index Section
--- _____________ 
-

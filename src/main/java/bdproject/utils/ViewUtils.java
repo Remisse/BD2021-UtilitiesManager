@@ -4,9 +4,9 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
-public class FXUtils {
+public class ViewUtils {
 
-    private FXUtils() {}
+    private ViewUtils() {}
 
     private static void showBlocking(final Alert.AlertType type, final String message) {
         Alert alert = new Alert(type, message, ButtonType.CLOSE);

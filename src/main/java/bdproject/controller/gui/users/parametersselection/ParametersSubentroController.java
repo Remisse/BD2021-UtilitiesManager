@@ -7,7 +7,7 @@ import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.*;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -78,7 +78,7 @@ public class ParametersSubentroController extends AbstractParametersSelectionCon
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            FXUtils.showError(e.getMessage());
+            ViewUtils.showError(e.getMessage());
         }
     }
 }

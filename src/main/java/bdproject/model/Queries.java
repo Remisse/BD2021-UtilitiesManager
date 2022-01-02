@@ -1,5 +1,6 @@
 package bdproject.model;
 
+import bdproject.model.types.EmployeeType;
 import bdproject.model.types.StatusType;
 import bdproject.tables.pojos.*;
 import org.jooq.*;
@@ -86,10 +87,11 @@ public class Queries {
                 .execute();
     }
 
-    public static int insertOperator(final int personId, final Connection conn) {
+    public static int insertOperator(final int personId, final String type, final BigDecimal salary,
+                                     final Connection conn) {
         DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
         return query.insertInto(OPERATORI)
-                .values(personId)
+                .values(personId, type, salary)
                 .execute();
     }
 
@@ -798,5 +800,17 @@ public class Queries {
                 .and(MATERIE_PRIME.NOME.eq(utility))
                 .and(MATERIE_PRIME.NOME.eq(CONTATORI.MATERIAPRIMA))
                 .fetchOptionalInto(Contatori.class);
+    }
+
+    public static boolean isAdmin(final int employeeId, final Connection conn) {
+        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+
+        return ctx.select()
+                .from(OPERATORI)
+                .where(OPERATORI.IDOPERATORE.eq(employeeId))
+                .fetchOptionalInto(Operatori.class)
+                .orElseThrow()
+                .getTipo()
+                .equals(EmployeeType.ADMIN.toString());
     }
 }

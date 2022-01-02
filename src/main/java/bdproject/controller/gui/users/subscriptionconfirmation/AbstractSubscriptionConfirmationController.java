@@ -4,7 +4,7 @@ import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.HomeController;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.view.StringUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -75,14 +75,14 @@ public abstract class AbstractSubscriptionConfirmationController extends Abstrac
 
     @FXML
     private void insertSubscription() {
-        FXUtils.showConfirmationDialog(
+        ViewUtils.showConfirmationDialog(
             "Stai per richiedere l'attivazione di un contratto di fornitura. Vuoi continuare?", () -> {
             final int result = abstractInsertSubscription();
             if (result != 0) {
-                FXUtils.showBlockingWarning("Richiesta inserita con successo.");
+                ViewUtils.showBlockingWarning("Richiesta inserita con successo.");
                 switchTo(HomeController.create(stage(), dataSource(), getSessionHolder()));
             } else {
-                FXUtils.showBlockingWarning("Errore nell'inserimento della richiesta!");
+                ViewUtils.showBlockingWarning("Errore nell'inserimento della richiesta!");
             }
         });
     }

@@ -5,7 +5,7 @@ import bdproject.controller.gui.users.CatalogueController;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.*;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -88,7 +88,7 @@ public abstract class AbstractParametersSelectionController extends AbstractCont
 
     @FXML
     private void goBack() {
-        FXUtils.showConfirmationDialog(
+        ViewUtils.showConfirmationDialog(
                 "Tornando al catalogo, tutti i dati inseriti verranno persi. Vuoi tornare al catalogo?",
                 () -> switchTo(CatalogueController.create(stage(), dataSource(), getSessionHolder())));
     }
@@ -100,7 +100,7 @@ public abstract class AbstractParametersSelectionController extends AbstractCont
     @FXML
     private void nextScreen() {
         if (!areFieldsValid()) {
-            FXUtils.showError("Verifica di aver inserito correttamente i dati.");
+            ViewUtils.showError("Verifica di aver inserito correttamente i dati.");
         } else {
             process.setPeopleNo(Integer.parseInt(peopleNoField.getText()));
             abstractNextScreen();

@@ -6,18 +6,19 @@ public class SessionHolder {
 
     private Session session;
 
-    private SessionHolder() {}
+    private SessionHolder() {
+    }
 
-    private SessionHolder(final int id, final boolean isOperator, final String username) {
-        session = new SessionImpl(id, isOperator, username);
+    private SessionHolder(final int id, final boolean isEmployee, final String username) {
+        session = new SessionImpl(id, isEmployee, username);
     }
 
     public static SessionHolder empty() {
         return new SessionHolder();
     }
 
-    public static SessionHolder of(final int id, final String username, final boolean isOperator) {
-        return new SessionHolder(id, isOperator, username);
+    public static SessionHolder of(final int id, final String username, final boolean isEmployee) {
+        return new SessionHolder(id, isEmployee, username);
     }
 
     public Optional<Session> session() {
@@ -31,12 +32,12 @@ public class SessionHolder {
     private static class SessionImpl implements Session {
 
         private final int id;
-        private final boolean isOperator;
+        private final boolean isEmployee;
         private final String username;
 
-        public SessionImpl(final int id, final boolean isOperator, final String username) {
+        public SessionImpl(final int id, final boolean isEmployee, final String username) {
             this.id = id;
-            this.isOperator = isOperator;
+            this.isEmployee = isEmployee;
             this.username = username;
         }
 
@@ -46,8 +47,8 @@ public class SessionHolder {
         }
 
         @Override
-        public boolean isOperator() {
-            return isOperator;
+        public boolean isEmployee() {
+            return isEmployee;
         }
 
         @Override

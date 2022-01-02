@@ -5,7 +5,7 @@ import bdproject.controller.ChoiceImpl;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Redditi;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
@@ -68,14 +67,14 @@ public abstract class AbstractSignUpController extends AbstractController implem
             income.setValue(list.get(0));
             initOther(conn);
         } catch (SQLException e) {
-            FXUtils.showError(e.getMessage());
+            ViewUtils.showError(e.getMessage());
         }
     }
 
     @FXML
     private void doSignup(ActionEvent event) {
         if (areFieldsInvalid()) {
-            FXUtils.showBlockingWarning("Verifica i dati immessi.");
+            ViewUtils.showBlockingWarning("Verifica i dati immessi.");
         } else {
             try (Connection conn = dataSource().getConnection()) {
                 final int lastInsertId = Queries.insertPersonAndReturnId(
@@ -93,48 +92,51 @@ public abstract class AbstractSignUpController extends AbstractController implem
                         password.getText(),
                         conn);
                 if (lastInsertId == 0) {
-                    FXUtils.showBlockingWarning("Impossibile creare un nuovo account.");
+                    ViewUtils.showBlockingWarning("Impossibile creare un nuovo account.");
                 } else {
-                    final int result = abstractInsertRole(lastInsertId, income.getValue().getItem().getCodreddito(), conn);
+                    final int result = abstractInsert(lastInsertId, conn);
                     if (result == 1) {
-                        FXUtils.showBlockingWarning("Registrazione completata.");
+                        ViewUtils.showBlockingWarning("Registrazione completata.");
                         switchTo(HomeController.create(stage(), dataSource(), getSessionHolder()));
                     } else {
-                        FXUtils.showError("Creazione dell'account non riuscita.");
+                        ViewUtils.showError("Creazione dell'account non riuscita.");
                     }
                 }
             } catch (Exception e) {
-                FXUtils.showError(e.getMessage());
+                ViewUtils.showError(e.getMessage());
             }
         }
     }
 
     protected abstract void initOther(final Connection conn);
 
-    protected abstract int abstractInsertRole(final int personId, final int income, final Connection conn);
+    protected abstract int abstractInsert(final int personId, final Connection conn);
 
-    private boolean areFieldsInvalid() {
-        return (name.getText().length() == 0
-            || surname.getText().length() == 0
-            || idCode.getText().length() != ID_CODE_LIMIT
-            || birthdate.getValue() == null
-            || street.getText().length() == 0
-            || streetNo.getText().length() == 0
-            || municipality.getText().length() == 0
-            || postcode.getText().length() != POSTCODE_LIMIT
-            || province.getText().length() != PROVINCE_LIMIT
-            || income.getValue() == null
-            || phone.getText().length() == 0
-            || email.getText().length() == 0
-            || EmailValidator.getInstance().isValid(email.getText())
-            || password.getText().length() < PASSWORD_MIN
-            || password.getText().length() > PASSWORD_MAX
-            || !confirmPw.getText().equals(password.getText()));
+    protected abstract boolean areFieldsInvalid();
+
+    protected int getIdCodeLimit() {
+        return ID_CODE_LIMIT;
+    }
+
+    protected int getPostCodeLimit() {
+        return POSTCODE_LIMIT;
+    }
+
+    protected int getProvinceLimit() {
+        return PROVINCE_LIMIT;
+    }
+
+    protected int getPasswordMax() {
+        return PASSWORD_MAX;
+    }
+
+    protected int getPasswordMin() {
+        return PASSWORD_MIN;
     }
 
     @FXML
     private void backToHome(ActionEvent event) {
-        FXUtils.showConfirmationDialog(
+        ViewUtils.showConfirmationDialog(
                 "Vuoi davvero tornare al menu principale? Tutti i dati inseriti verranno persi.",
                 () -> switchTo(HomeController.create(stage(), dataSource(), getSessionHolder())));
     }

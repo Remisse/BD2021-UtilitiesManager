@@ -7,22 +7,22 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="570.0" layoutY="30.0" text="Area operatori">
+      <Label layoutX="563.0" layoutY="31.0" text="Area dipendenti">
          <font>
             <Font size="22.0" />
          </font>
       </Label>
-      <Button fx:id="subsArea" layoutX="516.0" layoutY="210.0" mnemonicParsing="false" onAction="#goToSubsArea" prefHeight="35.0" prefWidth="251.0" text="Contratti e bollette">
+      <Button fx:id="subsArea" layoutX="515.0" layoutY="186.0" mnemonicParsing="false" onAction="#goToSubsArea" prefHeight="35.0" prefWidth="251.0" text="Contratti e bollette">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="catalogue" layoutX="515.0" layoutY="324.0" mnemonicParsing="false" onAction="#goToCatalogue" prefHeight="35.0" prefWidth="251.0" text="Offerte e usi">
+      <Button fx:id="catalogue" layoutX="515.0" layoutY="289.0" mnemonicParsing="false" onAction="#goToCatalogue" prefHeight="35.0" prefWidth="251.0" text="Offerte e usi">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="misc" layoutX="515.0" layoutY="433.0" mnemonicParsing="false" onAction="#goToMisc" prefHeight="35.0" prefWidth="251.0" text="Altre operazioni">
+      <Button fx:id="misc" layoutX="515.0" layoutY="335.0" mnemonicParsing="false" onAction="#goToMisc" prefHeight="35.0" prefWidth="251.0" text="Altre operazioni">
          <font>
             <Font size="16.0" />
          </font>
@@ -32,22 +32,27 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="515.0" layoutY="267.0" mnemonicParsing="false" onAction="#goToPremisesAndMeters" prefHeight="35.0" prefWidth="251.0" text="Immobili e contatori">
+      <Button layoutX="515.0" layoutY="238.0" mnemonicParsing="false" onAction="#goToPremisesAndMeters" prefHeight="35.0" prefWidth="251.0" text="Immobili e contatori">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="515.0" layoutY="156.0" mnemonicParsing="false" onAction="#goToRequestsArea" prefHeight="35.0" prefWidth="251.0" text="Richieste">
+      <Button layoutX="515.0" layoutY="137.0" mnemonicParsing="false" onAction="#goToRequestsArea" prefHeight="35.0" prefWidth="251.0" text="Richieste">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="newOperator" layoutX="515.0" layoutY="378.0" mnemonicParsing="false" onAction="#goToNewOperatorSignUp" prefHeight="35.0" prefWidth="251.0" text="Nuovo operatore">
+      <Button fx:id="newOperator" layoutX="515.0" layoutY="472.0" mnemonicParsing="false" onAction="#goToNewOperatorSignUp" prefHeight="35.0" prefWidth="251.0" text="Nuovo dipendente">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="stats" layoutX="515.0" layoutY="519.0" mnemonicParsing="false" onAction="#goToStats" prefHeight="35.0" prefWidth="251.0" text="Statistiche">
+      <Button fx:id="stats" layoutX="516.0" layoutY="527.0" mnemonicParsing="false" onAction="#goToStats" prefHeight="35.0" prefWidth="251.0" text="Statistiche">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="assignments" layoutX="515.0" layoutY="418.0" mnemonicParsing="false" onAction="#goToAssignments" prefHeight="35.0" prefWidth="251.0" text="Assegnamenti">
          <font>
             <Font size="16.0" />
          </font>

@@ -4,7 +4,7 @@ public interface Session {
 
     int userId();
 
-    boolean isOperator();
+    boolean isEmployee();
 
     String username();
 }

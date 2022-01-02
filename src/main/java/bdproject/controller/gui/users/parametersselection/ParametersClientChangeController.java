@@ -8,7 +8,7 @@ import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.tables.pojos.*;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -98,15 +98,15 @@ public class ParametersClientChangeController extends AbstractParametersSelectio
 
                                 switchTo(ChangeClientConfirmationController.create(stage(), dataSource(), getSessionHolder(), process));
                             } else {
-                                FXUtils.showError("Verifica di aver inserito correttamente la lettura.");
+                                ViewUtils.showError("Verifica di aver inserito correttamente la lettura.");
                             }
-                        }, () -> FXUtils.showError("Offerta non trovata. Ma è davvero possibile?"));
-                    }, () -> FXUtils.showError("Nessun contratto trovato. Verifica che i dati inseriti siano corretti."));
-                }, () -> FXUtils.showError("Nessun cliente trovato. Verifica che il codice inserito sia corretto."));
-            }, () -> FXUtils.showError("Nessun contatore trovato. Verifica che la matricola inserita sia corretta."));
+                        }, () -> ViewUtils.showError("Offerta non trovata. Ma è davvero possibile?"));
+                    }, () -> ViewUtils.showError("Nessun contratto trovato. Verifica che i dati inseriti siano corretti."));
+                }, () -> ViewUtils.showError("Nessun cliente trovato. Verifica che il codice inserito sia corretto."));
+            }, () -> ViewUtils.showError("Nessun contatore trovato. Verifica che la matricola inserita sia corretta."));
         } catch (SQLException e) {
             e.printStackTrace();
-            FXUtils.showError(e.getMessage());
+            ViewUtils.showError(e.getMessage());
         }
     }
 }

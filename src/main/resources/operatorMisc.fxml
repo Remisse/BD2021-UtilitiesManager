@@ -18,10 +18,10 @@
       </Label>
       <TextField fx:id="street" layoutX="628.0" layoutY="117.0" prefHeight="30.0" prefWidth="218.0" promptText="Via" />
       <TextField fx:id="civic" layoutX="851.0" layoutY="117.0" prefHeight="30.0" prefWidth="53.0" promptText="Civico" />
-      <TextField fx:id="postcode" layoutX="628.0" layoutY="197.0" promptText="CAP" />
+      <TextField fx:id="postcode" layoutX="628.0" layoutY="197.0" prefHeight="30.0" prefWidth="164.0" promptText="CAP" />
       <TextField fx:id="state" layoutX="628.0" layoutY="237.0" prefHeight="30.0" prefWidth="77.0" promptText="Provincia" />
       <TextField fx:id="municipality" layoutX="628.0" layoutY="157.0" prefHeight="30.0" prefWidth="173.0" promptText="Comune" />
-      <Button layoutX="578.0" layoutY="294.0" mnemonicParsing="false" onAction="#doUpdatePerson" text="Salva modifiche">
+      <Button layoutX="571.0" layoutY="294.0" mnemonicParsing="false" onAction="#doUpdatePerson" text="Salva modifiche">
          <font>
             <Font size="16.0" />
          </font>
@@ -33,11 +33,11 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="254.0" layoutX="552.0" layoutY="418.0" stroke="#0000003a" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="185.0" />
-      <PasswordField fx:id="currentPw" layoutX="558.0" layoutY="440.0" promptText="Password attuale" />
-      <PasswordField fx:id="newPw" layoutX="558.0" layoutY="480.0" promptText="Nuova password" />
-      <PasswordField fx:id="confirmPw" layoutX="558.0" layoutY="520.0" promptText="Conferma password" />
-      <Button layoutX="576.0" layoutY="617.0" mnemonicParsing="false" onAction="#doUpdatePassword" text="Cambia password">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="254.0" layoutX="546.0" layoutY="417.0" stroke="#0000003a" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="185.0" />
+      <PasswordField fx:id="currentPw" layoutX="558.0" layoutY="434.0" prefHeight="30.0" prefWidth="164.0" promptText="Password attuale" />
+      <PasswordField fx:id="newPw" layoutX="558.0" layoutY="474.0" prefHeight="30.0" prefWidth="164.0" promptText="Nuova password" />
+      <PasswordField fx:id="confirmPw" layoutX="558.0" layoutY="514.0" prefHeight="30.0" prefWidth="164.0" promptText="Conferma password" />
+      <Button layoutX="568.0" layoutY="617.0" mnemonicParsing="false" onAction="#doUpdatePassword" text="Cambia password">
          <font>
             <Font size="15.0" />
          </font>

@@ -3,11 +3,13 @@ package bdproject.controller.gui.operators;
 import bdproject.controller.Checks;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
+import bdproject.controller.gui.admin.AreaSelectorController;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Persone;
-import bdproject.utils.FXUtils;
+import bdproject.utils.ViewUtils;
 import bdproject.view.StringUtils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.PasswordField;
@@ -19,6 +21,7 @@ import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static bdproject.tables.Persone.PERSONE;
@@ -55,20 +58,22 @@ public class MiscController extends AbstractController implements Initializable 
     }
 
     private void populateUserDetails() {
+        Optional<Persone> person = Optional.empty();
         try (Connection conn = dataSource().getConnection()) {
-            final Persone person = Queries.fetchPersonById(getSessionHolder().session().orElseThrow().userId(), conn)
-                    .orElseThrow();
-
-            street.setText(person.getVia());
-            civic.setText(person.getNumcivico());
-            postcode.setText(person.getCap());
-            municipality.setText(person.getComune());
-            state.setText(person.getProvincia());
-            email.setText(person.getEmail());
-            phone.setText(person.getNumerotelefono());
+            person = Queries.fetchPersonById(getSessionHolder().session().orElseThrow().userId(), conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        person.ifPresent(p -> Platform.runLater(() -> {
+            street.setText(p.getVia());
+            civic.setText(p.getNumcivico());
+            postcode.setText(p.getCap());
+            municipality.setText(p.getComune());
+            state.setText(p.getProvincia());
+            email.setText(p.getEmail());
+            phone.setText(p.getNumerotelefono());
+        }));
     }
 
     private boolean areUserFieldsInvalid() {
@@ -106,7 +111,7 @@ public class MiscController extends AbstractController implements Initializable 
     @FXML
     private void doUpdatePerson() {
         if (areUserFieldsInvalid()) {
-            FXUtils.showBlockingWarning("Verifica di aver inserito correttamente i nuovi dati.");
+            ViewUtils.showBlockingWarning("Verifica di aver inserito correttamente i nuovi dati.");
         } else {
             final int operatorId = getSessionHolder().session().orElseThrow().userId();
             try (Connection conn = dataSource().getConnection()) {
@@ -121,13 +126,13 @@ public class MiscController extends AbstractController implements Initializable 
                         operatorId,
                         conn);
                 if (resultUpdateData == 1) {
-                    FXUtils.showBlockingWarning("Dati modificati con successo.");
+                    ViewUtils.showBlockingWarning("Dati modificati con successo.");
                 } else {
-                    FXUtils.showBlockingWarning("Impossibile modificare i dati.");
+                    ViewUtils.showBlockingWarning("Impossibile modificare i dati.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError(StringUtils.getGenericError());
+                ViewUtils.showError(StringUtils.getGenericError());
             }
         }
     }
@@ -140,16 +145,16 @@ public class MiscController extends AbstractController implements Initializable 
                 final int resultUpdatePw = Queries.updateOneFieldWhere(PERSONE, PERSONE.IDPERSONA, operatorId,
                         PERSONE.PASSWORD, newPw.getText(), conn);
                 if (resultUpdatePw == 1) {
-                    FXUtils.showBlockingWarning("Password modificata con successo.");
+                    ViewUtils.showBlockingWarning("Password modificata con successo.");
                 } else {
-                    FXUtils.showBlockingWarning("Impossibile modificare la password.");
+                    ViewUtils.showBlockingWarning("Impossibile modificare la password.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                FXUtils.showError(StringUtils.getGenericError());
+                ViewUtils.showError(StringUtils.getGenericError());
             }
         } else {
-            FXUtils.showBlockingWarning("Verifica i dati inseriti.");
+            ViewUtils.showBlockingWarning("Verifica i dati inseriti.");
         }
     }
 
