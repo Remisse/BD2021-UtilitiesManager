@@ -5,6 +5,7 @@ package bdproject.tables.pojos;
 
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
@@ -16,19 +17,21 @@ public class OperatoriDettagliati implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Integer   idpersona;
-    private final String    nome;
-    private final String    cognome;
-    private final String    codicefiscale;
-    private final String    via;
-    private final String    numcivico;
-    private final String    comune;
-    private final String    cap;
-    private final String    provincia;
-    private final LocalDate datanascita;
-    private final String    numerotelefono;
-    private final String    email;
-    private final String    password;
+    private final Integer    idpersona;
+    private final String     nome;
+    private final String     cognome;
+    private final String     codicefiscale;
+    private final String     via;
+    private final String     numcivico;
+    private final String     comune;
+    private final String     cap;
+    private final String     provincia;
+    private final LocalDate  datanascita;
+    private final String     numerotelefono;
+    private final String     email;
+    private final String     password;
+    private final String     tipo;
+    private final BigDecimal stipendio;
 
     public OperatoriDettagliati(OperatoriDettagliati value) {
         this.idpersona = value.idpersona;
@@ -44,22 +47,26 @@ public class OperatoriDettagliati implements Serializable {
         this.numerotelefono = value.numerotelefono;
         this.email = value.email;
         this.password = value.password;
+        this.tipo = value.tipo;
+        this.stipendio = value.stipendio;
     }
 
     public OperatoriDettagliati(
-        Integer   idpersona,
-        String    nome,
-        String    cognome,
-        String    codicefiscale,
-        String    via,
-        String    numcivico,
-        String    comune,
-        String    cap,
-        String    provincia,
-        LocalDate datanascita,
-        String    numerotelefono,
-        String    email,
-        String    password
+        Integer    idpersona,
+        String     nome,
+        String     cognome,
+        String     codicefiscale,
+        String     via,
+        String     numcivico,
+        String     comune,
+        String     cap,
+        String     provincia,
+        LocalDate  datanascita,
+        String     numerotelefono,
+        String     email,
+        String     password,
+        String     tipo,
+        BigDecimal stipendio
     ) {
         this.idpersona = idpersona;
         this.nome = nome;
@@ -74,6 +81,8 @@ public class OperatoriDettagliati implements Serializable {
         this.numerotelefono = numerotelefono;
         this.email = email;
         this.password = password;
+        this.tipo = tipo;
+        this.stipendio = stipendio;
     }
 
     /**
@@ -167,6 +176,20 @@ public class OperatoriDettagliati implements Serializable {
         return this.password;
     }
 
+    /**
+     * Getter for <code>utenze.operatori dettagliati.Tipo</code>.
+     */
+    public String getTipo() {
+        return this.tipo;
+    }
+
+    /**
+     * Getter for <code>utenze.operatori dettagliati.Stipendio</code>.
+     */
+    public BigDecimal getStipendio() {
+        return this.stipendio;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("OperatoriDettagliati (");
@@ -184,6 +207,8 @@ public class OperatoriDettagliati implements Serializable {
         sb.append(", ").append(numerotelefono);
         sb.append(", ").append(email);
         sb.append(", ").append(password);
+        sb.append(", ").append(tipo);
+        sb.append(", ").append(stipendio);
 
         sb.append(")");
         return sb.toString();

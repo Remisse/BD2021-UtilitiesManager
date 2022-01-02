@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="778.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -21,30 +19,31 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <TableView fx:id="employeeTable" layoutX="183.0" layoutY="98.0" prefHeight="258.0" prefWidth="451.0">
+      <TableView fx:id="employeeTable" layoutX="120.0" layoutY="98.0" prefHeight="258.0" prefWidth="451.0">
         <columns>
           <TableColumn fx:id="employeeIdCol" prefWidth="75.0" text="Id" />
-            <TableColumn fx:id="employeeTypeCol" prefWidth="75.0" text="Ruolo" />
+            <TableColumn fx:id="employeeTypeCol" prefWidth="115.0" text="Ruolo" />
+            <TableColumn fx:id="employeeFullNameCol" prefWidth="186.0" text="Nome e cognome" />
         </columns>
       </TableView>
-      <TableView fx:id="measurementTable" layoutX="183.0" layoutY="434.0" prefHeight="258.0" prefWidth="419.0">
+      <TableView fx:id="measurementTable" layoutX="120.0" layoutY="434.0" prefHeight="258.0" prefWidth="419.0">
         <columns>
           <TableColumn fx:id="measurementNumberCol" prefWidth="75.0" text="Numero" />
           <TableColumn fx:id="measurementEmployeeCol" prefWidth="75.0" text="Operatore" />
-            <TableColumn fx:id="measurementStatusCol" prefWidth="75.0" text="Stato" />
+            <TableColumn fx:id="measurementStatusCol" prefWidth="102.0" text="Stato" />
         </columns>
       </TableView>
-      <Label layoutX="183.0" layoutY="77.0" text="Dipendenti">
+      <Label layoutX="120.0" layoutY="77.0" text="Dipendenti">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="712.0" layoutY="77.0" text="Richieste di contratto">
+      <Label layoutX="649.0" layoutY="77.0" text="Richieste di contratto">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="endTable" layoutX="711.0" layoutY="434.0" prefHeight="258.0" prefWidth="514.0">
+      <TableView fx:id="endTable" layoutX="648.0" layoutY="434.0" prefHeight="258.0" prefWidth="514.0">
          <columns>
             <TableColumn fx:id="endIdCol" prefWidth="75.0" text="Id" />
             <TableColumn fx:id="endEmployeeCol" prefWidth="86.0" text="Operatore" />
@@ -53,7 +52,7 @@
             <TableColumn fx:id="endCompletionDateCol" prefWidth="126.0" text="Data chiusura" />
          </columns>
       </TableView>
-      <TableView fx:id="subTable" layoutX="711.0" layoutY="98.0" prefHeight="258.0" prefWidth="514.0">
+      <TableView fx:id="subTable" layoutX="648.0" layoutY="98.0" prefHeight="258.0" prefWidth="514.0">
          <columns>
             <TableColumn fx:id="subIdCol" prefWidth="75.0" text="Id" />
             <TableColumn fx:id="subEmployeeCol" prefWidth="86.0" text="Dipendente" />
@@ -62,35 +61,30 @@
             <TableColumn fx:id="subCompletionDateCol" prefWidth="126.0" text="Data chiusura" />
          </columns>
       </TableView>
-      <Label layoutX="711.0" layoutY="411.0" text="Richieste di cessazione">
+      <Label layoutX="648.0" layoutY="411.0" text="Richieste di cessazione">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="183.0" layoutY="411.0" text="Letture">
+      <Label layoutX="120.0" layoutY="411.0" text="Letture">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Button layoutX="711.0" layoutY="363.0" mnemonicParsing="false" onAction="#assignSub" text="Assegna">
+      <Button layoutX="648.0" layoutY="363.0" mnemonicParsing="false" onAction="#assignSub" text="Assegna">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="183.0" layoutY="700.0" mnemonicParsing="false" onAction="#assignMeasurement" text="Assegna">
+      <Button layoutX="120.0" layoutY="700.0" mnemonicParsing="false" onAction="#assignMeasurement" text="Assegna">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="711.0" layoutY="700.0" mnemonicParsing="false" onAction="#assignEnd" text="Assegna">
+      <Button layoutX="648.0" layoutY="700.0" mnemonicParsing="false" onAction="#assignEnd" text="Assegna">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <CheckBox fx:id="hideCompleted" layoutX="31.0" layoutY="98.0" mnemonicParsing="false" onAction="#doHideCompleted" prefHeight="56.0" prefWidth="127.0" text="Nascondi completate" wrapText="true">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </CheckBox>
    </children>
 </AnchorPane>

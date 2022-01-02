@@ -161,7 +161,7 @@ public class SubscriptionManagementController extends AbstractController impleme
                             || (p.getValue().getDataemissione().isBefore(LocalDate.now().minus(Period.ofMonths(
                                         REPORT_PERIOD_MONTHS)))))
                     .filter(p -> !pastDeadlineFilter.isSelected() ||
-                            !Queries.allReportsPaid(p.getKey().getIdcontratto(), conn))
+                            !Queries.areAllReportsPaid(p.getKey().getIdcontratto(), conn))
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
         } catch (Exception e) {

@@ -65,8 +65,9 @@ public class OperatorSignUpController extends AbstractSignUpController {
         Platform.runLater(() -> {
             income.setVisible(false);
             incomeLabel.setVisible(false);
-            role.setItems(FXCollections.observableList(types));
         });
+
+        role.setItems(FXCollections.observableList(types));
     }
 
     @Override

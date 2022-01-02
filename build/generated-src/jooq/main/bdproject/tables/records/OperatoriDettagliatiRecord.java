@@ -6,11 +6,12 @@ package bdproject.tables.records;
 
 import bdproject.tables.OperatoriDettagliati;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.jooq.Field;
-import org.jooq.Record13;
-import org.jooq.Row13;
+import org.jooq.Record15;
+import org.jooq.Row15;
 import org.jooq.impl.TableRecordImpl;
 
 
@@ -18,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
  * VIEW
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagliatiRecord> implements Record13<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String> {
+public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagliatiRecord> implements Record15<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, String, BigDecimal> {
 
     private static final long serialVersionUID = 1L;
 
@@ -217,18 +218,48 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
         return (String) get(12);
     }
 
+    /**
+     * Setter for <code>utenze.operatori dettagliati.Tipo</code>.
+     */
+    public OperatoriDettagliatiRecord setTipo(String value) {
+        set(13, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>utenze.operatori dettagliati.Tipo</code>.
+     */
+    public String getTipo() {
+        return (String) get(13);
+    }
+
+    /**
+     * Setter for <code>utenze.operatori dettagliati.Stipendio</code>.
+     */
+    public OperatoriDettagliatiRecord setStipendio(BigDecimal value) {
+        set(14, value);
+        return this;
+    }
+
+    /**
+     * Getter for <code>utenze.operatori dettagliati.Stipendio</code>.
+     */
+    public BigDecimal getStipendio() {
+        return (BigDecimal) get(14);
+    }
+
     // -------------------------------------------------------------------------
-    // Record13 type implementation
+    // Record15 type implementation
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row15<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, String, BigDecimal> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 
     @Override
-    public Row13<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String> valuesRow() {
-        return (Row13) super.valuesRow();
+    public Row15<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, String, BigDecimal> valuesRow() {
+        return (Row15) super.valuesRow();
     }
 
     @Override
@@ -297,6 +328,16 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     @Override
+    public Field<String> field14() {
+        return OperatoriDettagliati.OPERATORI_DETTAGLIATI.TIPO;
+    }
+
+    @Override
+    public Field<BigDecimal> field15() {
+        return OperatoriDettagliati.OPERATORI_DETTAGLIATI.STIPENDIO;
+    }
+
+    @Override
     public Integer component1() {
         return getIdpersona();
     }
@@ -362,6 +403,16 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     @Override
+    public String component14() {
+        return getTipo();
+    }
+
+    @Override
+    public BigDecimal component15() {
+        return getStipendio();
+    }
+
+    @Override
     public Integer value1() {
         return getIdpersona();
     }
@@ -424,6 +475,16 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     @Override
     public String value13() {
         return getPassword();
+    }
+
+    @Override
+    public String value14() {
+        return getTipo();
+    }
+
+    @Override
+    public BigDecimal value15() {
+        return getStipendio();
     }
 
     @Override
@@ -505,7 +566,19 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     }
 
     @Override
-    public OperatoriDettagliatiRecord values(Integer value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, String value9, LocalDate value10, String value11, String value12, String value13) {
+    public OperatoriDettagliatiRecord value14(String value) {
+        setTipo(value);
+        return this;
+    }
+
+    @Override
+    public OperatoriDettagliatiRecord value15(BigDecimal value) {
+        setStipendio(value);
+        return this;
+    }
+
+    @Override
+    public OperatoriDettagliatiRecord values(Integer value1, String value2, String value3, String value4, String value5, String value6, String value7, String value8, String value9, LocalDate value10, String value11, String value12, String value13, String value14, BigDecimal value15) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -519,6 +592,8 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
         value11(value11);
         value12(value12);
         value13(value13);
+        value14(value14);
+        value15(value15);
         return this;
     }
 
@@ -536,7 +611,7 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
     /**
      * Create a detached, initialised OperatoriDettagliatiRecord
      */
-    public OperatoriDettagliatiRecord(Integer idpersona, String nome, String cognome, String codicefiscale, String via, String numcivico, String comune, String cap, String provincia, LocalDate datanascita, String numerotelefono, String email, String password) {
+    public OperatoriDettagliatiRecord(Integer idpersona, String nome, String cognome, String codicefiscale, String via, String numcivico, String comune, String cap, String provincia, LocalDate datanascita, String numerotelefono, String email, String password, String tipo, BigDecimal stipendio) {
         super(OperatoriDettagliati.OPERATORI_DETTAGLIATI);
 
         setIdpersona(idpersona);
@@ -552,6 +627,8 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
         setNumerotelefono(numerotelefono);
         setEmail(email);
         setPassword(password);
+        setTipo(tipo);
+        setStipendio(stipendio);
     }
 
     /**
@@ -574,6 +651,8 @@ public class OperatoriDettagliatiRecord extends TableRecordImpl<OperatoriDettagl
             setNumerotelefono(value.getNumerotelefono());
             setEmail(value.getEmail());
             setPassword(value.getPassword());
+            setTipo(value.getTipo());
+            setStipendio(value.getStipendio());
         }
     }
 }

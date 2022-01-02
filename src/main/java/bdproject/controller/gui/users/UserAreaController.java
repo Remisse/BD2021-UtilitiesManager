@@ -379,7 +379,7 @@ public class UserAreaController extends AbstractController implements Initializa
                 if (payment.isPresent()) {
                     ViewUtils.showBlockingWarning("La bolletta selezionata risulta già pagata.");
                 } else {
-                    final int outcome = Queries.payReport(report.getIdcontratto(), conn);
+                    final int outcome = Queries.markReportAsPaid(report.getIdcontratto(), conn);
                     if (outcome == 1) {
                         ViewUtils.showBlockingWarning("Pagamento effettuato con successo.");
                         updateReportTable();

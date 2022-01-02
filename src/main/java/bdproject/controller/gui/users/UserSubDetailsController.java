@@ -50,7 +50,7 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
         try (Connection conn = dataSource().getConnection()) {
             if (subscription.getDatacessazione() != null) {
                 ViewUtils.showBlockingWarning("Il contratto risulta già cessato.");
-            } else if (!Queries.allReportsPaid(subscription.getIdcontratto(), conn)) {
+            } else if (!Queries.areAllReportsPaid(subscription.getIdcontratto(), conn)) {
                 ViewUtils.showBlockingWarning("Risultano bollette non pagate. Non è attualmente" +
                         "possibile richiedere la cessazione.");
             } else {

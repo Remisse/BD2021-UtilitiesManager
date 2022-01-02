@@ -238,6 +238,14 @@ insert into letture
 values (default, "385011111111", date_sub(curdate(), interval 2 month), 35.0, "Approvata", 1);
 
 
+-- operatori letture
+insert into `operatori letture`
+values (1, 4);
+
+insert into `operatori letture`
+values (2, 4);
+
+
 -- Populate "persone", "clienti" and "operatori"
 insert into persone
 values (default, "Mario", "Maria Mario", "MRMMRA55R08B963X", "Via Mario", 64, "Forlì", "47121", "FC", 19551005, "3542632412", "trallallero@boh.it", "ucciucci");
@@ -298,7 +306,7 @@ insert into contratti(DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichies
 values (date_sub(curdate(), interval 123 day), date_sub(curdate(), interval 122 day), "Approvata", " ", 1, 1, 1, 4, 1, 1);
 
 insert into contratti(DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, Offerta, Uso, TipoAttivazione, NumeroComponenti, IdImmobile, IdCliente)
-values (date_sub(curdate(), interval 2 day), date_sub(curdate(), interval 122 day), "In lavorazione", " ", 2, 1, 1, 1, 2, 2);
+values (date_sub(curdate(), interval 2 day), default, "In lavorazione", " ", 2, 1, 1, 1, 2, 2);
 
 
 -- operatori contratti
@@ -309,13 +317,14 @@ insert into `operatori contratti`
 values (2, 4);
 
 
--- operatori letture
-insert into `operatori letture`
+-- cessazioni
+insert into cessazioni
+values (default, curdate(), default, "In lavorazione", "", 1);
+
+
+-- operatori cessazioni
+insert into `operatori cessazioni`
 values (1, 4);
-
-insert into `operatori letture`
-values (2, 4);
-
 
 -- Populate "bollette"
 insert into bollette(IdContratto, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore)
@@ -431,7 +440,7 @@ create view `clienti dettagliati` as select P.*, C.FasciaReddito
 									   from persone P, clienti C
 									  where P.IdPersona = C.CodiceCliente;
                                     
-create view `operatori dettagliati` as select P.*
+create view `operatori dettagliati` as select P.*, O.Tipo, O.Stipendio
 									     from persone P, operatori O
 									    where P.IdPersona = O.IdOperatore;
                                       
