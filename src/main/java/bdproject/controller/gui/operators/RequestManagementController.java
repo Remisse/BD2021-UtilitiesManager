@@ -3,6 +3,7 @@ package bdproject.controller.gui.operators;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
 import bdproject.controller.gui.admin.AreaSelectorController;
+import bdproject.model.types.ActivationType;
 import bdproject.model.types.StatusType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
@@ -172,9 +173,10 @@ public class RequestManagementController extends AbstractController implements I
                 } else {
                     result = Queries.approveSubscriptionRequest(activRequest.getIdcontratto(), conn);
                     if (result == 1) {
-                        ViewUtils.showBlockingWarning("Contratto creato.");
+                        ViewUtils.showBlockingWarning("Contratto attivato.");
                     } else {
-                        ViewUtils.showBlockingWarning("Impossibile creare il contratto.");
+                        ViewUtils.showBlockingWarning("Impossibile attivare il contratto. Verifica che non esista già per" +
+                                " questo immobile un contratto attivo relativo alla fornitura della stessa materia prima.");
                     }
                 }
             } catch (SQLException e) {

@@ -15,6 +15,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -175,6 +176,31 @@ public class SubscriptionManagementController extends AbstractController impleme
         final ContrattiApprovati selected = subsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             createSubWindow(OperatorSubDetailsController.create(null, dataSource(), getSessionHolder(), selected));
+        } else {
+            ViewUtils.showBlockingWarning("Seleziona un contratto.");
+        }
+    }
+
+    @FXML
+    private void doEndSub() {
+        final ContrattiApprovati selected = subsTable.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            ViewUtils.showConfirmationDialog(
+                    "Vuoi davvero cessare questo contratto? La scelta è irreversibile.",
+                    () -> {
+                        try (final Connection conn = dataSource().getConnection()) {
+                            final int result = Queries.ceaseSubscription(selected.getIdcontratto(), conn);
+                            if (result == 1) {
+                                doRefreshSubs();
+                                ViewUtils.showBlockingWarning("Contratto cessato.");
+                            } else {
+                                ViewUtils.showBlockingWarning("Impossibile cessare il contratto.");
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                            ViewUtils.showError(e.getMessage() + "\n" + e.getErrorCode());
+                        }
+                    });
         } else {
             ViewUtils.showBlockingWarning("Seleziona un contratto.");
         }

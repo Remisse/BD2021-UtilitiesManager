@@ -19,8 +19,6 @@ import java.util.Optional;
 
 public class ParametersSubentroController extends AbstractParametersSelectionController {
 
-    private static final String FXML_FILE = "meterAndActivation.fxml";
-
     @FXML private Label planLabel;
     @FXML private Label utilityLabel;
     @FXML private Label useLabel;

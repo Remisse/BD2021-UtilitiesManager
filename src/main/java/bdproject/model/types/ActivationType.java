@@ -3,7 +3,7 @@ package bdproject.model.types;
 public enum ActivationType {
 
     NEW_ACTIVATION("Nuova attivazione"),
-    SUBENTRO("SUBENTRO"),
+    SUBENTRO("Subentro"),
     VOLTURA("Voltura");
 
     private final String name;

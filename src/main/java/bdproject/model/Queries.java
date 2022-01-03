@@ -154,7 +154,6 @@ public class Queries {
         return query.update(CONTRATTI)
                 .set(CONTRATTI.DATACESSAZIONE, LocalDate.now())
                 .where(CONTRATTI.IDCONTRATTO.eq(subId))
-                .and(CONTRATTI.DATACHIUSURARICHIESTA.isNotNull())
                 .and(CONTRATTI.STATORICHIESTA.eq(StatusType.APPROVED.toString()))
                 .and(CONTRATTI.DATACESSAZIONE.isNull())
                 .execute();
@@ -571,12 +570,14 @@ public class Queries {
         final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
 
         return query.select(CONTRATTI.asterisk())
-                .from(CONTRATTI, IMMOBILI, CONTATORI)
+                .from(CONTRATTI, IMMOBILI, CONTATORI, OFFERTE)
                 .where(CONTRATTI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
                 .and(IMMOBILI.IDIMMOBILE.eq(CONTATORI.IDIMMOBILE))
                 .and(CONTATORI.MATRICOLA.eq(meterId))
                 .and(CONTRATTI.IDCLIENTE.eq(clientId))
                 .and(CONTRATTI.DATACESSAZIONE.isNull())
+                .and(OFFERTE.CODOFFERTA.eq(CONTRATTI.OFFERTA))
+                .and(OFFERTE.MATERIAPRIMA.eq(CONTATORI.MATERIAPRIMA))
                 .fetchOptionalInto(Contratti.class);
     }
 
@@ -765,6 +766,17 @@ public class Queries {
                 .set(CONTRATTI.STATORICHIESTA, StatusType.APPROVED.toString())
                 .where(CONTRATTI.IDCONTRATTO.eq(requestId))
                 .and(CONTRATTI.DATACHIUSURARICHIESTA.isNull())
+                .andNotExists(ctx.select(CONTRATTI.IDCONTRATTO)
+                        .from(CONTRATTI, IMMOBILI, OFFERTE, CONTATORI)
+                        .where(IMMOBILI.IDIMMOBILE.eq(ctx.selectDistinct(CONTRATTI.IDIMMOBILE)
+                                .from(CONTRATTI)
+                                .where(CONTRATTI.IDCONTRATTO.eq(requestId))))
+                        .and(OFFERTE.CODOFFERTA.eq(CONTRATTI.OFFERTA))
+                        .and(CONTATORI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
+                        .and(CONTRATTI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
+                        .and(OFFERTE.MATERIAPRIMA.eq(CONTATORI.MATERIAPRIMA)))
+                        .and(CONTRATTI.STATORICHIESTA.eq(StatusType.APPROVED.toString()))
+                        .and(CONTRATTI.DATACESSAZIONE.isNull())
                 .execute();
     }
 

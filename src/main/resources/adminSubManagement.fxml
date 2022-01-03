@@ -136,5 +136,10 @@
             <Font size="15.0" />
          </font>
       </Button>
+      <Button fx:id="endSub" layoutX="342.0" layoutY="409.0" mnemonicParsing="false" onAction="#doEndSub" prefHeight="31.0" prefWidth="130.0" text="Cessa contratto" textFill="#9e0000">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

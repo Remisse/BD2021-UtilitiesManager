@@ -1,5 +1,6 @@
 package bdproject.controller;
 
+import bdproject.model.types.StatusType;
 import bdproject.tables.pojos.Contratti;
 import bdproject.tables.pojos.ContrattiApprovati;
 import bdproject.tables.pojos.RichiesteContratto;
@@ -15,11 +16,8 @@ public class Checks {
         return s.codePoints().allMatch(Character::isDigit);
     }
 
-    /**
+    /*
      * Costly, but whatever
-     *
-     * @param str
-     * @return
      */
     public static boolean isBigDecimal(String str) {
         try {
@@ -38,11 +36,11 @@ public class Checks {
         return use.getNome().equals("Abitativo residenziale") || use.getNome().equals("Commerciale");
     }
 
-    public static boolean isSubscriptionActive(final ContrattiApprovati sub) {
-        return sub.getDatacessazione() == null;
+    public static boolean isSubscriptionActive(final ContrattiApprovati sub)  {
+        return sub.getStatorichiesta().equals(StatusType.APPROVED.toString()) && sub.getDatacessazione() == null;
     }
 
     public static boolean isSubscriptionRequestBeingReviewed(final RichiesteContratto sub) {
-        return sub.getDatachiusurarichiesta() == null;
+        return sub.getStatorichiesta().equals(StatusType.REVIEWING.toString()) && sub.getDatachiusurarichiesta() == null;
     }
 }

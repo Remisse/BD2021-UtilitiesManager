@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javax.sql.DataSource;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Optional;
 
 public abstract class AbstractParametersSelectionController extends AbstractController implements Initializable {
 
@@ -49,11 +50,16 @@ public abstract class AbstractParametersSelectionController extends AbstractCont
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        final Offerte plan = process.plan().orElseThrow();
+        final Optional<Offerte> plan = process.plan();
         final TipiAttivazione activationMethod = process.activation().orElseThrow();
 
-        planLabel.setText(plan.getNome());
-        utilityLabel.setText(plan.getMateriaprima());
+        plan.ifPresentOrElse(p -> {
+            planLabel.setText(p.getNome());
+            utilityLabel.setText(p.getMateriaprima());
+        }, () -> {
+            planLabel.setText("Non ancora specificata");
+            utilityLabel.setText("Non ancora specificata");
+        });
         useLabel.setText(process.usage().orElseThrow().getNome());
         methodLabel.setText(activationMethod.getNome());
 

@@ -61,52 +61,57 @@ public class ParametersClientChangeController extends AbstractParametersSelectio
     protected void abstractNextScreen() {
         final SubscriptionProcess process = getProcess();
 
-        try (final Connection conn = dataSource().getConnection()) {
-            final Optional<Contatori> meter = Queries.fetchMeterById(meterIdField.getText(), conn);
+        if (getSessionHolder().session().orElseThrow().userId() != Integer.parseInt(otherClientIdField.getText())) {
+            try (final Connection conn = dataSource().getConnection()) {
+                final Optional<Contatori> meter = Queries.fetchMeterById(meterIdField.getText(), conn);
 
-            meter.ifPresentOrElse(m -> {
-                final Optional<ClientiDettagliati> client = Queries.fetchClientById(
-                        Integer.parseInt(otherClientIdField.getText()), conn);
+                meter.ifPresentOrElse(m -> {
+                    final Optional<ClientiDettagliati> otherClient = Queries.fetchClientById(
+                            Integer.parseInt(otherClientIdField.getText()), conn);
 
-                client.ifPresentOrElse(c -> {
-                    /*
-                     * Find the subscription on which the new one will be based
-                     */
-                    final Optional<Contratti> subscription = Queries.fetchSubscriptionForChange(
-                            m.getMatricola(), c.getIdpersona(), conn);
+                    otherClient.ifPresentOrElse(oc -> {
+                        /*
+                         * Find the subscription on which the new one will be based
+                         */
+                        final Optional<Contratti> subscription = Queries.fetchSubscriptionForChange(
+                                m.getMatricola(), oc.getIdpersona(), conn);
 
-                    subscription.ifPresentOrElse(s -> {
-                        final Optional<Offerte> plan = Queries.fetchPlanById(s.getOfferta(), dataSource());
+                        subscription.ifPresentOrElse(s -> {
+                            final Optional<Offerte> plan = Queries.fetchPlanById(s.getOfferta(), dataSource());
 
-                        plan.ifPresentOrElse(p -> {
-                            if (Checks.isValidConsumption(measurementField.getText())) {
-                                Letture measurement = new Letture(
-                                        0,
-                                        m.getMatricola(),
-                                        LocalDate.now(),
-                                        BigDecimal.valueOf(Long.parseLong(measurementField.getText())),
-                                        StatusType.REVIEWING.toString(),
-                                        c.getIdpersona()
-                                );
-                                process.setMeasurement(measurement);
+                            plan.ifPresentOrElse(p -> {
+                                if (Checks.isValidConsumption(measurementField.getText())) {
+                                    Letture measurement = new Letture(
+                                            0,
+                                            m.getMatricola(),
+                                            LocalDate.now(),
+                                            BigDecimal.valueOf(Long.parseLong(measurementField.getText())),
+                                            StatusType.REVIEWING.toString(),
+                                            oc.getIdpersona()
+                                    );
+                                    process.setMeasurement(measurement);
 
-                                Immobili premise = Queries.fetchPremiseById(m.getIdimmobile(), conn).orElseThrow();
-                                process.setPremise(premise);
-                                process.setMeter(m);
-                                process.setOtherClient(c);
-                                process.setPlan(p);
+                                    Immobili premise = Queries.fetchPremiseById(m.getIdimmobile(), conn).orElseThrow();
+                                    process.setPremise(premise);
+                                    process.setMeter(m);
+                                    process.setOtherClient(oc);
+                                    process.setPlan(p);
 
-                                switchTo(ChangeClientConfirmationController.create(stage(), dataSource(), getSessionHolder(), process));
-                            } else {
-                                ViewUtils.showError("Verifica di aver inserito correttamente la lettura.");
-                            }
-                        }, () -> ViewUtils.showError("Offerta non trovata. Ma è davvero possibile?"));
-                    }, () -> ViewUtils.showError("Nessun contratto trovato. Verifica che i dati inseriti siano corretti."));
-                }, () -> ViewUtils.showError("Nessun cliente trovato. Verifica che il codice inserito sia corretto."));
-            }, () -> ViewUtils.showError("Nessun contatore trovato. Verifica che la matricola inserita sia corretta."));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            ViewUtils.showError(e.getMessage());
+                                    switchTo(ChangeClientConfirmationController.create(stage(), dataSource(),
+                                            getSessionHolder(), process));
+                                } else {
+                                    ViewUtils.showError("Verifica di aver inserito correttamente la lettura.");
+                                }
+                            }, () -> ViewUtils.showError("Offerta non trovata. Ma è davvero possibile?"));
+                        }, () -> ViewUtils.showError("Nessun contratto trovato. Verifica che i dati inseriti siano corretti."));
+                    }, () -> ViewUtils.showError("Nessun cliente trovato. Verifica che il codice inserito sia corretto."));
+                }, () -> ViewUtils.showError("Nessun contatore trovato. Verifica che la matricola inserita sia corretta."));
+            } catch (SQLException e) {
+                e.printStackTrace();
+                ViewUtils.showError(e.getMessage());
+            }
+        } else {
+            ViewUtils.showError("Hai scritto il tuo codice cliente! Inserisci quello dell'attuale intestatario.");
         }
     }
 }

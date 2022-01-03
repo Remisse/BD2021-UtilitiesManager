@@ -20,6 +20,7 @@ create table bollette (
      IdOperatore integer not null,
      IdContratto integer not null,
      check (DataScadenza > DataEmissione),
+     check (DataFinePeriodo > DataInizioPeriodo),
 	 constraint PK_BOLLETTA primary key (NumeroBolletta));
      
 create table cessazioni (
@@ -300,10 +301,10 @@ values (last_insert_id(), 1);
 
 -- contratti
 insert into contratti(DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, Offerta, Uso, TipoAttivazione, NumeroComponenti, IdImmobile, IdCliente)
-values (date_sub(curdate(), interval 123 day), date_sub(curdate(), interval 122 day), "Approvata", " ", 2, 1, 1, 4, 1, 1);
+values (date_sub(curdate(), interval 123 day), date_sub(curdate(), interval 122 day), "Approvata", "", 2, 1, 1, 4, 1, 1);
 
 insert into contratti(DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, Offerta, Uso, TipoAttivazione, NumeroComponenti, IdImmobile, IdCliente)
-values (date_sub(curdate(), interval 123 day), date_sub(curdate(), interval 122 day), "Approvata", " ", 1, 1, 1, 4, 1, 1);
+values (date_sub(curdate(), interval 123 day), date_sub(curdate(), interval 122 day), "Approvata", "", 1, 1, 1, 4, 1, 1);
 
 insert into contratti(DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, Offerta, Uso, TipoAttivazione, NumeroComponenti, IdImmobile, IdCliente)
 values (date_sub(curdate(), interval 2 day), default, "In lavorazione", " ", 2, 1, 1, 1, 2, 2);
@@ -373,10 +374,10 @@ alter table clienti add constraint FK_POSSEDIMENTO
 	foreign key (FasciaReddito) references redditi (CodReddito);
 
 alter table compatibilità add constraint FK_USOOFFERTA
-     foreign key (Uso) references tipologie_uso (CodUso);
+     foreign key (Uso) references tipologie_uso (CodUso) on delete cascade;
 
 alter table compatibilità add constraint FK_OFFERTAUSO
-     foreign key (Offerta) references offerte (CodOfferta);
+     foreign key (Offerta) references offerte (CodOfferta) on delete cascade;
      
 alter table contatori add constraint FK_MISURAZIONE
 	foreign key (MateriaPrima) references materie_prime (Nome);
@@ -412,22 +413,22 @@ alter table operatori add constraint FK_DATIANAGRAFICI
 	foreign key (IdOperatore) references persone (IdPersona);
     
 alter table `operatori cessazioni` add constraint FK_GESTIONE_CC1
-	foreign key (NumeroRichiesta) references cessazioni (NumeroRichiesta);
+	foreign key (NumeroRichiesta) references cessazioni (NumeroRichiesta) on delete cascade;
     
 alter table `operatori cessazioni` add constraint FK_GESTIONE_CO1
-	foreign key (IdOperatore) references operatori (IdOperatore);
+	foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
 
 alter table `operatori contratti` add constraint FK_GESTIONE_CC2
-	foreign key (NumeroRichiesta) references contratti (IdContratto);
+	foreign key (NumeroRichiesta) references contratti (IdContratto) on delete cascade;
     
 alter table `operatori contratti` add constraint FK_GESTIONE_CO2
-	foreign key (IdOperatore) references operatori (IdOperatore);
+	foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
 
 alter table `operatori letture` add constraint FK_GESTIONE_LC
-	foreign key (Lettura) references letture (NumeroLettura);
+	foreign key (Lettura) references letture (NumeroLettura) on delete cascade;
     
 alter table `operatori letture` add constraint FK_GESTIONE_LO
-	foreign key (IdOperatore) references operatori (IdOperatore);
+	foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
 
 alter table pagamenti add constraint FK_PAGAMENTO
 	foreign key (NumeroBolletta) references bollette (NumeroBolletta);

@@ -36,7 +36,7 @@ public class StringUtils {
                 .append(premise.getVia())
                 .append(" ")
                 .append(premise.getNumcivico())
-                .append(premise.getInterno() != null ? "\nInterno " + premise.getInterno() : "")
+                .append(!premise.getInterno().equals("") ? "\nInterno " + premise.getInterno() : "")
                 .append("\n")
                 .append(premise.getComune())
                 .append("\n")
