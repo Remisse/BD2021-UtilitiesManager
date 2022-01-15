@@ -30,7 +30,6 @@ public class OperatoriDettagliati implements Serializable {
     private final String     numerotelefono;
     private final String     email;
     private final String     password;
-    private final String     tipo;
     private final BigDecimal stipendio;
 
     public OperatoriDettagliati(OperatoriDettagliati value) {
@@ -47,7 +46,6 @@ public class OperatoriDettagliati implements Serializable {
         this.numerotelefono = value.numerotelefono;
         this.email = value.email;
         this.password = value.password;
-        this.tipo = value.tipo;
         this.stipendio = value.stipendio;
     }
 
@@ -65,7 +63,6 @@ public class OperatoriDettagliati implements Serializable {
         String     numerotelefono,
         String     email,
         String     password,
-        String     tipo,
         BigDecimal stipendio
     ) {
         this.idpersona = idpersona;
@@ -81,7 +78,6 @@ public class OperatoriDettagliati implements Serializable {
         this.numerotelefono = numerotelefono;
         this.email = email;
         this.password = password;
-        this.tipo = tipo;
         this.stipendio = stipendio;
     }
 
@@ -177,13 +173,6 @@ public class OperatoriDettagliati implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.operatori dettagliati.Tipo</code>.
-     */
-    public String getTipo() {
-        return this.tipo;
-    }
-
-    /**
      * Getter for <code>utenze.operatori dettagliati.Stipendio</code>.
      */
     public BigDecimal getStipendio() {
@@ -207,7 +196,6 @@ public class OperatoriDettagliati implements Serializable {
         sb.append(", ").append(numerotelefono);
         sb.append(", ").append(email);
         sb.append(", ").append(password);
-        sb.append(", ").append(tipo);
         sb.append(", ").append(stipendio);
 
         sb.append(")");

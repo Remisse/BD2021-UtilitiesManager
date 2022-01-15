@@ -33,7 +33,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     private static final String FXML_FILE = "subDetails.fxml";
     private static final String FLOW_CSS = "-fx-font: 16 arial";
 
-    private final ContrattiApprovati sub;
+    private final ContrattiAttivi sub;
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
 
     @FXML private Button back;
@@ -57,7 +57,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     @FXML private TableColumn<Cessazioni, String> reqNotesCol;
 
     protected AbstractSubscriptionDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiApprovati sub) {
+            final ContrattiAttivi sub) {
         super(stage, dataSource, holder, FXML_FILE);
         this.sub = sub;
     }
@@ -98,7 +98,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
 
     protected abstract void setOther();
 
-    protected ContrattiApprovati getSubscription() {
+    protected ContrattiAttivi getSubscription() {
         return sub;
     }
 

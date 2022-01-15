@@ -17,22 +17,18 @@ public class Operatori implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final Integer    idoperatore;
-    private final String     tipo;
     private final BigDecimal stipendio;
 
     public Operatori(Operatori value) {
         this.idoperatore = value.idoperatore;
-        this.tipo = value.tipo;
         this.stipendio = value.stipendio;
     }
 
     public Operatori(
         Integer    idoperatore,
-        String     tipo,
         BigDecimal stipendio
     ) {
         this.idoperatore = idoperatore;
-        this.tipo = tipo;
         this.stipendio = stipendio;
     }
 
@@ -41,13 +37,6 @@ public class Operatori implements Serializable {
      */
     public Integer getIdoperatore() {
         return this.idoperatore;
-    }
-
-    /**
-     * Getter for <code>utenze.operatori.Tipo</code>.
-     */
-    public String getTipo() {
-        return this.tipo;
     }
 
     /**
@@ -62,7 +51,6 @@ public class Operatori implements Serializable {
         StringBuilder sb = new StringBuilder("Operatori (");
 
         sb.append(idoperatore);
-        sb.append(", ").append(tipo);
         sb.append(", ").append(stipendio);
 
         sb.append(")");

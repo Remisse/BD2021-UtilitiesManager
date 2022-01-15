@@ -61,7 +61,7 @@ public class UserAreaController extends AbstractController implements Initializa
     @FXML private TableColumn<RichiesteContratto, String> reqUtilityCol;
     @FXML private TableColumn<RichiesteContratto, String> reqResultCol;
 
-    @FXML private ComboBox<Choice<Integer, ContrattiApprovati>> subscriptionChoice;
+    @FXML private ComboBox<Choice<Integer, ContrattiAttivi>> subscriptionChoice;
     @FXML private Button subDetails;
     @FXML private Button consumptionTrend;
 
@@ -139,7 +139,7 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void populateSubscriptionBox() {
-        List<Choice<Integer, ContrattiApprovati>> subs;
+        List<Choice<Integer, ContrattiAttivi>> subs;
         try (final Connection conn = dataSource().getConnection()) {
             subs = Queries.fetchApprovedSubscriptionsByClient(getSessionHolder().session().orElseThrow().userId(), conn)
                     .stream()
@@ -171,7 +171,7 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void initializeReportTable() {
-        final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+        final Choice<Integer, ContrattiAttivi> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
 
         if (subChoice != null) {
             paid.setCellValueFactory(cellData -> {
@@ -299,8 +299,10 @@ public class UserAreaController extends AbstractController implements Initializa
                                 0,
                                 meterId,
                                 LocalDate.now(),
-                                new BigDecimal(consumption.getText()),
+                                null,
                                 StatusType.REVIEWING.toString(),
+                                "",
+                                new BigDecimal(consumption.getText()),
                                 getSessionHolder().session().orElseThrow().userId()
                         );
 
@@ -324,7 +326,7 @@ public class UserAreaController extends AbstractController implements Initializa
     private void initializeMeasurementsTable() {
         String utility = "";
         try (final Connection conn = dataSource().getConnection()) {
-            final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+            final Choice<Integer, ContrattiAttivi> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
             if (subChoice != null) {
                 utility = Queries.fetchUtilityFromSubscription(subChoice.getValue().getIdcontratto(), conn)
                         .getNome();
@@ -348,7 +350,7 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void updateMeasurementsTable() {
-        final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+        final Choice<Integer, ContrattiAttivi> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
 
         if (subChoice != null) {
             try (Connection conn = dataSource().getConnection()) {

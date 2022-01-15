@@ -11,7 +11,7 @@ import bdproject.tables.ClientiDettagliati;
 import bdproject.tables.Compatibilità;
 import bdproject.tables.Contatori;
 import bdproject.tables.Contratti;
-import bdproject.tables.ContrattiApprovati;
+import bdproject.tables.ContrattiAttivi;
 import bdproject.tables.Immobili;
 import bdproject.tables.Letture;
 import bdproject.tables.MateriePrime;
@@ -87,7 +87,7 @@ public class Utenze extends SchemaImpl {
     /**
      * VIEW
      */
-    public final ContrattiApprovati CONTRATTI_APPROVATI = ContrattiApprovati.CONTRATTI_APPROVATI;
+    public final ContrattiAttivi CONTRATTI_ATTIVI = ContrattiAttivi.CONTRATTI_ATTIVI;
 
     /**
      * The table <code>utenze.immobili</code>.
@@ -187,7 +187,7 @@ public class Utenze extends SchemaImpl {
             Compatibilità.COMPATIBILITÀ,
             Contatori.CONTATORI,
             Contratti.CONTRATTI,
-            ContrattiApprovati.CONTRATTI_APPROVATI,
+            ContrattiAttivi.CONTRATTI_ATTIVI,
             Immobili.IMMOBILI,
             Letture.LETTURE,
             MateriePrime.MATERIE_PRIME,

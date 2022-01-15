@@ -2,7 +2,7 @@ package bdproject.controller;
 
 import bdproject.model.types.StatusType;
 import bdproject.tables.pojos.Contratti;
-import bdproject.tables.pojos.ContrattiApprovati;
+import bdproject.tables.pojos.ContrattiAttivi;
 import bdproject.tables.pojos.RichiesteContratto;
 import bdproject.tables.pojos.TipologieUso;
 
@@ -36,7 +36,7 @@ public class Checks {
         return use.getNome().equals("Abitativo residenziale") || use.getNome().equals("Commerciale");
     }
 
-    public static boolean isSubscriptionActive(final ContrattiApprovati sub)  {
+    public static boolean isSubscriptionActive(final ContrattiAttivi sub)  {
         return sub.getStatorichiesta().equals(StatusType.APPROVED.toString()) && sub.getDatacessazione() == null;
     }
 

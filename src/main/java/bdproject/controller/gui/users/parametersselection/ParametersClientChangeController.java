@@ -41,7 +41,7 @@ public class ParametersClientChangeController extends AbstractParametersSelectio
 
     private ParametersClientChangeController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
                                              final SubscriptionProcess process) {
-        super(stage, dataSource, holder, process);
+        super(stage, dataSource, holder, process, true, true, true);
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
@@ -85,8 +85,10 @@ public class ParametersClientChangeController extends AbstractParametersSelectio
                                             0,
                                             m.getMatricola(),
                                             LocalDate.now(),
-                                            BigDecimal.valueOf(Long.parseLong(measurementField.getText())),
+                                            null,
                                             StatusType.REVIEWING.toString(),
+                                            "",
+                                            BigDecimal.valueOf(Long.parseLong(measurementField.getText())),
                                             oc.getIdpersona()
                                     );
                                     process.setMeasurement(measurement);

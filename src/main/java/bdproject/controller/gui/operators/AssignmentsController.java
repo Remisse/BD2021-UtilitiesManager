@@ -1,4 +1,4 @@
-package bdproject.controller.gui.admin;
+package bdproject.controller.gui.operators;
 
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
@@ -8,12 +8,10 @@ import bdproject.model.types.StatusType;
 import bdproject.tables.pojos.*;
 import bdproject.utils.LocaleUtils;
 import bdproject.utils.ViewUtils;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -22,7 +20,6 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
-import javax.swing.text.View;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -33,7 +30,6 @@ import static bdproject.tables.Cessazioni.CESSAZIONI;
 import static bdproject.tables.Letture.LETTURE;
 import static bdproject.tables.OperatoriCessazioni.OPERATORI_CESSAZIONI;
 import static bdproject.tables.OperatoriContratti.OPERATORI_CONTRATTI;
-import static bdproject.tables.OperatoriDettagliati.OPERATORI_DETTAGLIATI;
 import static bdproject.tables.OperatoriLetture.OPERATORI_LETTURE;
 import static bdproject.tables.RichiesteContratto.RICHIESTE_CONTRATTO;
 
@@ -41,17 +37,12 @@ public class AssignmentsController extends AbstractController implements Initial
 
     private static final String FXML_FILE = "assignments.fxml";
     private static final DateTimeFormatter DATE_IT = LocaleUtils.getItDateFormatter();
+    private static final String FAILED_ERR = "Impossibile completare la richiesta.";
+    private static final String SUCCESS_MSG = "Presa in carico.";
 
     private List<OperatoriCessazioni> endAssignments;
     private List<OperatoriContratti> subAssignments;
     private List<OperatoriLetture> measurementAssignments;
-
-    @FXML private CheckBox hideCompleted;
-
-    @FXML private TableView<OperatoriDettagliati> employeeTable;
-    @FXML private TableColumn<OperatoriDettagliati, String> employeeIdCol;
-    @FXML private TableColumn<OperatoriDettagliati, String> employeeTypeCol;
-    @FXML private TableColumn<OperatoriDettagliati, String> employeeFullNameCol;
 
     @FXML private TableView<RichiesteContratto> subTable;
     @FXML private TableColumn<RichiesteContratto, String> subIdCol;
@@ -82,19 +73,18 @@ public class AssignmentsController extends AbstractController implements Initial
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        List<OperatoriDettagliati> ops = Collections.emptyList();
+        final int opId = getSessionHolder().session().orElseThrow().userId();
         List<RichiesteContratto> subs = Collections.emptyList();
         List<Cessazioni> ends = Collections.emptyList();
         List<Letture> measurements = Collections.emptyList();
 
         try (final Connection conn = dataSource().getConnection()) {
             final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-            
+
             endAssignments = Queries.fetchAll(ctx, OPERATORI_CESSAZIONI, OperatoriCessazioni.class);
             subAssignments = Queries.fetchAll(ctx, OPERATORI_CONTRATTI, OperatoriContratti.class);
             measurementAssignments = Queries.fetchAll(ctx, OPERATORI_LETTURE, OperatoriLetture.class);
 
-            ops = Queries.fetchAll(ctx, OPERATORI_DETTAGLIATI, OperatoriDettagliati.class);
             subs = Queries.fetchAll(ctx, RICHIESTE_CONTRATTO, RichiesteContratto.class);
             ends = Queries.fetchAll(ctx, CESSAZIONI, Cessazioni.class);
             measurements = Queries.fetchAll(ctx, LETTURE, Letture.class);
@@ -103,18 +93,9 @@ public class AssignmentsController extends AbstractController implements Initial
             ViewUtils.showError(e.getMessage());
         }
 
-        initializeEmployeeTable(ops);
         initializeSubTable(subs);
         initializeEndTable(ends);
         initializeMeasurementsTable(measurements);
-    }
-
-    private void initializeEmployeeTable(final List<OperatoriDettagliati> ops) {
-        employeeIdCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getIdpersona().toString()));
-        employeeTypeCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTipo()));
-        employeeFullNameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNome() +" " + c.getValue().getCognome()));
-
-        employeeTable.setItems(FXCollections.observableList(ops));
     }
 
     private void initializeSubTable(final List<RichiesteContratto> subs) {
@@ -204,91 +185,73 @@ public class AssignmentsController extends AbstractController implements Initial
 
     @FXML
     private void assignSub() {
-        final OperatoriDettagliati op = employeeTable.getSelectionModel().getSelectedItem();
+        final int opId = getSessionHolder().session().orElseThrow().userId();
+        final RichiesteContratto sub = subTable.getSelectionModel().getSelectedItem();
 
-        if (op != null) {
-            final RichiesteContratto sub = subTable.getSelectionModel().getSelectedItem();
+        if (sub != null && sub.getStatorichiesta().equals(StatusType.REVIEWING.toString())) {
+            try (final Connection conn = dataSource().getConnection()) {
+                final int result = Queries.insertSubRequestAssignment(opId, sub.getIdcontratto(), conn);
 
-            if (sub != null && sub.getStatorichiesta().equals(StatusType.REVIEWING.toString())) {
-                try (final Connection conn = dataSource().getConnection()) {
-                    final int result = Queries.insertSubRequestAssignment(op.getIdpersona(), sub.getIdcontratto(),
-                            conn);
-
-                    if (result == 1) {
-                        refreshSubTable();
-                        ViewUtils.showBlockingWarning("Assegnamento inserito con successo.");
-                    } else {
-                        ViewUtils.showBlockingWarning("Impossibile inserire l'assegnamento.");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    ViewUtils.showError(e.getMessage());
+                if (result == 1) {
+                    refreshSubTable();
+                    ViewUtils.showBlockingWarning(SUCCESS_MSG);
+                } else {
+                    ViewUtils.showBlockingWarning(FAILED_ERR);
                 }
-            } else {
-                ViewUtils.showBlockingWarning("Seleziona una richiesta di contratto non ancora finalizzata.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                ViewUtils.showError(e.getMessage());
             }
         } else {
-            ViewUtils.showBlockingWarning("Seleziona un dipendente.");
+            ViewUtils.showBlockingWarning("Seleziona una richiesta di contratto non ancora finalizzata.");
         }
     }
 
     @FXML
     private void assignMeasurement() {
-        final OperatoriDettagliati op = employeeTable.getSelectionModel().getSelectedItem();
+        final int opId = getSessionHolder().session().orElseThrow().userId();
+        final Letture measurement = measurementTable.getSelectionModel().getSelectedItem();
 
-        if (op != null) {
-            final Letture measurement = measurementTable.getSelectionModel().getSelectedItem();
+        if (measurement != null && measurement.getStato().equals(StatusType.REVIEWING.toString())) {
+            try (final Connection conn = dataSource().getConnection()) {
+                final int result = Queries.insertMeasurementAssignment(opId, measurement.getNumerolettura(), conn);
 
-            if (measurement != null && measurement.getStato().equals(StatusType.REVIEWING.toString())) {
-                try (final Connection conn = dataSource().getConnection()) {
-                    final int result = Queries.insertMeasurementAssignment(op.getIdpersona(),
-                            measurement.getNumerolettura(), conn);
-
-                    if (result == 1) {
-                        refreshMeasurementTable();
-                        ViewUtils.showBlockingWarning("Assegnamento inserito con successo.");
-                    } else {
-                        ViewUtils.showBlockingWarning("Impossibile inserire l'assegnamento.");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    ViewUtils.showError(e.getMessage());
+                if (result == 1) {
+                    refreshMeasurementTable();
+                    ViewUtils.showBlockingWarning(SUCCESS_MSG);
+                } else {
+                    ViewUtils.showBlockingWarning(FAILED_ERR);
                 }
-            } else {
-                ViewUtils.showBlockingWarning("Seleziona una lettura non ancora finalizzata.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                ViewUtils.showError(e.getMessage());
             }
         } else {
-            ViewUtils.showBlockingWarning("Seleziona un dipendente.");
+            ViewUtils.showBlockingWarning("Seleziona una lettura non ancora finalizzata.");
         }
     }
 
     @FXML
     private void assignEnd() {
-        final OperatoriDettagliati op = employeeTable.getSelectionModel().getSelectedItem();
+        final int opId = getSessionHolder().session().orElseThrow().userId();
+        final Cessazioni end = endTable.getSelectionModel().getSelectedItem();
 
-        if (op != null) {
-            final Cessazioni end = endTable.getSelectionModel().getSelectedItem();
+        if (end != null && end.getStatorichiesta().equals(StatusType.REVIEWING.toString())) {
+            try (final Connection conn = dataSource().getConnection()) {
+                final int result = Queries.insertEndRequestAssignment(opId, end.getNumerorichiesta(), conn);
 
-            if (end != null && end.getStatorichiesta().equals(StatusType.REVIEWING.toString())) {
-                try (final Connection conn = dataSource().getConnection()) {
-                    final int result = Queries.insertEndRequestAssignment(op.getIdpersona(), end.getNumerorichiesta(),
-                            conn);
-
-                    if (result == 1) {
-                        refreshEndTable();
-                        ViewUtils.showBlockingWarning("Assegnamento inserito con successo.");
-                    } else {
-                        ViewUtils.showBlockingWarning("Impossibile inserire l'assegnamento.");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    ViewUtils.showError(e.getMessage());
+                if (result == 1) {
+                    refreshEndTable();
+                    ViewUtils.showBlockingWarning(SUCCESS_MSG);
+                } else {
+                    ViewUtils.showBlockingWarning(FAILED_ERR);
                 }
-            } else {
-                ViewUtils.showBlockingWarning("Seleziona una richiesta di cessazione non ancora finalizzata.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                ViewUtils.showError(e.getMessage());
             }
         } else {
-            ViewUtils.showBlockingWarning("Seleziona un dipendente.");
+            ViewUtils.showBlockingWarning("Seleziona una richiesta di cessazione non ancora finalizzata.");
         }
     }
 

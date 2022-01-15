@@ -1,4 +1,4 @@
-val javaFxVersion = "16"
+val javaFxVersion = "17"
 val fxmodules = listOf("base", "controls", "fxml", "media", "graphics", "swing")
 val platforms = listOf("win", "linux", "mac")
 
@@ -15,8 +15,8 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 javafx {
@@ -36,7 +36,7 @@ dependencies {
     implementation("mysql:mysql-connector-java:8.0.27")
     jooqGenerator("mysql:mysql-connector-java:8.0.27")
 
-    // https://mvnrepository.com/artifact/commons-validator/commons-validator
+    // Commons Validator
     implementation("commons-validator:commons-validator:1.7")
 }
 

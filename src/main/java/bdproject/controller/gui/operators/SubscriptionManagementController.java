@@ -3,7 +3,6 @@ package bdproject.controller.gui.operators;
 import bdproject.controller.Checks;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
-import bdproject.controller.gui.admin.AreaSelectorController;
 import bdproject.model.types.StatusType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
@@ -15,7 +14,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -34,6 +32,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
@@ -46,9 +46,9 @@ public class SubscriptionManagementController extends AbstractController impleme
     private static final int REPORT_PERIOD_MONTHS = 2;
     private static final int NO_CLIENT = -1;
 
-    private List<ContrattiApprovati> subsList = Collections.emptyList();
+    private List<ContrattiAttivi> subsList = Collections.emptyList();
     private List<TipologieUso> useTypes;
-    private final Map<String, BiPredicate<ContrattiApprovati, Connection>> statuses = Map.of(
+    private final Map<String, BiPredicate<ContrattiAttivi, Connection>> statuses = Map.of(
             "Attivo", (s, c) -> Checks.isSubscriptionActive(s),
             "Cessato", (s, c) -> s.getDatacessazione() != null
     );
@@ -56,12 +56,12 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
 
-    @FXML private TableView<ContrattiApprovati> subsTable;
-    @FXML private TableColumn<ContrattiApprovati, Integer> clientIdCol;
-    @FXML private TableColumn<ContrattiApprovati, Integer> subIdCol;
-    @FXML private TableColumn<ContrattiApprovati, String> zoneCol;
-    @FXML private TableColumn<ContrattiApprovati, Integer> planIdCol;
-    @FXML private TableColumn<ContrattiApprovati, String> incomeDiscountCol;
+    @FXML private TableView<ContrattiAttivi> subsTable;
+    @FXML private TableColumn<ContrattiAttivi, Integer> clientIdCol;
+    @FXML private TableColumn<ContrattiAttivi, Integer> subIdCol;
+    @FXML private TableColumn<ContrattiAttivi, String> zoneCol;
+    @FXML private TableColumn<ContrattiAttivi, Integer> planIdCol;
+    @FXML private TableColumn<ContrattiAttivi, String> incomeDiscountCol;
     @FXML private TextField clientIdFilter;
     @FXML private ComboBox<String> statusFilter;
     @FXML private CheckBox lastReportFilter;
@@ -152,7 +152,7 @@ public class SubscriptionManagementController extends AbstractController impleme
         final String statusChoice = statusFilter.getValue();
 
         try (Connection conn = dataSource().getConnection()) {
-            Map<ContrattiApprovati, Bollette> subs = Queries.fetchAllSubscriptionsWithLastReport(conn);
+            Map<ContrattiAttivi, Bollette> subs = Queries.fetchAllSubscriptionsWithLastReport(conn);
 
             subsList = subs.entrySet()
                     .stream()
@@ -173,7 +173,7 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     @FXML
     private void showSubDetails() {
-        final ContrattiApprovati selected = subsTable.getSelectionModel().getSelectedItem();
+        final ContrattiAttivi selected = subsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             createSubWindow(OperatorSubDetailsController.create(null, dataSource(), getSessionHolder(), selected));
         } else {
@@ -183,7 +183,7 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     @FXML
     private void doEndSub() {
-        final ContrattiApprovati selected = subsTable.getSelectionModel().getSelectedItem();
+        final ContrattiAttivi selected = subsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             ViewUtils.showConfirmationDialog(
                     "Vuoi davvero cessare questo contratto? La scelta è irreversibile.",
@@ -215,7 +215,7 @@ public class SubscriptionManagementController extends AbstractController impleme
     }
 
     private void doRefreshMeasurements() {
-        final ContrattiApprovati sub = subsTable.getSelectionModel().getSelectedItem();
+        final ContrattiAttivi sub = subsTable.getSelectionModel().getSelectedItem();
         if (sub != null) {
             try (Connection conn = dataSource().getConnection()) {
                 final List<Letture> measurements = Queries.fetchMeasurements(sub.getIdcontratto(), conn);
@@ -231,19 +231,20 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     @FXML
     private void doConfirmMeasurement() {
-        updateMeasurement(StatusType.APPROVED);
+        updateMeasurement(Queries::approveMeasurement);
     }
 
     @FXML
     private void doRejectMeasurement() {
-        updateMeasurement(StatusType.REJECTED);
+        updateMeasurement(Queries::rejectMeasurement);
     }
 
-    private void updateMeasurement(final StatusType newStatus) {
+    private void updateMeasurement(final BiFunction<Integer, Connection, Integer> action) {
         final Letture selected = measurementsTable.getSelectionModel().getSelectedItem();
+
         if (selected != null) {
             try (Connection conn = dataSource().getConnection()) {
-                final int result = Queries.setMeasurementStatus(selected.getNumerolettura(), newStatus.toString(), conn);
+                final int result = action.apply(selected.getNumerolettura(), conn);
                 if (result != 0) {
                     ViewUtils.showBlockingWarning("Lettura aggiornata.");
                     doRefreshMeasurements();
@@ -299,7 +300,7 @@ public class SubscriptionManagementController extends AbstractController impleme
     }
 
     private void doRefreshReports() {
-        final ContrattiApprovati sub = subsTable.getSelectionModel().getSelectedItem();
+        final ContrattiAttivi sub = subsTable.getSelectionModel().getSelectedItem();
         if (sub != null) {
             try (Connection conn = dataSource().getConnection()) {
                 final var reports = Queries.fetchSubscriptionReports(sub, conn);
@@ -353,7 +354,7 @@ public class SubscriptionManagementController extends AbstractController impleme
     @FXML
     private void doPublishReport() {
         if (canPublishReport()) {
-            final ContrattiApprovati sub = subsTable.getSelectionModel().getSelectedItem();
+            final ContrattiAttivi sub = subsTable.getSelectionModel().getSelectedItem();
             if (sub != null) {
                 try (final Connection conn = dataSource().getConnection()) {
                     final int result = Queries.publishReport(

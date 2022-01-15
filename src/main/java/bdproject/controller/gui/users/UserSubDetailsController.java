@@ -5,7 +5,7 @@ import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Cessazioni;
-import bdproject.tables.pojos.ContrattiApprovati;
+import bdproject.tables.pojos.ContrattiAttivi;
 import bdproject.utils.ViewUtils;
 import bdproject.view.StringUtils;
 import javafx.fxml.FXML;
@@ -22,12 +22,12 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
     @FXML private TableView<Cessazioni> endRequestTable;
 
     protected UserSubDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiApprovati subscription) {
+            final ContrattiAttivi subscription) {
         super(stage, dataSource, holder, subscription);
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiApprovati subscription) {
+            final ContrattiAttivi subscription) {
         return new UserSubDetailsController(stage, dataSource, holder, subscription);
     }
 
@@ -45,7 +45,7 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
 
     @Override
     protected void abstractDoInsertEndRequest() {
-        final ContrattiApprovati subscription = getSubscription();
+        final ContrattiAttivi subscription = getSubscription();
 
         try (Connection conn = dataSource().getConnection()) {
             if (subscription.getDatacessazione() != null) {

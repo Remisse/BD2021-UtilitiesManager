@@ -6,7 +6,7 @@ import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Bollette;
-import bdproject.tables.pojos.ContrattiApprovati;
+import bdproject.tables.pojos.ContrattiAttivi;
 import bdproject.tables.pojos.Immobili;
 import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
@@ -37,7 +37,7 @@ import java.util.ResourceBundle;
 public class UserStatsController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "consumptionTrend.fxml";
-    private final ContrattiApprovati subscription;
+    private final ContrattiAttivi subscription;
 
     @FXML private Button back;
     @FXML private LineChart<String, BigDecimal> yearlyTrend;
@@ -48,13 +48,13 @@ public class UserStatsController extends AbstractController implements Initializ
     @FXML private DatePicker endDate;
 
     private UserStatsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiApprovati subscription) {
+            final ContrattiAttivi subscription) {
         super(stage, dataSource, holder, FXML_FILE);
         this.subscription = subscription;
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiApprovati subscription) {
+            final ContrattiAttivi subscription) {
         return new UserStatsController(stage, dataSource, holder, subscription);
     }
 

@@ -180,7 +180,8 @@ public class Bollette extends TableImpl<BolletteRecord> {
     @Override
     public List<Check<BolletteRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("bollette_chk_1"), "(`DataScadenza` > `DataEmissione`)", true)
+            Internal.createCheck(this, DSL.name("bollette_chk_1"), "(`DataScadenza` > `DataEmissione`)", true),
+            Internal.createCheck(this, DSL.name("bollette_chk_2"), "(`DataFinePeriodo` > `DataInizioPeriodo`)", true)
         );
     }
 

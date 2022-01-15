@@ -32,7 +32,7 @@ public class ParametersNewActivationController extends AbstractParametersSelecti
 
     private ParametersNewActivationController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
                                               final SubscriptionProcess process) {
-        super(stage, dataSource, holder, process);
+        super(stage, dataSource, holder, process, false, false, false);
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,

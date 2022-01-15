@@ -1,0 +1,685 @@
+\documentclass[a4paper,12pt]{report}
+
+\usepackage{alltt, fancyvrb, url}
+\usepackage[a4paper, margin=2cm]{geometry}
+%\usepackage{graphicx}
+\usepackage[demo]{graphicx} % DEBUG ONLY
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{ragged2e}
+\usepackage{float}
+\usepackage{natbib}
+\usepackage{mdframed}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{ulem}
+\usepackage{authblk}
+\usepackage{enumitem}
+\usepackage{rotating}
+\usepackage{listings}
+\usepackage{longtable}
+\usepackage{soulutf8}
+\usepackage[dvipsnames,table]{xcolor}
+\usepackage[htt]{hyphenat}
+\usepackage[italian]{cleveref}
+
+\hypersetup{hidelinks}
+
+\definecolor{lightergray}{gray}{0.85}
+
+\title
+{\Large \textbf{Base di dati per la gestione di forniture di gas e acqua} \\[10pt]
+}
+\author{Bryan Corradino}
+\affil{0000920992 \\ bryan.corradino@studio.unibo.it}
+
+\newlist{OP}{enumerate}{1}
+\setlist[OP]{label=\textbf{OP-\arabic*}}
+
+\lstset{%frame=tb,
+  language=SQL,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{ForestGreen},
+  stringstyle=\color{Bittersweet},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=1,
+  numbers=left
+}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Analisi dei requisiti}
+Un'azienda fornitrice di utenze domestiche richiede la realizzazione di un database per la sottoscrizione e la gestione di contratti di fornitura di gas e acqua ad uso domestico.
+\section{Intervista}
+\begin{mdframed}
+Gli utenti possono consultare liberamente un catalogo di offerte, curato dal fornitore. Ogni offerta è caratterizzata da nome, descrizione, materia prima, costo della materia prima e tipi di utilizzo con cui sono compatibili (ad esempio, domestico residenziale). Il catalogo può essere aggiornato in qualsiasi momento dagli operatori, che aggiungeranno nuove offerte o renderanno non più sottoscrivibili quelle già esistenti.
+\newline
+L'attivazione della fornitura può avvenire secondo tre modalità: voltura, subentro o nuova attivazione, ciascuna caratterizzata da un costo diverso. La voltura consiste in un cambio di intestatario: non permette di selezionare una nuova offerta e richiede di comunicare il codice cliente dell'attuale intestatario del contratto, la matricola del contatore e una lettura; i subentri richiedono l'indicazione di offerta, uso dedicato, dati dell'immobile e matricola del contatore; in caso di nuova attivazione andranno indicati solo offerta, uso dedicato e dati dell'immobile. Il numero di componenti del nucleo familiare va indicato sempre.
+\newline
+Prima di poter richiedere l'attivazione di un'offerta, l'utente deve registrarsi fornendo i propri dati anagrafici, un indirizzo e-mail, una password e la propria fascia di reddito, informazione che verrà usata dal fornitore per l'eventuale applicazione di uno sconto in bolletta. Fatto ciò, l'utente potrà procedere con la richiesta indicando uso dedicato, modalità di attivazione, numero di componenti del nucleo familiare e, a seconda del metodo di attivazione scelto, anche offerta, dati dell'immobile e matricola del contatore.
+\newline
+Una richiesta di contratto è associata anche ad un immobile, di cui si vogliono memorizzare via, numero civico, comune, CAP e provincia. Esistono due tipi di immobili: fabbricati (con eventuale numero di interno) e terreni.
+\newline
+Per ogni contatore si vogliono memorizzare la matricola e l'immobile presso cui è installato. Un contatore è dedicato alla misurazione dei consumi di una singola materia prima.
+\newline
+Ogni tipo di utilizzo è caratterizzato da un nome, da un fattore di stima dei consumi pro capite e dall'eventuale possibilità di usufruire di sconti in base al reddito.
+\newline
+Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di visualizzare tutti i dettagli delle richieste e di aggiornarne lo stato (approvata o respinta). Una richiesta può essere assegnata ad un solo operatore.
+\newline
+L'approvazione di una richiesta di contratto porterà all'attivazione della fornitura. Uno stesso cliente può avere più contratti attivi per la fornitura della medesima materia prima, a patto che siano riferiti a immobili diversi. Per uno stesso immobile non sono ammesse due forniture della stessa materia prima contemporaneamente attive, neanche se intestate a clienti diversi. 
+\newline
+Gli utenti registrati possono accedere alla propria area personale inserendo l'indirizzo e-mail e la password forniti al momento della registrazione. Si vuole dare la possibilità agli utenti di annullare in qualsiasi momento le richieste in attesa di approvazione. I clienti con un contratto attivo potranno visualizzare l'elenco delle bollette emesse e procedere al loro pagamento. Potranno inoltre modificare i propri dati anagrafici, comunicare letture e richiedere la cessazione dei propri contratti di fornitura attivi. Le richieste di cessazione verranno esaminate dagli operatori alla stessa maniera di quelle di attivazione.
+\newline
+Si vuole anche dare la possibilità al cliente di visualizzare alcuni dati statistici riguardanti i propri consumi: in particolare, si potranno visualizzare sia l'andamento dei consumi in un dato anno, sia la differenza in percentuale tra la media dei propri consumi e quella dei clienti residenti nello stesso comune in cui è sito l'immobile. Nel calcolo della media sono considerati anche i consumi stimati.
+\newline
+Le bollette sono associate ad uno specifico contratto e possono essere di due tipi: calcolate sui consumi effettivi oppure calcolate attraverso stime pro capite. Per ciascuna bolletta vengono memorizzati data di emissione, periodo di riferimento (con data di inizio e di fine), data di scadenza, eventuale data di pagamento, importo da pagare, consumi e un documento contenente informazioni di dettaglio che verrà caricato manualmente dagli operatori.
+\newline
+Le letture sono associate ad un singolo contatore e devono riportare la data di effettuazione e i consumi rilevati. Per un contatore può essere comunicata una sola lettura al giorno. Un cliente può comunicare una lettura per un contatore se esiste un contratto attivo a lui intestato e collegato a quel medesimo contatore. Un operatore si occuperà di esaminare la lettura e deciderà se approvarla o respingerla.
+\end{mdframed}
+
+
+\section{Glossario dei termini e testo finale}
+Dal testo dell'intervista si è cercato di estrarre i concetti principali del dominio, descrivendoli opportunamente e rilevando eventuali sinonimi.
+\rowcolors{1}{lightergray}{}
+\begin{longtable}{@{}p{3cm}| p{10cm} |p{3cm}@{}}
+    \textbf{Termine} & \textbf{Descrizione} & \textbf{Sinonimi} \\ [0.5ex]
+    \hline
+    fornitore & Azienda che offre servizi di fornitura & azienda \\ 
+    fornitura & Processo di distribuzione di una materia prima presso un immobile & utenza \\
+    cliente & Persona che ha sottoscritto un contratto & persona fisica, utente \\
+    operatore & Dipendente che si occupa della gestione di richieste e contratti & \\
+    materia prima & Gas o acqua & \\
+    offerta & Piano per la fornitura di una materia prima & \\
+    tipologia d'uso & Uso a cui la fornitura è dedicata & \\
+    tipo di attivazione & Procedimento che definisce quali dati siano necessari per attivare una fornitura & \\
+    immobile & Fabbricato o terreno presso cui attivare la fornitura & \\
+    contatore & Dispositivo che misura la quantità di materia prima consumata presso un determinato immobile & \\
+    lettura & Rilevazione dei consumi totali misurati da un contatore & \\
+    contratto & Accordo tra cliente e fornitore & \\
+    cessazione & Terminazione di un contratto & \\
+    attivazione & Processo mediante il quale il fornitore effettua verifiche preliminari e predispone l'inizio della fornitura & \\
+    bolletta & Resoconto dei consumi e dell'importo da pagare & \\
+\end{longtable}
+
+Il testo riporta già molte delle informazioni necessarie alla progettazione della base di dati, ma alcuni punti necessitano di chiarimenti. Con l'ausilio del glossario appena costruito e chiedendo delucidazioni, si propone una versione leggermente più dettagliata del testo con evidenziate le possibili entità e le relazioni tra di esse. Infine, viene mostrato un esempio di richiesta di contratto.
+
+\begin{mdframed}
+Ogni \textbf{persona}, anche se non in possesso di un account, può \textit{consultare} liberamente un catalogo di \textbf{offerte} dedicate alla fornitura di gas o acqua. Ogni offerta è caratterizzata da nome, descrizione, materia prima di interesse, costo della materia prima e tipi di uso con cui è compatibile. Il catalogo può essere aggiornato in qualsiasi momento dagli \textit{operatori} (dipendenti dell'azienda), che aggiungeranno nuove offerte o renderanno non più sottoscrivibili quelle già esistenti.
+\newline
+Prima di poter richiedere l'attivazione di un contratto, la persona interessata deve \textit{registrarsi} fornendo i propri dati anagrafici (nome, cognome, data di nascita, codice fiscale e indirizzo di residenza), un indirizzo e-mail, una password e la propria fascia di reddito, informazione che verrà usata dal fornitore per l'eventuale applicazione di uno sconto in bolletta. Fatto ciò, l'utente potrà procedere con l'\textit{invio} della \textbf{richiesta} indicando uso dedicato, modalità di attivazione, numero di componenti del nucleo familiare e, a seconda del metodo di attivazione scelto, anche offerta, dati dell'immobile e matricola del contatore.
+\newline
+L'\textbf{attivazione} del contratto può avvenire secondo tre modalità: voltura, subentro o nuova attivazione, ciascuna caratterizzata da un costo diverso. La \textbf{voltura} consiste in un cambio di intestatario: non permette di selezionare una nuova offerta e richiede di comunicare il tipo di materia prima, il codice fiscale del cliente attualmente intestatario del contratto di fornitura, la matricola del contatore e una lettura; i \textbf{subentri} richiedono l'indicazione di offerta, uso dedicato, dati dell'immobile e matricola del contatore; in caso di \textbf{nuova attivazione} andranno indicati solo offerta, uso dedicato e dati dell'immobile. Il numero di componenti del nucleo familiare va indicato sempre.
+\newline
+Ogni \textbf{tipologia d'uso} è caratterizzata da un nome, da un fattore di stima dei consumi pro capite (usato nel caso in cui non esistano letture sufficientemente recenti per un contatore) e dall'eventuale possibilità di usufruire di sconti in base al reddito. Ogni offerta è \textit{compatibile} con una o più tipologie d'uso.
+\newline
+Gli \textbf{operatori} si occupano della \textit{gestione} delle \textbf{offerte}, delle \textbf{richieste}, dei \textbf{contratti} e della manutenzione della base di dati. Di ogni operatore si vogliono memorizzare dati anagrafici, un indirizzo e-mail, una password e lo stipendio attuale. Agli operatori non è concesso sottoscrivere contratti di fornitura con l'azienda.
+\newline
+Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di \textit{visualizzare tutti i dettagli} delle richieste e di \textit{aggiornarne} lo stato (approvata o respinta). Una richiesta può essere \textit{assegnata} ad un solo operatore per volta. Un contratto è considerato attivo se la relativa richiesta è stata approvata e se non è presente una richiesta di cessazione approvata relativa a quello stesso contratto.
+\newline
+Una richiesta di contratto è \textit{associata} anche ad un \textbf{immobile}, di cui si vogliono memorizzare via, numero civico, comune, CAP e provincia. Esistono due tipi di immobili: fabbricati (con eventuale numero di interno) e terreni.
+\newline
+Per ogni \textbf{contatore} si vogliono memorizzare la matricola e l'immobile presso cui è installato. Un contatore è dedicato alla \textit{misurazione} dei consumi di una singola \textbf{materia prima}.
+\newline
+L'approvazione di una richiesta di contratto porterà all'attivazione della fornitura. Uno stesso cliente può avere più contratti attivi per la fornitura della medesima materia prima, a patto che siano riferiti a immobili diversi. Per uno stesso immobile non sono ammesse due forniture della stessa materia prima contemporaneamente attive, neanche se intestate a clienti diversi.
+\newline
+Gli utenti registrati possono accedere alla propria area personale inserendo l'indirizzo e-mail e la password forniti al momento della registrazione. Si vuole dare la possibilità agli utenti di \textit{annullare} in qualsiasi momento le richieste in attesa di approvazione. I clienti con un contratto attivo avranno la possibilità di visualizzare l'elenco delle \textbf{bollette} emesse e procedere al loro \textit{pagamento}. Avranno inoltre modo di modificare i propri dati anagrafici, \textit{comunicare} \textbf{letture} e \textit{richiedere} la \textbf{cessazione} dei propri contratti di fornitura attivi. Le richieste di cessazione verranno esaminate dagli operatori alla stessa maniera di quelle di attivazione.
+\newline
+All'interno dell'area personale si vuole dare la possibilità al cliente di visualizzare alcuni dati statistici riguardanti i propri consumi: in particolare, si vogliono mostrare sia l'andamento dei consumi in un dato anno, sia la differenza in percentuale tra la media dei propri consumi e quella dei clienti con una fornitura attiva nello stesso comune in cui è sito l'immobile. Nel calcolo della media sono considerati anche i consumi stimati.
+\newline
+Le \textbf{bollette} sono \textit{associate} ad uno specifico \textbf{contratto} e possono essere di due tipi: calcolate sui consumi effettivi oppure calcolate attraverso stime pro capite. Per ciascuna bolletta vengono memorizzati data di emissione, periodo di riferimento (con data di inizio e di fine), data di scadenza, eventuale data di pagamento, importo da pagare, consumi e un documento contenente informazioni di dettaglio che verrà caricato manualmente dagli operatori.
+\newline
+Le \textbf{letture} sono \textit{associate} ad un singolo \textbf{contatore} e devono riportare la data di effettuazione e i consumi rilevati. Per un contatore può essere comunicata una sola lettura al giorno. Un \textbf{cliente} può \textit{comunicare} una lettura per un contatore se esiste un contratto attivo a lui intestato e collegato a quel medesimo contatore. Un operatore si occuperà di \textit{esaminare} la lettura e deciderà se approvarla o respingerla.
+\end{mdframed}
+
+\subsection{Esempio di richiesta di contratto}
+\begin{mdframed}
+\hl{DA SCRIVERE}
+\end{mdframed}
+
+\chapter{Progettazione concettuale}
+
+\section{Schema scheletro}
+Come punto di riferimento iniziale, viene proposto uno schema scheletro (\cref{fig:barebones}) contenente alcune delle entità e delle associazioni evidenziate nel testo finalizzato. Lo schema verrà discusso ed espanso nelle sezioni a seguire.
+
+\begin{figure}[H]
+\centering{}
+\makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{images/er_diagrams/barebones.png}}%
+\caption{Schema scheletro.}
+\label{fig:barebones}
+\end{figure}
+
+\section{Raffinamenti proposti}
+Le entità \texttt{CLIENTI} e \texttt{OPERATORI} condividono numerosi attributi, per cui si sceglie di generalizzarle attraverso l'entità \texttt{PERSONA} (\cref{fig:persons}).
+\newline
+Il \textbf{reddito} dei clienti viene modellato come entità per poter associare a ogni fascia la relativa percentuale di sconto.
+
+\begin{figure}[H]
+\centering{}
+\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/persons.png}}%
+\caption{Generalizzazione di clienti e operatori.}
+\label{fig:persons}
+\end{figure}
+
+In \cref{fig:plans-uses} sono rappresentate le modellazioni di offerte e tipologie d'uso. Ogni offerta è dedicata alla fornitura di una singola materia prima. Poiché nel testo è specificato che una singola offerta può essere compatibile con uno o più usi, l'associazione tra le due entità ha cardinalità molti a molti.
+
+\begin{figure}[H]
+\centering{}
+\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/plans-uses.png}}%
+\caption{Offerte e usi.}
+\label{fig:plans-uses}
+\end{figure}
+
+Esistono due tipi di richieste: di \textbf{contratto} o di \textbf{cessazione}. Poiché entrambe hanno alcuni attributi in comune, si decide di modellarle per generalizzazione creando l'entità \texttt{RICHIESTA}. In \cref{fig:requests} sono inoltre rappresentate le associazioni delle richieste con clienti ed operatori. Non è possibile rappresentare graficamente il fatto che una richiesta già approvata non può successivamente essere respinta o viceversa.
+\newline
+Per \texttt{CONTRATTO}, viene esplicitato in una nota il vincolo per cui non possono esistere contemporaneamente due contratti attivi per la stessa materia prima presso un medesimo immobile.
+
+\begin{figure}[H]
+\centering{}
+\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/requests.png}}%
+\caption{Modellizzazione delle richieste.}
+\label{fig:requests}
+\end{figure}
+
+
+In \cref{fig:requests-activation} sono mostrate le varie associazioni che coinvolgono le due tipologie di richieste. Una richiesta di cessazione è sempre associata ad un solo contratto, mentre per uno stesso contratto possono essere create più richieste di cessazione.
+\newline
+Vengono esplicitati testualmente i seguenti vincoli:
+\begin{itemize}
+    \item se esiste già una richiesta di cessazione approvata per uno specifico contratto, per quel medesimo contratto non potranno essere create ulteriori richieste di cessazione
+    \item un cliente non può richiedere la cessazione di contratti di cui non è intestatario
+\end{itemize}
+Quanti e quali dati vadano inseriti durante la creazione della richiesta dipende dal \textbf{tipo} di attivazione scelto. \hl{Dall'intervista notiamo che gli unici dati a non essere sempre richiesti sono il codice cliente del vecchio intestatario, la matricola del contatore, la lettura e i dati dell'immobile}: si decide dunque di rappresentare i tipi di attivazione come istanze di una singola entità \texttt{TIPO\textunderscore ATTIVAZIONE} con gli attributi in figura.
+
+\begin{figure}[H]
+\centering{}
+\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/requests_activation.png}}%
+\caption{Richieste di attivazione e di cessazione.}
+\label{fig:requests-activation}
+\end{figure}
+
+
+In \cref{fig:meters_premises} viene mostrata la rappresentazione dei \textbf{contatori} e degli \textbf{immobili}. Un contatore è univocamente identificato dalla sua matricola o, alternativamente, dalla materia prima misurata e dall'immobile presso cui è installato; quest'ultima chiave permette di imporre il vincolo per cui in un immobile non possano essere installati più contatori misuranti la stessa materia prima.
+\newline
+Gli \textbf{immobili} vengono rappresentati tramite una semplice gerarchia che ne definisce il tipo.
+
+\begin{figure}[H]
+\centering{}
+\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/meters_premises.png}}
+\caption{Contatori e immobili.}
+\label{fig:meters_premises}
+\end{figure}
+
+
+Per ogni fornitura attiva è prevista l'emissione di \textbf{bollette} con frequenza dettata dal fornitore. Come indicato nell'intervista, l'importo in bolletta può essere calcolato in base o ai consumi effettivi o a una stima che tiene conto del numero di persone e dell'uso scelto: ciò è rappresentato mediante la gerarchia visibile in \cref{fig:reports}.
+
+\begin{figure}[H]
+\centering{}
+\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/reports.png}}%
+\caption{Bollette.}
+\label{fig:reports}
+\end{figure}
+
+
+Le \textbf{letture} (\cref{fig:measurements}) sono associate ad un contatore e vengono sempre controllate da un operatore prima di essere approvate o respinte; quest'ultimo aspetto ricorda esattamente le specifiche delle \textbf{richieste} e, dunque, nonostante non sia del tutto corretto da un punto di vista semantico, si decide di modellare l'entità \texttt{LETTURA} come specializzazione di \texttt{RICHIESTA} per evitare di ripetere una seconda volta le medesime associazioni con \texttt{OPERATORE}. Poiché è anche necessario limitare il numero di letture giornaliere a 1 per ogni contatore, l'attributo \texttt{DataApertura} viene spostato da \texttt{RICHIESTA} alle entità figlie e viene scelto come identificatore secondario la coppia \texttt{(DataApertura, Matricola)}.
+
+\begin{figure}[H]
+\centering{}
+\makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{images/er_diagrams/measurements.png}}%
+\caption{Letture.}
+\label{fig:measurements}
+\end{figure}
+
+\section{Schema concettuale finale}
+Si propone in \cref{fig:full-schema} la versione finale dello schema concettuale contenente tutte le entità e le associazioni rappresentate nei precedenti schemi parziali.
+
+\begin{sidewaysfigure}
+\centering{}
+\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{images/er_diagrams/full-schema.png}}%
+\caption{Schema concettuale finale.}
+\label{fig:full-schema}
+\end{sidewaysfigure}
+
+\chapter{Progettazione logica}
+\section{Stima del volume dei dati}
+ \rowcolors{1}{lightergray}{}
+ \begin{longtable}{l >{\centering}p{3cm} >{\raggedleft\arraybackslash}p{4cm}}
+ \hline
+ \textbf{Concetto} & \textbf{Costrutto} & \textbf{Volume} \\ [0.5ex] 
+ \hline
+    PERSONA & \noindent{\color{blue}{E}} & 50.000 \\
+    CLIENTE & \noindent{\color{blue}{E}} & 49.970 \\
+    OPERATORE & \noindent{\color{blue}{E}} & 30 \\
+    POSSEDIMENTO & \noindent{\color{ForestGreen}{A}} & 49.970 \\
+    REDDITO & \noindent{\color{blue}{E}} & 4 \\
+    CREAZIONE & \noindent{\color{ForestGreen}{A}} & 103.500 \\
+    RICHIESTA & \noindent{\color{blue}{E}} & 2.000.000 \\
+    CONTRATTO & \noindent{\color{blue}{E}} & 85.000 \\
+    CESSAZIONE & \noindent{\color{blue}{E}} & 5.000 \\
+    LETTURA & \noindent{\color{blue}{E}} & 1.910.000 \\
+    CORRISPONDENZA & \noindent{\color{ForestGreen}{A}} & 1.910.000 \\
+    APPROVAZIONE & \noindent{\color{ForestGreen}{A}} & 1.990.000 \\
+    RESPINTA & \noindent{\color{ForestGreen}{A}} & 10.000 \\
+    PRESA\textunderscore IN\textunderscore CARICO & \noindent{\color{ForestGreen}{A}} & 2.000.000 \\
+    SOTTOSCRIZIONE & \noindent{\color{ForestGreen}{A}} & 90.000 \\
+    OFFERTA & \noindent{\color{blue}{E}} & 15 \\
+    MATERIA\textunderscore PRIMA & \noindent{\color{blue}{E}} & 2 \\
+    FORNITURA & \noindent{\color{blue}{E}} & 15 \\
+    USO & \noindent{\color{ForestGreen}{A}} & 90.000 \\
+    TIPOLOGIA\textunderscore USO & \noindent{\color{blue}{E}} & 2 \\
+    COMPATIBILITÀ & \noindent{\color{ForestGreen}{A}} & 23 \\
+    TRAMITE & \noindent{\color{ForestGreen}{A}} & 90.000 \\
+    TIPO\textunderscore ATTIVAZIONE & \noindent{\color{blue}{E}} & 3 \\
+    RIFERIMENTO & \noindent{\color{ForestGreen}{A}} & 5.000 \\
+    PRESSO & \noindent{\color{ForestGreen}{A}} & 85.000 \\
+    CONTATORE & \noindent{\color{blue}{E}} & 70.000 \\
+    MISURAZIONE & \noindent{\color{ForestGreen}{A}} & 70.000 \\
+    IMMOBILE & \noindent{\color{blue}{E}} & 50.000 \\
+    FABBRICATO & \noindent{\color{blue}{E}} & 38.000 \\
+    TERRENO & \noindent{\color{blue}{E}} & 12.000 \\
+    BOLLETTA & \noindent{\color{blue}{E}} & 1.000.000 \\
+    EMISSIONE & \noindent{\color{ForestGreen}{A}} & 1.000.000 \\
+    APPARTENENZA & \noindent{\color{ForestGreen}{A}} & 1.000.000 \\
+    \hline
+\end{longtable}
+
+\section{Operazioni principali e stima della loro frequenza}
+Dal testo dell'intervista è stata estratta una lista di possibili operazioni che verranno svolte sulla base di dati.
+\\[2pt]
+\rowcolors{1}{lightergray}{}
+\begin{longtable}{l p{10cm} c r}
+    \hline
+    \textbf{Numero} & \textbf{Descrizione} & \textbf{Frequenza}\\ [0.5ex]
+    \textbf{OP-1} & Inserire un nuovo cliente & 10/giorno \\
+    \textbf{OP-2} & Aggiornare i dati di un cliente & 3/mese \\
+    \textbf{OP-3} & Inserire un nuovo immobile & 8/giorno \\
+    \textbf{OP-4} & Inserire un contatore & 10/giorno \\
+    \textbf{OP-5} & Inserire una richiesta di contratto con attivazione tramite voltura & 3/giorno \\
+    \textbf{OP-6} & Inserire una richiesta di contratto con attivazione tramite subentro & 2/giorno \\
+    \textbf{OP-7} & Inserire una richiesta di contratto con nuova attivazione & 1/giorno \\
+    \textbf{OP-8} & Inserire una richiesta di cessazione & 1/giorno \\
+    \textbf{OP-9} & Rifiutare una richiesta & 2/giorno \\
+    \textbf{OP-10} & Approvare una richiesta di contratto con attivazione tramite voltura & 2/giorno \\
+    \textbf{OP-11} & Approvare una richiesta di contratto con attivazione tramite subentro & 1/giorno \\
+    \textbf{OP-12} & Approvare una richiesta di contratto con nuova attivazione & 1/giorno \\
+    \textbf{OP-13} & Inserire una nuova offerta & 3/mese \\
+    \textbf{OP-14} & Aggiornare un'offerta & 3/mese \\
+    \textbf{OP-15} & Approvare una richiesta di cessazione & 250/mese \\
+    \textbf{OP-16} & Comunicare una lettura & 20.000/mese \\
+    \textbf{OP-17} & Approvare una lettura & 18.000/mese \\
+    \textbf{OP-18} & Rifiutare una lettura & 2.000/mese \\
+    \textbf{OP-19} & Assegnare una richiesta ad un operatore & 20.007/mese \\
+    \textbf{OP-20} & Inserire una nuova bolletta per un contratto attivo & 235/giorno \\
+    \textbf{OP-21} & Pagare una bolletta & 235/giorno \\
+    \textbf{OP-22} & Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo & 1000/giorno \\
+    \textbf{OP-23} & Visualizzare i contratti intestati a un dato cliente & 300/giorno \\
+    \textbf{OP-24} & Visualizzare i contratti attivi intestati a un dato cliente & 300/giorno \\
+    \textbf{OP-25} & Dato un contratto, visualizzare lo storico delle bollette & 1.000/mese \\
+    \textbf{OP-26} & Eliminare una richiesta di contratto non finalizzata & 1/settimana \\
+    \textbf{OP-27} & Visualizzare tutti i contratti stipulati in un dato anno & 3/anno \\
+    \textbf{OP-28} & Visualizzare il numero di richieste finalizzate da un dato operatore & 1/mese \\
+    \textbf{OP-29} & Dato un contratto e un periodo di riferimento, visualizzare l'andamento dei consumi per quel periodo & 1.000/mese \\
+    \textbf{OP-30} & Visualizzare la media dei consumi (reali e stimati) per un contratto in un dato periodo & 1.000/mese \\
+    \textbf{OP-31} & Visualizzare la media aggregata dei consumi (reali e stimati) prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune & 1.000/mese \\
+    \hline
+\end{longtable}
+
+\paragraph{OP-1: Inserire un nuovo cliente}\mbox{}\\
+    \rowcolors{1}{lightergray}{}
+    \begin{center}
+    \begin{tabular}{@{}l c  c  c@{}}
+        \hline
+        \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+        PERSONA & E & 1 & S \\
+        CLIENTE & E & 1 & S \\
+        POSSEDIMENTO & A & 1 & S \\
+        \hline
+    \end{tabular}
+    \end{center}
+    \underline{Totale}: $3 \text{S} \times 10 = 60$ accessi al giorno 
+\paragraph{OP-5: Inserire una richiesta di contratto con attivazione tramite voltura}\mbox{}\\
+    L'utente è tenuto a comunicare solo il codice cliente dell'attuale intestatario, la matricola del contatore e una lettura. Dati quali offerta, uso dedicato e immobile verranno estrapolati dal contratto già esistente.
+    \rowcolors{1}{lightergray}{}
+    \begin{center}
+    \begin{tabular}{@{}l c  c  c@{}}
+        \hline
+        \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+        CONTRATTO & E & 1 & L \\
+        USO & A & 1 & L \\
+        SOTTOSCRIZIONE & A & 1 & L \\
+        PRESSO & A & 1 & L \\
+        CONTRATTO & E & 1 & S \\
+        CREAZIONE & A & 1 & S \\
+        USO & A & 1 & S \\
+        SOTTOSCRIZIONE & A & 1 & S \\
+        TRAMITE & A & 1 & S \\
+        PRESSO & A & 1 & S \\
+        LETTURA & E & 1 & S \\
+        COMUNICAZIONE & A & 1 & S \\
+        CORRISPONDENZA & A & 1 & S \\
+        \hline
+    \end{tabular}
+    \end{center}
+    \underline{Totale}: $(4\text{L} + 9\text{S}) \times 3 = 66$ accessi al giorno
+\paragraph{OP-13: Inserire una nuova offerta}\mbox{}\\
+    Vanno specificati gli usi con cui l'offerta è compatibile e la materia prima a cui fa riferimento. Si suppone che un'offerta sia in media compatibile con una tipologia d'uso.
+    \rowcolors{1}{lightergray}{}
+    \begin{center}
+    \begin{tabular}{@{}l c  c  c@{}}
+        \hline
+        \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+        OFFERTA & E & 1 & S \\
+        FORNITURA & A & 1 & S \\
+        COMPATIBILITÀ & A & 1 & S \\
+        \hline
+    \end{tabular}
+    \end{center}
+    \underline{Totale}: $3\text{S} \times 3 = 18$ accessi al mese
+\paragraph{OP-15: Approvare una richiesta di cessazione}\mbox{}\\
+\rowcolors{1}{lightergray}{}
+\begin{center}
+\begin{tabular}{@{}l c  c  c@{}}
+    \hline
+    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+    CESSAZIONE & E & 1 & L \\
+    CESSAZIONE & E & 1 & S \\
+    \hline
+\end{tabular}
+\end{center}
+\underline{Totale}: $(1\text{L} + 1\text{S}) \times 250 = 750$ accessi al mese
+\paragraph{OP-20: Inserire una nuova bolletta per un contratto attivo}\mbox{}\\
+\rowcolors{1}{lightergray}{}
+\begin{center}
+\begin{tabular}{@{}l c  c  c@{}}
+    \hline
+    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+    RIFERIMENTO & A & $\frac{5.000}{85.000} = 0,06$ & L \\
+    CESSAZIONE & E & $0,06$ & L \\
+    BOLLETTA & E & 1 & S \\
+    EMISSIONE & A & 1 & S \\
+    APPARTENENZA & A & 1 & S \\
+    \hline
+\end{tabular}
+\end{center}
+\underline{Totale}: $(0,12\text{L} + 3\text{S}) \times 235 \simeq 1.438$ accessi al mese
+\paragraph{OP-22: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}\mbox{}\\
+    \rowcolors{1}{lightergray}{}
+    \begin{center}
+    \begin{tabular}{@{}l c  c  c@{}}
+        \hline
+        \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+        COMPATIBILITÀ & A & $\frac{23}{2} = 11$ & L \\
+        FORNITURA & A & $\frac{15}{2} = 7$ & L \\ 
+        OFFERTE & E & 7 & L \\
+        \hline
+    \end{tabular}
+    \end{center}
+    \underline{Totale}: $25\text{L} \times 1.000 = 250.000$ accessi al giorno
+\paragraph{OP-24: Visualizzare i contratti attivi intestati a un dato cliente}\mbox{}\\
+\rowcolors{1}{lightergray}{}
+\begin{center}
+\begin{tabular}{@{}l c  c  c@{}}
+    \hline
+    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+    CREAZIONE & A & $\frac{85.000}{49.970} = 1,7$ & L \\
+    CONTRATTO & E & $1,7$ & L \\
+    RIFERIMENTO & A & $\frac{5.000}{85.000} = 0,06$ & L \\
+    CESSAZIONE & E & $0,06$ & L \\
+    \hline
+\end{tabular}
+\end{center}
+\underline{Totale}: $3,52\text{L} \times 300 = 1.056$ accessi al giorno
+\paragraph{OP-31: Visualizzare la media aggregata dei consumi relativi a tutti i contratti attivi in un dato comune}\mbox{}\\
+    Per rendere meno caotico il processo di analisi, si suddivide l'operazione in due fasi.\\
+    Prima di tutto, bisogna trovare tutti i contratti con una fornitura attiva nel comune di interesse. Sapendo che in Italia sono presenti 7.903 comuni e supponendo per semplicità che il numero di immobili sia uniformemente distribuito tra i comuni:
+    \rowcolors{1}{lightergray}{}
+    \begin{center}
+    \begin{tabular}{@{}l c  c  c@{}}
+        \hline
+        \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+        PRESSO & A & 1 & L \\
+        IMMOBILE & E & 1 & L \\
+        PRESSO & A & $\frac{50.000}{7.903} = 6$ & L \\
+        CONTRATTO & E & 6 & L \\
+        \hline
+    \end{tabular}
+    \end{center}
+    Notiamo che, per ogni comune italiano, sono registrati in media circa 6 immobili. In più, supponiamo che per tutti e 6 gli immobili sia presente almeno un contratto (anche non attivo). In questa seconda fase ricaviamo i consumi prodotti nel periodo specificato leggendo le bollette\footnote{Non leggiamo da \texttt{LETTURA} sia perché le specifiche richiedono che vengano considerati anche i consumi stimati, sia perché il numero medio di letture per ogni contratto supera di gran lunga quello delle bollette.} emesse in quello stesso periodo.
+    \rowcolors{1}{lightergray}{}
+    \begin{center}
+    \begin{tabular}{@{}l c  c  c@{}}
+        \hline
+        \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+        RIFERIMENTO & A & $\frac{85.000}{5.000} \times 6 = 102$ & L \\
+        BOLLETTA & E & $102$ & L \\
+        \hline
+    \end{tabular}
+    \end{center}
+    \underline{Totale}: $218\text{L} \times 1.000 = 218.000$ accessi al mese
+
+\section{Analisi delle ridondanze}
+\subsection{Attributo \texttt{Attivo} in \texttt{CONTRATTO}}
+Verranno ora analizzati gli effetti dell'aggiunta all'entità \texttt{CONTRATTO} di un attributo ridondante, \texttt{Attivo}, indicante se un contratto è stato cessato o meno. Ciò permetterebbe di evitare la lettura delle eventuali cessazioni esistenti quando si considerano solo i contratti attivi.
+\paragraph{OP-20 con l'uso dell'attributo ridondante}\mbox{}\\
+\rowcolors{1}{lightergray}{}
+\begin{center}
+\begin{tabular}{@{}l c  c  c@{}}
+    \hline
+    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+    CONTRATTO & E & 1 & L \\
+    BOLLETTA & E & 1 & S \\
+    EMISSIONE & A & 1 & S \\
+    APPARTENENZA & A & 1 & S \\
+    \hline
+\end{tabular}
+\end{center}
+\underline{Totale}: $(1\text{L} + 3\text{S}) \times 235 = 1.645$ accessi al mese (contro i $1.438$ senza ridondanza)
+\paragraph{OP-24 con l'uso dell'attributo ridondante}\mbox{}\\
+\rowcolors{1}{lightergray}{}
+\begin{center}
+\begin{tabular}{@{}l c  c  c@{}}
+    \hline
+    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+    CREAZIONE & A & $\frac{85.000}{49.970} = 1,7$ & L \\
+    CONTRATTO & E & $1,7$ & L \\
+    \hline
+\end{tabular}
+\end{center}
+\underline{Totale}: $3,4\text{L} \times 300 = 1.020$ accessi al giorno (contro i $1.056$ senza ridondanza)
+\\[10pt]
+In termini di accessi, si ha un beneficio quasi trascurabile in OP-20 e un leggerissimo peggioramento in OP-24; pertanto, si decide di non aggiungere l'attributo \texttt{Attivo}.
+
+\section{Raffinamento dello schema}
+\subsection{Eliminazione delle gerarchie}
+\begin{itemize}
+    \item Le entità \texttt{CLIENTE} e \texttt{OPERATORE}, entrambe specializzazioni di \texttt{PERSONA}, hanno ruoli diametralmente opposti e si relazionano alle altre entità con associazioni tutte diverse. Poiché la loro copertura è totale ed esclusiva, avrebbe senso procedere con un collasso verso il basso, ma ciò significherebbe anche replicare la grande quantità di attributi di \texttt{PERSONA} in due tabelle diverse e costringerebbe ad effettuare molteplici controlli aggiuntivi per evitare che i dati di una stessa persona compaiano in entrambe le tabelle. Si preferisce, dunque, effettuare una trasformazione per associazioni: \texttt{CLIENTE} e \texttt{OPERATORE} vengono relazionati a \texttt{PERSONA} e da essa ricaveranno la chiave primaria e tutti gli altri attributi. Dovremo solo assicurarci che lo stesso codice identificativo di una persona venga inserito solo in una tabella tra \texttt{CLIENTE} ed \texttt{OPERATORE}.
+    \item Il caso di \texttt{IMMOBILE} è l'esatto opposto: nessuna delle due specializzazioni possiede associazioni con le altre entità del dominio, per cui si procede aggiungendo a \texttt{IMMOBILE} gli attributi \texttt{Tipo} e \texttt{Interno}.
+    \item La gerarchia di \texttt{BOLLETTA} viene eliminata e si aggiunge l'attributo booleano \texttt{Stimata}.
+    \item Per la gerarchia di \texttt{RICHIESTA} si procede con una trasformazione verso il basso: l'entità \texttt{RICHIESTA} viene eliminata e i suoi attributi integrati in \texttt{CONTRATTO}, \texttt{CESSAZIONE} e \texttt{LETTURA}.
+\end{itemize}
+
+\subsection{Eliminazione degli attributi multivalore}
+I seguenti attributi multivalore sono stati eliminati e le loro componenti disaggregate:
+\begin{itemize}
+    \item \texttt{Residenza}, dell'entità \texttt{PERSONA}
+    \item \texttt{Indirizzo}, dell'entità \texttt{IMMOBILE}
+    \item \texttt{Periodo}, dell'entità \texttt{BOLLETTA}
+\end{itemize}
+
+\subsection{Scelta delle chiavi}
+\begin{itemize}
+    \item \texttt{CLIENTE} e \texttt{OPERATORE} vengono identificati rispettivamente dalle chiavi esterne \texttt{CodiceCliente} e \texttt{IdOperatore}, che fanno riferimento alla chiave \texttt{IdPersona} di \texttt{PERSONA}
+    \item \texttt{CONTRATTO} e \texttt{CESSAZIONE} hanno ora una propria chiave primaria, \texttt{IdRichiesta}
+    \item \texttt{LETTURA} viene identificata dall'attributo \texttt{NumeroLettura}
+    \item Si aggiunge una chiave candidata a \texttt{IMMOBILE} composta da tutti gli attributi tranne \texttt{IdImmobile}
+\end{itemize}
+
+\subsection{Eliminazione degli identificatori esterni}
+Si procede alla trasformazione delle associazioni:
+\begin{itemize}
+    \item \texttt{POSSEDIMENTO} viene eliminata e la chiave esterna \texttt{FasciaReddito} aggiunta a \texttt{CLIENTE}
+    \item \texttt{CREAZIONE} viene eliminata e la chiave esterna \texttt{IdCliente} aggiunta a \texttt{RICHIESTA}
+    \item \texttt{GESTIONE} viene reificata. Poiché una richiesta può inizialmente non essere assegnata ad alcun operatore, è possibile che contenga un riferimento nullo a \texttt{OPERATORE}; per evitare ciò, le coppie operatore-richiesta verranno inserite in tre tabelle (\texttt{OPERATORI\textunderscore CESSAZIONI}, \texttt{OPERATORI\textunderscore CONTRATTI} e \texttt{OPERATORI\textunderscore LETTURE}), ognuna dedicata a una diversa tipologia di richiesta
+    \item \texttt{USO} viene eliminata e la chiave esterna \texttt{Uso} aggiunta a \texttt{CONTRATTO}
+    \item \texttt{SOTTOSCRIZIONE} viene eliminata e la chiave esterna \texttt{Offerta} aggiunta all'entità \texttt{CONTRATTO}
+    \item \texttt{TRAMITE} viene eliminata e la chiave esterna \texttt{TipoAttivazione} aggiunta all'entità \texttt{CONTATTO}
+    \item \texttt{PRESSO} viene eliminata e la chiave esterna \texttt{IdImmobile} aggiunta all'entità \texttt{CONTRATTO}
+    \item \texttt{APPARTENENZA} viene eliminata e la chiave esterna \texttt{IdContratto} aggiunta all'entità \texttt{BOLLETTA}
+    \item \texttt{EMISSIONE} viene eliminata e la chiave esterna \texttt{IdOperatore} importata nell'entità \texttt{BOLLETTA}
+    \item \texttt{PAGAMENTO} viene reificata per evitare di aggiungere il campo opzionale \texttt{DataPagamento} in \texttt{BOLLETTA}; le tuple di \texttt{PAGAMENTO} conterranno ognuna, per le bollette saldate, una bolletta e la relativa data di pagamento
+    \item \texttt{CORRISPONDENZA} viene eliminata e la chiave esterna \texttt{MatricolaContatore} aggiunta a \texttt{LETTURA}
+    \item \texttt{INSTALLAZIONE} viene eliminata e la chiave esterna \texttt{IdImmobile} aggiunta a \texttt{CONTATORE}
+    \item \texttt{MISURAZIONE} viene eliminata e la chiave esterna \texttt{MateriaPrima} aggiunta a \texttt{CONTATORE}
+    \item \texttt{FORNITURA} viene eliminata e la chiave esterna \texttt{MateriaPrima} aggiunta a \texttt{OFFERTA}
+    \item \texttt{COMPATIBILITÀ} viene reificata come traduzione di un'associazione molti a molti; le sue tuple conterranno ognuna un'offerta e una tipologia d'uso
+\end{itemize}
+
+\section{Traduzione di entità e associazioni in relazioni}
+\begin{itemize}
+    \item \texttt{BOLLETTE(\underline{NumeroBolletta}, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore, IdContratto) \\
+    FK: IdOperatore REFERENCES OPERATORI \\
+    FK: IdContratto REFERENCES CONTRATTI}
+    
+    \item \texttt{CESSAZIONI(\underline{NumeroRichiesta}, DataAperturaRichiesta, DataChiusuraRichiesta*, StatoRichiesta, NoteRichiesta, IdContratto) \\
+    FK: IdContratto REFERENCES CONTRATTI}
+    
+    \item \texttt{CLIENTI(\underline{CodiceCliente}, FasciaReddito) \\
+    FK: CodiceCliente REFERENCES PERSONE \\
+    FK: FasciaReddito REFERENCES REDDITI}
+    
+    \item \texttt{COMPATIBILITÀ(\underline{Offerta}, \underline{Uso}) \\
+    FK: Offerta REFERENCES OFFERTE \\
+    FK: Uso REFERENCES TIPOLOGIE\textunderscore USO
+    }
+    
+    \item \texttt{CONTATORI(\underline{Matricola}, MateriaPrima, IdImmobile) \\
+    UNIQUE(IdImmobile, MateriaPrima) \\
+    FK: MateriaPrima REFERENCES MATERIE\textunderscore PRIME \\
+    FK: IdImmobile REFERENCES IMMOBILI}
+    
+    \item \texttt{CONTRATTI(\underline{IdContratto}, DataAperturaRichiesta, DataChiusuraRichiesta*, StatoRichiesta, NoteRichiesta, NumeroComponenti, Uso, Offerta, TipoAttivazione, IdImmobile, IdCliente) \\
+    FK: Uso REFERENCES TIPOLOGIE\textunderscore USI \\
+    FK: Offerta REFERENCES OFFERTE \\
+    FK: TipoAttivazione REFERENCES TIPI\textunderscore ATTIVAZIONE \\
+    FK: IdImmobile REFERENCES IMMOBILI \\
+    FK: IdCliente REFERENCES CLIENTI
+    }
+    
+    \item \texttt{IMMOBILI(\underline{IdImmobile}, Tipo, Via, NumCivico, Interno, Comune, CAP, Provincia) \\
+    UNIQUE(Tipo, Via, NumCivico, Interno, Comune, CAP, Provincia)}
+    
+    \item \texttt{LETTURE(\underline{NumeroLettura}, MatricolaContatore, DataEffettuazione, Consumi, Stato, IdCliente) \\
+    UNIQUE(MatricolaContatore, DataEffettuazione) \\
+    FK: IdCliente REFERENCES CLIENTI \\
+    FK: MatricolaContatore REFERENCES CONTATORI}
+    
+    \item \texttt{MATERIE\textunderscore PRIME(\underline{Nome})}
+    
+    \item \texttt{OFFERTE(\underline{CodOfferta}, Nome, Descrizione, CostoMateriaPrima, Attiva, MateriaPrima) \\
+    FK: MateriaPrima REFERENCES MATERIE\textunderscore PRIME}
+    
+    \item \texttt{OPERATORI(\underline{IdOperatore}, Stipendio) \\
+    FK: IdOperatore REFERENCES PERSONE}
+    
+    \item \texttt{OPERATORI\textunderscore CESSAZIONI(\underline{NumeroRichiesta}, IdOperatore) \\
+    FK: NumeroRichiesta REFERENCES CESSAZIONI \\
+    FK: IdOperatore REFERENCES OPERATORI}
+    
+    \item \texttt{OPERATORI\textunderscore CONTRATTI(\underline{NumeroRichiesta}, IdOperatore) \\
+    FK: NumeroRichiesta REFERENCES CONTRATTI \\
+    FK: IdOperatore REFERENCES OPERATORI}
+    
+    \item \texttt{OPERATORI\textunderscore LETTURE(\underline{Lettura}, IdOperatore) \\
+    FK: Lettura REFERENCES LETTURE \\
+    FK: IdOperatore REFERENCES OPERATORE}
+    
+    \item \texttt{PAGAMENTI(\underline{NumeroBolletta}, DataPagamento) \\
+    FK: NumeroBolletta REFERENCES BOLLETTE}
+    
+    \item \texttt{PERSONE(\underline{IdPersona}, Nome, Cognome, CodiceFiscale, DataNascita, Via, NumCivico, Comune, CAP, Provincia, NumeroTelefono, Email, Password) \\
+    UNIQUE(Email)}
+    
+    \item \texttt{REDDITI(\underline{CodReddito}, Fascia, Sconto)}
+    
+    \item \texttt{TIPI\textunderscore ATTIVAZIONE(\underline{CodAttivazione}, Nome, Costo)}
+    
+    \item \texttt{TIPOLOGIE\textunderscore USO(\underline{CodUso}, Nome, StimaPerPersona, ScontoReddito)}
+\end{itemize}
+
+\section{Schema relazionale finale}
+In \cref{fig:full-relational} viene proposto lo schema relazionale finale.
+
+\begin{sidewaysfigure}
+\centering{}
+\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{images/relational/relational.png}}
+\caption{Schema relazionale finale.}
+\label{fig:full-relational}
+\end{sidewaysfigure}
+
+\section{Traduzione delle operazioni in query SQL}
+
+\begin{itemize}[label={}]
+    \item \textbf{OP-1: Inserire un nuovo cliente}
+    \begin{lstlisting}
+insert into persone
+values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+insert into clienti
+values (last_insert_id(), ?);
+    \end{lstlisting}
+
+    \item \textbf{OP-2: Aggiornare i dati di un cliente}
+    \begin{lstlisting}
+update persone
+set Email = ?, Cap = ?, Comune = ?, NumCivico = ?, NumeroTelefono = ?,
+        Provincia = ?, Via = ?
+where IdPersona = ?;
+    \end{lstlisting}
+        
+    \item \textbf{OP-3: Inserire un nuovo immobile}
+    \begin{lstlisting}
+insert into immobili (Tipo, Via, NumCivico, Interno, Comune, CAP, Provincia)
+values (?, ?, ?, ?, ?, ?, ?);
+    \end{lstlisting}
+    
+    \item \textbf{OP-4: Inserire un contatore}
+    \begin{lstlisting}
+insert into contatori
+values (?, ?, ?);
+    \end{lstlisting}
+
+    
+    \item \textbf{OP-5: Inserire una nuova offerta}
+    \begin{lstlisting}
+insert into offerte
+values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- Ripetere per ogni uso con cui si vuole rendere compatibile l'offerta
+insert into compatibilita
+values (last_insert_id(), ?);
+    \end{lstlisting}
+    
+    \item \textbf{OP-6: Rendere un'offerta non più attivabile}
+    \begin{lstlisting}
+update offerte set Attiva = false
+where Codice = ?;
+    \end{lstlisting}
+    
+    
+    
+\end{itemize}
+\chapter{Progettazione dell'applicazione}
+
+\end{document}

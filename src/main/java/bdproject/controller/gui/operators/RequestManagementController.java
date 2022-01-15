@@ -2,8 +2,6 @@ package bdproject.controller.gui.operators;
 
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
-import bdproject.controller.gui.admin.AreaSelectorController;
-import bdproject.model.types.ActivationType;
 import bdproject.model.types.StatusType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
@@ -149,7 +147,7 @@ public class RequestManagementController extends AbstractController implements I
         } else {
             final Cessazioni endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
-                ContrattiApprovati sub = null;
+                ContrattiAttivi sub = null;
                 try (final Connection conn = dataSource().getConnection()) {
                     sub = Queries.fetchApprovedSubscriptionById(endRequest.getIdcontratto(), conn).orElseThrow();
                 } catch (SQLException e) {

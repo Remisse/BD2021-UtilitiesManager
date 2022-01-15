@@ -1,0 +1,32 @@
+\contentsline {chapter}{\numberline {1}Analisi dei requisiti}{2}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Intervista}{2}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Glossario dei termini e testo finale}{3}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Esempio di richiesta di contratto}{5}{subsection.1.2.1}%
+\contentsline {chapter}{\numberline {2}Progettazione concettuale}{6}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Schema scheletro}{6}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Raffinamenti proposti}{6}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Schema concettuale finale}{9}{section.2.3}%
+\contentsline {chapter}{\numberline {3}Progettazione logica}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Stima del volume dei dati}{11}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Operazioni principali e stima della loro frequenza}{12}{section.3.2}%
+\contentsline {paragraph}{OP-1: Inserire un nuovo cliente}{13}{section*.2}%
+\contentsline {paragraph}{OP-5: Inserire una richiesta di contratto con attivazione tramite voltura}{13}{section*.3}%
+\contentsline {paragraph}{OP-13: Inserire una nuova offerta}{13}{section*.4}%
+\contentsline {paragraph}{OP-15: Approvare una richiesta di cessazione}{13}{section*.5}%
+\contentsline {paragraph}{OP-20: Inserire una nuova bolletta per un contratto attivo}{14}{section*.6}%
+\contentsline {paragraph}{OP-22: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}{14}{section*.7}%
+\contentsline {paragraph}{OP-24: Visualizzare i contratti attivi intestati a un dato cliente}{14}{section*.8}%
+\contentsline {paragraph}{OP-31: Visualizzare la media aggregata dei consumi relativi a tutti i contratti attivi in un dato comune}{14}{section*.9}%
+\contentsline {section}{\numberline {3.3}Analisi delle ridondanze}{15}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Attributo \texttt {Attivo} in \texttt {CONTRATTO}}{15}{subsection.3.3.1}%
+\contentsline {paragraph}{OP-20 con l'uso dell'attributo ridondante}{15}{section*.10}%
+\contentsline {paragraph}{OP-24 con l'uso dell'attributo ridondante}{15}{section*.11}%
+\contentsline {section}{\numberline {3.4}Raffinamento dello schema}{15}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Eliminazione delle gerarchie}{15}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Eliminazione degli attributi multivalore}{16}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Scelta delle chiavi}{16}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}Eliminazione degli identificatori esterni}{16}{subsection.3.4.4}%
+\contentsline {section}{\numberline {3.5}Traduzione di entità e associazioni in relazioni}{17}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Schema relazionale finale}{18}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Traduzione delle operazioni in query SQL}{18}{section.3.7}%
+\contentsline {chapter}{\numberline {4}Progettazione dell'applicazione}{21}{chapter.4}%

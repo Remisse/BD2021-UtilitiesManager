@@ -14,7 +14,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row14;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -111,11 +111,6 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     public final TableField<OperatoriDettagliatiRecord, String> PASSWORD = createField(DSL.name("Password"), SQLDataType.VARCHAR(30).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.operatori dettagliati.Tipo</code>.
-     */
-    public final TableField<OperatoriDettagliatiRecord, String> TIPO = createField(DSL.name("Tipo"), SQLDataType.VARCHAR(30).nullable(false), this, "");
-
-    /**
      * The column <code>utenze.operatori dettagliati.Stipendio</code>.
      */
     public final TableField<OperatoriDettagliatiRecord, BigDecimal> STIPENDIO = createField(DSL.name("Stipendio"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
@@ -125,7 +120,7 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     }
 
     private OperatoriDettagliati(Name alias, Table<OperatoriDettagliatiRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `operatori dettagliati` as select `P`.`IdPersona` AS `IdPersona`,`P`.`Nome` AS `Nome`,`P`.`Cognome` AS `Cognome`,`P`.`CodiceFiscale` AS `CodiceFiscale`,`P`.`Via` AS `Via`,`P`.`NumCivico` AS `NumCivico`,`P`.`Comune` AS `Comune`,`P`.`CAP` AS `CAP`,`P`.`Provincia` AS `Provincia`,`P`.`DataNascita` AS `DataNascita`,`P`.`NumeroTelefono` AS `NumeroTelefono`,`P`.`Email` AS `Email`,`P`.`Password` AS `Password`,`O`.`Tipo` AS `Tipo`,`O`.`Stipendio` AS `Stipendio` from `utenze`.`persone` `P` join `utenze`.`operatori` `O` where (`P`.`IdPersona` = `O`.`IdOperatore`)"));
+        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `operatori dettagliati` as select `P`.`IdPersona` AS `IdPersona`,`P`.`Nome` AS `Nome`,`P`.`Cognome` AS `Cognome`,`P`.`CodiceFiscale` AS `CodiceFiscale`,`P`.`Via` AS `Via`,`P`.`NumCivico` AS `NumCivico`,`P`.`Comune` AS `Comune`,`P`.`CAP` AS `CAP`,`P`.`Provincia` AS `Provincia`,`P`.`DataNascita` AS `DataNascita`,`P`.`NumeroTelefono` AS `NumeroTelefono`,`P`.`Email` AS `Email`,`P`.`Password` AS `Password`,`O`.`Stipendio` AS `Stipendio` from `utenze`.`persone` `P` join `utenze`.`operatori` `O` where (`P`.`IdPersona` = `O`.`IdOperatore`)"));
     }
 
     /**
@@ -187,11 +182,11 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row14 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, String, BigDecimal> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row14<Integer, String, String, String, String, String, String, String, String, LocalDate, String, String, String, BigDecimal> fieldsRow() {
+        return (Row14) super.fieldsRow();
     }
 }

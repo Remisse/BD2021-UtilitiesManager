@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="595.0" layoutY="31.0" text="Statistiche">
          <font>
@@ -18,18 +18,13 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <Label layoutX="58.0" layoutY="129.0" text="Offerta più sottoscritta:">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
       <Label layoutX="58.0" layoutY="228.0" text="Contratti attivati nell'anno">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <ComboBox layoutX="272.0" layoutY="227.0" prefWidth="150.0" />
-      <Label alignment="TOP_LEFT" layoutX="428.0" layoutY="228.0" prefHeight="25.0" prefWidth="16.0" text=":">
+      <ComboBox layoutX="301.0" layoutY="227.0" prefWidth="150.0" />
+      <Label alignment="TOP_LEFT" layoutX="453.0" layoutY="228.0" prefHeight="25.0" prefWidth="16.0" text=":">
          <font>
             <Font size="18.0" />
          </font>
@@ -39,43 +34,32 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="58.0" layoutY="434.0" text="Metodo di attivazione più richiesto:">
+      <Label layoutX="58.0" layoutY="434.0" text="Offerta più richiesta:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="58.0" layoutY="538.0" text="Richieste esaminate dall'operatore">
+      <Label layoutX="58.0" layoutY="129.0" text="Richieste da te finalizzate:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <ComboBox layoutX="339.0" layoutY="537.0" prefWidth="150.0" />
-      <Label alignment="TOP_LEFT" layoutX="496.0" layoutY="538.0" prefHeight="25.0" prefWidth="16.0" text=":">
+      <Label fx:id="subsInYearCountLabel" layoutX="482.0" layoutY="230.0" text="Label" textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="planLabel" layoutX="251.0" layoutY="129.0" text="Label" textFill="#006139">
+      <Label fx:id="municipalityHighestSubCountLabel" layoutX="362.0" layoutY="333.0" text="Label" textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="subsInYearCountLabel" layoutX="444.0" layoutY="229.0" text="Label" textFill="#006139">
+      <Label fx:id="mostRequestedMethodLabel" layoutX="264.0" layoutY="434.0" text="Label" textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="municipalityHighestSubCountLabel" layoutX="318.0" layoutY="333.0" text="Label" textFill="#006139">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label fx:id="mostRequestedMethodLabel" layoutX="347.0" layoutY="434.0" text="Label" textFill="#006139">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label fx:id="requestsByOperatorLabel" layoutX="512.0" layoutY="539.0" text="Label" textFill="#006139">
+      <Label fx:id="requestsByOperatorLabel" layoutX="313.0" layoutY="129.0" text="Label" textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>

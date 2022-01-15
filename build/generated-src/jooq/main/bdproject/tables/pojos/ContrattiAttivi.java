@@ -12,7 +12,7 @@ import java.time.LocalDate;
  * VIEW
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class ContrattiApprovati implements Serializable {
+public class ContrattiAttivi implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,7 +29,7 @@ public class ContrattiApprovati implements Serializable {
     private final Integer   idcliente;
     private final LocalDate datacessazione;
 
-    public ContrattiApprovati(ContrattiApprovati value) {
+    public ContrattiAttivi(ContrattiAttivi value) {
         this.idcontratto = value.idcontratto;
         this.dataaperturarichiesta = value.dataaperturarichiesta;
         this.datachiusurarichiesta = value.datachiusurarichiesta;
@@ -44,7 +44,7 @@ public class ContrattiApprovati implements Serializable {
         this.datacessazione = value.datacessazione;
     }
 
-    public ContrattiApprovati(
+    public ContrattiAttivi(
         Integer   idcontratto,
         LocalDate dataaperturarichiesta,
         LocalDate datachiusurarichiesta,
@@ -73,84 +73,84 @@ public class ContrattiApprovati implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.IdContratto</code>.
+     * Getter for <code>utenze.contratti attivi.IdContratto</code>.
      */
     public Integer getIdcontratto() {
         return this.idcontratto;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.DataAperturaRichiesta</code>.
+     * Getter for <code>utenze.contratti attivi.DataAperturaRichiesta</code>.
      */
     public LocalDate getDataaperturarichiesta() {
         return this.dataaperturarichiesta;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.DataChiusuraRichiesta</code>.
+     * Getter for <code>utenze.contratti attivi.DataChiusuraRichiesta</code>.
      */
     public LocalDate getDatachiusurarichiesta() {
         return this.datachiusurarichiesta;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.StatoRichiesta</code>.
+     * Getter for <code>utenze.contratti attivi.StatoRichiesta</code>.
      */
     public String getStatorichiesta() {
         return this.statorichiesta;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.NoteRichiesta</code>.
+     * Getter for <code>utenze.contratti attivi.NoteRichiesta</code>.
      */
     public String getNoterichiesta() {
         return this.noterichiesta;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.NumeroComponenti</code>.
+     * Getter for <code>utenze.contratti attivi.NumeroComponenti</code>.
      */
     public Integer getNumerocomponenti() {
         return this.numerocomponenti;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.Uso</code>.
+     * Getter for <code>utenze.contratti attivi.Uso</code>.
      */
     public Integer getUso() {
         return this.uso;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.Offerta</code>.
+     * Getter for <code>utenze.contratti attivi.Offerta</code>.
      */
     public Integer getOfferta() {
         return this.offerta;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.TipoAttivazione</code>.
+     * Getter for <code>utenze.contratti attivi.TipoAttivazione</code>.
      */
     public Integer getTipoattivazione() {
         return this.tipoattivazione;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.IdImmobile</code>.
+     * Getter for <code>utenze.contratti attivi.IdImmobile</code>.
      */
     public Integer getIdimmobile() {
         return this.idimmobile;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.IdCliente</code>.
+     * Getter for <code>utenze.contratti attivi.IdCliente</code>.
      */
     public Integer getIdcliente() {
         return this.idcliente;
     }
 
     /**
-     * Getter for <code>utenze.contratti approvati.DataCessazione</code>.
+     * Getter for <code>utenze.contratti attivi.DataCessazione</code>.
      */
     public LocalDate getDatacessazione() {
         return this.datacessazione;
@@ -158,7 +158,7 @@ public class ContrattiApprovati implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("ContrattiApprovati (");
+        StringBuilder sb = new StringBuilder("ContrattiAttivi (");
 
         sb.append(idcontratto);
         sb.append(", ").append(dataaperturarichiesta);

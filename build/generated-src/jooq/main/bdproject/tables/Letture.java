@@ -19,7 +19,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,14 +68,24 @@ public class Letture extends TableImpl<LettureRecord> {
     public final TableField<LettureRecord, LocalDate> DATAEFFETTUAZIONE = createField(DSL.name("DataEffettuazione"), SQLDataType.LOCALDATE.nullable(false), this, "");
 
     /**
-     * The column <code>utenze.letture.Consumi</code>.
+     * The column <code>utenze.letture.DataChiusuraRichiesta</code>.
      */
-    public final TableField<LettureRecord, BigDecimal> CONSUMI = createField(DSL.name("Consumi"), SQLDataType.DECIMAL(20, 4).nullable(false), this, "");
+    public final TableField<LettureRecord, LocalDate> DATACHIUSURARICHIESTA = createField(DSL.name("DataChiusuraRichiesta"), SQLDataType.LOCALDATE, this, "");
 
     /**
      * The column <code>utenze.letture.Stato</code>.
      */
     public final TableField<LettureRecord, String> STATO = createField(DSL.name("Stato"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.letture.Note</code>.
+     */
+    public final TableField<LettureRecord, String> NOTE = createField(DSL.name("Note"), SQLDataType.VARCHAR(500).nullable(false), this, "");
+
+    /**
+     * The column <code>utenze.letture.Consumi</code>.
+     */
+    public final TableField<LettureRecord, BigDecimal> CONSUMI = createField(DSL.name("Consumi"), SQLDataType.DECIMAL(20, 4).nullable(false), this, "");
 
     /**
      * The column <code>utenze.letture.IdPersona</code>.
@@ -160,8 +170,8 @@ public class Letture extends TableImpl<LettureRecord> {
     @Override
     public List<Check<LettureRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("letture_chk_1"), "(`Consumi` >= 0)", true),
-            Internal.createCheck(this, DSL.name("letture_chk_2"), "(`Stato` in (_utf8mb4\\'In lavorazione\\',_utf8mb4\\'Approvata\\',_utf8mb4\\'Respinta\\'))", true)
+            Internal.createCheck(this, DSL.name("letture_chk_1"), "(`Stato` in (_utf8mb4\\'In lavorazione\\',_utf8mb4\\'Approvata\\',_utf8mb4\\'Respinta\\'))", true),
+            Internal.createCheck(this, DSL.name("letture_chk_2"), "(`Consumi` >= 0)", true)
         );
     }
 
@@ -192,11 +202,11 @@ public class Letture extends TableImpl<LettureRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, LocalDate, BigDecimal, String, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row8<Integer, String, LocalDate, LocalDate, String, String, BigDecimal, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

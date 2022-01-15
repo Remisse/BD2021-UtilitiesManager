@@ -11,7 +11,7 @@ import bdproject.tables.ClientiDettagliati;
 import bdproject.tables.Compatibilità;
 import bdproject.tables.Contatori;
 import bdproject.tables.Contratti;
-import bdproject.tables.ContrattiApprovati;
+import bdproject.tables.ContrattiAttivi;
 import bdproject.tables.Immobili;
 import bdproject.tables.Letture;
 import bdproject.tables.MateriePrime;
@@ -73,7 +73,7 @@ public class Tables {
     /**
      * VIEW
      */
-    public static final ContrattiApprovati CONTRATTI_APPROVATI = ContrattiApprovati.CONTRATTI_APPROVATI;
+    public static final ContrattiAttivi CONTRATTI_ATTIVI = ContrattiAttivi.CONTRATTI_ATTIVI;
 
     /**
      * The table <code>utenze.immobili</code>.

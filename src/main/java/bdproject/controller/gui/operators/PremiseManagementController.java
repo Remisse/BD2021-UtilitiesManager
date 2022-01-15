@@ -4,7 +4,6 @@ import bdproject.controller.Choice;
 import bdproject.controller.ChoiceImpl;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
-import bdproject.controller.gui.admin.AreaSelectorController;
 import bdproject.model.types.PremiseType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;

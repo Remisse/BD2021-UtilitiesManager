@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="repFileStatusLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="repFileStatusLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="247.0" layoutX="1048.0" layoutY="520.0" stroke="#00000034" strokeType="INSIDE" width="428.0" />
       <Label layoutX="233.0" layoutY="106.0" text="Contratti">
@@ -23,10 +23,10 @@
       <TableView fx:id="subsTable" layoutX="233.0" layoutY="148.0" prefHeight="247.0" prefWidth="753.0">
         <columns>
           <TableColumn fx:id="clientIdCol" prefWidth="114.0" text="Codice cliente" />
-          <TableColumn fx:id="subIdCol" prefWidth="122.0" text="Codice contratto" />
-            <TableColumn fx:id="zoneCol" prefWidth="112.0" text="Zona" />
+          <TableColumn fx:id="subIdCol" prefWidth="142.0" text="Codice contratto" />
+            <TableColumn fx:id="zoneCol" prefWidth="92.0" text="Zona" />
             <TableColumn fx:id="planIdCol" prefWidth="129.0" text="Codice offerta" />
-            <TableColumn fx:id="incomeDiscountCol" prefWidth="134.0" text="Beneficia di sconto" />
+            <TableColumn fx:id="incomeDiscountCol" prefWidth="163.0" text="Beneficia di sconto" />
         </columns>
       </TableView>
       <ComboBox fx:id="statusFilter" layoutX="50.0" layoutY="192.0" onAction="#doRefreshSubs" prefWidth="150.0" promptText="Stato..." />
@@ -64,7 +64,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <CheckBox fx:id="pastDeadlineFilter" layoutX="50.0" layoutY="300.0" mnemonicParsing="false" onAction="#doRefreshSubs" prefHeight="64.0" prefWidth="150.0" text="Bollette scadute da più di 14 giorni" wrapText="true" />
+      <CheckBox fx:id="pastDeadlineFilter" layoutX="50.0" layoutY="300.0" mnemonicParsing="false" onAction="#doRefreshSubs" prefHeight="64.0" prefWidth="150.0" text="Bollette non saldate" wrapText="true" />
       <Label layoutX="233.0" layoutY="482.0" text="Bollette">
          <font>
             <Font size="18.0" />
@@ -98,12 +98,12 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="1287.0" layoutY="617.0" mnemonicParsing="false" onAction="#loadReportFile" prefHeight="31.0" prefWidth="165.0" text="Carica file di dettaglio">
+      <Button layoutX="1276.0" layoutY="617.0" mnemonicParsing="false" onAction="#loadReportFile" prefHeight="31.0" prefWidth="191.0" text="Carica file di dettaglio">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Label layoutX="1285.0" layoutY="580.0" text="Stato:">
+      <Label layoutX="1276.0" layoutY="580.0" text="Stato:">
          <font>
             <Font size="17.0" />
          </font>
@@ -136,7 +136,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="endSub" layoutX="342.0" layoutY="409.0" mnemonicParsing="false" onAction="#doEndSub" prefHeight="31.0" prefWidth="130.0" text="Cessa contratto" textFill="#9e0000">
+      <Button fx:id="endSub" layoutX="342.0" layoutY="409.0" mnemonicParsing="false" onAction="#doEndSub" prefHeight="31.0" prefWidth="143.0" text="Cessa contratto" textFill="#9e0000">
          <font>
             <Font size="15.0" />
          </font>

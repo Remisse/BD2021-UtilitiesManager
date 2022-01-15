@@ -4,6 +4,7 @@ import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.users.CatalogueController;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
+import bdproject.model.types.ActivationType;
 import bdproject.tables.pojos.*;
 import bdproject.utils.ViewUtils;
 import javafx.fxml.FXML;
@@ -20,6 +21,9 @@ public abstract class AbstractParametersSelectionController extends AbstractCont
 
     private static final String FXML_FILE = "meterAndActivation.fxml";
     private final SubscriptionProcess process;
+    private final boolean requiresOtherClient;
+    private final boolean requiresMeterId;
+    private final boolean requiresMeasurement;
 
     @FXML private Label planLabel;
     @FXML private Label utilityLabel;
@@ -39,9 +43,13 @@ public abstract class AbstractParametersSelectionController extends AbstractCont
     @FXML private Button next;
 
     protected AbstractParametersSelectionController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-                                                    final SubscriptionProcess process) {
+                                                    final SubscriptionProcess process, final boolean requiresOtherClient,
+                                                    final boolean requiresMeterId, final boolean requiresMeasurement) {
         super(stage, dataSource, holder, FXML_FILE);
         this.process = process;
+        this.requiresOtherClient = requiresOtherClient;
+        this.requiresMeterId = requiresMeterId;
+        this.requiresMeasurement = requiresMeasurement;
     }
 
     protected SubscriptionProcess getProcess() {
@@ -66,10 +74,6 @@ public abstract class AbstractParametersSelectionController extends AbstractCont
         peopleNoLabel.setText("Num. componenti del nucleo familiare");
         peopleNoLabel.setVisible(true);
         peopleNoField.setVisible(true);
-
-        final boolean requiresOtherClient = activationMethod.getRichiedevecchiointestatario() == 1;
-        final boolean requiresMeterId = activationMethod.getRichiedematricolacontatore() == 1;
-        final boolean requiresMeasurement = activationMethod.getRichiedelettura() == 1;
 
         otherClientIdLabel.setVisible(requiresOtherClient);
         otherClientIdField.setVisible(requiresOtherClient);

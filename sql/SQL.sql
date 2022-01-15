@@ -81,8 +81,10 @@ create table letture (
     NumeroLettura integer auto_increment not null,
     MatricolaContatore varchar(20) not null,
     DataEffettuazione date not null,
-    Consumi decimal(20, 4) not null check (Consumi >= 0),
+    DataChiusuraRichiesta date default null,
     Stato varchar(30) not null check (Stato in ("In lavorazione", "Approvata", "Respinta")),
+    Note varchar(500) not null,
+    Consumi decimal(20, 4) not null check (Consumi >= 0),
     IdPersona integer not null,
     constraint PK_LETTURE primary key (NumeroLettura),
     constraint AK_LETTURE unique (MatricolaContatore, DataEffettuazione));
@@ -102,7 +104,6 @@ create table offerte (
 
 create table operatori (
 	 IdOperatore integer not null,
-     Tipo varchar(30) not null check (Tipo in ("Amministratore", "Operatore")),
      Stipendio decimal(20, 2) not null check (Stipendio >= 0),
      constraint PK_OPERATORE primary key (IdOperatore));
      
@@ -154,9 +155,6 @@ create table tipi_attivazione (
 	 CodAttivazione integer not null,
      Nome varchar(20) not null,
      Costo decimal(20, 2) not null,
-     RichiedeVecchioIntestatario bool not null,
-     RichiedeMatricolaContatore bool not null,
-     RichiedeLettura bool not null,
      check(Costo >= 0),
      constraint PK_TIPO_ATTIVAZIONE primary key (CodAttivazione));
 
@@ -192,13 +190,13 @@ values(default, "Abitativo non residenziale", 0.7, false);
 
 -- Populate "tipi_attivazione"
 insert into tipi_attivazione
-values (1, "Nuova attivazione", 85.0, false, false, false);
+values (1, "Nuova attivazione", 85.0);
 
 insert into tipi_attivazione
-values (2, "Subentro", 70.0, false, true, false);
+values (2, "Subentro", 70.0);
 
 insert into tipi_attivazione
-values (3, "Voltura", 45.0, true, true, true);
+values (3, "Voltura", 45.0);
 
 
 -- Populate "redditi"
@@ -233,18 +231,18 @@ values ("385011111111", "Acqua", 1);
 
 -- Populate "letture"
 insert into letture
-values (default, "83850395028543", date_sub(curdate(), interval 2 month), 18.0, "Approvata", 1);
+values (default, "83850395028543", date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 2 month), "Approvata", "", 18.0, 1);
 
 insert into letture
-values (default, "385011111111", date_sub(curdate(), interval 2 month), 35.0, "Approvata", 1);
+values (default, "385011111111", date_sub(curdate(), interval 2 month), date_sub(curdate(), interval 2 month), "Approvata", "", 35.0, 1);
 
 
 -- operatori letture
 insert into `operatori letture`
-values (1, 4);
+values (1, 3);
 
 insert into `operatori letture`
-values (2, 4);
+values (2, 3);
 
 
 -- Populate "persone", "clienti" and "operatori"
@@ -255,10 +253,7 @@ insert into persone
 values (default, "Bartolomeo", "Bartolucci", "BRTBBB25T87R762U", "Via delle Vie", 12, "Cesena", "47521", "FC", 19860621, "3801985090", "bartolomeo@gmail.com", "uffiuffi");
 
 insert into persone
-values (default, "Armando", "Armandini", "GAGGUG92F28U275P", "Viale Vialone", 73, "Catanzaro", "88100", "CZ", 19910717, "3472850772", "amministratore@admin.com", "password");
-
-insert into persone
-values (default, "Osvaldo", "Ostrazio", "OSVOST29I17F762P", "Corso Corsini", 18, "Godo", "48026", "RA", 19890131, "3339920275", "operatore@op.com", "password");
+values (default, "Osvaldo", "Ostrazio", "GAGGUG92F28U275P", "Viale Vialone", 73, "Catanzaro", "88100", "CZ", 19910717, "3472850772", "operatore@op.com", "password");
 
 insert into clienti
 values (1, 3);
@@ -267,10 +262,7 @@ insert into clienti
 values (2, 1);
 
 insert into operatori
-values (3, "Amministratore", 1640.83);
-
-insert into operatori
-values (4, "Operatore", 900.15);
+values (3, 940.83);
 
 
 -- Populate "offerte" and "compatibilità"
@@ -312,10 +304,10 @@ values (date_sub(curdate(), interval 2 day), default, "In lavorazione", " ", 2, 
 
 -- operatori contratti
 insert into `operatori contratti`
-values (1, 4);
+values (1, 3);
 
 insert into `operatori contratti`
-values (2, 4);
+values (2, 3);
 
 
 -- cessazioni
@@ -325,20 +317,20 @@ values (default, curdate(), default, "In lavorazione", "", 1);
 
 -- operatori cessazioni
 insert into `operatori cessazioni`
-values (1, 4);
+values (1, 3);
 
 -- Populate "bollette"
 insert into bollette(IdContratto, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore)
-values (1, date_sub(curdate(), interval 120 day), date_sub(curdate(), interval 185 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 90 day), 124.64, 18.0, unhex("54657374"), false, 4);
+values (1, date_sub(curdate(), interval 120 day), date_sub(curdate(), interval 185 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 90 day), 124.64, 18.0, unhex("54657374"), false, 3);
 
 insert into bollette(IdContratto, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore)
-values (2, date_sub(curdate(), interval 120 day), date_sub(curdate(), interval 185 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 90 day), 133.0, 35.0, unhex("54657374"), false, 4);
+values (2, date_sub(curdate(), interval 120 day), date_sub(curdate(), interval 185 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 90 day), 133.0, 35.0, unhex("54657374"), false, 3);
 
 insert into bollette(IdContratto, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore)
-values (1, date_sub(curdate(), interval 60 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 65 day), date_sub(curdate(), interval 30 day), 19.97, 33.0, unhex("54657374"), true, 4);
+values (1, date_sub(curdate(), interval 60 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 65 day), date_sub(curdate(), interval 30 day), 19.97, 33.0, unhex("54657374"), true, 3);
 
 insert into bollette(IdContratto, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore)
-values (2, date_sub(curdate(), interval 60 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 65 day), date_sub(curdate(), interval 30 day), 48.0, 50.0, unhex("54657374"), true, 4);
+values (2, date_sub(curdate(), interval 60 day), date_sub(curdate(), interval 125 day), date_sub(curdate(), interval 65 day), date_sub(curdate(), interval 30 day), 48.0, 50.0, unhex("54657374"), true, 3);
 
 
 -- Populate "pagamenti"
@@ -441,7 +433,7 @@ create view `clienti dettagliati` as select P.*, C.FasciaReddito
 									   from persone P, clienti C
 									  where P.IdPersona = C.CodiceCliente;
                                     
-create view `operatori dettagliati` as select P.*, O.Tipo, O.Stipendio
+create view `operatori dettagliati` as select P.*, O.Stipendio
 									     from persone P, operatori O
 									    where P.IdPersona = O.IdOperatore;
                                       
@@ -450,6 +442,12 @@ create view `richieste contratto` as select IdContratto, DataAperturaRichiesta, 
 									   from contratti
 									  where DataChiusuraRichiesta is null or (DataChiusuraRichiesta is not null and StatoRichiesta = "Respinta");
                                       
-create view `contratti approvati` as select C.*
-								       from contratti C
-								      where DataChiusuraRichiesta is not null and StatoRichiesta = "Approvata";
+create view `contratti attivi` as select C.*
+								    from contratti C
+								   where C.DataChiusuraRichiesta is not null and C.StatoRichiesta = "Approvata"
+									 and not exists (select E.NumeroRichiesta
+													   from cessazioni E
+													  where E.IdContratto = C.IdContratto
+													    and E.DataChiusuraRichiesta is not null
+													    and E.StatoRichiesta = "Approvata");
+

@@ -19,33 +19,21 @@ public class TipiAttivazione implements Serializable {
     private final Integer    codattivazione;
     private final String     nome;
     private final BigDecimal costo;
-    private final Byte       richiedevecchiointestatario;
-    private final Byte       richiedematricolacontatore;
-    private final Byte       richiedelettura;
 
     public TipiAttivazione(TipiAttivazione value) {
         this.codattivazione = value.codattivazione;
         this.nome = value.nome;
         this.costo = value.costo;
-        this.richiedevecchiointestatario = value.richiedevecchiointestatario;
-        this.richiedematricolacontatore = value.richiedematricolacontatore;
-        this.richiedelettura = value.richiedelettura;
     }
 
     public TipiAttivazione(
         Integer    codattivazione,
         String     nome,
-        BigDecimal costo,
-        Byte       richiedevecchiointestatario,
-        Byte       richiedematricolacontatore,
-        Byte       richiedelettura
+        BigDecimal costo
     ) {
         this.codattivazione = codattivazione;
         this.nome = nome;
         this.costo = costo;
-        this.richiedevecchiointestatario = richiedevecchiointestatario;
-        this.richiedematricolacontatore = richiedematricolacontatore;
-        this.richiedelettura = richiedelettura;
     }
 
     /**
@@ -69,29 +57,6 @@ public class TipiAttivazione implements Serializable {
         return this.costo;
     }
 
-    /**
-     * Getter for
-     * <code>utenze.tipi_attivazione.RichiedeVecchioIntestatario</code>.
-     */
-    public Byte getRichiedevecchiointestatario() {
-        return this.richiedevecchiointestatario;
-    }
-
-    /**
-     * Getter for
-     * <code>utenze.tipi_attivazione.RichiedeMatricolaContatore</code>.
-     */
-    public Byte getRichiedematricolacontatore() {
-        return this.richiedematricolacontatore;
-    }
-
-    /**
-     * Getter for <code>utenze.tipi_attivazione.RichiedeLettura</code>.
-     */
-    public Byte getRichiedelettura() {
-        return this.richiedelettura;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TipiAttivazione (");
@@ -99,9 +64,6 @@ public class TipiAttivazione implements Serializable {
         sb.append(codattivazione);
         sb.append(", ").append(nome);
         sb.append(", ").append(costo);
-        sb.append(", ").append(richiedevecchiointestatario);
-        sb.append(", ").append(richiedematricolacontatore);
-        sb.append(", ").append(richiedelettura);
 
         sb.append(")");
         return sb.toString();

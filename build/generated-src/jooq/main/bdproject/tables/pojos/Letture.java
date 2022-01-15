@@ -20,16 +20,20 @@ public class Letture implements Serializable {
     private final Integer    numerolettura;
     private final String     matricolacontatore;
     private final LocalDate  dataeffettuazione;
-    private final BigDecimal consumi;
+    private final LocalDate  datachiusurarichiesta;
     private final String     stato;
+    private final String     note;
+    private final BigDecimal consumi;
     private final Integer    idpersona;
 
     public Letture(Letture value) {
         this.numerolettura = value.numerolettura;
         this.matricolacontatore = value.matricolacontatore;
         this.dataeffettuazione = value.dataeffettuazione;
-        this.consumi = value.consumi;
+        this.datachiusurarichiesta = value.datachiusurarichiesta;
         this.stato = value.stato;
+        this.note = value.note;
+        this.consumi = value.consumi;
         this.idpersona = value.idpersona;
     }
 
@@ -37,15 +41,19 @@ public class Letture implements Serializable {
         Integer    numerolettura,
         String     matricolacontatore,
         LocalDate  dataeffettuazione,
-        BigDecimal consumi,
+        LocalDate  datachiusurarichiesta,
         String     stato,
+        String     note,
+        BigDecimal consumi,
         Integer    idpersona
     ) {
         this.numerolettura = numerolettura;
         this.matricolacontatore = matricolacontatore;
         this.dataeffettuazione = dataeffettuazione;
-        this.consumi = consumi;
+        this.datachiusurarichiesta = datachiusurarichiesta;
         this.stato = stato;
+        this.note = note;
+        this.consumi = consumi;
         this.idpersona = idpersona;
     }
 
@@ -71,10 +79,10 @@ public class Letture implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.letture.Consumi</code>.
+     * Getter for <code>utenze.letture.DataChiusuraRichiesta</code>.
      */
-    public BigDecimal getConsumi() {
-        return this.consumi;
+    public LocalDate getDatachiusurarichiesta() {
+        return this.datachiusurarichiesta;
     }
 
     /**
@@ -82,6 +90,20 @@ public class Letture implements Serializable {
      */
     public String getStato() {
         return this.stato;
+    }
+
+    /**
+     * Getter for <code>utenze.letture.Note</code>.
+     */
+    public String getNote() {
+        return this.note;
+    }
+
+    /**
+     * Getter for <code>utenze.letture.Consumi</code>.
+     */
+    public BigDecimal getConsumi() {
+        return this.consumi;
     }
 
     /**
@@ -98,8 +120,10 @@ public class Letture implements Serializable {
         sb.append(numerolettura);
         sb.append(", ").append(matricolacontatore);
         sb.append(", ").append(dataeffettuazione);
-        sb.append(", ").append(consumi);
+        sb.append(", ").append(datachiusurarichiesta);
         sb.append(", ").append(stato);
+        sb.append(", ").append(note);
+        sb.append(", ").append(consumi);
         sb.append(", ").append(idpersona);
 
         sb.append(")");
