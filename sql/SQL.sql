@@ -61,7 +61,6 @@ create table contratti (
      TipoAttivazione integer not null,
      IdImmobile integer not null,
      IdCliente integer not null,
-     DataCessazione date default null,
      constraint PK_CONTRATTO primary key (IdContratto));
 
 create table immobili (
@@ -89,7 +88,7 @@ create table letture (
     constraint PK_LETTURE primary key (NumeroLettura),
     constraint AK_LETTURE unique (MatricolaContatore, DataEffettuazione));
 
-create table materie_prime (
+create table `materie prime` (
      Nome varchar(20) not null,
      constraint PK_MATERIA primary key (Nome));
 
@@ -151,14 +150,14 @@ create table redditi (
      constraint PK_REDDITI primary key (CodReddito),
      constraint AK_REDDITI unique (Fascia));
 
-create table tipi_attivazione (
+create table `tipi attivazione` (
 	 CodAttivazione integer not null,
      Nome varchar(20) not null,
      Costo decimal(20, 2) not null,
      check(Costo >= 0),
      constraint PK_TIPO_ATTIVAZIONE primary key (CodAttivazione));
 
-create table tipologie_uso (
+create table `tipologie uso` (
 	 CodUso integer not null auto_increment,
      Nome varchar(30) not null,
      StimaPerPersona decimal(20, 2) not null,
@@ -172,30 +171,30 @@ create table tipologie_uso (
 -- ----------
 
 -- Populate materie_prime
-insert into materie_prime
+insert into `materie prime`
 values("Gas");
 
-insert into materie_prime
+insert into `materie prime`
 values("Acqua");
 
 
 -- Populate "tipologie_uso"
 
-insert into tipologie_uso
+insert into `tipologie uso`
 values(default, "Abitativo residenziale", 0.2, true);
 
-insert into tipologie_uso
+insert into `tipologie uso`
 values(default, "Abitativo non residenziale", 0.7, false);
 
 
 -- Populate "tipi_attivazione"
-insert into tipi_attivazione
+insert into `tipi attivazione`
 values (1, "Nuova attivazione", 85.0);
 
-insert into tipi_attivazione
+insert into `tipi attivazione`
 values (2, "Subentro", 70.0);
 
-insert into tipi_attivazione
+insert into `tipi attivazione`
 values (3, "Voltura", 45.0);
 
 
@@ -351,79 +350,79 @@ values (4, date_sub(curdate(), interval 1 month));
 -- ___________________ 
 
 alter table bollette add constraint FK_CONTRATTO
-     foreign key (IdContratto) references contratti (IdContratto);
+    foreign key (IdContratto) references contratti (IdContratto);
      
 alter table bollette add constraint FK_EMISSIONE
-     foreign key (IdOperatore) references operatori (IdOperatore);
+    foreign key (IdOperatore) references operatori (IdOperatore);
      
 alter table cessazioni add constraint FK_RIFERIMENTO
-	 foreign key (IdContratto) references contratti (IdContratto);
+    foreign key (IdContratto) references contratti (IdContratto);
      
 alter table clienti add constraint FK_CODICECLIENTE
-	 foreign key (CodiceCliente) references persone (IdPersona);
+    foreign key (CodiceCliente) references persone (IdPersona);
      
 alter table clienti add constraint FK_POSSEDIMENTO
-	foreign key (FasciaReddito) references redditi (CodReddito);
+    foreign key (FasciaReddito) references redditi (CodReddito);
 
 alter table compatibilità add constraint FK_USOOFFERTA
-     foreign key (Uso) references tipologie_uso (CodUso) on delete cascade;
+    foreign key (Uso) references `tipologie uso` (CodUso) on delete cascade;
 
 alter table compatibilità add constraint FK_OFFERTAUSO
-     foreign key (Offerta) references offerte (CodOfferta) on delete cascade;
+    foreign key (Offerta) references offerte (CodOfferta) on delete cascade;
      
 alter table contatori add constraint FK_MISURAZIONE
-	foreign key (MateriaPrima) references materie_prime (Nome);
+    foreign key (MateriaPrima) references `materie prime` (Nome);
 
 alter table contatori add constraint FK_INSTALLAZIONE
-     foreign key (IdImmobile) references immobili (IdImmobile);
+    foreign key (IdImmobile) references immobili (IdImmobile);
      
 alter table contratti add constraint FK_RICHIESTA
-     foreign key (IdCliente) references clienti (CodiceCliente);
+    foreign key (IdCliente) references clienti (CodiceCliente);
 
 alter table contratti add constraint FK_SOTTOSCRIZIONE
-     foreign key (Offerta) references offerte (CodOfferta);
+    foreign key (Offerta) references offerte (CodOfferta);
 
 alter table contratti add constraint FK_USO
-     foreign key (Uso) references tipologie_uso (CodUso);
+    foreign key (Uso) references `tipologie uso` (CodUso);
 
 alter table contratti add constraint FK_ATTIVAZIONE_TRAMITE
-     foreign key (TipoAttivazione) references tipi_attivazione (CodAttivazione);
+    foreign key (TipoAttivazione) references `tipi attivazione` (CodAttivazione);
 
 alter table contratti add constraint FK_COLLEGAMENTO
-     foreign key (IdImmobile) references immobili (IdImmobile);
+    foreign key (IdImmobile) references immobili (IdImmobile);
 
 alter table letture add constraint FK_CORRISPONDENZA
-     foreign key (MatricolaContatore) references contatori (Matricola);
+    foreign key (MatricolaContatore) references contatori (Matricola);
      
 alter table letture add constraint FK_EFFETTUAZIONE
-     foreign key (IdPersona) references persone (IdPersona);
+    foreign key (IdPersona) references persone (IdPersona);
 
 alter table offerte add constraint FK_INTERESSE
-     foreign key (MateriaPrima) references materie_prime (Nome);
+    foreign key (MateriaPrima) references `materie prime` (Nome);
      
 alter table operatori add constraint FK_DATIANAGRAFICI
-	foreign key (IdOperatore) references persone (IdPersona);
+    foreign key (IdOperatore) references persone (IdPersona);
     
 alter table `operatori cessazioni` add constraint FK_GESTIONE_CC1
-	foreign key (NumeroRichiesta) references cessazioni (NumeroRichiesta) on delete cascade;
+    foreign key (NumeroRichiesta) references cessazioni (NumeroRichiesta) on delete cascade;
     
 alter table `operatori cessazioni` add constraint FK_GESTIONE_CO1
-	foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
+    foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
 
 alter table `operatori contratti` add constraint FK_GESTIONE_CC2
-	foreign key (NumeroRichiesta) references contratti (IdContratto) on delete cascade;
+    foreign key (NumeroRichiesta) references contratti (IdContratto) on delete cascade;
     
 alter table `operatori contratti` add constraint FK_GESTIONE_CO2
-	foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
+    foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
 
 alter table `operatori letture` add constraint FK_GESTIONE_LC
-	foreign key (Lettura) references letture (NumeroLettura) on delete cascade;
+    foreign key (Lettura) references letture (NumeroLettura) on delete cascade;
     
 alter table `operatori letture` add constraint FK_GESTIONE_LO
-	foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
+    foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
 
 alter table pagamenti add constraint FK_PAGAMENTO
-	foreign key (NumeroBolletta) references bollette (NumeroBolletta);
+    foreign key (NumeroBolletta) references bollette (NumeroBolletta);
     
 
 -- View section
@@ -442,12 +441,14 @@ create view `richieste contratto` as select IdContratto, DataAperturaRichiesta, 
 									   from contratti
 									  where DataChiusuraRichiesta is null or (DataChiusuraRichiesta is not null and StatoRichiesta = "Respinta");
                                       
+create view `contratti approvati` as select C.*
+								       from contratti C
+								      where C.DataChiusuraRichiesta is not null and C.StatoRichiesta = "Approvata";
+                                      
 create view `contratti attivi` as select C.*
-								    from contratti C
-								   where C.DataChiusuraRichiesta is not null and C.StatoRichiesta = "Approvata"
-									 and not exists (select E.NumeroRichiesta
+								    from `contratti approvati` C
+								   where not exists (select E.NumeroRichiesta
 													   from cessazioni E
 													  where E.IdContratto = C.IdContratto
 													    and E.DataChiusuraRichiesta is not null
 													    and E.StatoRichiesta = "Approvata");
-

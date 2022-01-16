@@ -1,3 +1,5 @@
+\babel@toc {italian}{}
+\babel@toc {italian}{}
 \contentsline {chapter}{\numberline {1}Analisi dei requisiti}{2}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Intervista}{2}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Glossario dei termini e testo finale}{3}{section.1.2}%
@@ -29,4 +31,7 @@
 \contentsline {section}{\numberline {3.5}Traduzione di entità e associazioni in relazioni}{17}{section.3.5}%
 \contentsline {section}{\numberline {3.6}Schema relazionale finale}{18}{section.3.6}%
 \contentsline {section}{\numberline {3.7}Traduzione delle operazioni in query SQL}{18}{section.3.7}%
-\contentsline {chapter}{\numberline {4}Progettazione dell'applicazione}{21}{chapter.4}%
+\contentsline {chapter}{\numberline {4}Progettazione dell'applicazione}{22}{chapter.4}%
+\contentsline {chapter}{\numberline {A}Creazione di tabelle e view in SQL}{23}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Creazione delle tabelle}{23}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Creazione delle view}{27}{section.Alph1.2}%

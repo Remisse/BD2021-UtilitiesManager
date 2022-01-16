@@ -6,8 +6,10 @@ import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Bollette;
+import bdproject.tables.pojos.ContrattiApprovati;
 import bdproject.tables.pojos.ContrattiAttivi;
 import bdproject.tables.pojos.Immobili;
+import bdproject.utils.Converters;
 import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
 import javafx.application.Platform;
@@ -37,7 +39,7 @@ import java.util.ResourceBundle;
 public class UserStatsController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "consumptionTrend.fxml";
-    private final ContrattiAttivi subscription;
+    private final ContrattiApprovati subscription;
 
     @FXML private Button back;
     @FXML private LineChart<String, BigDecimal> yearlyTrend;
@@ -48,13 +50,13 @@ public class UserStatsController extends AbstractController implements Initializ
     @FXML private DatePicker endDate;
 
     private UserStatsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiAttivi subscription) {
+            final ContrattiApprovati subscription) {
         super(stage, dataSource, holder, FXML_FILE);
         this.subscription = subscription;
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiAttivi subscription) {
+            final ContrattiApprovati subscription) {
         return new UserStatsController(stage, dataSource, holder, subscription);
     }
 
@@ -65,13 +67,18 @@ public class UserStatsController extends AbstractController implements Initializ
     }
 
     private void populateYearSelection() {
-        if (Checks.isSubscriptionActive(subscription)) {
-            final List<Integer> years = new ArrayList<>();
-            for (int year = LocalDate.now().getYear(); year >= subscription.getDatachiusurarichiesta().getYear(); year--) {
-                years.add(year);
-            }
+        try (final Connection conn = dataSource().getConnection()) {
+            if (Checks.isSubscriptionActive(Converters.approvedToOrdinarySub(subscription), conn)) {
+                final List<Integer> years = new ArrayList<>();
+                for (int year = LocalDate.now().getYear(); year >= subscription.getDatachiusurarichiesta().getYear(); year--) {
+                    years.add(year);
+                }
 
-            Platform.runLater(() -> yearSelect.setItems(FXCollections.observableList(years)));
+                Platform.runLater(() -> yearSelect.setItems(FXCollections.observableList(years)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            ViewUtils.showError(e.getMessage());
         }
     }
 
@@ -113,7 +120,7 @@ public class UserStatsController extends AbstractController implements Initializ
             List<Bollette> reports = Collections.emptyList();
 
             try (Connection conn = dataSource().getConnection()) {
-                reports = Queries.fetchSubscriptionReports(subscription, conn);
+                reports = Queries.fetchSubscriptionReports(subscription.getIdcontratto(), conn);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

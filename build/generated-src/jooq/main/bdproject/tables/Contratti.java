@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -105,11 +105,6 @@ public class Contratti extends TableImpl<ContrattiRecord> {
      * The column <code>utenze.contratti.IdCliente</code>.
      */
     public final TableField<ContrattiRecord, Integer> IDCLIENTE = createField(DSL.name("IdCliente"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.contratti.DataCessazione</code>.
-     */
-    public final TableField<ContrattiRecord, LocalDate> DATACESSAZIONE = createField(DSL.name("DataCessazione"), SQLDataType.LOCALDATE, this, "");
 
     private Contratti(Name alias, Table<ContrattiRecord> aliased) {
         this(alias, aliased, null);
@@ -240,11 +235,11 @@ public class Contratti extends TableImpl<ContrattiRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, LocalDate, LocalDate, String, String, Integer, Integer, Integer, Integer, Integer, Integer, LocalDate> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row11<Integer, LocalDate, LocalDate, String, String, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

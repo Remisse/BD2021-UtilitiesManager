@@ -6,11 +6,10 @@ plugins {
     java
     application
     id("org.openjfx.javafxplugin") version "0.0.9" // https://github.com/openjfx/javafx-gradle-plugin
-    id("nu.studer.jooq") version "6.0"
+    id("nu.studer.jooq") version "6.0.1"
 }
 
 repositories {
-    jcenter()
     mavenCentral()
 }
 

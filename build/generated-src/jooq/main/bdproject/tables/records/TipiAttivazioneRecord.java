@@ -24,7 +24,7 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.tipi_attivazione.CodAttivazione</code>.
+     * Setter for <code>utenze.tipi attivazione.CodAttivazione</code>.
      */
     public TipiAttivazioneRecord setCodattivazione(Integer value) {
         set(0, value);
@@ -32,14 +32,14 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
     }
 
     /**
-     * Getter for <code>utenze.tipi_attivazione.CodAttivazione</code>.
+     * Getter for <code>utenze.tipi attivazione.CodAttivazione</code>.
      */
     public Integer getCodattivazione() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>utenze.tipi_attivazione.Nome</code>.
+     * Setter for <code>utenze.tipi attivazione.Nome</code>.
      */
     public TipiAttivazioneRecord setNome(String value) {
         set(1, value);
@@ -47,14 +47,14 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
     }
 
     /**
-     * Getter for <code>utenze.tipi_attivazione.Nome</code>.
+     * Getter for <code>utenze.tipi attivazione.Nome</code>.
      */
     public String getNome() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>utenze.tipi_attivazione.Costo</code>.
+     * Setter for <code>utenze.tipi attivazione.Costo</code>.
      */
     public TipiAttivazioneRecord setCosto(BigDecimal value) {
         set(2, value);
@@ -62,7 +62,7 @@ public class TipiAttivazioneRecord extends UpdatableRecordImpl<TipiAttivazioneRe
     }
 
     /**
-     * Getter for <code>utenze.tipi_attivazione.Costo</code>.
+     * Getter for <code>utenze.tipi attivazione.Costo</code>.
      */
     public BigDecimal getCosto() {
         return (BigDecimal) get(2);

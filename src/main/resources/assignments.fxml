@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="778.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="577.0" layoutY="26.0" text="Assegnamenti">
          <font>
@@ -19,7 +19,7 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <TableView fx:id="measurementTable" layoutX="120.0" layoutY="434.0" prefHeight="258.0" prefWidth="496.0">
+      <TableView fx:id="measurementTable" layoutX="120.0" layoutY="434.0" prefHeight="238.0" prefWidth="496.0">
         <columns>
           <TableColumn fx:id="measurementNumberCol" prefWidth="94.0" text="Numero" />
           <TableColumn fx:id="measurementEmployeeCol" prefWidth="106.0" text="Operatore" />
@@ -31,7 +31,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="endTable" layoutX="648.0" layoutY="434.0" prefHeight="258.0" prefWidth="514.0">
+      <TableView fx:id="endTable" layoutX="648.0" layoutY="434.0" prefHeight="238.0" prefWidth="514.0">
          <columns>
             <TableColumn fx:id="endIdCol" prefWidth="75.0" text="Id" />
             <TableColumn fx:id="endEmployeeCol" prefWidth="94.0" text="Operatore" />
@@ -40,7 +40,7 @@
             <TableColumn fx:id="endCompletionDateCol" prefWidth="112.0" text="Data chiusura" />
          </columns>
       </TableView>
-      <TableView fx:id="subTable" layoutX="383.0" layoutY="98.0" prefHeight="258.0" prefWidth="514.0">
+      <TableView fx:id="subTable" layoutX="383.0" layoutY="98.0" prefHeight="238.0" prefWidth="514.0">
          <columns>
             <TableColumn fx:id="subIdCol" prefWidth="75.0" text="Id" />
             <TableColumn fx:id="subEmployeeCol" prefWidth="106.0" text="Operatore" />
@@ -59,17 +59,17 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Button layoutX="383.0" layoutY="365.0" mnemonicParsing="false" onAction="#assignSub" text="Prendi in carico">
+      <Button layoutX="383.0" layoutY="345.0" mnemonicParsing="false" onAction="#assignSub" text="Prendi in carico">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="120.0" layoutY="700.0" mnemonicParsing="false" onAction="#assignMeasurement" text="Prendi in carico">
+      <Button layoutX="121.0" layoutY="685.0" mnemonicParsing="false" onAction="#assignMeasurement" text="Prendi in carico">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="648.0" layoutY="700.0" mnemonicParsing="false" onAction="#assignEnd" text="Prendi in carico">
+      <Button layoutX="647.0" layoutY="685.0" mnemonicParsing="false" onAction="#assignEnd" text="Prendi in carico">
          <font>
             <Font size="16.0" />
          </font>

@@ -41,28 +41,28 @@ public class TipologieUso implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.tipologie_uso.CodUso</code>.
+     * Getter for <code>utenze.tipologie uso.CodUso</code>.
      */
     public Integer getCoduso() {
         return this.coduso;
     }
 
     /**
-     * Getter for <code>utenze.tipologie_uso.Nome</code>.
+     * Getter for <code>utenze.tipologie uso.Nome</code>.
      */
     public String getNome() {
         return this.nome;
     }
 
     /**
-     * Getter for <code>utenze.tipologie_uso.StimaPerPersona</code>.
+     * Getter for <code>utenze.tipologie uso.StimaPerPersona</code>.
      */
     public BigDecimal getStimaperpersona() {
         return this.stimaperpersona;
     }
 
     /**
-     * Getter for <code>utenze.tipologie_uso.ScontoReddito</code>.
+     * Getter for <code>utenze.tipologie uso.ScontoReddito</code>.
      */
     public Byte getScontoreddito() {
         return this.scontoreddito;

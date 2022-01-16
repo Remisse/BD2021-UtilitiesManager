@@ -38,7 +38,7 @@ public class TipiAttivazione extends TableImpl<TipiAttivazioneRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>utenze.tipi_attivazione</code>
+     * The reference instance of <code>utenze.tipi attivazione</code>
      */
     public static final TipiAttivazione TIPI_ATTIVAZIONE = new TipiAttivazione();
 
@@ -51,17 +51,17 @@ public class TipiAttivazione extends TableImpl<TipiAttivazioneRecord> {
     }
 
     /**
-     * The column <code>utenze.tipi_attivazione.CodAttivazione</code>.
+     * The column <code>utenze.tipi attivazione.CodAttivazione</code>.
      */
     public final TableField<TipiAttivazioneRecord, Integer> CODATTIVAZIONE = createField(DSL.name("CodAttivazione"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>utenze.tipi_attivazione.Nome</code>.
+     * The column <code>utenze.tipi attivazione.Nome</code>.
      */
     public final TableField<TipiAttivazioneRecord, String> NOME = createField(DSL.name("Nome"), SQLDataType.VARCHAR(20).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.tipi_attivazione.Costo</code>.
+     * The column <code>utenze.tipi attivazione.Costo</code>.
      */
     public final TableField<TipiAttivazioneRecord, BigDecimal> COSTO = createField(DSL.name("Costo"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
 
@@ -74,24 +74,24 @@ public class TipiAttivazione extends TableImpl<TipiAttivazioneRecord> {
     }
 
     /**
-     * Create an aliased <code>utenze.tipi_attivazione</code> table reference
+     * Create an aliased <code>utenze.tipi attivazione</code> table reference
      */
     public TipiAttivazione(String alias) {
         this(DSL.name(alias), TIPI_ATTIVAZIONE);
     }
 
     /**
-     * Create an aliased <code>utenze.tipi_attivazione</code> table reference
+     * Create an aliased <code>utenze.tipi attivazione</code> table reference
      */
     public TipiAttivazione(Name alias) {
         this(alias, TIPI_ATTIVAZIONE);
     }
 
     /**
-     * Create a <code>utenze.tipi_attivazione</code> table reference
+     * Create a <code>utenze.tipi attivazione</code> table reference
      */
     public TipiAttivazione() {
-        this(DSL.name("tipi_attivazione"), null);
+        this(DSL.name("tipi attivazione"), null);
     }
 
     public <O extends Record> TipiAttivazione(Table<O> child, ForeignKey<O, TipiAttivazioneRecord> key) {
@@ -111,7 +111,7 @@ public class TipiAttivazione extends TableImpl<TipiAttivazioneRecord> {
     @Override
     public List<Check<TipiAttivazioneRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("tipi_attivazione_chk_1"), "(`Costo` >= 0)", true)
+            Internal.createCheck(this, DSL.name("tipi attivazione_chk_1"), "(`Costo` >= 0)", true)
         );
     }
 

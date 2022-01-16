@@ -28,7 +28,7 @@ public class MateriePrime implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.materie_prime.Nome</code>.
+     * Getter for <code>utenze.materie prime.Nome</code>.
      */
     public String getNome() {
         return this.nome;

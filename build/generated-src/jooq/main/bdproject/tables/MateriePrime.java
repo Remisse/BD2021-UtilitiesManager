@@ -32,7 +32,7 @@ public class MateriePrime extends TableImpl<MateriePrimeRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>utenze.materie_prime</code>
+     * The reference instance of <code>utenze.materie prime</code>
      */
     public static final MateriePrime MATERIE_PRIME = new MateriePrime();
 
@@ -45,7 +45,7 @@ public class MateriePrime extends TableImpl<MateriePrimeRecord> {
     }
 
     /**
-     * The column <code>utenze.materie_prime.Nome</code>.
+     * The column <code>utenze.materie prime.Nome</code>.
      */
     public final TableField<MateriePrimeRecord, String> NOME = createField(DSL.name("Nome"), SQLDataType.VARCHAR(20).nullable(false), this, "");
 
@@ -58,24 +58,24 @@ public class MateriePrime extends TableImpl<MateriePrimeRecord> {
     }
 
     /**
-     * Create an aliased <code>utenze.materie_prime</code> table reference
+     * Create an aliased <code>utenze.materie prime</code> table reference
      */
     public MateriePrime(String alias) {
         this(DSL.name(alias), MATERIE_PRIME);
     }
 
     /**
-     * Create an aliased <code>utenze.materie_prime</code> table reference
+     * Create an aliased <code>utenze.materie prime</code> table reference
      */
     public MateriePrime(Name alias) {
         this(alias, MATERIE_PRIME);
     }
 
     /**
-     * Create a <code>utenze.materie_prime</code> table reference
+     * Create a <code>utenze.materie prime</code> table reference
      */
     public MateriePrime() {
-        this(DSL.name("materie_prime"), null);
+        this(DSL.name("materie prime"), null);
     }
 
     public <O extends Record> MateriePrime(Table<O> child, ForeignKey<O, MateriePrimeRecord> key) {

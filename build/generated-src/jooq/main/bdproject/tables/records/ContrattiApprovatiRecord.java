@@ -4,7 +4,7 @@
 package bdproject.tables.records;
 
 
-import bdproject.tables.ContrattiAttivi;
+import bdproject.tables.ContrattiApprovati;
 
 import java.time.LocalDate;
 
@@ -18,170 +18,170 @@ import org.jooq.impl.TableRecordImpl;
  * VIEW
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class ContrattiAttiviRecord extends TableRecordImpl<ContrattiAttiviRecord> implements Record11<Integer, LocalDate, LocalDate, String, String, Integer, Integer, Integer, Integer, Integer, Integer> {
+public class ContrattiApprovatiRecord extends TableRecordImpl<ContrattiApprovatiRecord> implements Record11<Integer, LocalDate, LocalDate, String, String, Integer, Integer, Integer, Integer, Integer, Integer> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.contratti attivi.IdContratto</code>.
+     * Setter for <code>utenze.contratti approvati.IdContratto</code>.
      */
-    public ContrattiAttiviRecord setIdcontratto(Integer value) {
+    public ContrattiApprovatiRecord setIdcontratto(Integer value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.IdContratto</code>.
+     * Getter for <code>utenze.contratti approvati.IdContratto</code>.
      */
     public Integer getIdcontratto() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>utenze.contratti attivi.DataAperturaRichiesta</code>.
+     * Setter for <code>utenze.contratti approvati.DataAperturaRichiesta</code>.
      */
-    public ContrattiAttiviRecord setDataaperturarichiesta(LocalDate value) {
+    public ContrattiApprovatiRecord setDataaperturarichiesta(LocalDate value) {
         set(1, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.DataAperturaRichiesta</code>.
+     * Getter for <code>utenze.contratti approvati.DataAperturaRichiesta</code>.
      */
     public LocalDate getDataaperturarichiesta() {
         return (LocalDate) get(1);
     }
 
     /**
-     * Setter for <code>utenze.contratti attivi.DataChiusuraRichiesta</code>.
+     * Setter for <code>utenze.contratti approvati.DataChiusuraRichiesta</code>.
      */
-    public ContrattiAttiviRecord setDatachiusurarichiesta(LocalDate value) {
+    public ContrattiApprovatiRecord setDatachiusurarichiesta(LocalDate value) {
         set(2, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.DataChiusuraRichiesta</code>.
+     * Getter for <code>utenze.contratti approvati.DataChiusuraRichiesta</code>.
      */
     public LocalDate getDatachiusurarichiesta() {
         return (LocalDate) get(2);
     }
 
     /**
-     * Setter for <code>utenze.contratti attivi.StatoRichiesta</code>.
+     * Setter for <code>utenze.contratti approvati.StatoRichiesta</code>.
      */
-    public ContrattiAttiviRecord setStatorichiesta(String value) {
+    public ContrattiApprovatiRecord setStatorichiesta(String value) {
         set(3, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.StatoRichiesta</code>.
+     * Getter for <code>utenze.contratti approvati.StatoRichiesta</code>.
      */
     public String getStatorichiesta() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>utenze.contratti attivi.NoteRichiesta</code>.
+     * Setter for <code>utenze.contratti approvati.NoteRichiesta</code>.
      */
-    public ContrattiAttiviRecord setNoterichiesta(String value) {
+    public ContrattiApprovatiRecord setNoterichiesta(String value) {
         set(4, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.NoteRichiesta</code>.
+     * Getter for <code>utenze.contratti approvati.NoteRichiesta</code>.
      */
     public String getNoterichiesta() {
         return (String) get(4);
     }
 
     /**
-     * Setter for <code>utenze.contratti attivi.NumeroComponenti</code>.
+     * Setter for <code>utenze.contratti approvati.NumeroComponenti</code>.
      */
-    public ContrattiAttiviRecord setNumerocomponenti(Integer value) {
+    public ContrattiApprovatiRecord setNumerocomponenti(Integer value) {
         set(5, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.NumeroComponenti</code>.
+     * Getter for <code>utenze.contratti approvati.NumeroComponenti</code>.
      */
     public Integer getNumerocomponenti() {
         return (Integer) get(5);
     }
 
     /**
-     * Setter for <code>utenze.contratti attivi.Uso</code>.
+     * Setter for <code>utenze.contratti approvati.Uso</code>.
      */
-    public ContrattiAttiviRecord setUso(Integer value) {
+    public ContrattiApprovatiRecord setUso(Integer value) {
         set(6, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.Uso</code>.
+     * Getter for <code>utenze.contratti approvati.Uso</code>.
      */
     public Integer getUso() {
         return (Integer) get(6);
     }
 
     /**
-     * Setter for <code>utenze.contratti attivi.Offerta</code>.
+     * Setter for <code>utenze.contratti approvati.Offerta</code>.
      */
-    public ContrattiAttiviRecord setOfferta(Integer value) {
+    public ContrattiApprovatiRecord setOfferta(Integer value) {
         set(7, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.Offerta</code>.
+     * Getter for <code>utenze.contratti approvati.Offerta</code>.
      */
     public Integer getOfferta() {
         return (Integer) get(7);
     }
 
     /**
-     * Setter for <code>utenze.contratti attivi.TipoAttivazione</code>.
+     * Setter for <code>utenze.contratti approvati.TipoAttivazione</code>.
      */
-    public ContrattiAttiviRecord setTipoattivazione(Integer value) {
+    public ContrattiApprovatiRecord setTipoattivazione(Integer value) {
         set(8, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.TipoAttivazione</code>.
+     * Getter for <code>utenze.contratti approvati.TipoAttivazione</code>.
      */
     public Integer getTipoattivazione() {
         return (Integer) get(8);
     }
 
     /**
-     * Setter for <code>utenze.contratti attivi.IdImmobile</code>.
+     * Setter for <code>utenze.contratti approvati.IdImmobile</code>.
      */
-    public ContrattiAttiviRecord setIdimmobile(Integer value) {
+    public ContrattiApprovatiRecord setIdimmobile(Integer value) {
         set(9, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.IdImmobile</code>.
+     * Getter for <code>utenze.contratti approvati.IdImmobile</code>.
      */
     public Integer getIdimmobile() {
         return (Integer) get(9);
     }
 
     /**
-     * Setter for <code>utenze.contratti attivi.IdCliente</code>.
+     * Setter for <code>utenze.contratti approvati.IdCliente</code>.
      */
-    public ContrattiAttiviRecord setIdcliente(Integer value) {
+    public ContrattiApprovatiRecord setIdcliente(Integer value) {
         set(10, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.IdCliente</code>.
+     * Getter for <code>utenze.contratti approvati.IdCliente</code>.
      */
     public Integer getIdcliente() {
         return (Integer) get(10);
@@ -203,57 +203,57 @@ public class ContrattiAttiviRecord extends TableRecordImpl<ContrattiAttiviRecord
 
     @Override
     public Field<Integer> field1() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.IDCONTRATTO;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.IDCONTRATTO;
     }
 
     @Override
     public Field<LocalDate> field2() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.DATAAPERTURARICHIESTA;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.DATAAPERTURARICHIESTA;
     }
 
     @Override
     public Field<LocalDate> field3() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.DATACHIUSURARICHIESTA;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.DATACHIUSURARICHIESTA;
     }
 
     @Override
     public Field<String> field4() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.STATORICHIESTA;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.STATORICHIESTA;
     }
 
     @Override
     public Field<String> field5() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.NOTERICHIESTA;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.NOTERICHIESTA;
     }
 
     @Override
     public Field<Integer> field6() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.NUMEROCOMPONENTI;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.NUMEROCOMPONENTI;
     }
 
     @Override
     public Field<Integer> field7() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.USO;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.USO;
     }
 
     @Override
     public Field<Integer> field8() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.OFFERTA;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.OFFERTA;
     }
 
     @Override
     public Field<Integer> field9() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.TIPOATTIVAZIONE;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.TIPOATTIVAZIONE;
     }
 
     @Override
     public Field<Integer> field10() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.IDIMMOBILE;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.IDIMMOBILE;
     }
 
     @Override
     public Field<Integer> field11() {
-        return ContrattiAttivi.CONTRATTI_ATTIVI.IDCLIENTE;
+        return ContrattiApprovati.CONTRATTI_APPROVATI.IDCLIENTE;
     }
 
     @Override
@@ -367,73 +367,73 @@ public class ContrattiAttiviRecord extends TableRecordImpl<ContrattiAttiviRecord
     }
 
     @Override
-    public ContrattiAttiviRecord value1(Integer value) {
+    public ContrattiApprovatiRecord value1(Integer value) {
         setIdcontratto(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord value2(LocalDate value) {
+    public ContrattiApprovatiRecord value2(LocalDate value) {
         setDataaperturarichiesta(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord value3(LocalDate value) {
+    public ContrattiApprovatiRecord value3(LocalDate value) {
         setDatachiusurarichiesta(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord value4(String value) {
+    public ContrattiApprovatiRecord value4(String value) {
         setStatorichiesta(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord value5(String value) {
+    public ContrattiApprovatiRecord value5(String value) {
         setNoterichiesta(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord value6(Integer value) {
+    public ContrattiApprovatiRecord value6(Integer value) {
         setNumerocomponenti(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord value7(Integer value) {
+    public ContrattiApprovatiRecord value7(Integer value) {
         setUso(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord value8(Integer value) {
+    public ContrattiApprovatiRecord value8(Integer value) {
         setOfferta(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord value9(Integer value) {
+    public ContrattiApprovatiRecord value9(Integer value) {
         setTipoattivazione(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord value10(Integer value) {
+    public ContrattiApprovatiRecord value10(Integer value) {
         setIdimmobile(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord value11(Integer value) {
+    public ContrattiApprovatiRecord value11(Integer value) {
         setIdcliente(value);
         return this;
     }
 
     @Override
-    public ContrattiAttiviRecord values(Integer value1, LocalDate value2, LocalDate value3, String value4, String value5, Integer value6, Integer value7, Integer value8, Integer value9, Integer value10, Integer value11) {
+    public ContrattiApprovatiRecord values(Integer value1, LocalDate value2, LocalDate value3, String value4, String value5, Integer value6, Integer value7, Integer value8, Integer value9, Integer value10, Integer value11) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -453,17 +453,17 @@ public class ContrattiAttiviRecord extends TableRecordImpl<ContrattiAttiviRecord
     // -------------------------------------------------------------------------
 
     /**
-     * Create a detached ContrattiAttiviRecord
+     * Create a detached ContrattiApprovatiRecord
      */
-    public ContrattiAttiviRecord() {
-        super(ContrattiAttivi.CONTRATTI_ATTIVI);
+    public ContrattiApprovatiRecord() {
+        super(ContrattiApprovati.CONTRATTI_APPROVATI);
     }
 
     /**
-     * Create a detached, initialised ContrattiAttiviRecord
+     * Create a detached, initialised ContrattiApprovatiRecord
      */
-    public ContrattiAttiviRecord(Integer idcontratto, LocalDate dataaperturarichiesta, LocalDate datachiusurarichiesta, String statorichiesta, String noterichiesta, Integer numerocomponenti, Integer uso, Integer offerta, Integer tipoattivazione, Integer idimmobile, Integer idcliente) {
-        super(ContrattiAttivi.CONTRATTI_ATTIVI);
+    public ContrattiApprovatiRecord(Integer idcontratto, LocalDate dataaperturarichiesta, LocalDate datachiusurarichiesta, String statorichiesta, String noterichiesta, Integer numerocomponenti, Integer uso, Integer offerta, Integer tipoattivazione, Integer idimmobile, Integer idcliente) {
+        super(ContrattiApprovati.CONTRATTI_APPROVATI);
 
         setIdcontratto(idcontratto);
         setDataaperturarichiesta(dataaperturarichiesta);
@@ -479,10 +479,10 @@ public class ContrattiAttiviRecord extends TableRecordImpl<ContrattiAttiviRecord
     }
 
     /**
-     * Create a detached, initialised ContrattiAttiviRecord
+     * Create a detached, initialised ContrattiApprovatiRecord
      */
-    public ContrattiAttiviRecord(bdproject.tables.pojos.ContrattiAttivi value) {
-        super(ContrattiAttivi.CONTRATTI_ATTIVI);
+    public ContrattiApprovatiRecord(bdproject.tables.pojos.ContrattiApprovati value) {
+        super(ContrattiApprovati.CONTRATTI_APPROVATI);
 
         if (value != null) {
             setIdcontratto(value.getIdcontratto());

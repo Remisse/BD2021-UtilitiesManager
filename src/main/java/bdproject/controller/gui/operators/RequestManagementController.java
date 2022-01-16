@@ -147,9 +147,10 @@ public class RequestManagementController extends AbstractController implements I
         } else {
             final Cessazioni endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
-                ContrattiAttivi sub = null;
+                ContrattiApprovati sub = null;
                 try (final Connection conn = dataSource().getConnection()) {
-                    sub = Queries.fetchApprovedSubscriptionById(endRequest.getIdcontratto(), conn).orElseThrow();
+                    sub = Queries.fetchApprovedSubscriptionById(endRequest.getIdcontratto(), conn)
+                            .orElseThrow();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -184,16 +185,12 @@ public class RequestManagementController extends AbstractController implements I
             final Cessazioni endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
                 try (Connection conn = dataSource().getConnection()) {
-                    result = Queries.ceaseSubscription(endRequest.getIdcontratto(), conn);
+                    result = Queries.markEndRequestAsApproved(endRequest.getNumerorichiesta(),
+                            endRequest.getNoterichiesta(), conn);
                     if (result == 1) {
                         ViewUtils.showBlockingWarning("Contratto cessato.");
-                        result += Queries.markEndRequestAsApproved(endRequest.getNumerorichiesta(),
-                                endRequest.getNoterichiesta(), conn);
-                        if (result != 2) {
-                            ViewUtils.showError("Errore nell'aggiornamento della richiesta.");
-                        }
                     } else {
-                        ViewUtils.showBlockingWarning("Impossibile cessare il contratto.");
+                        ViewUtils.showError("Errore nell'aggiornamento della richiesta.");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();

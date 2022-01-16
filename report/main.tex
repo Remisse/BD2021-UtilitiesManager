@@ -1,5 +1,6 @@
 \documentclass[a4paper,12pt]{report}
 
+\usepackage[italian]{babel}
 \usepackage{alltt, fancyvrb, url}
 \usepackage[a4paper, margin=2cm]{geometry}
 %\usepackage{graphicx}
@@ -55,6 +56,24 @@
   numbers=left
 }
 
+\lstset{literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {ã}{{\~a}}1 {ẽ}{{\~e}}1 {ĩ}{{\~i}}1 {õ}{{\~o}}1 {ũ}{{\~u}}1
+  {Ã}{{\~A}}1 {Ẽ}{{\~E}}1 {Ĩ}{{\~I}}1 {Õ}{{\~O}}1 {Ũ}{{\~U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1 {¡}{{!`}}1 
+}
+
 \begin{document}
 
 \maketitle
@@ -62,22 +81,22 @@
 \tableofcontents
 
 \chapter{Analisi dei requisiti}
-Un'azienda fornitrice di utenze domestiche richiede la realizzazione di un database per la sottoscrizione e la gestione di contratti di fornitura di gas e acqua ad uso domestico.
+Un'azienda richiede la realizzazione di un database per la sottoscrizione e la gestione di contratti di fornitura di gas e acqua per famiglie.
 \section{Intervista}
 \begin{mdframed}
 Gli utenti possono consultare liberamente un catalogo di offerte, curato dal fornitore. Ogni offerta è caratterizzata da nome, descrizione, materia prima, costo della materia prima e tipi di utilizzo con cui sono compatibili (ad esempio, domestico residenziale). Il catalogo può essere aggiornato in qualsiasi momento dagli operatori, che aggiungeranno nuove offerte o renderanno non più sottoscrivibili quelle già esistenti.
 \newline
-L'attivazione della fornitura può avvenire secondo tre modalità: voltura, subentro o nuova attivazione, ciascuna caratterizzata da un costo diverso. La voltura consiste in un cambio di intestatario: non permette di selezionare una nuova offerta e richiede di comunicare il codice cliente dell'attuale intestatario del contratto, la matricola del contatore e una lettura; i subentri richiedono l'indicazione di offerta, uso dedicato, dati dell'immobile e matricola del contatore; in caso di nuova attivazione andranno indicati solo offerta, uso dedicato e dati dell'immobile. Il numero di componenti del nucleo familiare va indicato sempre.
+L'attivazione della fornitura può avvenire secondo tre modalità: voltura, subentro o nuova attivazione, ciascuna caratterizzata da un costo diverso. La voltura consiste in un cambio d'intestatario: non permette di selezionare una nuova offerta e richiede di comunicare il codice cliente dell'attuale intestatario del contratto, la matricola del contatore e una lettura; i subentri richiedono l'indicazione di offerta, uso dedicato, dati dell'immobile e matricola del contatore; in caso di nuova attivazione andranno indicati solo offerta, uso dedicato e dati dell'immobile. Il numero di componenti del nucleo familiare va indicato sempre.
 \newline
 Prima di poter richiedere l'attivazione di un'offerta, l'utente deve registrarsi fornendo i propri dati anagrafici, un indirizzo e-mail, una password e la propria fascia di reddito, informazione che verrà usata dal fornitore per l'eventuale applicazione di uno sconto in bolletta. Fatto ciò, l'utente potrà procedere con la richiesta indicando uso dedicato, modalità di attivazione, numero di componenti del nucleo familiare e, a seconda del metodo di attivazione scelto, anche offerta, dati dell'immobile e matricola del contatore.
 \newline
-Una richiesta di contratto è associata anche ad un immobile, di cui si vogliono memorizzare via, numero civico, comune, CAP e provincia. Esistono due tipi di immobili: fabbricati (con eventuale numero di interno) e terreni.
+Una richiesta di contratto è associata anche a un immobile, di cui si vogliono memorizzare via, numero civico, comune, CAP e provincia. Esistono due tipi di immobili: fabbricati (con eventuale numero d'interno) e terreni.
 \newline
 Per ogni contatore si vogliono memorizzare la matricola e l'immobile presso cui è installato. Un contatore è dedicato alla misurazione dei consumi di una singola materia prima.
 \newline
 Ogni tipo di utilizzo è caratterizzato da un nome, da un fattore di stima dei consumi pro capite e dall'eventuale possibilità di usufruire di sconti in base al reddito.
 \newline
-Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di visualizzare tutti i dettagli delle richieste e di aggiornarne lo stato (approvata o respinta). Una richiesta può essere assegnata ad un solo operatore.
+Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di visualizzare tutti i dettagli delle richieste e di aggiornarne lo stato (approvata o respinta). Una richiesta può essere assegnata a un solo operatore.
 \newline
 L'approvazione di una richiesta di contratto porterà all'attivazione della fornitura. Uno stesso cliente può avere più contratti attivi per la fornitura della medesima materia prima, a patto che siano riferiti a immobili diversi. Per uno stesso immobile non sono ammesse due forniture della stessa materia prima contemporaneamente attive, neanche se intestate a clienti diversi. 
 \newline
@@ -85,9 +104,9 @@ Gli utenti registrati possono accedere alla propria area personale inserendo l'i
 \newline
 Si vuole anche dare la possibilità al cliente di visualizzare alcuni dati statistici riguardanti i propri consumi: in particolare, si potranno visualizzare sia l'andamento dei consumi in un dato anno, sia la differenza in percentuale tra la media dei propri consumi e quella dei clienti residenti nello stesso comune in cui è sito l'immobile. Nel calcolo della media sono considerati anche i consumi stimati.
 \newline
-Le bollette sono associate ad uno specifico contratto e possono essere di due tipi: calcolate sui consumi effettivi oppure calcolate attraverso stime pro capite. Per ciascuna bolletta vengono memorizzati data di emissione, periodo di riferimento (con data di inizio e di fine), data di scadenza, eventuale data di pagamento, importo da pagare, consumi e un documento contenente informazioni di dettaglio che verrà caricato manualmente dagli operatori.
+Le bollette sono associate a uno specifico contratto e possono essere di due tipi: calcolate sui consumi effettivi oppure calcolate attraverso stime pro capite. Per ciascuna bolletta vengono memorizzati data di emissione, periodo di riferimento (con data di inizio e di fine), data di scadenza, eventuale data di pagamento, importo da pagare, consumi e un documento contenente informazioni di dettaglio che verrà caricato manualmente dagli operatori.
 \newline
-Le letture sono associate ad un singolo contatore e devono riportare la data di effettuazione e i consumi rilevati. Per un contatore può essere comunicata una sola lettura al giorno. Un cliente può comunicare una lettura per un contatore se esiste un contratto attivo a lui intestato e collegato a quel medesimo contatore. Un operatore si occuperà di esaminare la lettura e deciderà se approvarla o respingerla.
+Le letture sono associate a un singolo contatore e devono riportare la data di effettuazione e i consumi rilevati. Per un contatore può essere comunicata una sola lettura al giorno. Un cliente può comunicare una lettura per un contatore se esiste un contratto attivo a lui intestato e collegato a quel medesimo contatore. Un operatore si occuperà di esaminare la lettura e deciderà se approvarla o respingerla.
 \end{mdframed}
 
 
@@ -121,15 +140,15 @@ Ogni \textbf{persona}, anche se non in possesso di un account, può \textit{cons
 \newline
 Prima di poter richiedere l'attivazione di un contratto, la persona interessata deve \textit{registrarsi} fornendo i propri dati anagrafici (nome, cognome, data di nascita, codice fiscale e indirizzo di residenza), un indirizzo e-mail, una password e la propria fascia di reddito, informazione che verrà usata dal fornitore per l'eventuale applicazione di uno sconto in bolletta. Fatto ciò, l'utente potrà procedere con l'\textit{invio} della \textbf{richiesta} indicando uso dedicato, modalità di attivazione, numero di componenti del nucleo familiare e, a seconda del metodo di attivazione scelto, anche offerta, dati dell'immobile e matricola del contatore.
 \newline
-L'\textbf{attivazione} del contratto può avvenire secondo tre modalità: voltura, subentro o nuova attivazione, ciascuna caratterizzata da un costo diverso. La \textbf{voltura} consiste in un cambio di intestatario: non permette di selezionare una nuova offerta e richiede di comunicare il tipo di materia prima, il codice fiscale del cliente attualmente intestatario del contratto di fornitura, la matricola del contatore e una lettura; i \textbf{subentri} richiedono l'indicazione di offerta, uso dedicato, dati dell'immobile e matricola del contatore; in caso di \textbf{nuova attivazione} andranno indicati solo offerta, uso dedicato e dati dell'immobile. Il numero di componenti del nucleo familiare va indicato sempre.
+L'\textbf{attivazione} del contratto può avvenire secondo tre modalità: voltura, subentro o nuova attivazione, ciascuna caratterizzata da un costo diverso. La \textbf{voltura} consiste in un cambio d'intestatario: non permette di selezionare una nuova offerta e richiede di comunicare il tipo di materia prima, il codice fiscale del cliente attualmente intestatario del contratto di fornitura, la matricola del contatore e una lettura; i \textbf{subentri} richiedono l'indicazione di offerta, uso dedicato, dati dell'immobile e matricola del contatore; in caso di \textbf{nuova attivazione} andranno indicati solo offerta, uso dedicato e dati dell'immobile. Il numero di componenti del nucleo familiare va indicato sempre.
 \newline
 Ogni \textbf{tipologia d'uso} è caratterizzata da un nome, da un fattore di stima dei consumi pro capite (usato nel caso in cui non esistano letture sufficientemente recenti per un contatore) e dall'eventuale possibilità di usufruire di sconti in base al reddito. Ogni offerta è \textit{compatibile} con una o più tipologie d'uso.
 \newline
 Gli \textbf{operatori} si occupano della \textit{gestione} delle \textbf{offerte}, delle \textbf{richieste}, dei \textbf{contratti} e della manutenzione della base di dati. Di ogni operatore si vogliono memorizzare dati anagrafici, un indirizzo e-mail, una password e lo stipendio attuale. Agli operatori non è concesso sottoscrivere contratti di fornitura con l'azienda.
 \newline
-Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di \textit{visualizzare tutti i dettagli} delle richieste e di \textit{aggiornarne} lo stato (approvata o respinta). Una richiesta può essere \textit{assegnata} ad un solo operatore per volta. Un contratto è considerato attivo se la relativa richiesta è stata approvata e se non è presente una richiesta di cessazione approvata relativa a quello stesso contratto.
+Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di \textit{visualizzare tutti i dettagli} delle richieste e di \textit{aggiornarne} lo stato (approvata o respinta). Una richiesta può essere \textit{assegnata} a un solo operatore per volta. Un contratto è considerato attivo se la relativa richiesta è stata approvata e se non è presente una richiesta di cessazione approvata relativa a quello stesso contratto.
 \newline
-Una richiesta di contratto è \textit{associata} anche ad un \textbf{immobile}, di cui si vogliono memorizzare via, numero civico, comune, CAP e provincia. Esistono due tipi di immobili: fabbricati (con eventuale numero di interno) e terreni.
+Una richiesta di contratto è \textit{associata} anche a un \textbf{immobile}, di cui si vogliono memorizzare via, numero civico, comune, CAP e provincia. Esistono due tipi di immobili: fabbricati (con eventuale numero d'interno) e terreni.
 \newline
 Per ogni \textbf{contatore} si vogliono memorizzare la matricola e l'immobile presso cui è installato. Un contatore è dedicato alla \textit{misurazione} dei consumi di una singola \textbf{materia prima}.
 \newline
@@ -139,9 +158,9 @@ Gli utenti registrati possono accedere alla propria area personale inserendo l'i
 \newline
 All'interno dell'area personale si vuole dare la possibilità al cliente di visualizzare alcuni dati statistici riguardanti i propri consumi: in particolare, si vogliono mostrare sia l'andamento dei consumi in un dato anno, sia la differenza in percentuale tra la media dei propri consumi e quella dei clienti con una fornitura attiva nello stesso comune in cui è sito l'immobile. Nel calcolo della media sono considerati anche i consumi stimati.
 \newline
-Le \textbf{bollette} sono \textit{associate} ad uno specifico \textbf{contratto} e possono essere di due tipi: calcolate sui consumi effettivi oppure calcolate attraverso stime pro capite. Per ciascuna bolletta vengono memorizzati data di emissione, periodo di riferimento (con data di inizio e di fine), data di scadenza, eventuale data di pagamento, importo da pagare, consumi e un documento contenente informazioni di dettaglio che verrà caricato manualmente dagli operatori.
+Le \textbf{bollette} sono \textit{associate} a uno specifico \textbf{contratto} e possono essere di due tipi: calcolate sui consumi effettivi oppure calcolate attraverso stime pro capite. Per ciascuna bolletta vengono memorizzati data di emissione, periodo di riferimento (con data di inizio e di fine), data di scadenza, eventuale data di pagamento, importo da pagare, consumi e un documento contenente informazioni di dettaglio che verrà caricato manualmente dagli operatori.
 \newline
-Le \textbf{letture} sono \textit{associate} ad un singolo \textbf{contatore} e devono riportare la data di effettuazione e i consumi rilevati. Per un contatore può essere comunicata una sola lettura al giorno. Un \textbf{cliente} può \textit{comunicare} una lettura per un contatore se esiste un contratto attivo a lui intestato e collegato a quel medesimo contatore. Un operatore si occuperà di \textit{esaminare} la lettura e deciderà se approvarla o respingerla.
+Le \textbf{letture} sono \textit{associate} a un singolo \textbf{contatore} e devono riportare la data di effettuazione e i consumi rilevati. Per un contatore può essere comunicata una sola lettura al giorno. Un \textbf{cliente} può \textit{comunicare} una lettura per un contatore se esiste un contratto attivo a lui intestato e collegato a quel medesimo contatore. Un operatore si occuperà di \textit{esaminare} la lettura e deciderà se approvarla o respingerla.
 \end{mdframed}
 
 \subsection{Esempio di richiesta di contratto}
@@ -182,7 +201,7 @@ In \cref{fig:plans-uses} sono rappresentate le modellazioni di offerte e tipolog
 \label{fig:plans-uses}
 \end{figure}
 
-Esistono due tipi di richieste: di \textbf{contratto} o di \textbf{cessazione}. Poiché entrambe hanno alcuni attributi in comune, si decide di modellarle per generalizzazione creando l'entità \texttt{RICHIESTA}. In \cref{fig:requests} sono inoltre rappresentate le associazioni delle richieste con clienti ed operatori. Non è possibile rappresentare graficamente il fatto che una richiesta già approvata non può successivamente essere respinta o viceversa.
+Esistono due tipi di richieste: di \textbf{contratto} o di \textbf{cessazione}. Poiché entrambe hanno alcuni attributi in comune, si decide di modellarle per generalizzazione creando l'entità \texttt{RICHIESTA}. In \cref{fig:requests} sono inoltre rappresentate le associazioni delle richieste con clienti e operatori. Non è possibile rappresentare graficamente il fatto che una richiesta già approvata non può successivamente essere respinta o viceversa.
 \newline
 Per \texttt{CONTRATTO}, viene esplicitato in una nota il vincolo per cui non possono esistere contemporaneamente due contratti attivi per la stessa materia prima presso un medesimo immobile.
 
@@ -194,7 +213,7 @@ Per \texttt{CONTRATTO}, viene esplicitato in una nota il vincolo per cui non pos
 \end{figure}
 
 
-In \cref{fig:requests-activation} sono mostrate le varie associazioni che coinvolgono le due tipologie di richieste. Una richiesta di cessazione è sempre associata ad un solo contratto, mentre per uno stesso contratto possono essere create più richieste di cessazione.
+In \cref{fig:requests-activation} sono mostrate le varie associazioni che coinvolgono le due tipologie di richieste. Una richiesta di cessazione è sempre associata a un solo contratto, mentre per uno stesso contratto possono essere create più richieste di cessazione.
 \newline
 Vengono esplicitati testualmente i seguenti vincoli:
 \begin{itemize}
@@ -233,7 +252,7 @@ Per ogni fornitura attiva è prevista l'emissione di \textbf{bollette} con frequ
 \end{figure}
 
 
-Le \textbf{letture} (\cref{fig:measurements}) sono associate ad un contatore e vengono sempre controllate da un operatore prima di essere approvate o respinte; quest'ultimo aspetto ricorda esattamente le specifiche delle \textbf{richieste} e, dunque, nonostante non sia del tutto corretto da un punto di vista semantico, si decide di modellare l'entità \texttt{LETTURA} come specializzazione di \texttt{RICHIESTA} per evitare di ripetere una seconda volta le medesime associazioni con \texttt{OPERATORE}. Poiché è anche necessario limitare il numero di letture giornaliere a 1 per ogni contatore, l'attributo \texttt{DataApertura} viene spostato da \texttt{RICHIESTA} alle entità figlie e viene scelto come identificatore secondario la coppia \texttt{(DataApertura, Matricola)}.
+Le \textbf{letture} (\cref{fig:measurements}) sono associate a un contatore e vengono sempre controllate da un operatore prima di essere approvate o respinte; quest'ultimo aspetto ricorda esattamente le specifiche delle \textbf{richieste} e, dunque, nonostante non sia del tutto corretto da un punto di vista semantico, si decide di modellare l'entità \texttt{LETTURA} come specializzazione di \texttt{RICHIESTA} per evitare di ripetere una seconda volta le medesime associazioni con \texttt{OPERATORE}. Poiché è anche necessario limitare il numero di letture giornaliere a una per ogni contatore, l'attributo \texttt{DataApertura} viene spostato da \texttt{RICHIESTA} alle entità figlie e viene scelto come identificatore secondario la coppia \texttt{(DataApertura, Matricola)}.
 
 \begin{figure}[H]
 \centering{}
@@ -306,11 +325,11 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
     \textbf{OP-2} & Aggiornare i dati di un cliente & 3/mese \\
     \textbf{OP-3} & Inserire un nuovo immobile & 8/giorno \\
     \textbf{OP-4} & Inserire un contatore & 10/giorno \\
-    \textbf{OP-5} & Inserire una richiesta di contratto con attivazione tramite voltura & 3/giorno \\
-    \textbf{OP-6} & Inserire una richiesta di contratto con attivazione tramite subentro & 2/giorno \\
-    \textbf{OP-7} & Inserire una richiesta di contratto con nuova attivazione & 1/giorno \\
-    \textbf{OP-8} & Inserire una richiesta di cessazione & 1/giorno \\
-    \textbf{OP-9} & Rifiutare una richiesta & 2/giorno \\
+    \textbf{OP-5} & Inserire una richiesta di contratto & 6/giorno \\
+    \textbf{OP-6} & Selezionare l'eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura) & 3/giorno \\
+    \textbf{OP-7} & Selezionare l'immobile associato a un dato contatore (subentro) & 2/giorno \\
+    \textbf{OP-8} & Inserire una richiesta di cessazione & 1/settimana \\
+    \textbf{OP-9} & Rifiutare una richiesta & 1/giorno \\
     \textbf{OP-10} & Approvare una richiesta di contratto con attivazione tramite voltura & 2/giorno \\
     \textbf{OP-11} & Approvare una richiesta di contratto con attivazione tramite subentro & 1/giorno \\
     \textbf{OP-12} & Approvare una richiesta di contratto con nuova attivazione & 1/giorno \\
@@ -320,7 +339,7 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
     \textbf{OP-16} & Comunicare una lettura & 20.000/mese \\
     \textbf{OP-17} & Approvare una lettura & 18.000/mese \\
     \textbf{OP-18} & Rifiutare una lettura & 2.000/mese \\
-    \textbf{OP-19} & Assegnare una richiesta ad un operatore & 20.007/mese \\
+    \textbf{OP-19} & Assegnare una richiesta a un operatore & 20.007/mese \\
     \textbf{OP-20} & Inserire una nuova bolletta per un contratto attivo & 235/giorno \\
     \textbf{OP-21} & Pagare una bolletta & 235/giorno \\
     \textbf{OP-22} & Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo & 1000/giorno \\
@@ -456,7 +475,7 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
         \hline
     \end{tabular}
     \end{center}
-    Notiamo che, per ogni comune italiano, sono registrati in media circa 6 immobili. In più, supponiamo che per tutti e 6 gli immobili sia presente almeno un contratto (anche non attivo). In questa seconda fase ricaviamo i consumi prodotti nel periodo specificato leggendo le bollette\footnote{Non leggiamo da \texttt{LETTURA} sia perché le specifiche richiedono che vengano considerati anche i consumi stimati, sia perché il numero medio di letture per ogni contratto supera di gran lunga quello delle bollette.} emesse in quello stesso periodo.
+    Notiamo che, per ogni comune italiano, sono registrati in media circa sei immobili. Supponiamo ora che per tutti e sei gli immobili sia presente almeno un contratto (anche non attivo). In questa seconda fase ricaviamo i consumi prodotti nel periodo specificato leggendo le bollette\footnote{Non leggiamo da \texttt{LETTURA} sia perché le specifiche richiedono che vengano considerati anche i consumi stimati, sia perché il numero medio di letture per ogni contratto supera di gran lunga quello delle bollette.} emesse in quello stesso periodo.
     \rowcolors{1}{lightergray}{}
     \begin{center}
     \begin{tabular}{@{}l c  c  c@{}}
@@ -504,7 +523,7 @@ In termini di accessi, si ha un beneficio quasi trascurabile in OP-20 e un legge
 \section{Raffinamento dello schema}
 \subsection{Eliminazione delle gerarchie}
 \begin{itemize}
-    \item Le entità \texttt{CLIENTE} e \texttt{OPERATORE}, entrambe specializzazioni di \texttt{PERSONA}, hanno ruoli diametralmente opposti e si relazionano alle altre entità con associazioni tutte diverse. Poiché la loro copertura è totale ed esclusiva, avrebbe senso procedere con un collasso verso il basso, ma ciò significherebbe anche replicare la grande quantità di attributi di \texttt{PERSONA} in due tabelle diverse e costringerebbe ad effettuare molteplici controlli aggiuntivi per evitare che i dati di una stessa persona compaiano in entrambe le tabelle. Si preferisce, dunque, effettuare una trasformazione per associazioni: \texttt{CLIENTE} e \texttt{OPERATORE} vengono relazionati a \texttt{PERSONA} e da essa ricaveranno la chiave primaria e tutti gli altri attributi. Dovremo solo assicurarci che lo stesso codice identificativo di una persona venga inserito solo in una tabella tra \texttt{CLIENTE} ed \texttt{OPERATORE}.
+    \item Le entità \texttt{CLIENTE} e \texttt{OPERATORE}, entrambe specializzazioni di \texttt{PERSONA}, hanno ruoli diametralmente opposti e si relazionano alle altre entità con associazioni tutte diverse. Poiché la loro copertura è totale ed esclusiva, avrebbe senso procedere con un collasso verso il basso, ma ciò significherebbe anche replicare la grande quantità di attributi di \texttt{PERSONA} in due tabelle diverse e costringerebbe a effettuare controlli aggiuntivi per evitare che i dati di una stessa persona compaiano in entrambe le tabelle. Si preferisce, dunque, effettuare una trasformazione per associazioni: \texttt{CLIENTE} e \texttt{OPERATORE} vengono relazionati a \texttt{PERSONA} e da essa ricaveranno la chiave primaria e tutti gli altri attributi. Dovremo solo assicurarci che lo stesso codice identificativo di una persona venga inserito solo in una tabella tra \texttt{CLIENTE} e \texttt{OPERATORE}.
     \item Il caso di \texttt{IMMOBILE} è l'esatto opposto: nessuna delle due specializzazioni possiede associazioni con le altre entità del dominio, per cui si procede aggiungendo a \texttt{IMMOBILE} gli attributi \texttt{Tipo} e \texttt{Interno}.
     \item La gerarchia di \texttt{BOLLETTA} viene eliminata e si aggiunge l'attributo booleano \texttt{Stimata}.
     \item Per la gerarchia di \texttt{RICHIESTA} si procede con una trasformazione verso il basso: l'entità \texttt{RICHIESTA} viene eliminata e i suoi attributi integrati in \texttt{CONTRATTO}, \texttt{CESSAZIONE} e \texttt{LETTURA}.
@@ -531,7 +550,7 @@ Si procede alla trasformazione delle associazioni:
 \begin{itemize}
     \item \texttt{POSSEDIMENTO} viene eliminata e la chiave esterna \texttt{FasciaReddito} aggiunta a \texttt{CLIENTE}
     \item \texttt{CREAZIONE} viene eliminata e la chiave esterna \texttt{IdCliente} aggiunta a \texttt{RICHIESTA}
-    \item \texttt{GESTIONE} viene reificata. Poiché una richiesta può inizialmente non essere assegnata ad alcun operatore, è possibile che contenga un riferimento nullo a \texttt{OPERATORE}; per evitare ciò, le coppie operatore-richiesta verranno inserite in tre tabelle (\texttt{OPERATORI\textunderscore CESSAZIONI}, \texttt{OPERATORI\textunderscore CONTRATTI} e \texttt{OPERATORI\textunderscore LETTURE}), ognuna dedicata a una diversa tipologia di richiesta
+    \item \texttt{GESTIONE} viene reificata. Poiché una richiesta può inizialmente non essere assegnata ad alcun operatore, è possibile che contenga un riferimento nullo a \texttt{OPERATORE}; per evitare ciò, le coppie operatore - richiesta verranno inserite in tre tabelle (\texttt{OPERATORI\textunderscore CESSAZIONI}, \texttt{OPERATORI\textunderscore CONTRATTI} e \texttt{OPERATORI\textunderscore LETTURE}), ognuna dedicata a una diversa tipologia di richiesta
     \item \texttt{USO} viene eliminata e la chiave esterna \texttt{Uso} aggiunta a \texttt{CONTRATTO}
     \item \texttt{SOTTOSCRIZIONE} viene eliminata e la chiave esterna \texttt{Offerta} aggiunta all'entità \texttt{CONTRATTO}
     \item \texttt{TRAMITE} viene eliminata e la chiave esterna \texttt{TipoAttivazione} aggiunta all'entità \texttt{CONTATTO}
@@ -643,8 +662,7 @@ values (last_insert_id(), ?);
     \item \textbf{OP-2: Aggiornare i dati di un cliente}
     \begin{lstlisting}
 update persone
-set Email = ?, Cap = ?, Comune = ?, NumCivico = ?, NumeroTelefono = ?,
-        Provincia = ?, Via = ?
+set Email = ?, Cap = ?, Comune = ?, NumCivico = ?, NumeroTelefono = ?, Provincia = ?, Via = ?
 where IdPersona = ?;
     \end{lstlisting}
         
@@ -660,26 +678,319 @@ insert into contatori
 values (?, ?, ?);
     \end{lstlisting}
 
-    
-    \item \textbf{OP-5: Inserire una nuova offerta}
+    \item \textbf{OP-5: Inserire una richiesta di contratto con attivazione tramite voltura}
+    \begin{lstlisting}
+insert into contratti (DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, Offerta, Uso, TipoAttivazione, NumeroComponenti, IdImmobile, IdCliente)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    \end{lstlisting}
+
+    \item \textbf{OP-6: Selezionare l'eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}
+    \begin{lstlisting}
+select contratti.*
+from contratti, immobili, contatori, offerte
+where contratti.IdCliente = ?
+and contratti.IdImmobile = immobili.IdImmobile
+and immobili.IdImmobile = contatori.IdImmobile
+and contatori.Matricola = ?
+and contratti.
+    \end{lstlisting}
+
+    \item \textbf{OP-7: Inserire una richiesta di contratto con nuova attivazione}
+    \begin{lstlisting}
+insert into contratti (DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, Offerta, Uso, TipoAttivazione, NumeroComponenti, IdImmobile, IdCliente)
+values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    \end{lstlisting}
+
+    \item \textbf{OP-13: Inserire una nuova offerta}
     \begin{lstlisting}
 insert into offerte
-values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+values (default, ?, ?, ?, ?, ?);
 
 -- Ripetere per ogni uso con cui si vuole rendere compatibile l'offerta
 insert into compatibilita
 values (last_insert_id(), ?);
     \end{lstlisting}
     
-    \item \textbf{OP-6: Rendere un'offerta non più attivabile}
+    \item \textbf{OP-14: Aggiornare un'offerta}
     \begin{lstlisting}
-update offerte set Attiva = false
-where Codice = ?;
+update offerte
+set Nome = ?, Descrizione = ?, CostoMateriaPrima = ?, Attiva = ?, MateriaPrima = ?
+where CodOfferta = ?;
     \end{lstlisting}
     
     
     
 \end{itemize}
 \chapter{Progettazione dell'applicazione}
+
+\appendix
+\chapter{Creazione di tabelle e view in SQL}
+\section{Creazione delle tabelle}
+\begin{lstlisting}
+create table bollette (
+    NumeroBolletta integer auto_increment not null,
+    DataEmissione date not null,
+    DataInizioPeriodo date not null,
+    DataFinePeriodo date not null,
+    DataScadenza date not null,
+    Importo decimal(20, 2) not null,
+    Consumi decimal(20, 4) not null,
+    DocumentoDettagliato mediumblob not null,
+    Stimata boolean not null,
+    IdOperatore integer not null,
+    IdContratto integer not null,
+    check (DataScadenza > DataEmissione),
+    check (DataFinePeriodo > DataInizioPeriodo),
+    constraint PK_BOLLETTA primary key (NumeroBolletta));
+    
+create table cessazioni (
+    NumeroRichiesta integer not null auto_increment,
+    DataAperturaRichiesta date not null,
+    DataChiusuraRichiesta date default null,
+    StatoRichiesta varchar(30) not null check (StatoRichiesta in ("In lavorazione", "Approvata", "Respinta")),
+    NoteRichiesta varchar(500) not null,
+    IdContratto integer not null,
+    constraint PK_RIC_CESSAZIONE primary key (NumeroRichiesta));
+    
+create table clienti (
+    CodiceCliente integer not null,
+    FasciaReddito integer not null,
+    constraint PK_CLIENTI primary key (CodiceCliente));
+
+create table compatibilità (
+    Offerta integer not null,
+    Uso integer not null,
+    constraint PK_COMPATIBILITÀ primary key (Offerta, Uso));
+    
+create table contatori (
+    Matricola varchar(20) not null,
+    MateriaPrima varchar(20) not null,
+    IdImmobile integer not null,
+    constraint PK_CONTATORI primary key (Matricola),
+    constraint AK_CONTATORI unique (IdImmobile, MateriaPrima));
+
+create table contratti (
+    IdContratto integer not null auto_increment,
+    DataAperturaRichiesta date not null,
+    DataChiusuraRichiesta date default null,
+    StatoRichiesta varchar(30) not null check (StatoRichiesta in ("In lavorazione", "Approvata", "Respinta")),
+    NoteRichiesta varchar(500) not null,
+    NumeroComponenti integer not null check (NumeroComponenti > 0),
+    Uso integer not null,
+    Offerta integer not null,
+    TipoAttivazione integer not null,
+    IdImmobile integer not null,
+    IdCliente integer not null,
+    constraint PK_CONTRATTO primary key (IdContratto));
+
+create table immobili (
+    IdImmobile integer not null auto_increment,
+    Tipo varchar(20) not null check (Tipo = "Fabbricato" or Tipo = "Terreno"),
+    Via varchar(50) not null,
+    NumCivico varchar(10) not null,
+    Interno varchar(10) not null default "",
+    Comune varchar(50) not null,
+    Provincia varchar(2) not null,
+    CAP varchar(5) not null check (length(CAP) = 5),
+    constraint TERRAIN_NO_UNIT check ((Tipo = "Terreno" and Interno = "") or (Tipo = "Fabbricato")),
+    constraint IDIMMOBILE primary key (IdImmobile),
+    constraint AK_IMMOBILE unique (Tipo, Via, NumCivico, Interno, Comune, Provincia, CAP));
+
+create table letture (
+    NumeroLettura integer auto_increment not null,
+    MatricolaContatore varchar(20) not null,
+    DataEffettuazione date not null,
+    DataChiusuraRichiesta date default null,
+    Stato varchar(30) not null check (Stato in ("In lavorazione", "Approvata", "Respinta")),
+    Note varchar(500) not null,
+    Consumi decimal(20, 4) not null check (Consumi >= 0),
+    IdPersona integer not null,
+    constraint PK_LETTURE primary key (NumeroLettura),
+    constraint AK_LETTURE unique (MatricolaContatore, DataEffettuazione));
+
+create table `materie prime` (
+    Nome varchar(20) not null,
+    constraint PK_MATERIA primary key (Nome));
+
+create table offerte (
+    CodOfferta integer not null auto_increment,
+    Nome varchar(20) not null,
+    Descrizione varchar(1000) not null,
+    CostoMateriaPrima decimal(10, 4) not null check(CostoMateriaPrima > 0.0),
+    Attiva boolean not null default true,
+    MateriaPrima varchar(20) not null,
+    constraint PK_OFFERTA primary key (CodOfferta));
+
+create table operatori (
+    IdOperatore integer not null,
+    Stipendio decimal(20, 2) not null check (Stipendio >= 0),
+    constraint PK_OPERATORE primary key (IdOperatore));
+    
+create table `operatori contratti` (
+    NumeroRichiesta integer not null,
+    IdOperatore integer not null,
+    constraint PK_OPCONTR primary key (NumeroRichiesta));
+    
+create table `operatori cessazioni` (
+    NumeroRichiesta integer not null,
+    IdOperatore integer not null,
+    constraint PK_OPCONTR primary key (NumeroRichiesta));
+    
+create table `operatori letture` (
+    Lettura integer not null,
+    IdOperatore integer not null,
+    constraint PK_OPCONTR primary key (Lettura));
+    
+create table pagamenti (
+    NumeroBolletta integer not null,
+    DataPagamento date not null,
+    constraint PK_OPCONTR primary key (NumeroBolletta));
+
+create table persone (
+    IdPersona integer not null auto_increment,
+    Nome varchar(50) not null,
+    Cognome varchar(50) not null,
+    CodiceFiscale varchar(16) not null,
+    Via varchar(50) not null,
+    NumCivico varchar(10) not null,
+    Comune varchar(30) not null,
+    CAP varchar(5) not null,
+    Provincia varchar(2) not null,
+    DataNascita date not null,
+    NumeroTelefono varchar(10) not null,
+    Email varchar(40) not null,
+    Password varchar(30) not null check(length(Password) >= 8),
+    constraint AK_PERSONA unique (Email),
+    constraint PK_PERSONA primary key (IdPersona));
+    
+create table redditi (
+    CodReddito integer not null,
+    Fascia varchar(30) not null,
+    Sconto decimal(7, 6) not null check (Sconto > 0.0 and Sconto <= 1.0),
+    constraint PK_REDDITI primary key (CodReddito),
+    constraint AK_REDDITI unique (Fascia));
+
+create table `tipi attivazione` (
+    CodAttivazione integer not null,
+    Nome varchar(20) not null,
+    Costo decimal(20, 2) not null,
+    check(Costo >= 0),
+    constraint PK_TIPO_ATTIVAZIONE primary key (CodAttivazione));
+
+create table `tipologie uso` (
+    CodUso integer not null auto_increment,
+    Nome varchar(30) not null,
+    StimaPerPersona decimal(20, 2) not null,
+    ScontoReddito boolean not null,
+    check(StimaPerPersona >= 0.0),
+    constraint PK_USO_DEDICATO primary key (CodUso));
+
+alter table bollette add constraint FK_CONTRATTO
+    foreign key (IdContratto) references contratti (IdContratto);
+     
+alter table bollette add constraint FK_EMISSIONE
+    foreign key (IdOperatore) references operatori (IdOperatore);
+     
+alter table cessazioni add constraint FK_RIFERIMENTO
+    foreign key (IdContratto) references contratti (IdContratto);
+     
+alter table clienti add constraint FK_CODICECLIENTE
+    foreign key (CodiceCliente) references persone (IdPersona);
+     
+alter table clienti add constraint FK_POSSEDIMENTO
+    foreign key (FasciaReddito) references redditi (CodReddito);
+
+alter table compatibilità add constraint FK_USOOFFERTA
+    foreign key (Uso) references `tipologie uso` (CodUso) on delete cascade;
+
+alter table compatibilità add constraint FK_OFFERTAUSO
+    foreign key (Offerta) references offerte (CodOfferta) on delete cascade;
+     
+alter table contatori add constraint FK_MISURAZIONE
+    foreign key (MateriaPrima) references `materie prime` (Nome);
+
+alter table contatori add constraint FK_INSTALLAZIONE
+    foreign key (IdImmobile) references immobili (IdImmobile);
+     
+alter table contratti add constraint FK_RICHIESTA
+    foreign key (IdCliente) references clienti (CodiceCliente);
+
+alter table contratti add constraint FK_SOTTOSCRIZIONE
+    foreign key (Offerta) references offerte (CodOfferta);
+
+alter table contratti add constraint FK_USO
+    foreign key (Uso) references `tipologie uso` (CodUso);
+
+alter table contratti add constraint FK_ATTIVAZIONE_TRAMITE
+    foreign key (TipoAttivazione) references `tipi attivazione` (CodAttivazione);
+
+alter table contratti add constraint FK_COLLEGAMENTO
+    foreign key (IdImmobile) references immobili (IdImmobile);
+
+alter table letture add constraint FK_CORRISPONDENZA
+    foreign key (MatricolaContatore) references contatori (Matricola);
+     
+alter table letture add constraint FK_EFFETTUAZIONE
+    foreign key (IdPersona) references persone (IdPersona);
+
+alter table offerte add constraint FK_INTERESSE
+    foreign key (MateriaPrima) references `materie prime` (Nome);
+     
+alter table operatori add constraint FK_DATIANAGRAFICI
+    foreign key (IdOperatore) references persone (IdPersona);
+    
+alter table `operatori cessazioni` add constraint FK_GESTIONE_CC1
+    foreign key (NumeroRichiesta) references cessazioni (NumeroRichiesta) on delete cascade;
+    
+alter table `operatori cessazioni` add constraint FK_GESTIONE_CO1
+    foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
+
+alter table `operatori contratti` add constraint FK_GESTIONE_CC2
+    foreign key (NumeroRichiesta) references contratti (IdContratto) on delete cascade;
+    
+alter table `operatori contratti` add constraint FK_GESTIONE_CO2
+    foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
+
+alter table `operatori letture` add constraint FK_GESTIONE_LC
+    foreign key (Lettura) references letture (NumeroLettura) on delete cascade;
+    
+alter table `operatori letture` add constraint FK_GESTIONE_LO
+    foreign key (IdOperatore) references operatori (IdOperatore) on delete cascade;
+
+alter table pagamenti add constraint FK_PAGAMENTO
+    foreign key (NumeroBolletta) references bollette (NumeroBolletta);
+\end{lstlisting}
+
+\section{Creazione delle view}
+\begin{lstlisting}
+create view `clienti dettagliati` as
+select P.*, C.FasciaReddito
+from persone P, clienti C
+where P.IdPersona = C.CodiceCliente;
+ 
+create view `operatori dettagliati` as
+select P.*, O.Stipendio
+from persone P, operatori O
+where P.IdPersona = O.IdOperatore;
+   
+create view `richieste contratto` as
+select IdContratto, DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, NumeroComponenti, Uso, Offerta, TipoAttivazione, IdImmobile, IdCliente
+from contratti
+where DataChiusuraRichiesta is null or (DataChiusuraRichiesta is not null and StatoRichiesta = "Respinta");
+   
+create view `contratti approvati`
+as select C.*
+from contratti C
+where C.DataChiusuraRichiesta is not null and C.StatoRichiesta = "Approvata";
+                                      
+create view `contratti attivi`
+as select C.*
+from `contratti approvati` C
+where not exists (select E.NumeroRichiesta
+                from cessazioni E
+                where E.IdContratto = C.IdContratto
+                and E.DataChiusuraRichiesta is not null
+                and E.StatoRichiesta = "Approvata");
+\end{lstlisting}
 
 \end{document}

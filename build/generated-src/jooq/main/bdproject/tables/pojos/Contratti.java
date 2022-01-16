@@ -27,7 +27,6 @@ public class Contratti implements Serializable {
     private final Integer   tipoattivazione;
     private final Integer   idimmobile;
     private final Integer   idcliente;
-    private final LocalDate datacessazione;
 
     public Contratti(Contratti value) {
         this.idcontratto = value.idcontratto;
@@ -41,7 +40,6 @@ public class Contratti implements Serializable {
         this.tipoattivazione = value.tipoattivazione;
         this.idimmobile = value.idimmobile;
         this.idcliente = value.idcliente;
-        this.datacessazione = value.datacessazione;
     }
 
     public Contratti(
@@ -55,8 +53,7 @@ public class Contratti implements Serializable {
         Integer   offerta,
         Integer   tipoattivazione,
         Integer   idimmobile,
-        Integer   idcliente,
-        LocalDate datacessazione
+        Integer   idcliente
     ) {
         this.idcontratto = idcontratto;
         this.dataaperturarichiesta = dataaperturarichiesta;
@@ -69,7 +66,6 @@ public class Contratti implements Serializable {
         this.tipoattivazione = tipoattivazione;
         this.idimmobile = idimmobile;
         this.idcliente = idcliente;
-        this.datacessazione = datacessazione;
     }
 
     /**
@@ -149,13 +145,6 @@ public class Contratti implements Serializable {
         return this.idcliente;
     }
 
-    /**
-     * Getter for <code>utenze.contratti.DataCessazione</code>.
-     */
-    public LocalDate getDatacessazione() {
-        return this.datacessazione;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Contratti (");
@@ -171,7 +160,6 @@ public class Contratti implements Serializable {
         sb.append(", ").append(tipoattivazione);
         sb.append(", ").append(idimmobile);
         sb.append(", ").append(idcliente);
-        sb.append(", ").append(datacessazione);
 
         sb.append(")");
         return sb.toString();

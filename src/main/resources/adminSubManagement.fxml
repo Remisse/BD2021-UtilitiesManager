@@ -64,7 +64,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <CheckBox fx:id="pastDeadlineFilter" layoutX="50.0" layoutY="300.0" mnemonicParsing="false" onAction="#doRefreshSubs" prefHeight="64.0" prefWidth="150.0" text="Bollette non saldate" wrapText="true" />
+      <CheckBox fx:id="hasUnpaidReportsFilter" layoutX="50.0" layoutY="300.0" mnemonicParsing="false" onAction="#doRefreshSubs" prefHeight="64.0" prefWidth="150.0" text="Bollette non saldate" wrapText="true" />
       <Label layoutX="233.0" layoutY="482.0" text="Bollette">
          <font>
             <Font size="18.0" />
@@ -136,10 +136,11 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="endSub" layoutX="342.0" layoutY="409.0" mnemonicParsing="false" onAction="#doEndSub" prefHeight="31.0" prefWidth="143.0" text="Cessa contratto" textFill="#9e0000">
+      <Button fx:id="endSub" layoutX="364.0" layoutY="409.0" mnemonicParsing="false" onAction="#doEndSub" prefHeight="31.0" prefWidth="150.0" text="Cessa contratto" textFill="#9e0000">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
+      <TextField fx:id="forceEndNotesField" layoutX="524.0" layoutY="409.0" prefHeight="31.0" prefWidth="462.0" promptText="Motivazione" />
    </children>
 </AnchorPane>

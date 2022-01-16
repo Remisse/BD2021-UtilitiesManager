@@ -21,7 +21,7 @@ public class MateriePrimeRecord extends UpdatableRecordImpl<MateriePrimeRecord> 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.materie_prime.Nome</code>.
+     * Setter for <code>utenze.materie prime.Nome</code>.
      */
     public MateriePrimeRecord setNome(String value) {
         set(0, value);
@@ -29,7 +29,7 @@ public class MateriePrimeRecord extends UpdatableRecordImpl<MateriePrimeRecord> 
     }
 
     /**
-     * Getter for <code>utenze.materie_prime.Nome</code>.
+     * Getter for <code>utenze.materie prime.Nome</code>.
      */
     public String getNome() {
         return (String) get(0);

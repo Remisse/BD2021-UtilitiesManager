@@ -5,6 +5,7 @@ import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.Cessazioni;
+import bdproject.tables.pojos.ContrattiApprovati;
 import bdproject.tables.pojos.ContrattiAttivi;
 import bdproject.utils.ViewUtils;
 import bdproject.view.StringUtils;
@@ -22,12 +23,12 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
     @FXML private TableView<Cessazioni> endRequestTable;
 
     protected UserSubDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiAttivi subscription) {
+            final ContrattiApprovati subscription) {
         super(stage, dataSource, holder, subscription);
     }
 
     public static Controller create(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiAttivi subscription) {
+            final ContrattiApprovati subscription) {
         return new UserSubDetailsController(stage, dataSource, holder, subscription);
     }
 
@@ -45,10 +46,10 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
 
     @Override
     protected void abstractDoInsertEndRequest() {
-        final ContrattiAttivi subscription = getSubscription();
+        final ContrattiApprovati subscription = getSubscription();
 
         try (Connection conn = dataSource().getConnection()) {
-            if (subscription.getDatacessazione() != null) {
+            if (Queries.fetchApprovedEndRequestBySubscription(subscription.getIdcontratto(), conn).isPresent()) {
                 ViewUtils.showBlockingWarning("Il contratto risulta già cessato.");
             } else if (!Queries.areAllReportsPaid(subscription.getIdcontratto(), conn)) {
                 ViewUtils.showBlockingWarning("Risultano bollette non pagate. Non è attualmente" +

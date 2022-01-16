@@ -37,21 +37,21 @@ public class TipiAttivazione implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.tipi_attivazione.CodAttivazione</code>.
+     * Getter for <code>utenze.tipi attivazione.CodAttivazione</code>.
      */
     public Integer getCodattivazione() {
         return this.codattivazione;
     }
 
     /**
-     * Getter for <code>utenze.tipi_attivazione.Nome</code>.
+     * Getter for <code>utenze.tipi attivazione.Nome</code>.
      */
     public String getNome() {
         return this.nome;
     }
 
     /**
-     * Getter for <code>utenze.tipi_attivazione.Costo</code>.
+     * Getter for <code>utenze.tipi attivazione.Costo</code>.
      */
     public BigDecimal getCosto() {
         return this.costo;

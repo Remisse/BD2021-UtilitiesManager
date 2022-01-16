@@ -72,7 +72,7 @@ public class Keys {
     public static final UniqueKey<ImmobiliRecord> KEY_IMMOBILI_PRIMARY = Internal.createUniqueKey(Immobili.IMMOBILI, DSL.name("KEY_immobili_PRIMARY"), new TableField[] { Immobili.IMMOBILI.IDIMMOBILE }, true);
     public static final UniqueKey<LettureRecord> KEY_LETTURE_AK_LETTURE = Internal.createUniqueKey(Letture.LETTURE, DSL.name("KEY_letture_AK_LETTURE"), new TableField[] { Letture.LETTURE.MATRICOLACONTATORE, Letture.LETTURE.DATAEFFETTUAZIONE }, true);
     public static final UniqueKey<LettureRecord> KEY_LETTURE_PRIMARY = Internal.createUniqueKey(Letture.LETTURE, DSL.name("KEY_letture_PRIMARY"), new TableField[] { Letture.LETTURE.NUMEROLETTURA }, true);
-    public static final UniqueKey<MateriePrimeRecord> KEY_MATERIE_PRIME_PRIMARY = Internal.createUniqueKey(MateriePrime.MATERIE_PRIME, DSL.name("KEY_materie_prime_PRIMARY"), new TableField[] { MateriePrime.MATERIE_PRIME.NOME }, true);
+    public static final UniqueKey<MateriePrimeRecord> KEY_MATERIE_PRIME_PRIMARY = Internal.createUniqueKey(MateriePrime.MATERIE_PRIME, DSL.name("KEY_materie prime_PRIMARY"), new TableField[] { MateriePrime.MATERIE_PRIME.NOME }, true);
     public static final UniqueKey<OfferteRecord> KEY_OFFERTE_PRIMARY = Internal.createUniqueKey(Offerte.OFFERTE, DSL.name("KEY_offerte_PRIMARY"), new TableField[] { Offerte.OFFERTE.CODOFFERTA }, true);
     public static final UniqueKey<OperatoriRecord> KEY_OPERATORI_PRIMARY = Internal.createUniqueKey(Operatori.OPERATORI, DSL.name("KEY_operatori_PRIMARY"), new TableField[] { Operatori.OPERATORI.IDOPERATORE }, true);
     public static final UniqueKey<OperatoriCessazioniRecord> KEY_OPERATORI_CESSAZIONI_PRIMARY = Internal.createUniqueKey(OperatoriCessazioni.OPERATORI_CESSAZIONI, DSL.name("KEY_operatori cessazioni_PRIMARY"), new TableField[] { OperatoriCessazioni.OPERATORI_CESSAZIONI.NUMERORICHIESTA }, true);
@@ -83,8 +83,8 @@ public class Keys {
     public static final UniqueKey<PersoneRecord> KEY_PERSONE_PRIMARY = Internal.createUniqueKey(Persone.PERSONE, DSL.name("KEY_persone_PRIMARY"), new TableField[] { Persone.PERSONE.IDPERSONA }, true);
     public static final UniqueKey<RedditiRecord> KEY_REDDITI_AK_REDDITI = Internal.createUniqueKey(Redditi.REDDITI, DSL.name("KEY_redditi_AK_REDDITI"), new TableField[] { Redditi.REDDITI.FASCIA }, true);
     public static final UniqueKey<RedditiRecord> KEY_REDDITI_PRIMARY = Internal.createUniqueKey(Redditi.REDDITI, DSL.name("KEY_redditi_PRIMARY"), new TableField[] { Redditi.REDDITI.CODREDDITO }, true);
-    public static final UniqueKey<TipiAttivazioneRecord> KEY_TIPI_ATTIVAZIONE_PRIMARY = Internal.createUniqueKey(TipiAttivazione.TIPI_ATTIVAZIONE, DSL.name("KEY_tipi_attivazione_PRIMARY"), new TableField[] { TipiAttivazione.TIPI_ATTIVAZIONE.CODATTIVAZIONE }, true);
-    public static final UniqueKey<TipologieUsoRecord> KEY_TIPOLOGIE_USO_PRIMARY = Internal.createUniqueKey(TipologieUso.TIPOLOGIE_USO, DSL.name("KEY_tipologie_uso_PRIMARY"), new TableField[] { TipologieUso.TIPOLOGIE_USO.CODUSO }, true);
+    public static final UniqueKey<TipiAttivazioneRecord> KEY_TIPI_ATTIVAZIONE_PRIMARY = Internal.createUniqueKey(TipiAttivazione.TIPI_ATTIVAZIONE, DSL.name("KEY_tipi attivazione_PRIMARY"), new TableField[] { TipiAttivazione.TIPI_ATTIVAZIONE.CODATTIVAZIONE }, true);
+    public static final UniqueKey<TipologieUsoRecord> KEY_TIPOLOGIE_USO_PRIMARY = Internal.createUniqueKey(TipologieUso.TIPOLOGIE_USO, DSL.name("KEY_tipologie uso_PRIMARY"), new TableField[] { TipologieUso.TIPOLOGIE_USO.CODUSO }, true);
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions

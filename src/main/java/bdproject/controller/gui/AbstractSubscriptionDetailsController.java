@@ -33,7 +33,8 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     private static final String FXML_FILE = "subDetails.fxml";
     private static final String FLOW_CSS = "-fx-font: 16 arial";
 
-    private final ContrattiAttivi sub;
+    private final ContrattiApprovati sub;
+    private Cessazioni approvedEnd;
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
 
     @FXML private Button back;
@@ -57,7 +58,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
     @FXML private TableColumn<Cessazioni, String> reqNotesCol;
 
     protected AbstractSubscriptionDetailsController(final Stage stage, final DataSource dataSource, final SessionHolder holder,
-            final ContrattiAttivi sub) {
+            final ContrattiApprovati sub) {
         super(stage, dataSource, holder, FXML_FILE);
         this.sub = sub;
     }
@@ -67,14 +68,22 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
         try (Connection conn = dataSource().getConnection()) {
             final LocalDate creationDate = sub.getDataaperturarichiesta();
             final LocalDate startDate = sub.getDatachiusurarichiesta();
-            final LocalDate endDate = sub.getDatacessazione();
-
             final Text requestNotes = new Text(sub.getNoterichiesta());
+
+            Queries.fetchApprovedEndRequestBySubscription(sub.getIdcontratto(), conn)
+                    .ifPresent(e -> approvedEnd = e);
 
             Platform.runLater(() -> {
                 creationDateLabel.setText(dateIt.format(creationDate));
                 subStartDate.setText(startDate != null ? dateIt.format(startDate) : "N.D.");
-                subEndDate.setText(endDate != null ? dateIt.format(endDate) : "N.D.");
+
+                if (approvedEnd == null) {
+                    subEndDate.setText("N.D.");
+                    subState.setText("Attivo");
+                } else {
+                    subEndDate.setText(dateIt.format(approvedEnd.getDatachiusurarichiesta()));
+                    subState.setText("Cessato");
+                }
 
                 requestNotes.setStyle(FLOW_CSS);
                 requestNotesFlow.getChildren().add(requestNotes);
@@ -85,7 +94,6 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
             setClientDetails(conn);
             setPlanDetails();
             setPeopleNo();
-            setStatus();
             setPremisesDetails();
             setEndRequestTable();
             refreshEndRequestTable();
@@ -98,7 +106,7 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
 
     protected abstract void setOther();
 
-    protected ContrattiAttivi getSubscription() {
+    protected ContrattiApprovati getSubscription() {
         return sub;
     }
 
@@ -147,10 +155,6 @@ public abstract class AbstractSubscriptionDetailsController extends AbstractCont
             planText.setStyle(FLOW_CSS);
             planDetails.getChildren().add(planText);
         });
-    }
-
-    protected void setStatus() {
-        subState.setText(Checks.isSubscriptionActive(sub) ? "Attivo" : "Cessato");
     }
 
     private void setEndRequestTable() {

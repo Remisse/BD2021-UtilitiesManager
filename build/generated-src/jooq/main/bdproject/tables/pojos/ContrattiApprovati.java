@@ -12,7 +12,7 @@ import java.time.LocalDate;
  * VIEW
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
-public class ContrattiAttivi implements Serializable {
+public class ContrattiApprovati implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,7 @@ public class ContrattiAttivi implements Serializable {
     private final Integer   idimmobile;
     private final Integer   idcliente;
 
-    public ContrattiAttivi(ContrattiAttivi value) {
+    public ContrattiApprovati(ContrattiApprovati value) {
         this.idcontratto = value.idcontratto;
         this.dataaperturarichiesta = value.dataaperturarichiesta;
         this.datachiusurarichiesta = value.datachiusurarichiesta;
@@ -42,7 +42,7 @@ public class ContrattiAttivi implements Serializable {
         this.idcliente = value.idcliente;
     }
 
-    public ContrattiAttivi(
+    public ContrattiApprovati(
         Integer   idcontratto,
         LocalDate dataaperturarichiesta,
         LocalDate datachiusurarichiesta,
@@ -69,77 +69,77 @@ public class ContrattiAttivi implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.IdContratto</code>.
+     * Getter for <code>utenze.contratti approvati.IdContratto</code>.
      */
     public Integer getIdcontratto() {
         return this.idcontratto;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.DataAperturaRichiesta</code>.
+     * Getter for <code>utenze.contratti approvati.DataAperturaRichiesta</code>.
      */
     public LocalDate getDataaperturarichiesta() {
         return this.dataaperturarichiesta;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.DataChiusuraRichiesta</code>.
+     * Getter for <code>utenze.contratti approvati.DataChiusuraRichiesta</code>.
      */
     public LocalDate getDatachiusurarichiesta() {
         return this.datachiusurarichiesta;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.StatoRichiesta</code>.
+     * Getter for <code>utenze.contratti approvati.StatoRichiesta</code>.
      */
     public String getStatorichiesta() {
         return this.statorichiesta;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.NoteRichiesta</code>.
+     * Getter for <code>utenze.contratti approvati.NoteRichiesta</code>.
      */
     public String getNoterichiesta() {
         return this.noterichiesta;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.NumeroComponenti</code>.
+     * Getter for <code>utenze.contratti approvati.NumeroComponenti</code>.
      */
     public Integer getNumerocomponenti() {
         return this.numerocomponenti;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.Uso</code>.
+     * Getter for <code>utenze.contratti approvati.Uso</code>.
      */
     public Integer getUso() {
         return this.uso;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.Offerta</code>.
+     * Getter for <code>utenze.contratti approvati.Offerta</code>.
      */
     public Integer getOfferta() {
         return this.offerta;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.TipoAttivazione</code>.
+     * Getter for <code>utenze.contratti approvati.TipoAttivazione</code>.
      */
     public Integer getTipoattivazione() {
         return this.tipoattivazione;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.IdImmobile</code>.
+     * Getter for <code>utenze.contratti approvati.IdImmobile</code>.
      */
     public Integer getIdimmobile() {
         return this.idimmobile;
     }
 
     /**
-     * Getter for <code>utenze.contratti attivi.IdCliente</code>.
+     * Getter for <code>utenze.contratti approvati.IdCliente</code>.
      */
     public Integer getIdcliente() {
         return this.idcliente;
@@ -147,7 +147,7 @@ public class ContrattiAttivi implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("ContrattiAttivi (");
+        StringBuilder sb = new StringBuilder("ContrattiApprovati (");
 
         sb.append(idcontratto);
         sb.append(", ").append(dataaperturarichiesta);

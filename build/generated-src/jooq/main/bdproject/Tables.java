@@ -11,6 +11,7 @@ import bdproject.tables.ClientiDettagliati;
 import bdproject.tables.Compatibilità;
 import bdproject.tables.Contatori;
 import bdproject.tables.Contratti;
+import bdproject.tables.ContrattiApprovati;
 import bdproject.tables.ContrattiAttivi;
 import bdproject.tables.Immobili;
 import bdproject.tables.Letture;
@@ -73,6 +74,11 @@ public class Tables {
     /**
      * VIEW
      */
+    public static final ContrattiApprovati CONTRATTI_APPROVATI = ContrattiApprovati.CONTRATTI_APPROVATI;
+
+    /**
+     * VIEW
+     */
     public static final ContrattiAttivi CONTRATTI_ATTIVI = ContrattiAttivi.CONTRATTI_ATTIVI;
 
     /**
@@ -86,7 +92,7 @@ public class Tables {
     public static final Letture LETTURE = Letture.LETTURE;
 
     /**
-     * The table <code>utenze.materie_prime</code>.
+     * The table <code>utenze.materie prime</code>.
      */
     public static final MateriePrime MATERIE_PRIME = MateriePrime.MATERIE_PRIME;
 
@@ -141,12 +147,12 @@ public class Tables {
     public static final RichiesteContratto RICHIESTE_CONTRATTO = RichiesteContratto.RICHIESTE_CONTRATTO;
 
     /**
-     * The table <code>utenze.tipi_attivazione</code>.
+     * The table <code>utenze.tipi attivazione</code>.
      */
     public static final TipiAttivazione TIPI_ATTIVAZIONE = TipiAttivazione.TIPI_ATTIVAZIONE;
 
     /**
-     * The table <code>utenze.tipologie_uso</code>.
+     * The table <code>utenze.tipologie uso</code>.
      */
     public static final TipologieUso TIPOLOGIE_USO = TipologieUso.TIPOLOGIE_USO;
 }

@@ -24,7 +24,7 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>utenze.tipologie_uso.CodUso</code>.
+     * Setter for <code>utenze.tipologie uso.CodUso</code>.
      */
     public TipologieUsoRecord setCoduso(Integer value) {
         set(0, value);
@@ -32,14 +32,14 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
     }
 
     /**
-     * Getter for <code>utenze.tipologie_uso.CodUso</code>.
+     * Getter for <code>utenze.tipologie uso.CodUso</code>.
      */
     public Integer getCoduso() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>utenze.tipologie_uso.Nome</code>.
+     * Setter for <code>utenze.tipologie uso.Nome</code>.
      */
     public TipologieUsoRecord setNome(String value) {
         set(1, value);
@@ -47,14 +47,14 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
     }
 
     /**
-     * Getter for <code>utenze.tipologie_uso.Nome</code>.
+     * Getter for <code>utenze.tipologie uso.Nome</code>.
      */
     public String getNome() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>utenze.tipologie_uso.StimaPerPersona</code>.
+     * Setter for <code>utenze.tipologie uso.StimaPerPersona</code>.
      */
     public TipologieUsoRecord setStimaperpersona(BigDecimal value) {
         set(2, value);
@@ -62,14 +62,14 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
     }
 
     /**
-     * Getter for <code>utenze.tipologie_uso.StimaPerPersona</code>.
+     * Getter for <code>utenze.tipologie uso.StimaPerPersona</code>.
      */
     public BigDecimal getStimaperpersona() {
         return (BigDecimal) get(2);
     }
 
     /**
-     * Setter for <code>utenze.tipologie_uso.ScontoReddito</code>.
+     * Setter for <code>utenze.tipologie uso.ScontoReddito</code>.
      */
     public TipologieUsoRecord setScontoreddito(Byte value) {
         set(3, value);
@@ -77,7 +77,7 @@ public class TipologieUsoRecord extends UpdatableRecordImpl<TipologieUsoRecord> 
     }
 
     /**
-     * Getter for <code>utenze.tipologie_uso.ScontoReddito</code>.
+     * Getter for <code>utenze.tipologie uso.ScontoReddito</code>.
      */
     public Byte getScontoreddito() {
         return (Byte) get(3);

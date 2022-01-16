@@ -3,10 +3,10 @@ package bdproject.controller.gui.operators;
 import bdproject.controller.Checks;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
-import bdproject.model.types.StatusType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
+import bdproject.utils.Converters;
 import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.w3c.dom.Text;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -32,7 +33,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
@@ -46,26 +46,29 @@ public class SubscriptionManagementController extends AbstractController impleme
     private static final int REPORT_PERIOD_MONTHS = 2;
     private static final int NO_CLIENT = -1;
 
-    private List<ContrattiAttivi> subsList = Collections.emptyList();
+    private List<ContrattiApprovati> subsList = Collections.emptyList();
     private List<TipologieUso> useTypes;
-    private final Map<String, BiPredicate<ContrattiAttivi, Connection>> statuses = Map.of(
-            "Attivo", (s, c) -> Checks.isSubscriptionActive(s),
-            "Cessato", (s, c) -> s.getDatacessazione() != null
+    private final Map<String, BiPredicate<ContrattiApprovati, Connection>> statuses = Map.of(
+            "Attivo", (s, c) -> Queries.fetchApprovedEndRequestBySubscription(s.getIdcontratto(), c)
+                    .isEmpty(),
+            "Cessato", (s, c) -> Queries.fetchApprovedEndRequestBySubscription(s.getIdcontratto(), c)
+                    .isPresent()
     );
     private byte[] reportFile = null;
 
     private final DateTimeFormatter dateIt = LocaleUtils.getItDateFormatter();
 
-    @FXML private TableView<ContrattiAttivi> subsTable;
-    @FXML private TableColumn<ContrattiAttivi, Integer> clientIdCol;
-    @FXML private TableColumn<ContrattiAttivi, Integer> subIdCol;
-    @FXML private TableColumn<ContrattiAttivi, String> zoneCol;
-    @FXML private TableColumn<ContrattiAttivi, Integer> planIdCol;
-    @FXML private TableColumn<ContrattiAttivi, String> incomeDiscountCol;
+    @FXML private TableView<ContrattiApprovati> subsTable;
+    @FXML private TableColumn<ContrattiApprovati, Integer> clientIdCol;
+    @FXML private TableColumn<ContrattiApprovati, Integer> subIdCol;
+    @FXML private TableColumn<ContrattiApprovati, String> zoneCol;
+    @FXML private TableColumn<ContrattiApprovati, Integer> planIdCol;
+    @FXML private TableColumn<ContrattiApprovati, String> incomeDiscountCol;
     @FXML private TextField clientIdFilter;
     @FXML private ComboBox<String> statusFilter;
     @FXML private CheckBox lastReportFilter;
-    @FXML private CheckBox pastDeadlineFilter;
+    @FXML private CheckBox hasUnpaidReportsFilter;
+    @FXML private TextField forceEndNotesField;
 
     @FXML private TableView<Letture> measurementsTable;
     @FXML private TableColumn<Letture, String> measPublishDateCol;
@@ -152,7 +155,7 @@ public class SubscriptionManagementController extends AbstractController impleme
         final String statusChoice = statusFilter.getValue();
 
         try (Connection conn = dataSource().getConnection()) {
-            Map<ContrattiAttivi, Bollette> subs = Queries.fetchAllSubscriptionsWithLastReport(conn);
+            Map<ContrattiApprovati, Bollette> subs = Queries.fetchAllSubscriptionsWithLastReport(conn);
 
             subsList = subs.entrySet()
                     .stream()
@@ -161,7 +164,7 @@ public class SubscriptionManagementController extends AbstractController impleme
                     .filter(p -> !lastReportFilter.isSelected()
                             || (p.getValue().getDataemissione().isBefore(LocalDate.now().minus(Period.ofMonths(
                                         REPORT_PERIOD_MONTHS)))))
-                    .filter(p -> !pastDeadlineFilter.isSelected() ||
+                    .filter(p -> !hasUnpaidReportsFilter.isSelected() ||
                             !Queries.areAllReportsPaid(p.getKey().getIdcontratto(), conn))
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
@@ -173,7 +176,7 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     @FXML
     private void showSubDetails() {
-        final ContrattiAttivi selected = subsTable.getSelectionModel().getSelectedItem();
+        final ContrattiApprovati selected = subsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             createSubWindow(OperatorSubDetailsController.create(null, dataSource(), getSessionHolder(), selected));
         } else {
@@ -183,13 +186,15 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     @FXML
     private void doEndSub() {
-        final ContrattiAttivi selected = subsTable.getSelectionModel().getSelectedItem();
+        final ContrattiApprovati selected = subsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             ViewUtils.showConfirmationDialog(
                     "Vuoi davvero cessare questo contratto? La scelta è irreversibile.",
                     () -> {
                         try (final Connection conn = dataSource().getConnection()) {
-                            final int result = Queries.ceaseSubscription(selected.getIdcontratto(), conn);
+                            final int result = Queries.forceSubscriptionEnd(selected.getIdcontratto(),
+                                    forceEndNotesField.getText(), getSessionHolder().session().orElseThrow().userId(),
+                                    conn);
                             if (result == 1) {
                                 doRefreshSubs();
                                 ViewUtils.showBlockingWarning("Contratto cessato.");
@@ -215,7 +220,7 @@ public class SubscriptionManagementController extends AbstractController impleme
     }
 
     private void doRefreshMeasurements() {
-        final ContrattiAttivi sub = subsTable.getSelectionModel().getSelectedItem();
+        final ContrattiApprovati sub = subsTable.getSelectionModel().getSelectedItem();
         if (sub != null) {
             try (Connection conn = dataSource().getConnection()) {
                 final List<Letture> measurements = Queries.fetchMeasurements(sub.getIdcontratto(), conn);
@@ -300,10 +305,10 @@ public class SubscriptionManagementController extends AbstractController impleme
     }
 
     private void doRefreshReports() {
-        final ContrattiAttivi sub = subsTable.getSelectionModel().getSelectedItem();
+        final ContrattiApprovati sub = subsTable.getSelectionModel().getSelectedItem();
         if (sub != null) {
             try (Connection conn = dataSource().getConnection()) {
-                final var reports = Queries.fetchSubscriptionReports(sub, conn);
+                final var reports = Queries.fetchSubscriptionReports(sub.getIdcontratto(), conn);
 
                 Platform.runLater(() -> reportsTable.setItems(FXCollections.observableList(reports)));
             } catch (SQLException e) {
@@ -354,7 +359,7 @@ public class SubscriptionManagementController extends AbstractController impleme
     @FXML
     private void doPublishReport() {
         if (canPublishReport()) {
-            final ContrattiAttivi sub = subsTable.getSelectionModel().getSelectedItem();
+            final ContrattiApprovati sub = subsTable.getSelectionModel().getSelectedItem();
             if (sub != null) {
                 try (final Connection conn = dataSource().getConnection()) {
                     final int result = Queries.publishReport(

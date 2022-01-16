@@ -13,53 +13,53 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button layoutX="58.0" layoutY="29.0" mnemonicParsing="false" text="Indietro">
+      <Button layoutX="58.0" layoutY="29.0" mnemonicParsing="false" onAction="#goBack" text="Indietro">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Label layoutX="58.0" layoutY="228.0" text="Contratti attivati nell'anno">
+      <Label layoutX="58.0" layoutY="332.0" text="Contratti attivati nell'anno">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <ComboBox layoutX="301.0" layoutY="227.0" prefWidth="150.0" />
-      <Label alignment="TOP_LEFT" layoutX="453.0" layoutY="228.0" prefHeight="25.0" prefWidth="16.0" text=":">
+      <ComboBox fx:id="yearComboBox" layoutX="301.0" layoutY="331.0" onAction="#onYearSelect" prefWidth="150.0" />
+      <Label alignment="TOP_LEFT" layoutX="457.0" layoutY="332.0" prefHeight="25.0" prefWidth="16.0" text=":">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="58.0" layoutY="333.0" text="Comune con più contratti attivi:">
+      <Label layoutX="58.0" layoutY="428.0" text="Offerta più richiesta:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="58.0" layoutY="434.0" text="Offerta più richiesta:">
+      <Label layoutX="58.0" layoutY="129.0" text="Richieste di contratto da te finalizzate:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="58.0" layoutY="129.0" text="Richieste da te finalizzate:">
+      <Label fx:id="subsInYearCountLabel" layoutX="482.0" layoutY="334.0" text="Label" textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="subsInYearCountLabel" layoutX="482.0" layoutY="230.0" text="Label" textFill="#006139">
+      <Label fx:id="mostRequestedPlanLabel" layoutX="264.0" layoutY="428.0" text="Label" textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="municipalityHighestSubCountLabel" layoutX="362.0" layoutY="333.0" text="Label" textFill="#006139">
+      <Label fx:id="subRequestsByOperatorLabel" layoutX="427.0" layoutY="129.0" text="Label" textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="mostRequestedMethodLabel" layoutX="264.0" layoutY="434.0" text="Label" textFill="#006139">
+      <Label layoutX="58.0" layoutY="229.0" text="Richieste di cessazione da te finalizzate:">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="requestsByOperatorLabel" layoutX="313.0" layoutY="129.0" text="Label" textFill="#006139">
+      <Label fx:id="endRequestsByOperatorLabel" layoutX="441.0" layoutY="229.0" text="Label" textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>

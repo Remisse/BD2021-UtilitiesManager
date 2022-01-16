@@ -61,7 +61,7 @@ public class UserAreaController extends AbstractController implements Initializa
     @FXML private TableColumn<RichiesteContratto, String> reqUtilityCol;
     @FXML private TableColumn<RichiesteContratto, String> reqResultCol;
 
-    @FXML private ComboBox<Choice<Integer, ContrattiAttivi>> subscriptionChoice;
+    @FXML private ComboBox<Choice<Integer, ContrattiApprovati>> subscriptionChoice;
     @FXML private Button subDetails;
     @FXML private Button consumptionTrend;
 
@@ -139,7 +139,7 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void populateSubscriptionBox() {
-        List<Choice<Integer, ContrattiAttivi>> subs;
+        List<Choice<Integer, ContrattiApprovati>> subs;
         try (final Connection conn = dataSource().getConnection()) {
             subs = Queries.fetchApprovedSubscriptionsByClient(getSessionHolder().session().orElseThrow().userId(), conn)
                     .stream()
@@ -171,7 +171,7 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void initializeReportTable() {
-        final Choice<Integer, ContrattiAttivi> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+        final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
 
         if (subChoice != null) {
             paid.setCellValueFactory(cellData -> {
@@ -218,7 +218,9 @@ public class UserAreaController extends AbstractController implements Initializa
 
     private void updateReportTable() {
         try (Connection conn = dataSource().getConnection()) {
-            List<Bollette> reports = Queries.fetchSubscriptionReports(subscriptionChoice.getValue().getValue(), conn);
+            List<Bollette> reports = Queries.fetchSubscriptionReports(subscriptionChoice.getValue()
+                    .getValue()
+                    .getIdcontratto(), conn);
 
             Platform.runLater(() -> reportTable.setItems(FXCollections.observableList(reports)));
         } catch (SQLException e) {
@@ -288,10 +290,14 @@ public class UserAreaController extends AbstractController implements Initializa
     @FXML
     private void doAddMeasurement() {
         final var subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+
         if (subChoice != null) {
-            if (subChoice.getValue().getDatacessazione() == null) {
-                if (Checks.isValidConsumption(consumption.getText())) {
-                    try (Connection conn = dataSource().getConnection()) {
+            Optional<Cessazioni> approvedEnd = Optional.empty();
+
+            try (final Connection conn = dataSource().getConnection()) {
+                approvedEnd = Queries.fetchApprovedEndRequestBySubscription(subChoice.getValue().getIdcontratto(), conn);
+                if (approvedEnd.isEmpty()) {
+                    if (Checks.isValidConsumption(consumption.getText())) {
                         final String meterId = Queries.fetchMeterBySubscription(subChoice.getValue().getIdcontratto(), conn)
                                 .orElseThrow()
                                 .getMatricola();
@@ -308,15 +314,15 @@ public class UserAreaController extends AbstractController implements Initializa
 
                         Queries.insertMeasurement(measurement, conn);
                         updateMeasurementsTable();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        ViewUtils.showError("Impossibile inserire la lettura: " + e.getMessage());
+                    } else {
+                        ViewUtils.showBlockingWarning("Controlla di aver inserito correttamente la lettura.");
                     }
                 } else {
-                    ViewUtils.showBlockingWarning("Controlla di aver inserito correttamente la lettura.");
+                    ViewUtils.showBlockingWarning("Il contratto risulta non attivo. Non puoi comunicare nuove letture.");
                 }
-            } else {
-                ViewUtils.showBlockingWarning("Il contratto risulta non attivo. Non puoi comunicare nuove letture.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                ViewUtils.showError("Impossibile inserire la lettura: " + e.getMessage());
             }
         } else {
             ViewUtils.showBlockingWarning("Seleziona un contratto.");
@@ -326,7 +332,7 @@ public class UserAreaController extends AbstractController implements Initializa
     private void initializeMeasurementsTable() {
         String utility = "";
         try (final Connection conn = dataSource().getConnection()) {
-            final Choice<Integer, ContrattiAttivi> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+            final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
             if (subChoice != null) {
                 utility = Queries.fetchUtilityFromSubscription(subChoice.getValue().getIdcontratto(), conn)
                         .getNome();
@@ -350,7 +356,7 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private void updateMeasurementsTable() {
-        final Choice<Integer, ContrattiAttivi> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+        final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
 
         if (subChoice != null) {
             try (Connection conn = dataSource().getConnection()) {

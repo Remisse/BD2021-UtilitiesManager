@@ -39,7 +39,7 @@ public class TipologieUso extends TableImpl<TipologieUsoRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>utenze.tipologie_uso</code>
+     * The reference instance of <code>utenze.tipologie uso</code>
      */
     public static final TipologieUso TIPOLOGIE_USO = new TipologieUso();
 
@@ -52,22 +52,22 @@ public class TipologieUso extends TableImpl<TipologieUsoRecord> {
     }
 
     /**
-     * The column <code>utenze.tipologie_uso.CodUso</code>.
+     * The column <code>utenze.tipologie uso.CodUso</code>.
      */
     public final TableField<TipologieUsoRecord, Integer> CODUSO = createField(DSL.name("CodUso"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>utenze.tipologie_uso.Nome</code>.
+     * The column <code>utenze.tipologie uso.Nome</code>.
      */
     public final TableField<TipologieUsoRecord, String> NOME = createField(DSL.name("Nome"), SQLDataType.VARCHAR(30).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.tipologie_uso.StimaPerPersona</code>.
+     * The column <code>utenze.tipologie uso.StimaPerPersona</code>.
      */
     public final TableField<TipologieUsoRecord, BigDecimal> STIMAPERPERSONA = createField(DSL.name("StimaPerPersona"), SQLDataType.DECIMAL(20, 2).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.tipologie_uso.ScontoReddito</code>.
+     * The column <code>utenze.tipologie uso.ScontoReddito</code>.
      */
     public final TableField<TipologieUsoRecord, Byte> SCONTOREDDITO = createField(DSL.name("ScontoReddito"), SQLDataType.TINYINT.nullable(false), this, "");
 
@@ -80,24 +80,24 @@ public class TipologieUso extends TableImpl<TipologieUsoRecord> {
     }
 
     /**
-     * Create an aliased <code>utenze.tipologie_uso</code> table reference
+     * Create an aliased <code>utenze.tipologie uso</code> table reference
      */
     public TipologieUso(String alias) {
         this(DSL.name(alias), TIPOLOGIE_USO);
     }
 
     /**
-     * Create an aliased <code>utenze.tipologie_uso</code> table reference
+     * Create an aliased <code>utenze.tipologie uso</code> table reference
      */
     public TipologieUso(Name alias) {
         this(alias, TIPOLOGIE_USO);
     }
 
     /**
-     * Create a <code>utenze.tipologie_uso</code> table reference
+     * Create a <code>utenze.tipologie uso</code> table reference
      */
     public TipologieUso() {
-        this(DSL.name("tipologie_uso"), null);
+        this(DSL.name("tipologie uso"), null);
     }
 
     public <O extends Record> TipologieUso(Table<O> child, ForeignKey<O, TipologieUsoRecord> key) {
@@ -122,7 +122,7 @@ public class TipologieUso extends TableImpl<TipologieUsoRecord> {
     @Override
     public List<Check<TipologieUsoRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("tipologie_uso_chk_1"), "(`StimaPerPersona` >= 0.0)", true)
+            Internal.createCheck(this, DSL.name("tipologie uso_chk_1"), "(`StimaPerPersona` >= 0.0)", true)
         );
     }
 

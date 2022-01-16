@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -99,17 +99,12 @@ public class ContrattiAttivi extends TableImpl<ContrattiAttiviRecord> {
      */
     public final TableField<ContrattiAttiviRecord, Integer> IDCLIENTE = createField(DSL.name("IdCliente"), SQLDataType.INTEGER.nullable(false), this, "");
 
-    /**
-     * The column <code>utenze.contratti attivi.DataCessazione</code>.
-     */
-    public final TableField<ContrattiAttiviRecord, LocalDate> DATACESSAZIONE = createField(DSL.name("DataCessazione"), SQLDataType.LOCALDATE, this, "");
-
     private ContrattiAttivi(Name alias, Table<ContrattiAttiviRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ContrattiAttivi(Name alias, Table<ContrattiAttiviRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `contratti attivi` as select `C`.`IdContratto` AS `IdContratto`,`C`.`DataAperturaRichiesta` AS `DataAperturaRichiesta`,`C`.`DataChiusuraRichiesta` AS `DataChiusuraRichiesta`,`C`.`StatoRichiesta` AS `StatoRichiesta`,`C`.`NoteRichiesta` AS `NoteRichiesta`,`C`.`NumeroComponenti` AS `NumeroComponenti`,`C`.`Uso` AS `Uso`,`C`.`Offerta` AS `Offerta`,`C`.`TipoAttivazione` AS `TipoAttivazione`,`C`.`IdImmobile` AS `IdImmobile`,`C`.`IdCliente` AS `IdCliente`,`C`.`DataCessazione` AS `DataCessazione` from `utenze`.`contratti` `C` where ((`C`.`DataChiusuraRichiesta` is not null) and (`C`.`StatoRichiesta` = 'Approvata') and exists(select `E`.`NumeroRichiesta` from `utenze`.`cessazioni` `E` where ((`E`.`IdContratto` = `C`.`IdContratto`) and (`E`.`DataChiusuraRichiesta` is not null) and (`E`.`StatoRichiesta` = 'Approvata'))) is false)"));
+        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `contratti attivi` as select `utenze`.`C`.`IdContratto` AS `IdContratto`,`utenze`.`C`.`DataAperturaRichiesta` AS `DataAperturaRichiesta`,`utenze`.`C`.`DataChiusuraRichiesta` AS `DataChiusuraRichiesta`,`utenze`.`C`.`StatoRichiesta` AS `StatoRichiesta`,`utenze`.`C`.`NoteRichiesta` AS `NoteRichiesta`,`utenze`.`C`.`NumeroComponenti` AS `NumeroComponenti`,`utenze`.`C`.`Uso` AS `Uso`,`utenze`.`C`.`Offerta` AS `Offerta`,`utenze`.`C`.`TipoAttivazione` AS `TipoAttivazione`,`utenze`.`C`.`IdImmobile` AS `IdImmobile`,`utenze`.`C`.`IdCliente` AS `IdCliente` from `utenze`.`contratti approvati` `C` where exists(select `E`.`NumeroRichiesta` from `utenze`.`cessazioni` `E` where ((`E`.`IdContratto` = `utenze`.`C`.`IdContratto`) and (`E`.`DataChiusuraRichiesta` is not null) and (`E`.`StatoRichiesta` = 'Approvata'))) is false"));
     }
 
     /**
@@ -169,11 +164,11 @@ public class ContrattiAttivi extends TableImpl<ContrattiAttiviRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, LocalDate, LocalDate, String, String, Integer, Integer, Integer, Integer, Integer, Integer, LocalDate> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row11<Integer, LocalDate, LocalDate, String, String, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }
