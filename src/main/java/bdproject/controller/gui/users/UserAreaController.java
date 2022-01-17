@@ -424,8 +424,8 @@ public class UserAreaController extends AbstractController implements Initializa
                             street.getText(),
                             clientId,
                             conn);
-                resultUpdateData += Queries.updateOneFieldWhere(CLIENTI, CLIENTI.CODICECLIENTE, clientId,
-                        CLIENTI.FASCIAREDDITO, incomeBracket.getValue().getItem().getCodreddito(), conn);
+                resultUpdateData += Queries.updateClientIncome(clientId,
+                        incomeBracket.getValue().getItem().getCodreddito(), conn);
                 if (resultUpdateData == 2) {
                     ViewUtils.showBlockingWarning("Dati modificati con successo.");
                 } else {
@@ -443,8 +443,7 @@ public class UserAreaController extends AbstractController implements Initializa
         if (!isAtLeastOnePasswordFieldBlank() && isNewPasswordCorrectlySet()) {
             final int clientId = getSessionHolder().session().orElseThrow().userId();
             try (Connection conn = dataSource().getConnection()) {
-                final int resultUpdatePw = Queries.updateOneFieldWhere(PERSONE, PERSONE.IDPERSONA, clientId,
-                        PERSONE.PASSWORD, newPw.getText(), conn);
+                final int resultUpdatePw = Queries.updatePersonPassword(clientId, newPw.getText(), conn);
                 if (resultUpdatePw == 1) {
                     ViewUtils.showBlockingWarning("Password modificata con successo.");
                 } else {

@@ -69,7 +69,7 @@ public class NewActivationConfirmationController extends AbstractSubscriptionCon
                         pTemp.getCap(),
                         pTemp.getProvincia(),
                         conn);
-                premiseId = Queries.fetchLastInsertId(conn);
+                premiseId = Queries.fetchLastInsertId(conn).orElseThrow();
             } else {
                 premiseId = process.premise().orElseThrow().getIdimmobile();
             }

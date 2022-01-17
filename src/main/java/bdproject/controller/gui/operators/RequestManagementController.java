@@ -126,8 +126,7 @@ public class RequestManagementController extends AbstractController implements I
         final int operatorId = getSessionHolder().session().orElseThrow().userId();
 
         try (Connection conn = dataSource().getConnection()) {
-            final List<RichiesteContratto> activRequests =
-                    Queries.fetchSubscriptionRequestsAssignedToOperator(operatorId, conn);
+            final List<RichiesteContratto> activRequests = Queries.fetchSubscriptionRequestsAssignedToOperator(operatorId, conn);
             final List<Cessazioni> endRequests = Queries.fetchEndRequestsAssignedToOperator(operatorId, conn);
 
             activationRequestTable.setItems(FXCollections.observableList(activRequests));

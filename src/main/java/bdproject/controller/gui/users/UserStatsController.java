@@ -31,10 +31,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class UserStatsController extends AbstractController implements Initializable {
 
@@ -117,25 +114,19 @@ public class UserStatsController extends AbstractController implements Initializ
     @FXML
     private void onYearSelect() {
         if (!yearSelect.getSelectionModel().isEmpty()) {
-            List<Bollette> reports = Collections.emptyList();
+            final int selectedYear = yearSelect.getSelectionModel().getSelectedItem();
+            Map<LocalDate, BigDecimal> reports = Map.of();
 
             try (Connection conn = dataSource().getConnection()) {
-                reports = Queries.fetchSubscriptionReports(subscription.getIdcontratto(), conn);
+                reports = Queries.fetchReportsWithConsumptionInYear(subscription.getIdcontratto(), selectedYear, conn);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
-            final int selectedYear = yearSelect.getSelectionModel().getSelectedItem();
             final DateTimeFormatter month_it = LocaleUtils.getItLongMonthFormatter();
             final XYChart.Series<String, BigDecimal> series = new XYChart.Series<>();
+            reports.forEach((date, cons) -> series.getData().add(new XYChart.Data<>(date.format(month_it), cons)));
 
-            for (Bollette report : reports) {
-                if (report.getDataemissione().getYear() == selectedYear) {
-                    series.getData().add(new XYChart.Data<>(
-                            report.getDataemissione().format(month_it),
-                            report.getConsumi()));
-                }
-            }
             Platform.runLater(() -> {
                 yearlyTrend.getData().clear();
                 yearlyTrend.getData().add(series);

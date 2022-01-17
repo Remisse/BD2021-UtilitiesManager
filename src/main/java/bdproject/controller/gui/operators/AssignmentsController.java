@@ -73,13 +73,12 @@ public class AssignmentsController extends AbstractController implements Initial
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        final int opId = getSessionHolder().session().orElseThrow().userId();
         List<RichiesteContratto> subs = Collections.emptyList();
         List<Cessazioni> ends = Collections.emptyList();
         List<Letture> measurements = Collections.emptyList();
 
         try (final Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final DSLContext ctx = Queries.createContext(conn);
 
             endAssignments = Queries.fetchAll(ctx, OPERATORI_CESSAZIONI, OperatoriCessazioni.class);
             subAssignments = Queries.fetchAll(ctx, OPERATORI_CONTRATTI, OperatoriContratti.class);

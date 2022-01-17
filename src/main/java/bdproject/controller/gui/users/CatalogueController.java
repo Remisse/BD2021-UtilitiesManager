@@ -12,6 +12,7 @@ import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.model.SubscriptionProcessImpl;
+import bdproject.tables.pojos.MateriePrime;
 import bdproject.tables.pojos.Offerte;
 import bdproject.tables.pojos.TipiAttivazione;
 import bdproject.tables.pojos.TipologieUso;
@@ -91,37 +92,36 @@ public class CatalogueController extends AbstractController implements Initializ
     }
 
     private void populatePlanTable(Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-
-        var plans = query.select(OFFERTE.asterisk())
-                .from(OFFERTE, COMPATIBILITÀ)
-                .where(OFFERTE.MATERIAPRIMA.eq(utilities.getValue()))
-                .and(OFFERTE.ATTIVA.eq((byte) 1))
-                .and(COMPATIBILITÀ.USO.eq(uses.getValue().getItem().getCoduso()))
-                .and(OFFERTE.CODOFFERTA.eq(COMPATIBILITÀ.OFFERTA))
-                .fetchInto(Offerte.class);
+        final List<Offerte> plans = Queries.fetchPlansByUtilityAndUse(
+                utilities.getSelectionModel()
+                        .getSelectedItem(),
+                uses.getSelectionModel()
+                        .getSelectedItem()
+                        .getItem()
+                        .getCoduso(),
+                conn);
 
         table.setItems(FXCollections.observableList(plans));
     }
 
     private void populateComboBoxes(Connection conn) {
-        DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = Queries.createContext(conn);
+        final List<String> utilityRecords = Queries.fetchAll(ctx, MATERIE_PRIME, MateriePrime.class)
+                .stream()
+                .map(MateriePrime::getNome)
+                .toList();
 
-        var utilityRecords = ctx.select(MATERIE_PRIME.NOME)
-                .from(MATERIE_PRIME)
-                .orderBy(MATERIE_PRIME.NOME.desc())
-                .fetch();
-        utilities.setItems(FXCollections.observableList(utilityRecords.getValues(MATERIE_PRIME.NOME)));
-        utilities.setValue(utilityRecords.getValue(0, MATERIE_PRIME.NOME));
+        utilities.setItems(FXCollections.observableList(utilityRecords));
+        utilities.setValue(utilityRecords.get(0));
 
-        List<Choice<TipologieUso, String>> useRecords = Queries.fetchAll(ctx, TIPOLOGIE_USO, TipologieUso.class)
+        final List<Choice<TipologieUso, String>> useRecords = Queries.fetchAll(ctx, TIPOLOGIE_USO, TipologieUso.class)
                 .stream()
                 .map(t -> new ChoiceImpl<>(t, t.getNome(), (i, n) -> n))
                 .collect(Collectors.toList());
         uses.setItems(FXCollections.observableList(useRecords));
         uses.setValue(useRecords.get(0));
 
-        List<Choice<TipiAttivazione, String>> activationRecords = Queries.fetchAll(ctx, TIPI_ATTIVAZIONE, TipiAttivazione.class)
+        final List<Choice<TipiAttivazione, String>> activationRecords = Queries.fetchAll(ctx, TIPI_ATTIVAZIONE, TipiAttivazione.class)
                 .stream()
                 .map(t -> new ChoiceImpl<>(t, t.getNome() , (i, n) -> n))
                 .collect(Collectors.toList());

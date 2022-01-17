@@ -23,8 +23,12 @@ public class Queries {
     private Queries() {
     }
 
+    public static DSLContext createContext(final Connection conn) {
+        return DSL.using(conn, SQLDialect.MYSQL);
+    }
+
     public static Optional<Persone> fetchPersonById(final int personId, final Connection conn) {
-        DSLContext query = using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
         return query.select()
                 .from(PERSONE)
                 .where(PERSONE.IDPERSONA.eq(personId))
@@ -32,7 +36,7 @@ public class Queries {
     }
 
     public static Optional<ClientiDettagliati> fetchClientById(final int clientId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
         return query.select()
                 .from(CLIENTI_DETTAGLIATI)
                 .where(CLIENTI_DETTAGLIATI.IDPERSONA.eq(clientId))
@@ -42,7 +46,7 @@ public class Queries {
     public static int updatePerson(final String email, final String postcode, final String municipality,
             final String streetNo, final String phone, final String province, final String street, final int personId,
             final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
         return query.update(PERSONE)
                 .set(PERSONE.EMAIL, email)
                 .set(PERSONE.CAP, postcode)
@@ -55,12 +59,23 @@ public class Queries {
                 .execute();
     }
 
-    public static <K, V> int updateOneFieldWhere(final Table<?> table, final Field<K> keyField, final K keyValue,
-            final Field<V> updatedField, final V updatedValue, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.update(table)
-                .set(table.field(updatedField), updatedValue)
-                .where(table.field(keyField).eq(keyValue))
+    public static int updatePersonPassword(final int personId, final String password, final Connection conn) {
+        final DSLContext query = createContext(conn);
+
+        return query
+                .update(PERSONE)
+                .set(PERSONE.PASSWORD, password)
+                .where(PERSONE.IDPERSONA.eq(personId))
+                .execute();
+    }
+
+    public static int updateClientIncome(final int clientId, final int incomeId, final Connection conn) {
+        final DSLContext query = createContext(conn);
+
+        return query
+                .update(CLIENTI)
+                .set(CLIENTI.FASCIAREDDITO, incomeId)
+                .where(CLIENTI.CODICECLIENTE.eq(clientId))
                 .execute();
     }
 
@@ -68,7 +83,7 @@ public class Queries {
             final String street, final String streetNo, final String postcode, final String municipality,
             final String province, final LocalDate birthdate, final String phone, final String email,
             final String password, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
         return query.insertInto(PERSONE)
                 .values(defaultValue(),
                         nhsCode,
@@ -88,21 +103,21 @@ public class Queries {
     }
 
     public static int insertOperator(final int personId, final BigDecimal salary, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.insertInto(OPERATORI)
                 .values(personId, salary)
                 .execute();
     }
 
     public static int insertClient(final int personId, final int income, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.insertInto(CLIENTI, CLIENTI.CODICECLIENTE, CLIENTI.FASCIAREDDITO)
                 .values(personId, income)
                 .execute();
     }
 
     public static int insertMeasurement(final Letture m, final Connection conn) {
-        DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext ctx = createContext(conn);
         return ctx.insertInto(LETTURE)
                 .columns(LETTURE.MATRICOLACONTATORE, LETTURE.DATAEFFETTUAZIONE, LETTURE.CONSUMI, LETTURE.STATO,
                         LETTURE.NOTE, LETTURE.IDPERSONA)
@@ -126,24 +141,15 @@ public class Queries {
     }
 
     public static Optional<ContrattiApprovati> fetchApprovedSubscriptionById(final int subId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select()
                 .from(CONTRATTI_APPROVATI)
                 .where(CONTRATTI_APPROVATI.IDCONTRATTO.eq(subId))
                 .fetchOptionalInto(ContrattiApprovati.class);
     }
 
-    public static Optional<Contratti> fetchApprovedSubscriptionByIdAsOrdinarySubscription(final int subId,
-            final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.select()
-                .from(CONTRATTI_ATTIVI)
-                .where(CONTRATTI_ATTIVI.IDCONTRATTO.eq(subId))
-                .fetchOptionalInto(Contratti.class);
-    }
-
     public static List<ContrattiApprovati> fetchApprovedSubscriptionsByClient(final int clientId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select()
                 .from(CONTRATTI_APPROVATI)
                 .where(CONTRATTI_APPROVATI.IDCLIENTE.eq(clientId))
@@ -151,7 +157,7 @@ public class Queries {
     }
 
     public static List<RichiesteContratto> fetchSubscriptionRequestsByClient(final int clientId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select()
                 .from(RICHIESTE_CONTRATTO)
                 .where(RICHIESTE_CONTRATTO.IDCLIENTE.eq(clientId))
@@ -161,7 +167,7 @@ public class Queries {
     public static int insertSubscriptionRequest(final LocalDate requestCreationDate, final int peopleNo, final int plan,
                                                 final int use, final int activationType, final int premise,
                                                 final int clientId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.insertInto(CONTRATTI, CONTRATTI.DATAAPERTURARICHIESTA, CONTRATTI.STATORICHIESTA, CONTRATTI.NOTERICHIESTA,
                         CONTRATTI.NUMEROCOMPONENTI, CONTRATTI.OFFERTA, CONTRATTI.USO, CONTRATTI.TIPOATTIVAZIONE,
                         CONTRATTI.IDIMMOBILE, CONTRATTI.IDCLIENTE)
@@ -171,7 +177,7 @@ public class Queries {
     }
 
     public static int markSubscriptionRequestAsRejected(final int requestId, final String requestNotes, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         return query.update(CONTRATTI)
                 .set(CONTRATTI.STATORICHIESTA, StatusType.REJECTED.toString())
@@ -183,19 +189,27 @@ public class Queries {
     }
 
     public static int markEndRequestAsApproved(final int requestId, final String requestNotes, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         return query.update(CESSAZIONI)
                 .set(CESSAZIONI.STATORICHIESTA, StatusType.APPROVED.toString())
                 .set(CESSAZIONI.NOTERICHIESTA, requestNotes)
                 .set(CESSAZIONI.DATACHIUSURARICHIESTA, LocalDate.now())
                 .where(CESSAZIONI.NUMERORICHIESTA.eq(requestId))
+                .and(CESSAZIONI.STATORICHIESTA.eq(StatusType.REVIEWING.toString()))
                 .and(CESSAZIONI.DATACHIUSURARICHIESTA.isNull())
+                .andNotExists(query.select(CESSAZIONI.NUMERORICHIESTA)
+                        .from(CESSAZIONI)
+                        .where(CESSAZIONI.IDCONTRATTO.eq(query.select(CESSAZIONI.IDCONTRATTO)
+                                .from(CESSAZIONI)
+                                .where(CESSAZIONI.NUMERORICHIESTA.eq(requestId))))
+                        .and(CESSAZIONI.STATORICHIESTA.eq(StatusType.APPROVED.toString()))
+                        .and(CESSAZIONI.DATACHIUSURARICHIESTA.isNotNull()))
                 .execute();
     }
 
     public static int markEndRequestAsRejected(final int requestId, final String requestNotes, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         return query.update(CESSAZIONI)
                 .set(CESSAZIONI.STATORICHIESTA, StatusType.REJECTED.toString())
@@ -207,7 +221,7 @@ public class Queries {
     }
 
     public static int updateSubscriptionRequestNotes(final int requestId, final String requestNotes, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         return query.update(CONTRATTI)
                 .set(CONTRATTI.NOTERICHIESTA, requestNotes)
@@ -217,7 +231,7 @@ public class Queries {
     }
 
     public static int updateEndRequestNotes(final int requestId, final String requestNotes, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         return query.update(CESSAZIONI)
                 .set(CESSAZIONI.NOTERICHIESTA, requestNotes)
@@ -227,7 +241,7 @@ public class Queries {
     }
 
     public static MateriePrime fetchUtilityFromSubscription(final int subId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select(MATERIE_PRIME.asterisk())
                 .from(CONTRATTI, MATERIE_PRIME, OFFERTE)
                 .where(CONTRATTI.IDCONTRATTO.eq(subId))
@@ -237,7 +251,7 @@ public class Queries {
     }
 
     public static TipologieUso fetchUsageFromSub(final int subId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select(TIPOLOGIE_USO.asterisk())
                 .from(CONTRATTI, TIPOLOGIE_USO)
                 .where(CONTRATTI.IDCONTRATTO.eq(subId))
@@ -246,7 +260,7 @@ public class Queries {
     }
 
     public static TipologieUso fetchUsageFromRequest(final int reqNumber, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select(TIPOLOGIE_USO.asterisk())
                 .from(CONTRATTI, TIPOLOGIE_USO)
                 .where(CONTRATTI.IDCONTRATTO.eq(reqNumber))
@@ -255,7 +269,7 @@ public class Queries {
     }
 
     public static TipiAttivazione fetchActivationFromSub(final int subId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select(TIPI_ATTIVAZIONE.asterisk())
                 .from(CONTRATTI, TIPI_ATTIVAZIONE)
                 .where(CONTRATTI.IDCONTRATTO.eq(subId))
@@ -272,7 +286,7 @@ public class Queries {
     public static Immobili fetchPremiseFromMeterId(final String meterId, final DataSource dataSource) {
         Immobili premise = null;
         try (Connection conn = dataSource.getConnection()) {
-            DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+            DSLContext query = createContext(conn);
             premise = query.select(IMMOBILI.asterisk())
                     .from(IMMOBILI, CONTATORI)
                     .where(CONTATORI.MATRICOLA.eq(meterId))
@@ -290,7 +304,7 @@ public class Queries {
     public static Immobili fetchPremiseFromSubscription(final int subId, final DataSource dataSource) {
         Immobili premise = null;
         try (Connection conn = dataSource.getConnection()) {
-            DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+            DSLContext query = createContext(conn);
             premise = query.select(IMMOBILI.asterisk())
                     .from(CONTRATTI, IMMOBILI)
                     .where(CONTRATTI.IDCONTRATTO.eq(subId))
@@ -306,7 +320,7 @@ public class Queries {
     }
 
     public static List<Bollette> fetchSubscriptionReports(final int subId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select()
                 .from(BOLLETTE)
                 .where(BOLLETTE.IDCONTRATTO.eq(subId))
@@ -314,7 +328,7 @@ public class Queries {
     }
 
     public static Optional<Pagamenti> fetchReportPayment(final int reportNumber, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select()
                 .from(PAGAMENTI)
                 .where(PAGAMENTI.NUMEROBOLLETTA.eq(reportNumber))
@@ -322,14 +336,17 @@ public class Queries {
     }
 
     public static boolean areAllReportsPaid(final int subId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.select(count(BOLLETTE.NUMEROBOLLETTA).as("bolletteNonPagate"))
+        final DSLContext query = createContext(conn);
+
+        /*
+         * False positive
+         */
+        return query.selectCount()
                 .from(BOLLETTE)
                 .leftJoin(PAGAMENTI).on(BOLLETTE.NUMEROBOLLETTA.eq(PAGAMENTI.NUMEROBOLLETTA))
                 .where(BOLLETTE.IDCONTRATTO.eq(subId))
                 .and(PAGAMENTI.DATAPAGAMENTO.isNull())
-                .fetchOne()
-                .component1() == 0;
+                .fetchOne(count()) > 0;
     }
 
     private static BigDecimal averageBigDecimal(List<BigDecimal> list) {
@@ -345,7 +362,7 @@ public class Queries {
 
     public static BigDecimal avgConsumptionPerZone(final Immobili premise, final String utility, final LocalDate start,
                                                    final LocalDate end, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         final var sums = query.select(CONTRATTI_ATTIVI.IDCONTRATTO,
                         sum(BOLLETTE.CONSUMI), count(BOLLETTE.NUMEROBOLLETTA))
@@ -370,7 +387,7 @@ public class Queries {
 
     public static BigDecimal avgConsumptionFromSub(final int subId, final LocalDate start, final LocalDate end,
                                                    final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         final var B1 = BOLLETTE;
         final var C1 = CONTRATTI_ATTIVI;
 
@@ -386,7 +403,8 @@ public class Queries {
     }
 
     public static Map<ContrattiApprovati, Bollette> fetchAllSubscriptionsWithLastReport(final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
+
         final var lastSubTable = query
                 .select(CONTRATTI_APPROVATI.IDCONTRATTO, max(BOLLETTE.DATAEMISSIONE)
                         .as(BOLLETTE.DATAEMISSIONE))
@@ -394,6 +412,7 @@ public class Queries {
                 .where(CONTRATTI_APPROVATI.IDCONTRATTO.eq(BOLLETTE.IDCONTRATTO))
                 .groupBy(CONTRATTI_APPROVATI.IDCONTRATTO)
                 .asTable();
+
         return query
                 .select(CONTRATTI_APPROVATI.asterisk(), BOLLETTE.asterisk())
                 .from(CONTRATTI_APPROVATI.leftJoin(lastSubTable)
@@ -430,18 +449,22 @@ public class Queries {
     }
 
     public static int markReportAsPaid(final int reportId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.insertInto(PAGAMENTI)
+        final DSLContext query = createContext(conn);
+
+        return query
+                .insertInto(PAGAMENTI)
                 .values(reportId, LocalDate.now())
+                .onDuplicateKeyIgnore()
                 .execute();
     }
 
     public static List<Letture> fetchMeasurements(final int subId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         final Optional<Cessazioni> approvedEnd = Queries.fetchApprovedEndRequestBySubscription(subId, conn);
 
-        return query.select(LETTURE.asterisk())
+        return query
+                .select(LETTURE.asterisk())
                 .from(CONTRATTI, OFFERTE, IMMOBILI, CONTATORI, LETTURE)
                 .where(CONTRATTI.IDCONTRATTO.eq(subId))
                 .and(CONTRATTI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
@@ -456,26 +479,46 @@ public class Queries {
                 .fetchInto(Letture.class);
     }
 
-    public static int approveMeasurement(final int measurementId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.update(LETTURE)
+    public static int approveMeasurement(final int measurementId, final String notes, final int opId,
+            final Connection conn) {
+        final DSLContext query = createContext(conn);
+
+        return query
+                .update(LETTURE)
                 .set(LETTURE.STATO, StatusType.APPROVED.toString())
                 .set(LETTURE.DATACHIUSURARICHIESTA, LocalDate.now())
+                .set(LETTURE.NOTE, notes)
                 .where(LETTURE.NUMEROLETTURA.eq(measurementId))
+                .and(LETTURE.STATO.eq(StatusType.REVIEWING.toString()))
+                .and(LETTURE.DATACHIUSURARICHIESTA.isNull())
+                .andExists(select()
+                        .from(OPERATORI_LETTURE)
+                        .where(OPERATORI_LETTURE.LETTURA.eq(measurementId))
+                        .and(OPERATORI_LETTURE.IDOPERATORE.eq(opId)))
                 .execute();
     }
 
-    public static int rejectMeasurement(final int measurementId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-        return query.update(LETTURE)
+    public static int rejectMeasurement(final int measurementId, final String notes, final int opId,
+            final Connection conn) {
+        final DSLContext query = createContext(conn);
+
+        return query
+                .update(LETTURE)
                 .set(LETTURE.STATO, StatusType.REJECTED.toString())
                 .set(LETTURE.DATACHIUSURARICHIESTA, LocalDate.now())
+                .set(LETTURE.NOTE, notes)
                 .where(LETTURE.NUMEROLETTURA.eq(measurementId))
+                .and(LETTURE.STATO.eq(StatusType.REVIEWING.toString()))
+                .and(LETTURE.DATACHIUSURARICHIESTA.isNull())
+                .andExists(select()
+                        .from(OPERATORI_LETTURE)
+                        .where(OPERATORI_LETTURE.LETTURA.eq(measurementId))
+                        .and(OPERATORI_LETTURE.IDOPERATORE.eq(opId)))
                 .execute();
     }
 
     public static int deleteReport(final int reportId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.delete(BOLLETTE)
                 .where(BOLLETTE.NUMEROBOLLETTA.in(select(PAGAMENTI.NUMEROBOLLETTA)
                         .from(PAGAMENTI)
@@ -486,13 +529,13 @@ public class Queries {
     }
 
     public static int publishReport(final LocalDate intervalStartDate, final LocalDate intervalEndDate,
-                                    final int monthsToDeadline, final BigDecimal finalCost, final BigDecimal consumption,
+                                    final LocalDate deadline, final BigDecimal finalCost, final BigDecimal consumption,
                                     final byte[] reportFile, final byte estimated, final int operatorId, final int subId,
                                     final Connection conn) {
         Objects.requireNonNull(finalCost);
         Objects.requireNonNull(reportFile);
 
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.insertInto(BOLLETTE)
                 .columns(BOLLETTE.DATAEMISSIONE, BOLLETTE.DATAINIZIOPERIODO, BOLLETTE.DATAFINEPERIODO, BOLLETTE.DATASCADENZA,
                         BOLLETTE.IMPORTO, BOLLETTE.CONSUMI, BOLLETTE.DOCUMENTODETTAGLIATO, BOLLETTE.STIMATA,
@@ -501,7 +544,7 @@ public class Queries {
                             val(LocalDate.now()),
                             val(intervalStartDate),
                             val(intervalEndDate),
-                            val(LocalDate.now().plus(Period.ofMonths(monthsToDeadline))),
+                            val(deadline),
                             val(finalCost),
                             val(consumption),
                             val(reportFile),
@@ -516,7 +559,7 @@ public class Queries {
     public static Optional<Offerte> fetchPlanById(final int planId, final DataSource dataSource) {
         Optional<Offerte> plan = Optional.empty();
         try (Connection conn = dataSource.getConnection()) {
-            DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+            DSLContext query = createContext(conn);
             plan = query.select()
                     .from(OFFERTE)
                     .where(OFFERTE.CODOFFERTA.eq(planId))
@@ -528,7 +571,7 @@ public class Queries {
     }
 
     public static int deleteSubscriptionRequest(final int subId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.delete(CONTRATTI)
                 .where(CONTRATTI.IDCONTRATTO.eq(subId))
                 .and(CONTRATTI.DATACHIUSURARICHIESTA.isNull())
@@ -536,7 +579,7 @@ public class Queries {
     }
 
     public static int insertEndRequest(final int subId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.insertInto(CESSAZIONI, CESSAZIONI.DATAAPERTURARICHIESTA, CESSAZIONI.STATORICHIESTA,
                         CESSAZIONI.NOTERICHIESTA, CESSAZIONI.IDCONTRATTO)
                 .select(select(
@@ -553,7 +596,7 @@ public class Queries {
     }
 
     public static Optional<Contatori> fetchMeterBySubscription(final int subId, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         return query.select(CONTATORI.asterisk())
                 .from(OFFERTE, CONTRATTI, IMMOBILI, CONTATORI)
@@ -565,17 +608,8 @@ public class Queries {
                 .fetchOptionalInto(Contatori.class);
     }
 
-    public static List<Contatori> fetchAllMetersByPremise(final int premiseId, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
-
-        return query.select()
-                .from(CONTATORI)
-                .where(CONTATORI.IDIMMOBILE.eq(premiseId))
-                .fetchInto(Contatori.class);
-    }
-
     public static Optional<Contatori> fetchMeterById(final String meterId, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         return query.select()
                 .from(CONTATORI)
@@ -585,7 +619,7 @@ public class Queries {
 
     public static Optional<Contratti> fetchSubscriptionForChange(final String meterId, final int clientId,
                                                                  final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         return query.select(CONTRATTI_ATTIVI.asterisk())
                 .from(CONTRATTI_ATTIVI, IMMOBILI, CONTATORI, OFFERTE)
@@ -599,7 +633,7 @@ public class Queries {
     }
 
     public static Optional<Immobili> fetchPremiseById(final int premiseId, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         return query.select()
                 .from(IMMOBILI)
@@ -608,7 +642,7 @@ public class Queries {
     }
 
     public static boolean isOperator(final int personId, final Connection conn) {
-        final DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext query = createContext(conn);
 
         return query.select()
                 .from(OPERATORI)
@@ -617,7 +651,7 @@ public class Queries {
     }
 
     public static Optional<TipologieUso> fetchUsageById(final int useCode, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select()
                 .from(TIPOLOGIE_USO)
                 .where(TIPOLOGIE_USO.CODUSO.eq(useCode))
@@ -625,7 +659,7 @@ public class Queries {
     }
 
     public static List<Cessazioni> fetchEndRequestsFor(final int subId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.select()
                 .from(CESSAZIONI)
                 .where(CESSAZIONI.IDCONTRATTO.eq(subId))
@@ -633,7 +667,7 @@ public class Queries {
     }
 
     public static int deleteEndRequest(final int requestNumber, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.delete(CESSAZIONI)
                 .where(CESSAZIONI.NUMERORICHIESTA.eq(requestNumber))
                 .and(CESSAZIONI.DATACHIUSURARICHIESTA.isNull())
@@ -643,7 +677,7 @@ public class Queries {
     public static int insertPremise(final String type, final String street, final String civic,
                                     final String unit, final String municipality, final String postcode,
                                     final String province, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.insertInto(IMMOBILI, IMMOBILI.TIPO, IMMOBILI.VIA, IMMOBILI.NUMCIVICO, IMMOBILI.INTERNO,
                         IMMOBILI.COMUNE, IMMOBILI.PROVINCIA, IMMOBILI.CAP)
                 .values(type, street, civic, unit, municipality, province, postcode)
@@ -652,7 +686,7 @@ public class Queries {
     }
 
     public static int insertMeter(final String meterId, final String utility, final int premiseId, final Connection conn) {
-        DSLContext query = DSL.using(conn, SQLDialect.MYSQL);
+        DSLContext query = createContext(conn);
         return query.insertInto(CONTATORI, CONTATORI.MATRICOLA, CONTATORI.MATERIAPRIMA, CONTATORI.IDIMMOBILE)
                 .values(meterId, utility, premiseId)
                 .onDuplicateKeyIgnore()
@@ -729,34 +763,15 @@ public class Queries {
                 .execute();
     }
 
-    public static int fetchLastInsertId(final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+    public static Optional<Integer> fetchLastInsertId(final Connection conn) {
+        final DSLContext ctx = createContext(conn);
         return ctx.select(field("last_insert_id()", SQLDataType.INTEGER))
-                .fetchOne()
-                .component1();
-    }
-
-    public static Optional<OperatoriContratti> fetchSubscriptionRequestAssignment(final int requestId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-
-        return ctx.select()
-                .from(OPERATORI_CONTRATTI)
-                .where(OPERATORI_CONTRATTI.NUMERORICHIESTA.eq(requestId))
-                .fetchOptionalInto(OperatoriContratti.class);
-    }
-
-    public static Optional<OperatoriCessazioni> fetchEndRequestAssignment(final int requestId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-
-        return ctx.select()
-                .from(OPERATORI_CESSAZIONI)
-                .where(OPERATORI_CESSAZIONI.NUMERORICHIESTA.eq(requestId))
-                .fetchOptionalInto(OperatoriCessazioni.class);
+                .fetchOptionalInto(int.class);
     }
 
     public static List<RichiesteContratto> fetchSubscriptionRequestsAssignedToOperator(final int operatorId,
                                                                                        final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         return ctx.select(RICHIESTE_CONTRATTO.asterisk())
                 .from(RICHIESTE_CONTRATTO, OPERATORI_CONTRATTI)
@@ -766,7 +781,7 @@ public class Queries {
     }
 
     public static List<Cessazioni> fetchEndRequestsAssignedToOperator(final int operatorId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         return ctx.select(CESSAZIONI.asterisk())
                 .from(CESSAZIONI, OPERATORI_CESSAZIONI)
@@ -776,7 +791,7 @@ public class Queries {
     }
 
     public static int approveSubscriptionRequest(final int requestId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         return ctx.update(CONTRATTI)
                 .set(CONTRATTI.DATACHIUSURARICHIESTA, LocalDate.now())
@@ -799,7 +814,7 @@ public class Queries {
     public static int updatePremise(final int premiseId, final String type, final String street, final String civic,
                                     final String unit, final String municipality, final String postcode,
                                     final String province, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
         return ctx.update(IMMOBILI)
                 .set(IMMOBILI.TIPO, type)
                 .set(IMMOBILI.VIA, street)
@@ -816,7 +831,7 @@ public class Queries {
                                                                 final String unit, final String municipality,
                                                                 final String postcode, final String province,
                                                                 final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         return ctx.select()
                 .from(IMMOBILI)
@@ -832,7 +847,7 @@ public class Queries {
 
     public static Optional<Contatori> fetchMeterByPremiseIdAndUtility(final int premiseId, final String utility,
                                                                       final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         return ctx.select(CONTATORI.asterisk())
                 .from(IMMOBILI, CONTATORI, MATERIE_PRIME)
@@ -844,7 +859,7 @@ public class Queries {
     }
 
     public static int insertSubRequestAssignment(final int employeeId, final int requestId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         return ctx.insertInto(OPERATORI_CONTRATTI, OPERATORI_CONTRATTI.IDOPERATORE, OPERATORI_CONTRATTI.NUMERORICHIESTA)
                 .values(employeeId, requestId)
@@ -853,7 +868,7 @@ public class Queries {
     }
 
     public static int insertMeasurementAssignment(final int employeeId, final int measurementId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         return ctx.insertInto(OPERATORI_LETTURE, OPERATORI_LETTURE.IDOPERATORE, OPERATORI_LETTURE.LETTURA)
                 .values(employeeId, measurementId)
@@ -862,7 +877,7 @@ public class Queries {
     }
 
     public static int insertEndRequestAssignment(final int employeeId, final int requestId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         return ctx.insertInto(OPERATORI_CESSAZIONI, OPERATORI_CESSAZIONI.IDOPERATORE, OPERATORI_CESSAZIONI.NUMERORICHIESTA)
                 .values(employeeId, requestId)
@@ -871,45 +886,15 @@ public class Queries {
     }
 
     public static List<TipiAttivazione> fetchActivationMethods(final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         return ctx.select()
                 .from(TIPI_ATTIVAZIONE)
                 .fetchInto(TipiAttivazione.class);
     }
 
-    public static List<Cessazioni> fetchEndRequestsAssignedTo(final int operatorId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-
-        return ctx.select(CESSAZIONI.asterisk())
-                .from(CESSAZIONI, OPERATORI_CESSAZIONI)
-                .where(OPERATORI_CESSAZIONI.IDOPERATORE.eq(operatorId))
-                .and(CESSAZIONI.NUMERORICHIESTA.eq(OPERATORI_CESSAZIONI.NUMERORICHIESTA))
-                .fetchInto(Cessazioni.class);
-    }
-
-    public static List<RichiesteContratto> fetchSubscriptionRequestsAssignedTo(final int operatorId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-
-        return ctx.select(RICHIESTE_CONTRATTO.asterisk())
-                .from(RICHIESTE_CONTRATTO, OPERATORI_CONTRATTI)
-                .where(OPERATORI_CONTRATTI.IDOPERATORE.eq(operatorId))
-                .and(RICHIESTE_CONTRATTO.IDCONTRATTO.eq(OPERATORI_CONTRATTI.NUMERORICHIESTA))
-                .fetchInto(RichiesteContratto.class);
-    }
-
-    public static List<Letture> fetchMeasurementsAssignedTo(final int operatorId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-
-        return ctx.select(LETTURE.asterisk())
-                .from(LETTURE, OPERATORI_LETTURE)
-                .where(OPERATORI_LETTURE.IDOPERATORE.eq(operatorId))
-                .and(LETTURE.NUMEROLETTURA.eq(OPERATORI_LETTURE.LETTURA))
-                .fetchInto(Letture.class);
-    }
-
     public static Optional<Cessazioni> fetchApprovedEndRequestBySubscription(final int subId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         return ctx.select()
                 .from(CESSAZIONI)
@@ -920,78 +905,73 @@ public class Queries {
     }
 
     /**
-     * @throws IllegalStateException if either one of the included queries fails.
+     *
+     * Returns true if all three sub-queries succeed.
      */
-    public static int forceSubscriptionEnd(final int subId, final String notes, final int opId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
-        int result = 0;
-
-        result = ctx
-                .insertInto(CESSAZIONI)
-                .values(CESSAZIONI.NUMERORICHIESTA, defaultValue(),
-                        CESSAZIONI.DATAAPERTURARICHIESTA, LocalDate.now(),
-                        CESSAZIONI.DATACHIUSURARICHIESTA, LocalDate.now(),
-                        CESSAZIONI.STATORICHIESTA, StatusType.APPROVED.toString(),
-                        CESSAZIONI.NOTERICHIESTA, notes,
-                        CESSAZIONI.IDCONTRATTO, subId)
-                .execute();
-
+    public static boolean forceSubscriptionEnd(final int subId, final String notes, final int opId, final Connection conn) {
+        int result = Queries.insertEndRequest(subId, conn);
         if (result == 0) {
             throw new IllegalStateException("End request insertion failed.");
         }
 
-        result = ctx
-                .insertInto(OPERATORI_CESSAZIONI)
-                .values(OPERATORI_CESSAZIONI.IDOPERATORE, opId,
-                        OPERATORI_CESSAZIONI.NUMERORICHIESTA, Queries.fetchLastInsertId(conn))
-                .execute();
-
+        final int endRequestId = Queries.fetchLastInsertId(conn).orElseThrow();
+        result += Queries.insertEndRequestAssignment(opId, endRequestId, conn);
         if (result == 0) {
             throw new IllegalStateException("Assignment insertion failed.");
         }
 
-        return result;
+        result += Queries.markEndRequestAsApproved(endRequestId, notes, conn);
+
+        return result == 3;
     }
 
     public static int countSubRequestsClosedByOperator(final int operatorId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
+        /*
+         * False positive
+         */
         return ctx
-                .select(count(OPERATORI_CONTRATTI.NUMERORICHIESTA))
+                .selectCount()
                 .from(OPERATORI_CONTRATTI, CONTRATTI)
                 .where(OPERATORI_CONTRATTI.NUMERORICHIESTA.eq(CONTRATTI.IDCONTRATTO))
+                .and(OPERATORI_CONTRATTI.IDOPERATORE.eq(operatorId))
                 .and(CONTRATTI.DATACHIUSURARICHIESTA.isNotNull())
                 .and(CONTRATTI.STATORICHIESTA.notEqual(StatusType.REVIEWING.toString()))
-                .fetchOne()
-                .component1();
+                .fetchOne(0, int.class);
     }
 
     public static int countEndRequestsClosedByOperator(final int operatorId, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
+        /*
+         * False positive
+         */
         return ctx
-                .select(count(OPERATORI_CESSAZIONI.NUMERORICHIESTA))
+                .selectCount()
                 .from(OPERATORI_CESSAZIONI, CESSAZIONI)
                 .where(OPERATORI_CESSAZIONI.NUMERORICHIESTA.eq(CESSAZIONI.NUMERORICHIESTA))
+                .and(OPERATORI_CESSAZIONI.IDOPERATORE.eq(operatorId))
                 .and(CESSAZIONI.DATACHIUSURARICHIESTA.isNotNull())
                 .and(CESSAZIONI.STATORICHIESTA.notEqual(StatusType.REVIEWING.toString()))
-                .fetchOne()
-                .component1();
+                .fetchOne(0, int.class);
     }
 
     public static int countSubscriptionsActivatedInYear(final int year, final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
+        /*
+         * False positive
+         */
         return ctx
-                .select(count(CONTRATTI_APPROVATI.IDCONTRATTO))
+                .selectCount()
                 .from(CONTRATTI_APPROVATI)
                 .where(year(CONTRATTI_APPROVATI.DATACHIUSURARICHIESTA).eq(year))
-                .fetchOne()
-                .component1();
+                .fetchOne(0, int.class);
     }
 
     public static Offerte fetchMostRequestedPlan(final Connection conn) {
-        final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+        final DSLContext ctx = createContext(conn);
 
         final CommonTableExpression<Record2<Integer, Integer>> subCount =
                 name("subCount").fields("CODOFFERTA", "CONTEGGIO")
@@ -1009,5 +989,52 @@ public class Queries {
                 .orderBy(subCount.field("CONTEGGIO").cast(Integer.class).desc())
                 .limit(1)
                 .fetchOneInto(Offerte.class);
+    }
+
+    public static List<Offerte> fetchPlansByUtilityAndUse(final String utility, final int useId, final Connection conn) {
+        final DSLContext ctx = createContext(conn);
+
+        return ctx
+                .select(OFFERTE.asterisk())
+                .from(OFFERTE, COMPATIBILITÀ)
+                .where(OFFERTE.MATERIAPRIMA.eq(utility))
+                .and(OFFERTE.ATTIVA.eq((byte) 1))
+                .and(COMPATIBILITÀ.USO.eq(useId))
+                .and(OFFERTE.CODOFFERTA.eq(COMPATIBILITÀ.OFFERTA))
+                .fetchInto(Offerte.class);
+    }
+
+    public static Map<LocalDate, BigDecimal> fetchReportsWithConsumptionInYear(final int subId, final int year, final Connection conn) {
+        final DSLContext ctx = createContext(conn);
+
+        return ctx
+                .select(BOLLETTE.DATAFINEPERIODO, BOLLETTE.CONSUMI)
+                .from(BOLLETTE)
+                .where(BOLLETTE.IDCONTRATTO.eq(subId))
+                .and(year(BOLLETTE.DATAFINEPERIODO).eq(year))
+                .fetchMap(LocalDate.class, BigDecimal.class);
+    }
+
+    public static Map<Integer, Integer> fetchMeasurementsBySubscriptionWithAssignment(final int subId, final Connection conn) {
+        final DSLContext ctx = createContext(conn);
+
+        final Optional<Cessazioni> approvedEnd = Queries.fetchApprovedEndRequestBySubscription(subId, conn);
+
+        return ctx
+                .select(LETTURE.NUMEROLETTURA, OPERATORI_LETTURE.IDOPERATORE)
+                .from(CONTRATTI, OFFERTE, IMMOBILI, CONTATORI, LETTURE, OPERATORI_LETTURE)
+                .where(CONTRATTI.IDCONTRATTO.eq(subId))
+                .and(CONTRATTI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
+                .and(IMMOBILI.IDIMMOBILE.eq(CONTRATTI.IDIMMOBILE))
+                .and(OFFERTE.CODOFFERTA.eq(CONTRATTI.OFFERTA))
+                .and(CONTATORI.MATERIAPRIMA.eq(OFFERTE.MATERIAPRIMA))
+                .and(LETTURE.MATRICOLACONTATORE.eq(CONTATORI.MATRICOLA))
+                .and(LETTURE.DATAEFFETTUAZIONE.ge(CONTRATTI.DATACHIUSURARICHIESTA))
+                .and(LETTURE.DATAEFFETTUAZIONE.le(approvedEnd.isPresent() ?
+                                                  approvedEnd.orElseThrow().getDatachiusurarichiesta() :
+                                                  LocalDate.now()))
+                .and(LETTURE.NUMEROLETTURA.eq(OPERATORI_LETTURE.LETTURA))
+                .fetchStream()
+                .collect(Collectors.toMap(Record2::component1, Record2::component2));
     }
 }

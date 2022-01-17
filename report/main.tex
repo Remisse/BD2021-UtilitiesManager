@@ -37,15 +37,11 @@
 \author{Bryan Corradino}
 \affil{0000920992 \\ bryan.corradino@studio.unibo.it}
 
-\newlist{OP}{enumerate}{1}
-\setlist[OP]{label=\textbf{OP-\arabic*}}
-
 \lstset{%frame=tb,
   language=SQL,
   showstringspaces=false,
   columns=flexible,
   basicstyle={\small\ttfamily},
-  numbers=none,
   numberstyle=\tiny\color{gray},
   keywordstyle=\color{blue},
   commentstyle=\color{ForestGreen},
@@ -315,7 +311,7 @@ Si propone in \cref{fig:full-schema} la versione finale dello schema concettuale
 \end{longtable}
 
 \section{Operazioni principali e stima della loro frequenza}
-Dal testo dell'intervista è stata estratta una lista di possibili operazioni che verranno svolte sulla base di dati.
+Dal testo è stata estratta una lista di possibili operazioni che verranno svolte sulla base di dati.
 \\[2pt]
 \rowcolors{1}{lightergray}{}
 \begin{longtable}{l p{10cm} c r}
@@ -330,69 +326,78 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
     \textbf{OP-7} & Selezionare l'immobile associato a un dato contatore (subentro) & 2/giorno \\
     \textbf{OP-8} & Inserire una richiesta di cessazione & 1/settimana \\
     \textbf{OP-9} & Rifiutare una richiesta & 1/giorno \\
-    \textbf{OP-10} & Approvare una richiesta di contratto con attivazione tramite voltura & 2/giorno \\
-    \textbf{OP-11} & Approvare una richiesta di contratto con attivazione tramite subentro & 1/giorno \\
-    \textbf{OP-12} & Approvare una richiesta di contratto con nuova attivazione & 1/giorno \\
-    \textbf{OP-13} & Inserire una nuova offerta & 3/mese \\
-    \textbf{OP-14} & Aggiornare un'offerta & 3/mese \\
-    \textbf{OP-15} & Approvare una richiesta di cessazione & 250/mese \\
-    \textbf{OP-16} & Comunicare una lettura & 20.000/mese \\
-    \textbf{OP-17} & Approvare una lettura & 18.000/mese \\
-    \textbf{OP-18} & Rifiutare una lettura & 2.000/mese \\
-    \textbf{OP-19} & Assegnare una richiesta a un operatore & 20.007/mese \\
-    \textbf{OP-20} & Inserire una nuova bolletta per un contratto attivo & 235/giorno \\
-    \textbf{OP-21} & Pagare una bolletta & 235/giorno \\
-    \textbf{OP-22} & Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo & 1000/giorno \\
-    \textbf{OP-23} & Visualizzare i contratti intestati a un dato cliente & 300/giorno \\
-    \textbf{OP-24} & Visualizzare i contratti attivi intestati a un dato cliente & 300/giorno \\
-    \textbf{OP-25} & Dato un contratto, visualizzare lo storico delle bollette & 1.000/mese \\
-    \textbf{OP-26} & Eliminare una richiesta di contratto non finalizzata & 1/settimana \\
-    \textbf{OP-27} & Visualizzare tutti i contratti stipulati in un dato anno & 3/anno \\
-    \textbf{OP-28} & Visualizzare il numero di richieste finalizzate da un dato operatore & 1/mese \\
-    \textbf{OP-29} & Dato un contratto e un periodo di riferimento, visualizzare l'andamento dei consumi per quel periodo & 1.000/mese \\
-    \textbf{OP-30} & Visualizzare la media dei consumi (reali e stimati) per un contratto in un dato periodo & 1.000/mese \\
-    \textbf{OP-31} & Visualizzare la media aggregata dei consumi (reali e stimati) prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune & 1.000/mese \\
+    \textbf{OP-10} & Approvare una richiesta di contratto & 3/giorno \\
+    \textbf{OP-11} & Inserire una nuova offerta & 3/mese \\
+    \textbf{OP-12} & Aggiornare un'offerta & 3/mese \\
+    \textbf{OP-13} & Approvare una richiesta di cessazione & 250/mese \\
+    \textbf{OP-14} & Comunicare una lettura & 20.000/mese \\
+    \textbf{OP-15} & Approvare una lettura & 18.000/mese \\
+    \textbf{OP-16} & Rifiutare una lettura & 2.000/mese \\
+    \textbf{OP-17} & Assegnare una richiesta a un operatore & 20.007/mese \\
+    \textbf{OP-18} & Inserire una nuova bolletta per un contratto attivo & 235/giorno \\
+    \textbf{OP-19} & Pagare una bolletta & 235/giorno \\
+    \textbf{OP-20} & Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo & 1000/giorno \\
+    \textbf{OP-21} & Visualizzare i contratti intestati a un dato cliente & 300/giorno \\
+    \textbf{OP-22} & Visualizzare i contratti attivi intestati a un dato cliente & 300/giorno \\
+    \textbf{OP-23} & Dato un contratto, visualizzare lo storico delle bollette & 1.000/mese \\
+    \textbf{OP-24} & Eliminare una richiesta non finalizzata & 1/settimana \\
+    \textbf{OP-25} & Visualizzare il numero di contratti stipulati in un dato anno & 3/anno \\
+    \textbf{OP-26} & Visualizzare l'andamento dei consumi relativi a un contratto in un dato anno & 1.000/mese \\
+    \textbf{OP-27} & Visualizzare la media dei consumi (reali e stimati) per un contratto in un dato periodo & 1.000/mese \\
+    \textbf{OP-28} & Visualizzare la media aggregata dei consumi (reali e stimati) prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune & 1.000/mese \\
+    \textbf{OP-29} & Visualizzare il numero di richieste di contratto finalizzate da un dato operatore & 1/mese \\
+    \textbf{OP-30} & Visualizzare il numero di richieste di cessazione finalizzate da un dato operatore & 1/mese \\
+    \textbf{OP-31} & Data una materia prima, visualizzare l'offerta più richiesta & 1/mese \\
+    \textbf{OP-32} & Visualizzare il numero di contratti attivati in un dato anno & 1/mese \\
     \hline
 \end{longtable}
 
 \paragraph{OP-1: Inserire un nuovo cliente}\mbox{}\\
-    \rowcolors{1}{lightergray}{}
-    \begin{center}
-    \begin{tabular}{@{}l c  c  c@{}}
-        \hline
-        \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
-        PERSONA & E & 1 & S \\
-        CLIENTE & E & 1 & S \\
-        POSSEDIMENTO & A & 1 & S \\
-        \hline
-    \end{tabular}
-    \end{center}
-    \underline{Totale}: $3 \text{S} \times 10 = 60$ accessi al giorno 
-\paragraph{OP-5: Inserire una richiesta di contratto con attivazione tramite voltura}\mbox{}\\
-    L'utente è tenuto a comunicare solo il codice cliente dell'attuale intestatario, la matricola del contatore e una lettura. Dati quali offerta, uso dedicato e immobile verranno estrapolati dal contratto già esistente.
-    \rowcolors{1}{lightergray}{}
-    \begin{center}
-    \begin{tabular}{@{}l c  c  c@{}}
-        \hline
-        \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
-        CONTRATTO & E & 1 & L \\
-        USO & A & 1 & L \\
-        SOTTOSCRIZIONE & A & 1 & L \\
-        PRESSO & A & 1 & L \\
-        CONTRATTO & E & 1 & S \\
-        CREAZIONE & A & 1 & S \\
-        USO & A & 1 & S \\
-        SOTTOSCRIZIONE & A & 1 & S \\
-        TRAMITE & A & 1 & S \\
-        PRESSO & A & 1 & S \\
-        LETTURA & E & 1 & S \\
-        COMUNICAZIONE & A & 1 & S \\
-        CORRISPONDENZA & A & 1 & S \\
-        \hline
-    \end{tabular}
-    \end{center}
-    \underline{Totale}: $(4\text{L} + 9\text{S}) \times 3 = 66$ accessi al giorno
-\paragraph{OP-13: Inserire una nuova offerta}\mbox{}\\
+\rowcolors{1}{lightergray}{}
+\begin{center}
+\begin{tabular}{@{}l c  c  c@{}}
+    \hline
+    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+    PERSONA & E & 1 & S \\
+    CLIENTE & E & 1 & S \\
+    POSSEDIMENTO & A & 1 & S \\
+    \hline
+\end{tabular}
+\end{center}
+\underline{Totale}: $3 \text{S} \times 10 = 60$ accessi al giorno 
+\paragraph{OP-5: Inserire una richiesta di contratto}
+\rowcolors{1}{lightergray}{}
+\begin{center}
+\begin{tabular}{@{}l c  c  c@{}}
+    \hline
+    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+    CONTRATTO & E & 1 & S \\
+    CREAZIONE & A & 1 & S \\
+    USO & A & 1 & S \\
+    SOTTOSCRIZIONE & A & 1 & S \\
+    TRAMITE & A & 1 & S \\
+    PRESSO & A & 1 & S \\
+    \hline
+\end{tabular}
+\end{center}
+\underline{Totale}: $6 \text{S} \times 6 = 72$ accessi al giorno 
+\paragraph{OP-6: Selezionare l’eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}\mbox{}\\
+Per trovare il contratto attualmente attivo e procedere con la voltura, l'utente è tenuto a comunicare il codice cliente dell'attuale intestatario e la matricola del contatore.
+\rowcolors{1}{lightergray}{}
+\begin{center}
+\begin{tabular}{@{}l c  c  c@{}}
+    \hline
+    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+    CREAZIONE & A & $\frac{85.000}{49.970} = 1,17$ & L \\
+    INSTALLAZIONE & A & 1 & L \\
+    IMMOBILE & E & 1 & L \\
+    PRESSO & A & 1 & L \\
+    CONTRATTO & E & 1 & L \\
+    \hline
+\end{tabular}
+\end{center}
+\underline{Totale}: $5,17\text{L} \times 3 \simeq 15$ accessi al giorno
+\paragraph{OP-11: Inserire una nuova offerta}\mbox{}\\
     Vanno specificati gli usi con cui l'offerta è compatibile e la materia prima a cui fa riferimento. Si suppone che un'offerta sia in media compatibile con una tipologia d'uso.
     \rowcolors{1}{lightergray}{}
     \begin{center}
@@ -406,7 +411,7 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
     \end{tabular}
     \end{center}
     \underline{Totale}: $3\text{S} \times 3 = 18$ accessi al mese
-\paragraph{OP-15: Approvare una richiesta di cessazione}\mbox{}\\
+\paragraph{OP-13: Approvare una richiesta di cessazione}\mbox{}\\
 \rowcolors{1}{lightergray}{}
 \begin{center}
 \begin{tabular}{@{}l c  c  c@{}}
@@ -418,7 +423,7 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
 \end{tabular}
 \end{center}
 \underline{Totale}: $(1\text{L} + 1\text{S}) \times 250 = 750$ accessi al mese
-\paragraph{OP-20: Inserire una nuova bolletta per un contratto attivo}\mbox{}\\
+\paragraph{OP-18: Inserire una nuova bolletta per un contratto attivo}\mbox{}\\
 \rowcolors{1}{lightergray}{}
 \begin{center}
 \begin{tabular}{@{}l c  c  c@{}}
@@ -433,7 +438,7 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
 \end{tabular}
 \end{center}
 \underline{Totale}: $(0,12\text{L} + 3\text{S}) \times 235 \simeq 1.438$ accessi al mese
-\paragraph{OP-22: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}\mbox{}\\
+\paragraph{OP-20: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}\mbox{}\\
     \rowcolors{1}{lightergray}{}
     \begin{center}
     \begin{tabular}{@{}l c  c  c@{}}
@@ -446,7 +451,7 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
     \end{tabular}
     \end{center}
     \underline{Totale}: $25\text{L} \times 1.000 = 250.000$ accessi al giorno
-\paragraph{OP-24: Visualizzare i contratti attivi intestati a un dato cliente}\mbox{}\\
+\paragraph{OP-22: Visualizzare i contratti attivi intestati a un dato cliente}\mbox{}\\
 \rowcolors{1}{lightergray}{}
 \begin{center}
 \begin{tabular}{@{}l c  c  c@{}}
@@ -460,7 +465,7 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
 \end{tabular}
 \end{center}
 \underline{Totale}: $3,52\text{L} \times 300 = 1.056$ accessi al giorno
-\paragraph{OP-31: Visualizzare la media aggregata dei consumi relativi a tutti i contratti attivi in un dato comune}\mbox{}\\
+\paragraph{OP-29: Visualizzare la media aggregata dei consumi (reali e stimati) relativi a tutti i contratti attivi in un dato comune}\mbox{}\\
     Per rendere meno caotico il processo di analisi, si suddivide l'operazione in due fasi.\\
     Prima di tutto, bisogna trovare tutti i contratti con una fornitura attiva nel comune di interesse. Sapendo che in Italia sono presenti 7.903 comuni e supponendo per semplicità che il numero di immobili sia uniformemente distribuito tra i comuni:
     \rowcolors{1}{lightergray}{}
@@ -471,7 +476,6 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
         PRESSO & A & 1 & L \\
         IMMOBILE & E & 1 & L \\
         PRESSO & A & $\frac{50.000}{7.903} = 6$ & L \\
-        CONTRATTO & E & 6 & L \\
         \hline
     \end{tabular}
     \end{center}
@@ -481,6 +485,7 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
     \begin{tabular}{@{}l c  c  c@{}}
         \hline
         \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
+        CONTRATTO & E & 6 & L \\
         RIFERIMENTO & A & $\frac{85.000}{5.000} \times 6 = 102$ & L \\
         BOLLETTA & E & $102$ & L \\
         \hline
@@ -491,7 +496,7 @@ Dal testo dell'intervista è stata estratta una lista di possibili operazioni ch
 \section{Analisi delle ridondanze}
 \subsection{Attributo \texttt{Attivo} in \texttt{CONTRATTO}}
 Verranno ora analizzati gli effetti dell'aggiunta all'entità \texttt{CONTRATTO} di un attributo ridondante, \texttt{Attivo}, indicante se un contratto è stato cessato o meno. Ciò permetterebbe di evitare la lettura delle eventuali cessazioni esistenti quando si considerano solo i contratti attivi.
-\paragraph{OP-20 con l'uso dell'attributo ridondante}\mbox{}\\
+\paragraph{OP-18 con l'uso dell'attributo ridondante}\mbox{}\\
 \rowcolors{1}{lightergray}{}
 \begin{center}
 \begin{tabular}{@{}l c  c  c@{}}
@@ -505,7 +510,7 @@ Verranno ora analizzati gli effetti dell'aggiunta all'entità \texttt{CONTRATTO}
 \end{tabular}
 \end{center}
 \underline{Totale}: $(1\text{L} + 3\text{S}) \times 235 = 1.645$ accessi al mese (contro i $1.438$ senza ridondanza)
-\paragraph{OP-24 con l'uso dell'attributo ridondante}\mbox{}\\
+\paragraph{OP-22 con l'uso dell'attributo ridondante}\mbox{}\\
 \rowcolors{1}{lightergray}{}
 \begin{center}
 \begin{tabular}{@{}l c  c  c@{}}
@@ -518,7 +523,7 @@ Verranno ora analizzati gli effetti dell'aggiunta all'entità \texttt{CONTRATTO}
 \end{center}
 \underline{Totale}: $3,4\text{L} \times 300 = 1.020$ accessi al giorno (contro i $1.056$ senza ridondanza)
 \\[10pt]
-In termini di accessi, si ha un beneficio quasi trascurabile in OP-20 e un leggerissimo peggioramento in OP-24; pertanto, si decide di non aggiungere l'attributo \texttt{Attivo}.
+In termini di accessi, si ha un beneficio quasi trascurabile in OP-18 e un leggerissimo peggioramento in OP-22; pertanto, si decide di non aggiungere l'attributo \texttt{Attivo}.
 
 \section{Raffinamento dello schema}
 \subsection{Eliminazione delle gerarchie}
@@ -648,79 +653,261 @@ In \cref{fig:full-relational} viene proposto lo schema relazionale finale.
 \end{sidewaysfigure}
 
 \section{Traduzione delle operazioni in query SQL}
-
-\begin{itemize}[label={}]
-    \item \textbf{OP-1: Inserire un nuovo cliente}
-    \begin{lstlisting}
+\paragraph{OP-1: Inserire un nuovo cliente}\mbox{}\\
+\begin{lstlisting}
 insert into persone
 values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 insert into clienti
 values (last_insert_id(), ?);
-    \end{lstlisting}
+\end{lstlisting}
 
-    \item \textbf{OP-2: Aggiornare i dati di un cliente}
-    \begin{lstlisting}
+\paragraph{OP-2: Aggiornare i dati di un cliente}\mbox{}\\
+\begin{lstlisting}
 update persone
 set Email = ?, Cap = ?, Comune = ?, NumCivico = ?, NumeroTelefono = ?, Provincia = ?, Via = ?
 where IdPersona = ?;
-    \end{lstlisting}
-        
-    \item \textbf{OP-3: Inserire un nuovo immobile}
-    \begin{lstlisting}
+\end{lstlisting}
+    
+\paragraph{OP-3: Inserire un nuovo immobile}\mbox{}\\
+\begin{lstlisting}
 insert into immobili (Tipo, Via, NumCivico, Interno, Comune, CAP, Provincia)
 values (?, ?, ?, ?, ?, ?, ?);
-    \end{lstlisting}
+\end{lstlisting}
     
-    \item \textbf{OP-4: Inserire un contatore}
-    \begin{lstlisting}
+\paragraph{OP-4: Inserire un contatore}\mbox{}\\
+\begin{lstlisting}
 insert into contatori
 values (?, ?, ?);
-    \end{lstlisting}
+\end{lstlisting}
 
-    \item \textbf{OP-5: Inserire una richiesta di contratto con attivazione tramite voltura}
-    \begin{lstlisting}
-insert into contratti (DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, Offerta, Uso, TipoAttivazione, NumeroComponenti, IdImmobile, IdCliente)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    \end{lstlisting}
+\paragraph{OP-5: Inserire una richiesta di contratto}\mbox{}\\
+\begin{lstlisting}
+insert into contratti (DataAperturaRichiesta, StatoRichiesta, NoteRichiesta, Offerta, Uso, TipoAttivazione, NumeroComponenti, IdImmobile, IdCliente)
+values (curdate(), "In lavorazione", ?, ?, ?, ?, ?, ?, ?);
+\end{lstlisting}
 
-    \item \textbf{OP-6: Selezionare l'eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}
-    \begin{lstlisting}
-select contratti.*
-from contratti, immobili, contatori, offerte
-where contratti.IdCliente = ?
-and contratti.IdImmobile = immobili.IdImmobile
-and immobili.IdImmobile = contatori.IdImmobile
-and contatori.Matricola = ?
-and contratti.
-    \end{lstlisting}
+\paragraph{OP-6: Selezionare l'eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}\mbox{}\\
+\begin{lstlisting}
+select C.*
+from `contratti attivi` C, immobili I, contatori M, offerte O
+where C.IdCliente = ?
+and C.IdImmobile = I.IdImmobile
+and I.IdImmobile = M.IdImmobile
+and M.Matricola = ?
+and C.Offerta = O.CodOfferta
+and O.MateriaPrima = M.MateriaPrima;
+\end{lstlisting}
 
-    \item \textbf{OP-7: Inserire una richiesta di contratto con nuova attivazione}
-    \begin{lstlisting}
-insert into contratti (DataAperturaRichiesta, DataChiusuraRichiesta, StatoRichiesta, NoteRichiesta, Offerta, Uso, TipoAttivazione, NumeroComponenti, IdImmobile, IdCliente)
-values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    \end{lstlisting}
+\paragraph{OP-7: Selezionare l'immobile associato a un dato contatore (subentro)}\mbox{}\\
+\begin{lstlisting}
+select immobili.*
+from immobili, contatori
+where contatori.Matricola = ?
+and contatori.IdImmobile = immobili.IdImmobile;
+\end{lstlisting}
 
-    \item \textbf{OP-13: Inserire una nuova offerta}
-    \begin{lstlisting}
+\paragraph{OP-8: Inserire una richiesta di cessazione}\mbox{}\\
+\begin{lstlisting}
+insert into cessazioni (IdContratto, DataAperturaRichiesta, StatoRichiesta, NoteRichiesta)
+values (?, curdate(), "In lavorazione", ?, ?);
+\end{lstlisting}
+
+\paragraph{OP-9: Rifiutare una richiesta}\mbox{}\\
+\begin{lstlisting}
+-- In caso di richiesta di contratto
+update contratti
+set StatoRichiesta = "Respinta", DataChiusuraRichiesta = curdate(), NoteRichiesta = ?
+where IdContratto = ?
+and StatoRichiesta = "In lavorazione"
+and DataChiusuraRichiesta is null;
+
+-- In caso di richiesta di cessazione
+update cessazioni
+set StatoRichiesta = "Respinta", DataChiusuraRichiesta = curdate(), NoteRichiesta = ?
+where NumeroRichiesta = ?
+and StatoRichiesta = "In lavorazione"
+and DataChiusuraRichiesta is null;
+\end{lstlisting}
+
+\paragraph{OP-10: Approvare una richiesta di contratto}\mbox{}\\
+\begin{lstlisting}
+update contratti
+set DataChiusuraRichiesta = curdate(), StatoRichiesta = "Approvata", NoteRichiesta = :notes
+where IdContratto = :subId
+and StatoRichiesta = "In lavorazione"
+and DataChiusuraRichiesta is null
+and not exists (select C.IdContratto
+                from `contratti attivi` C, immobili I, offerte O, contatori M
+                where I.IdImmobile = (select distinct(C2.IdImmobile)
+                                        from contratti C2
+                                        where C2.IdContratto = :subId)
+                and C.IdImmobile = I.IdImmobile
+                and M.IdImmobile = I.IdImmobile
+                and O.CodOfferta = C.Offerta
+                and O.MateriaPrima = M.MateriaPrima);
+\end{lstlisting}
+
+\paragraph{OP-11: Inserire una nuova offerta}\mbox{}\\
+\begin{lstlisting}
 insert into offerte
 values (default, ?, ?, ?, ?, ?);
 
 -- Ripetere per ogni uso con cui si vuole rendere compatibile l'offerta
-insert into compatibilita
+insert into compatibilità
 values (last_insert_id(), ?);
-    \end{lstlisting}
+\end{lstlisting}
     
-    \item \textbf{OP-14: Aggiornare un'offerta}
-    \begin{lstlisting}
+\paragraph{OP-12: Aggiornare un'offerta}\mbox{}\\
+\begin{lstlisting}
 update offerte
 set Nome = ?, Descrizione = ?, CostoMateriaPrima = ?, Attiva = ?, MateriaPrima = ?
 where CodOfferta = ?;
-    \end{lstlisting}
+\end{lstlisting}
+
+\paragraph{OP-13: Approvare una richiesta di cessazione}\mbox{}\\
+\begin{lstlisting}
+update cessazioni
+set StatoRichiesta = "Approvata", NoteRichiesta = :notes, DataChiusuraRichiesta = curdate()
+where cessazioni.NumeroRichiesta = :requestId
+and cessazioni.StatoRichiesta = "In lavorazione"
+and cessazioni.DataChiusuraRichiesta is null
+and not exists (select C.NumeroRichiesta
+                from cessazioni C
+                where C.IdContratto = (select C2.IdContratto
+                                        from cessazioni C2
+                                        where C2.NumeroRichiesta = :requestId)
+                and C.StatoRichiesta = "Approvata"
+                and C.DataChiusuraRichiesta is not null)
+\end{lstlisting}
+
+\paragraph{OP-14: Comunicare una lettura}\mbox{}\\
+\begin{lstlisting}
+insert into letture (MatricolaContatore, DataEffettuazione, Consumi, Stato, Note, IdPersona)
+select :meterId, curdate(), :consumption, "In lavorazione", :notes, :personId
+from letture L
+where (select L2.Consumi
+        from letture L2
+        where L2.MatricolaContatore = :meterId
+        and L2.DataEffettuazione <= curdate()
+        order by L2.Consumi desc
+        limit 1) <= :consumption
+on duplicate key update letture.Consumi = case when letture.Stato = "In lavorazione" then :consumption else letture.Consumi end;
+\end{lstlisting}
+
+\paragraph{OP-15: Approvare una lettura}\mbox{}\\
+\begin{lstlisting}
+update letture
+set Stato = "Approvata", DataChiusuraRichiesta = curdate(), Note = ?
+where NumeroLettura = ?;
+and Stato = "In lavorazione"
+and DataChiusuraRichiesta is null
+and exists (select *
+            from `operatori letture` OL
+            where OL.Lettura = ?
+            and OL.IdOperatore = ?);
+\end{lstlisting}
+
+\paragraph{OP-16: Rifiutare una lettura}\mbox{}\\
+\begin{lstlisting}
+update letture
+set Stato = "Respinta", DataChiusuraRichiesta = curdate(), Note = ?
+where NumeroLettura = ?
+and Stato = "In lavorazione"
+and DataChiusuraRichiesta is null
+and exists (select *
+            from `operatori letture` OL
+            where OL.Lettura = ?
+            and OL.IdOperatore = ?);
+\end{lstlisting}
+
+\paragraph{OP-17: Assegnare una richiesta a un operatore}\mbox{}\\
+\begin{lstlisting}
+-- In caso di richiesta di contratto
+insert into `operatori contratti`
+vaules (?, ?)
+on duplicate key ignore;
+
+
+-- In caso di richiesta di cessazione
+insert into `operatori cessazioni`
+vaules (?, ?)
+on duplicate key ignore;
+\end{lstlisting}
     
-    
-    
-\end{itemize}
+\paragraph{OP-18: Inserire una nuova bolletta per un contratto attivo}\mbox{}\\
+\begin{lstlisting}
+insert into bollette (DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore, IdContratto)
+select curdate(), :intervalStartDate, :intervalEndDate, :deadline, :finalCost, :consumption, :reportFile, :estimated, :operatorId, :subId
+from `contratti attivi`
+where `contratti attivi`.IdContratto = :subId;
+\end{lstlisting}
+
+\paragraph{OP-19: Pagare una bolletta}\mbox{}\\
+\begin{lstlisting}
+insert into pagamenti
+values (?, curdate())
+on duplicate key ignore;
+\end{lstlisting}
+
+\paragraph{OP-20: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}\mbox{}\\
+\begin{lstlisting}
+select O.*
+from offerte O, compatibilità C
+where O.MateriaPrima = ?
+and O.Attiva = true
+and C.Uso = ?
+and O.CodOfferta = C.Offerta;
+\end{lstlisting}
+
+\paragraph{OP-21: Visualizzare i contratti intestati a un dato cliente}\mbox{}\\
+\begin{lstlisting}
+select C.*
+from `contratti approvati` C
+where C.IdCliente = ?;
+\end{lstlisting}
+
+\paragraph{OP-22: Visualizzare i contratti attivi intestati a un dato cliente}\mbox{}\\
+\begin{lstlisting}
+select C.*
+from `contratti attivi` C
+where C.IdCliente = ?;
+\end{lstlisting}
+
+\paragraph{OP-23: Dato un contratto, visualizzare lo storico delle bollette}\mbox{}\\
+\begin{lstlisting}
+select *
+from bollette
+where bollette.IdContratto = ?;
+\end{lstlisting}
+
+\paragraph{OP-24: Eliminare una richiesta non finalizzata}\mbox{}\\
+\begin{lstlisting}
+-- In caso di richiesta di contratto
+delete contratti
+where IdContratto = ?
+and StatoRichiesta = "In lavorazione"
+and DataChiusuraRichiesta is null;
+
+-- In caso di richiesta di cessazione
+delete cessazioni
+where NumeroRichiesta = ?
+and StatoRichiesta = "In lavorazione"
+and DataChiusuraRichiesta is null;
+\end{lstlisting}
+
+\paragraph{OP-25: Visualizzare il numero di contratti stipulati in un dato anno}\mbox{}\\
+\begin{lstlisting}
+select count(C.IdContratto)
+from `contratti approvati` C
+where year(C.DataChiusuraRichiesta) = ?;
+\end{lstlisting}
+
+\paragraph{OP-26: Visualizzare l'andamento dei consumi relativi a un contratto in un dato anno}\mbox{}\\
+\begin{lstlisting}
+
+\end{lstlisting}
+
 \chapter{Progettazione dell'applicazione}
 
 \appendix

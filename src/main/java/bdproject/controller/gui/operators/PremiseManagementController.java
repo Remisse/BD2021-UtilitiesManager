@@ -133,7 +133,7 @@ public class PremiseManagementController extends AbstractController implements I
 
     private void updatePremiseTable() {
         try (final Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final DSLContext ctx = Queries.createContext(conn);
             final List<Immobili> premises = Queries.fetchAll(ctx, IMMOBILI, Immobili.class);
             premiseTable.setItems(FXCollections.observableList(premises));
         } catch (SQLException e) {
@@ -151,7 +151,7 @@ public class PremiseManagementController extends AbstractController implements I
 
     private void updateMeterTable() {
         try (final Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final DSLContext ctx = Queries.createContext(conn);
             final List<Contatori> meters = Queries.fetchAll(ctx, CONTATORI, Contatori.class);
             meterTable.setItems(FXCollections.observableList(meters));
         } catch (SQLException e) {

@@ -141,8 +141,7 @@ public class MiscController extends AbstractController implements Initializable 
         if (!isAreAllPasswordFieldsBlank() && isNewPasswordCorrectlySet()) {
             final int operatorId = getSessionHolder().session().orElseThrow().userId();
             try (Connection conn = dataSource().getConnection()) {
-                final int resultUpdatePw = Queries.updateOneFieldWhere(PERSONE, PERSONE.IDPERSONA, operatorId,
-                        PERSONE.PASSWORD, newPw.getText(), conn);
+                final int resultUpdatePw = Queries.updatePersonPassword(operatorId, newPw.getText(), conn);
                 if (resultUpdatePw == 1) {
                     ViewUtils.showBlockingWarning("Password modificata con successo.");
                 } else {

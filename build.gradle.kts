@@ -1,5 +1,5 @@
 val javaFxVersion = "17"
-val fxmodules = listOf("base", "controls", "fxml", "media", "graphics", "swing")
+val fxModules = listOf("base", "controls", "fxml", "media", "graphics", "swing")
 val platforms = listOf("win", "linux", "mac")
 
 plugins {
@@ -25,7 +25,7 @@ javafx {
 
 dependencies {
     // Cross-platform JavaFX modules
-    for (mod in fxmodules) {
+    for (mod in fxModules) {
         for (plat in platforms) {
             implementation("org.openjfx:javafx-${mod}:${javaFxVersion}:${plat}")
         }

@@ -20,7 +20,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TableView fx:id="subsTable" layoutX="233.0" layoutY="148.0" prefHeight="247.0" prefWidth="753.0">
+      <TableView fx:id="subsTable" layoutX="233.0" layoutY="148.0" prefHeight="247.0" prefWidth="641.0">
         <columns>
           <TableColumn fx:id="clientIdCol" prefWidth="114.0" text="Codice cliente" />
           <TableColumn fx:id="subIdCol" prefWidth="142.0" text="Codice contratto" />
@@ -46,11 +46,13 @@
          </font>
       </Label>
       <CheckBox fx:id="lastReportFilter" layoutX="50.0" layoutY="236.0" mnemonicParsing="false" onAction="#doRefreshSubs" prefHeight="64.0" prefWidth="150.0" text="Ultima bolletta emessa più di due mesi fa" wrapText="true" />
-      <TableView fx:id="measurementsTable" layoutX="1048.0" layoutY="147.0" prefHeight="247.0" prefWidth="475.0">
+      <TableView fx:id="measurementsTable" layoutX="930.0" layoutY="147.0" prefHeight="247.0" prefWidth="593.0">
          <columns>
-            <TableColumn fx:id="measPublishDateCol" prefWidth="158.0" text="Data effettuazione" />
-            <TableColumn fx:id="measConsumptionCol" prefWidth="169.0" text="Consumi" />
-            <TableColumn fx:id="measConfirmedCol" prefWidth="147.0" text="Stato" />
+            <TableColumn fx:id="measPublishDateCol" prefWidth="92.0" text="Data" />
+            <TableColumn fx:id="measConsumptionCol" prefWidth="127.0" text="Consumi" />
+            <TableColumn fx:id="measConfirmedCol" prefWidth="122.0" text="Stato" />
+            <TableColumn fx:id="measNotesCol" prefWidth="133.0" text="Note" />
+            <TableColumn fx:id="measOperatorCol" prefWidth="118.0" text="Operatore" />
          </columns>
       </TableView>
       <Label layoutX="1047.0" layoutY="482.0" text="Nuova bolletta">
@@ -59,7 +61,7 @@
          </font>
       </Label>
       <TextField fx:id="finalCostField" layoutX="1060.0" layoutY="574.0" prefHeight="31.0" prefWidth="165.0" promptText="Importo" />
-      <Button fx:id="publishReport" layoutX="1220.0" layoutY="782.0" mnemonicParsing="false" onAction="#doPublishReport" prefHeight="31.0" prefWidth="85.0" text="Emetti">
+      <Button fx:id="publishReport" layoutX="1047.0" layoutY="782.0" mnemonicParsing="false" onAction="#doPublishReport" prefHeight="31.0" prefWidth="85.0" text="Emetti">
          <font>
             <Font size="15.0" />
          </font>
@@ -87,13 +89,13 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="confirmMeasurement" layoutX="1048.0" layoutY="409.0" mnemonicParsing="false" onAction="#doConfirmMeasurement" prefHeight="31.0" prefWidth="94.0" text="Approva" textFill="#007c1d">
+      <Button fx:id="confirmMeasurement" layoutX="930.0" layoutY="409.0" mnemonicParsing="false" onAction="#doConfirmMeasurement" prefHeight="31.0" prefWidth="94.0" text="Approva" textFill="#007c1d">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
       <TextField fx:id="clientIdFilter" layoutX="50.0" layoutY="148.0" onAction="#doRefreshSubs" onKeyTyped="#doRefreshSubs" prefHeight="30.0" prefWidth="152.0" promptText="Codice cliente" />
-      <Button layoutX="342.0" layoutY="782.0" mnemonicParsing="false" onAction="#doDeleteReport" prefHeight="31.0" prefWidth="85.0" text="Elimina" textFill="#9a0000">
+      <Button layoutX="364.0" layoutY="782.0" mnemonicParsing="false" onAction="#doDeleteReport" prefHeight="31.0" prefWidth="85.0" text="Elimina" textFill="#9a0000">
          <font>
             <Font size="15.0" />
          </font>
@@ -113,7 +115,7 @@
             <Font size="17.0" />
          </font>
       </Label>
-      <Button layoutX="233.0" layoutY="782.0" mnemonicParsing="false" onAction="#doDownloadFile" prefHeight="31.0" prefWidth="94.0" text="Scarica file">
+      <Button layoutX="233.0" layoutY="782.0" mnemonicParsing="false" onAction="#doDownloadFile" prefHeight="31.0" prefWidth="106.0" text="Scarica file">
          <font>
             <Font size="15.0" />
          </font>
@@ -126,21 +128,18 @@
       <TextField fx:id="consumptionField" layoutX="1060.0" layoutY="617.0" prefHeight="31.0" prefWidth="164.0" promptText="Consumi" />
       <DatePicker fx:id="intervalStartDatePicker" layoutX="1060.0" layoutY="664.0" prefHeight="31.0" prefWidth="191.0" promptText="Inizio periodo" />
       <DatePicker fx:id="intervalEndDatePicker" layoutX="1060.0" layoutY="714.0" prefHeight="31.0" prefWidth="191.0" promptText="Fine periodo" />
-      <Button fx:id="rejectMeasurement" layoutX="1155.0" layoutY="409.0" mnemonicParsing="false" onAction="#doRejectMeasurement" prefHeight="31.0" prefWidth="94.0" text="Respingi" textFill="#9e0000">
+      <Button fx:id="rejectMeasurement" layoutX="1043.0" layoutY="409.0" mnemonicParsing="false" onAction="#doRejectMeasurement" prefHeight="31.0" prefWidth="94.0" text="Rifiuta" textFill="#9e0000">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="1261.0" layoutY="409.0" mnemonicParsing="false" onAction="#deleteMeasurement" prefHeight="31.0" prefWidth="94.0" text="Elimina">
+      <Button fx:id="endSub" layoutX="348.0" layoutY="409.0" mnemonicParsing="false" onAction="#doEndSub" prefHeight="31.0" prefWidth="150.0" text="Cessa contratto" textFill="#9e0000">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="endSub" layoutX="364.0" layoutY="409.0" mnemonicParsing="false" onAction="#doEndSub" prefHeight="31.0" prefWidth="150.0" text="Cessa contratto" textFill="#9e0000">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
-      <TextField fx:id="forceEndNotesField" layoutX="524.0" layoutY="409.0" prefHeight="31.0" prefWidth="462.0" promptText="Motivazione" />
+      <TextField fx:id="forceEndNotesField" layoutX="510.0" layoutY="409.0" prefHeight="31.0" prefWidth="363.0" promptText="Motivazione" />
+      <TextField fx:id="measurementNotesField" layoutX="1160.0" layoutY="409.0" prefHeight="31.0" prefWidth="363.0" promptText="Note" />
+      <DatePicker fx:id="deadlineDatePicker" layoutX="1276.0" layoutY="664.0" prefHeight="31.0" prefWidth="191.0" promptText="Scadenza" />
    </children>
 </AnchorPane>

@@ -87,7 +87,7 @@ public class CatalogueManagementController extends AbstractController implements
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try (Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final DSLContext ctx = Queries.createContext(conn);
             utilityBox.setItems(FXCollections.observableList(
                     Queries.fetchAll(ctx, MATERIE_PRIME, MateriePrime.class)
                             .stream()
@@ -122,7 +122,7 @@ public class CatalogueManagementController extends AbstractController implements
         List<Offerte> plans = Collections.emptyList();
 
         try (Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final DSLContext ctx = Queries.createContext(conn);
             plans = Queries.fetchAll(ctx, OFFERTE, Offerte.class);
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,7 +142,7 @@ public class CatalogueManagementController extends AbstractController implements
     private void doAdd() {
         if (arePlanFieldsValid()) {
             try (Connection conn = dataSource().getConnection()) {
-                final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                final DSLContext ctx = Queries.createContext(conn);
                 final int result = Queries.insertPlan(
                         nameField.getText(),
                         descriptionArea.getText(),
@@ -171,7 +171,7 @@ public class CatalogueManagementController extends AbstractController implements
         if (selectedPlan != null && arePlanFieldsValid()) {
             ViewUtils.showConfirmationDialog("Verranno modificati nome, descrizione e stato di attivazione. Vuoi continuare?", () -> {
                 try (Connection conn = dataSource().getConnection()) {
-                    final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                    final DSLContext ctx = Queries.createContext(conn);
                     final int result = Queries.updatePlan(
                             selectedPlan.getCodofferta(),
                             nameField.getText(),
@@ -203,7 +203,7 @@ public class CatalogueManagementController extends AbstractController implements
         final Offerte selectedPlan = planTable.getSelectionModel().getSelectedItem();
         if (selectedPlan != null) {
             try (Connection conn = dataSource().getConnection()) {
-                final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                final DSLContext ctx = Queries.createContext(conn);
                 final int result = Queries.deleteGeneric(OFFERTE, OFFERTE.CODOFFERTA, selectedPlan.getCodofferta(), ctx);
                 if (result == 1) {
                     ViewUtils.showBlockingWarning("Offerta eliminata.");
@@ -252,7 +252,7 @@ public class CatalogueManagementController extends AbstractController implements
 
     private void refreshUseTable() {
         try (Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final DSLContext ctx = Queries.createContext(conn);
             final List<TipologieUso> uses = Queries.fetchAll(ctx, TIPOLOGIE_USO, TipologieUso.class);
 
             Platform.runLater(() ->useTable.setItems(FXCollections.observableList(uses)));
@@ -265,7 +265,7 @@ public class CatalogueManagementController extends AbstractController implements
     private void doAddUse() {
         if (areUseFieldsValid()) {
             try (Connection conn = dataSource().getConnection())  {
-                final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                final DSLContext ctx = Queries.createContext(conn);
                 final int result = Queries.insertUse(
                         useNameField.getText(),
                         new BigDecimal(useEstimateField.getText()),
@@ -296,7 +296,7 @@ public class CatalogueManagementController extends AbstractController implements
         if (selectedUse != null) {
             if (areUseFieldsValid()) {
                 try (Connection conn = dataSource().getConnection())  {
-                    final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                    final DSLContext ctx = Queries.createContext(conn);
                     final int result = Queries.updateUse(
                             selectedUse.getCoduso(),
                             useNameField.getText(),
@@ -325,7 +325,7 @@ public class CatalogueManagementController extends AbstractController implements
         final TipologieUso selectedUse = useTable.getSelectionModel().getSelectedItem();
         if (selectedUse != null) {
             try (Connection conn = dataSource().getConnection())  {
-                final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                final DSLContext ctx = Queries.createContext(conn);
                 final int result = Queries.deleteGeneric(TIPOLOGIE_USO, TIPOLOGIE_USO.CODUSO, selectedUse.getCoduso(), ctx);
                 if (result == 1) {
                     ViewUtils.showBlockingWarning("Tipologia d'uso eliminata.");
@@ -352,7 +352,7 @@ public class CatalogueManagementController extends AbstractController implements
 
     private void refreshCompatibilityTable() {
         try (Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final DSLContext ctx = Queries.createContext(conn);
             final var compats = Queries.fetchCompatibilities(ctx);
 
             Platform.runLater(() -> compatibilityTable.setItems(FXCollections.observableList(compats)));
@@ -368,7 +368,7 @@ public class CatalogueManagementController extends AbstractController implements
 
         if (selectedPlan != null && selectedUse != null) {
             try (Connection conn = dataSource().getConnection()) {
-                final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                final DSLContext ctx = Queries.createContext(conn);
                 final int result = Queries.insertCompatibility(selectedUse.getCoduso(), selectedPlan.getCodofferta(), ctx);
                 if (result == 1) {
                     ViewUtils.showBlockingWarning("Compatibilità aggiunta.");
@@ -391,7 +391,7 @@ public class CatalogueManagementController extends AbstractController implements
         final Record4<Integer, String, Integer, String> selectedComp = compatibilityTable.getSelectionModel().getSelectedItem();
         if (selectedComp != null) {
             try (Connection conn = dataSource().getConnection()) {
-                final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+                final DSLContext ctx = Queries.createContext(conn);
                 final int result = Queries.deleteCompatibility(selectedComp.component1(), selectedComp.component3(), ctx);
                 if (result == 1) {
                     ViewUtils.showBlockingWarning("Compatibilità eliminata.");

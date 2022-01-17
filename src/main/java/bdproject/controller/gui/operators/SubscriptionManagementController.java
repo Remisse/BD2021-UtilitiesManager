@@ -3,10 +3,10 @@ package bdproject.controller.gui.operators;
 import bdproject.controller.Checks;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
+import bdproject.model.QuadFunction;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.tables.pojos.*;
-import bdproject.utils.Converters;
 import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
 import bdproject.view.StringUtils;
@@ -19,9 +19,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
-import org.w3c.dom.Text;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -33,7 +30,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
@@ -42,10 +38,10 @@ import static bdproject.tables.TipologieUso.TIPOLOGIE_USO;
 public class SubscriptionManagementController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "adminSubManagement.fxml";
-    private static final int DEADLINE_DAYS = 14;
     private static final int REPORT_PERIOD_MONTHS = 2;
     private static final int NO_CLIENT = -1;
 
+    private Map<Integer, Integer> measurementsWithAssignment = Map.of();
     private List<ContrattiApprovati> subsList = Collections.emptyList();
     private List<TipologieUso> useTypes;
     private final Map<String, BiPredicate<ContrattiApprovati, Connection>> statuses = Map.of(
@@ -74,6 +70,9 @@ public class SubscriptionManagementController extends AbstractController impleme
     @FXML private TableColumn<Letture, String> measPublishDateCol;
     @FXML private TableColumn<Letture, String> measConsumptionCol;
     @FXML private TableColumn<Letture, String> measConfirmedCol;
+    @FXML private TableColumn<Letture, String> measNotesCol;
+    @FXML private TableColumn<Letture, String> measOperatorCol;
+    @FXML private TextField measurementNotesField;
 
     @FXML private TableView<Bollette> reportsTable;
     @FXML private TableColumn<Bollette, String> repPublishDateCol;
@@ -87,6 +86,7 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     @FXML private DatePicker intervalStartDatePicker;
     @FXML private DatePicker intervalEndDatePicker;
+    @FXML private DatePicker deadlineDatePicker;
     @FXML private CheckBox estimatedCheckbox;
     @FXML private TextField finalCostField;
     @FXML private TextField consumptionField;
@@ -103,7 +103,7 @@ public class SubscriptionManagementController extends AbstractController impleme
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try (Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            final DSLContext ctx = Queries.createContext(conn);
             useTypes = Queries.fetchAll(ctx, TIPOLOGIE_USO, TipologieUso.class);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -192,10 +192,10 @@ public class SubscriptionManagementController extends AbstractController impleme
                     "Vuoi davvero cessare questo contratto? La scelta è irreversibile.",
                     () -> {
                         try (final Connection conn = dataSource().getConnection()) {
-                            final int result = Queries.forceSubscriptionEnd(selected.getIdcontratto(),
+                            final boolean success = Queries.forceSubscriptionEnd(selected.getIdcontratto(),
                                     forceEndNotesField.getText(), getSessionHolder().session().orElseThrow().userId(),
                                     conn);
-                            if (result == 1) {
+                            if (success) {
                                 doRefreshSubs();
                                 ViewUtils.showBlockingWarning("Contratto cessato.");
                             } else {
@@ -203,7 +203,7 @@ public class SubscriptionManagementController extends AbstractController impleme
                             }
                         } catch (SQLException e) {
                             e.printStackTrace();
-                            ViewUtils.showError(e.getMessage() + "\n" + e.getErrorCode());
+                            ViewUtils.showError(e.getMessage());
                         }
                     });
         } else {
@@ -216,14 +216,22 @@ public class SubscriptionManagementController extends AbstractController impleme
             measPublishDateCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue().getDataeffettuazione())));
             measConsumptionCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getConsumi().toString()));
             measConfirmedCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStato()));
+            measNotesCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNote()));
+            measOperatorCol.setCellValueFactory(c -> {
+                final int op = measurementsWithAssignment.getOrDefault(c.getValue().getNumerolettura(), 0);
+                return new SimpleStringProperty(op != 0 ? String.valueOf(op) : "Non assegnata");
+            });
         });
     }
 
     private void doRefreshMeasurements() {
         final ContrattiApprovati sub = subsTable.getSelectionModel().getSelectedItem();
+
         if (sub != null) {
             try (Connection conn = dataSource().getConnection()) {
                 final List<Letture> measurements = Queries.fetchMeasurements(sub.getIdcontratto(), conn);
+                measurementsWithAssignment = Queries.fetchMeasurementsBySubscriptionWithAssignment(sub.getIdcontratto(),
+                        conn);
                 measurementsTable.setItems(FXCollections.observableList(measurements));
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -244,17 +252,19 @@ public class SubscriptionManagementController extends AbstractController impleme
         updateMeasurement(Queries::rejectMeasurement);
     }
 
-    private void updateMeasurement(final BiFunction<Integer, Connection, Integer> action) {
+    private void updateMeasurement(final QuadFunction<Integer, String, Integer, Connection, Integer> action) {
         final Letture selected = measurementsTable.getSelectionModel().getSelectedItem();
 
         if (selected != null) {
+            final int opId = getSessionHolder().session().orElseThrow().userId();
+
             try (Connection conn = dataSource().getConnection()) {
-                final int result = action.apply(selected.getNumerolettura(), conn);
+                final int result = action.apply(selected.getNumerolettura(), measurementNotesField.getText(), opId, conn);
                 if (result != 0) {
                     ViewUtils.showBlockingWarning("Lettura aggiornata.");
                     doRefreshMeasurements();
                 } else {
-                    ViewUtils.showBlockingWarning("Lettura già aggiornata.");
+                    ViewUtils.showBlockingWarning("Impossibile aggiornare la lettura.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -263,11 +273,6 @@ public class SubscriptionManagementController extends AbstractController impleme
         } else {
             ViewUtils.showBlockingWarning("Seleziona una lettura.");
         }
-    }
-
-    @FXML
-    private void deleteMeasurement() {
-
     }
 
     private void initReportsTable() {
@@ -365,7 +370,7 @@ public class SubscriptionManagementController extends AbstractController impleme
                     final int result = Queries.publishReport(
                             intervalStartDatePicker.getValue(),
                             intervalEndDatePicker.getValue(),
-                            DEADLINE_DAYS,
+                            deadlineDatePicker.getValue(),
                             new BigDecimal(finalCostField.getText()),
                             new BigDecimal(consumptionField.getText()),
                             reportFile,
@@ -403,6 +408,7 @@ public class SubscriptionManagementController extends AbstractController impleme
         return Checks.isBigDecimal(finalCostField.getText()) &&
                 Checks.isValidConsumption(consumptionField.getText()) &&
                 intervalStartDatePicker.getValue().isBefore(intervalEndDatePicker.getValue()) &&
+                intervalEndDatePicker.getValue().isBefore(deadlineDatePicker.getValue()) &&
                 reportFile != null;
     }
 

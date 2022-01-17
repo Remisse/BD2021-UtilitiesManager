@@ -12,17 +12,18 @@
 \contentsline {section}{\numberline {3.1}Stima del volume dei dati}{11}{section.3.1}%
 \contentsline {section}{\numberline {3.2}Operazioni principali e stima della loro frequenza}{12}{section.3.2}%
 \contentsline {paragraph}{OP-1: Inserire un nuovo cliente}{13}{section*.2}%
-\contentsline {paragraph}{OP-5: Inserire una richiesta di contratto con attivazione tramite voltura}{13}{section*.3}%
-\contentsline {paragraph}{OP-13: Inserire una nuova offerta}{13}{section*.4}%
-\contentsline {paragraph}{OP-15: Approvare una richiesta di cessazione}{13}{section*.5}%
-\contentsline {paragraph}{OP-20: Inserire una nuova bolletta per un contratto attivo}{14}{section*.6}%
-\contentsline {paragraph}{OP-22: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}{14}{section*.7}%
-\contentsline {paragraph}{OP-24: Visualizzare i contratti attivi intestati a un dato cliente}{14}{section*.8}%
-\contentsline {paragraph}{OP-31: Visualizzare la media aggregata dei consumi relativi a tutti i contratti attivi in un dato comune}{14}{section*.9}%
+\contentsline {paragraph}{OP-5: Inserire una richiesta di contratto}{13}{section*.3}%
+\contentsline {paragraph}{OP-6: Selezionare l’eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}{13}{section*.4}%
+\contentsline {paragraph}{OP-11: Inserire una nuova offerta}{13}{section*.5}%
+\contentsline {paragraph}{OP-13: Approvare una richiesta di cessazione}{13}{section*.6}%
+\contentsline {paragraph}{OP-18: Inserire una nuova bolletta per un contratto attivo}{14}{section*.7}%
+\contentsline {paragraph}{OP-20: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}{14}{section*.8}%
+\contentsline {paragraph}{OP-22: Visualizzare i contratti attivi intestati a un dato cliente}{14}{section*.9}%
+\contentsline {paragraph}{OP-29: Visualizzare la media aggregata dei consumi (reali e stimati) relativi a tutti i contratti attivi in un dato comune}{14}{section*.10}%
 \contentsline {section}{\numberline {3.3}Analisi delle ridondanze}{15}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Attributo \texttt {Attivo} in \texttt {CONTRATTO}}{15}{subsection.3.3.1}%
-\contentsline {paragraph}{OP-20 con l'uso dell'attributo ridondante}{15}{section*.10}%
-\contentsline {paragraph}{OP-24 con l'uso dell'attributo ridondante}{15}{section*.11}%
+\contentsline {paragraph}{OP-18 con l'uso dell'attributo ridondante}{15}{section*.11}%
+\contentsline {paragraph}{OP-22 con l'uso dell'attributo ridondante}{15}{section*.12}%
 \contentsline {section}{\numberline {3.4}Raffinamento dello schema}{15}{section.3.4}%
 \contentsline {subsection}{\numberline {3.4.1}Eliminazione delle gerarchie}{15}{subsection.3.4.1}%
 \contentsline {subsection}{\numberline {3.4.2}Eliminazione degli attributi multivalore}{16}{subsection.3.4.2}%
@@ -31,7 +32,33 @@
 \contentsline {section}{\numberline {3.5}Traduzione di entità e associazioni in relazioni}{17}{section.3.5}%
 \contentsline {section}{\numberline {3.6}Schema relazionale finale}{18}{section.3.6}%
 \contentsline {section}{\numberline {3.7}Traduzione delle operazioni in query SQL}{18}{section.3.7}%
-\contentsline {chapter}{\numberline {4}Progettazione dell'applicazione}{22}{chapter.4}%
-\contentsline {chapter}{\numberline {A}Creazione di tabelle e view in SQL}{23}{appendix.Alph1}%
-\contentsline {section}{\numberline {A.1}Creazione delle tabelle}{23}{section.Alph1.1}%
-\contentsline {section}{\numberline {A.2}Creazione delle view}{27}{section.Alph1.2}%
+\contentsline {paragraph}{OP-1: Inserire un nuovo cliente}{18}{section*.13}%
+\contentsline {paragraph}{OP-2: Aggiornare i dati di un cliente}{20}{section*.14}%
+\contentsline {paragraph}{OP-3: Inserire un nuovo immobile}{20}{section*.15}%
+\contentsline {paragraph}{OP-4: Inserire un contatore}{20}{section*.16}%
+\contentsline {paragraph}{OP-5: Inserire una richiesta di contratto}{20}{section*.17}%
+\contentsline {paragraph}{OP-6: Selezionare l'eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}{20}{section*.18}%
+\contentsline {paragraph}{OP-7: Selezionare l'immobile associato a un dato contatore (subentro)}{20}{section*.19}%
+\contentsline {paragraph}{OP-8: Inserire una richiesta di cessazione}{21}{section*.20}%
+\contentsline {paragraph}{OP-9: Rifiutare una richiesta}{21}{section*.21}%
+\contentsline {paragraph}{OP-10: Approvare una richiesta di contratto}{21}{section*.22}%
+\contentsline {paragraph}{OP-11: Inserire una nuova offerta}{21}{section*.23}%
+\contentsline {paragraph}{OP-12: Aggiornare un'offerta}{22}{section*.24}%
+\contentsline {paragraph}{OP-13: Approvare una richiesta di cessazione}{22}{section*.25}%
+\contentsline {paragraph}{OP-14: Comunicare una lettura}{22}{section*.26}%
+\contentsline {paragraph}{OP-15: Approvare una lettura}{22}{section*.27}%
+\contentsline {paragraph}{OP-16: Rifiutare una lettura}{23}{section*.28}%
+\contentsline {paragraph}{OP-17: Assegnare una richiesta a un operatore}{23}{section*.29}%
+\contentsline {paragraph}{OP-18: Inserire una nuova bolletta per un contratto attivo}{23}{section*.30}%
+\contentsline {paragraph}{OP-19: Pagare una bolletta}{23}{section*.31}%
+\contentsline {paragraph}{OP-20: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}{23}{section*.32}%
+\contentsline {paragraph}{OP-21: Visualizzare i contratti intestati a un dato cliente}{24}{section*.33}%
+\contentsline {paragraph}{OP-22: Visualizzare i contratti attivi intestati a un dato cliente}{24}{section*.34}%
+\contentsline {paragraph}{OP-23: Dato un contratto, visualizzare lo storico delle bollette}{24}{section*.35}%
+\contentsline {paragraph}{OP-24: Eliminare una richiesta non finalizzata}{24}{section*.36}%
+\contentsline {paragraph}{OP-25: Visualizzare il numero di contratti stipulati in un dato anno}{24}{section*.37}%
+\contentsline {paragraph}{OP-26: Visualizzare l'andamento dei consumi relativi a un contratto in un dato anno}{24}{section*.38}%
+\contentsline {chapter}{\numberline {4}Progettazione dell'applicazione}{25}{chapter.4}%
+\contentsline {chapter}{\numberline {A}Creazione di tabelle e view in SQL}{26}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Creazione delle tabelle}{26}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Creazione delle view}{30}{section.Alph1.2}%
