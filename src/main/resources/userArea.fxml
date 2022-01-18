@@ -68,7 +68,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <ComboBox fx:id="incomeBracket" layoutX="40.0" layoutY="570.0" prefWidth="150.0" promptText="Seleziona..." />
+      <ComboBox fx:id="incomeBracket" layoutX="40.0" layoutY="570.0" prefHeight="24.0" prefWidth="218.0" promptText="Seleziona..." />
       <Button fx:id="subDetails" disable="true" layoutX="53.0" layoutY="190.0" mnemonicParsing="false" onAction="#showSubDetails" text="Dettagli contratto">
          <font>
             <Font size="15.0" />
@@ -94,7 +94,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Label fx:id="clientFullName" layoutX="589.0" layoutY="29.0" text="NomeUtente">
+      <Label fx:id="clientFullName" layoutX="577.0" layoutY="30.0" text="NomeUtente" textAlignment="CENTER">
          <font>
             <Font size="20.0" />
          </font>

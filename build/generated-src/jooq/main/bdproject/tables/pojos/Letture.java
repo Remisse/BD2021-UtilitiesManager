@@ -24,7 +24,7 @@ public class Letture implements Serializable {
     private final String     stato;
     private final String     note;
     private final BigDecimal consumi;
-    private final Integer    idpersona;
+    private final Integer    idcliente;
 
     public Letture(Letture value) {
         this.numerolettura = value.numerolettura;
@@ -34,7 +34,7 @@ public class Letture implements Serializable {
         this.stato = value.stato;
         this.note = value.note;
         this.consumi = value.consumi;
-        this.idpersona = value.idpersona;
+        this.idcliente = value.idcliente;
     }
 
     public Letture(
@@ -45,7 +45,7 @@ public class Letture implements Serializable {
         String     stato,
         String     note,
         BigDecimal consumi,
-        Integer    idpersona
+        Integer    idcliente
     ) {
         this.numerolettura = numerolettura;
         this.matricolacontatore = matricolacontatore;
@@ -54,7 +54,7 @@ public class Letture implements Serializable {
         this.stato = stato;
         this.note = note;
         this.consumi = consumi;
-        this.idpersona = idpersona;
+        this.idcliente = idcliente;
     }
 
     /**
@@ -107,10 +107,10 @@ public class Letture implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.letture.IdPersona</code>.
+     * Getter for <code>utenze.letture.IdCliente</code>.
      */
-    public Integer getIdpersona() {
-        return this.idpersona;
+    public Integer getIdcliente() {
+        return this.idcliente;
     }
 
     @Override
@@ -124,7 +124,7 @@ public class Letture implements Serializable {
         sb.append(", ").append(stato);
         sb.append(", ").append(note);
         sb.append(", ").append(consumi);
-        sb.append(", ").append(idpersona);
+        sb.append(", ").append(idcliente);
 
         sb.append(")");
         return sb.toString();

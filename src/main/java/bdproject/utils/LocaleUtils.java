@@ -39,6 +39,6 @@ public class LocaleUtils {
     }
 
     public static DecimalFormat getItDecimalFormat() {
-        return new DecimalFormat("#,###.000");
+        return new DecimalFormat("#,###.00");
     }
 }

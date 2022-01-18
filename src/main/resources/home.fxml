@@ -39,7 +39,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button fx:id="signupButton" alignment="TOP_CENTER" layoutX="952.0" layoutY="357.0" mnemonicParsing="false" onAction="#viewSignupPage" text="Registrati">
          <font>
@@ -101,7 +101,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button fx:id="adminArea" layoutX="597.0" layoutY="357.0" mnemonicParsing="false" onAction="#toAdminArea" prefHeight="31.0" prefWidth="120.0" text="Area operatori" visible="false">
+      <Button fx:id="adminArea" layoutX="582.0" layoutY="356.0" mnemonicParsing="false" onAction="#toAdminArea" prefHeight="31.0" prefWidth="152.0" text="Area operatori" visible="false">
          <font>
             <Font size="15.0" />
          </font>

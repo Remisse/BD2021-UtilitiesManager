@@ -5,6 +5,8 @@ import bdproject.controller.gui.users.parametersselection.ParametersClientChange
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
+import bdproject.tables.pojos.Letture;
+import bdproject.utils.ViewUtils;
 import bdproject.view.StringUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,6 +15,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import javax.sql.DataSource;
+import javax.swing.text.View;
 import java.sql.Connection;
 import java.time.LocalDate;
 
@@ -58,17 +61,27 @@ public class ChangeClientConfirmationController extends AbstractSubscriptionConf
 
         try (Connection conn = dataSource().getConnection()) {
             final SubscriptionProcess process = getProcess();
+            final Letture measurement = process.measurement().orElseThrow();
 
-            Queries.insertMeasurement(process.measurement().orElseThrow(), conn);
-            result = Queries.insertSubscriptionRequest(
-                    LocalDate.now(),
-                    process.peopleNo(),
-                    process.plan().orElseThrow().getCodofferta(),
-                    process.usage().orElseThrow().getCoduso(),
-                    process.activation().orElseThrow().getCodattivazione(),
-                    process.premise().orElseThrow().getIdimmobile(),
-                    process.getClientId(),
-                    conn);
+            result = Queries.insertMeasurement(measurement.getMatricolacontatore(), measurement.getConsumi(),
+                    measurement.getNote(), measurement.getIdcliente(), conn);
+            if (result == 1) {
+                result = Queries.insertSubscriptionRequest(
+                        LocalDate.now(),
+                        process.peopleNo(),
+                        process.plan().orElseThrow().getCodofferta(),
+                        process.usage().orElseThrow().getCoduso(),
+                        process.activation().orElseThrow().getCodattivazione(),
+                        process.premise().orElseThrow().getIdimmobile(),
+                        process.getClientId(),
+                        conn);
+                if (result == 1) {
+                    ViewUtils.showBlockingWarning("Errore nell'inserimento della richiesta.");
+                }
+            } else {
+                ViewUtils.showBlockingWarning("Errore nell'inserimento della lettura.");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

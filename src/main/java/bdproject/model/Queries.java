@@ -126,29 +126,39 @@ public class Queries {
                 .execute();
     }
 
-    public static int insertMeasurement(final Letture m, final Connection conn) {
+    public static int insertMeasurement(final String meterId, final BigDecimal consumption, final String notes,
+            final int clientId, final Connection conn) {
         final DSLContext ctx = createContext(conn);
 
         return ctx
-                .insertInto(LETTURE)
-                .columns(LETTURE.MATRICOLACONTATORE, LETTURE.DATAEFFETTUAZIONE, LETTURE.CONSUMI, LETTURE.STATO,
-                        LETTURE.NOTE, LETTURE.IDPERSONA)
-                .select(ctx.select(
-                            val(m.getMatricolacontatore()),
-                            val(LocalDate.now()),
-                            val(m.getConsumi()),
-                            val(m.getStato()),
-                            val(m.getNote()),
-                            val(m.getIdpersona()))
-                        .from(LETTURE)
-                        .where(ctx.select(LETTURE.CONSUMI)
+                .insertInto(LETTURE, LETTURE.MATRICOLACONTATORE, LETTURE.DATAEFFETTUAZIONE, LETTURE.CONSUMI, LETTURE.STATO,
+                        LETTURE.NOTE, LETTURE.IDCLIENTE)
+                .select(ctx.select(val(meterId), val(LocalDate.now()), val(consumption), val(StatusType.REVIEWING.toString()),
+                        val(notes), val(clientId))
+                        .whereExists(ctx.select(CONTRATTI_ATTIVI.IDCONTRATTO)
+                                .from(CONTRATTI_ATTIVI, CONTATORI, IMMOBILI, OFFERTE)
+                                .where(CONTATORI.MATRICOLA.eq(meterId))
+                                .and(CONTATORI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
+                                .and(IMMOBILI.IDIMMOBILE.eq(CONTRATTI_ATTIVI.IDIMMOBILE))
+                                .and(CONTRATTI_ATTIVI.IDCLIENTE.eq(clientId))
+                                .and(CONTRATTI_ATTIVI.OFFERTA.eq(OFFERTE.CODOFFERTA))
+                                .and(OFFERTE.MATERIAPRIMA.eq(CONTATORI.MATERIAPRIMA)))
+                        .and(notExists(ctx.select(LETTURE.CONSUMI)
                                 .from(LETTURE)
-                                .where(LETTURE.MATRICOLACONTATORE.eq(m.getMatricolacontatore()))
-                                .and(LETTURE.DATAEFFETTUAZIONE.lessThan(LocalDate.now()))
-                                .orderBy(LETTURE.CONSUMI.desc())
-                                .limit(1).lessThan(select(val(m.getConsumi())))))
+                                .where(LETTURE.MATRICOLACONTATORE.eq(meterId))
+                                .and(LETTURE.STATO.eq(StatusType.APPROVED.toString()))
+                                .and(LETTURE.DATACHIUSURARICHIESTA.isNotNull())
+                                .orderBy(LETTURE.DATAEFFETTUAZIONE)
+                                .limit(1))
+                            .or(ctx.select(LETTURE.CONSUMI)
+                                .from(LETTURE)
+                                .where(LETTURE.MATRICOLACONTATORE.eq(meterId))
+                                .and(LETTURE.STATO.eq(StatusType.APPROVED.toString()))
+                                .and(LETTURE.DATACHIUSURARICHIESTA.isNotNull())
+                                .orderBy(LETTURE.DATAEFFETTUAZIONE)
+                                .limit(1).le(select(val(consumption))))))
                 .onDuplicateKeyUpdate()
-                .set(LETTURE.CONSUMI, if_(LETTURE.STATO.eq(StatusType.REVIEWING.toString()), m.getConsumi(), LETTURE.CONSUMI))
+                .set(LETTURE.CONSUMI, if_(LETTURE.STATO.eq(StatusType.REVIEWING.toString()), consumption, LETTURE.CONSUMI))
                 .execute();
     }
 
@@ -499,14 +509,14 @@ public class Queries {
 
         return query
                 .select(LETTURE.asterisk())
-                .from(CONTRATTI, OFFERTE, IMMOBILI, CONTATORI, LETTURE)
-                .where(CONTRATTI.IDCONTRATTO.eq(subId))
-                .and(CONTRATTI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
-                .and(IMMOBILI.IDIMMOBILE.eq(CONTRATTI.IDIMMOBILE))
-                .and(OFFERTE.CODOFFERTA.eq(CONTRATTI.OFFERTA))
+                .from(CONTRATTI_APPROVATI, OFFERTE, IMMOBILI, CONTATORI, LETTURE)
+                .where(CONTRATTI_APPROVATI.IDCONTRATTO.eq(subId))
+                .and(CONTRATTI_APPROVATI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
+                .and(IMMOBILI.IDIMMOBILE.eq(CONTATORI.IDIMMOBILE))
+                .and(OFFERTE.CODOFFERTA.eq(CONTRATTI_APPROVATI.OFFERTA))
                 .and(CONTATORI.MATERIAPRIMA.eq(OFFERTE.MATERIAPRIMA))
                 .and(LETTURE.MATRICOLACONTATORE.eq(CONTATORI.MATRICOLA))
-                .and(LETTURE.DATAEFFETTUAZIONE.ge(CONTRATTI.DATACHIUSURARICHIESTA))
+                .and(LETTURE.DATAEFFETTUAZIONE.ge(CONTRATTI_APPROVATI.DATACHIUSURARICHIESTA))
                 .and(LETTURE.DATAEFFETTUAZIONE.le(approvedEnd.isPresent() ?
                                                   approvedEnd.orElseThrow().getDatachiusurarichiesta() :
                                                   LocalDate.now()))
@@ -575,8 +585,7 @@ public class Queries {
                 .columns(BOLLETTE.DATAEMISSIONE, BOLLETTE.DATAINIZIOPERIODO, BOLLETTE.DATAFINEPERIODO, BOLLETTE.DATASCADENZA,
                         BOLLETTE.IMPORTO, BOLLETTE.CONSUMI, BOLLETTE.DOCUMENTODETTAGLIATO, BOLLETTE.IDOPERATORE,
                         BOLLETTE.IDCONTRATTO)
-                .select(query.select(
-                            val(LocalDate.now()),
+                .select(select(val(LocalDate.now()),
                             val(intervalStartDate),
                             val(intervalEndDate),
                             val(deadline),

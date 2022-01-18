@@ -3,8 +3,8 @@
 \usepackage[italian]{babel}
 \usepackage{alltt, fancyvrb, url}
 \usepackage[a4paper, margin=2cm]{geometry}
-%\usepackage{graphicx}
-\usepackage[demo]{graphicx} % DEBUG ONLY
+\usepackage{graphicx}
+%\usepackage[demo]{graphicx} % DEBUG ONLY
 \usepackage{amsmath}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -92,7 +92,7 @@ Per ogni contatore si vogliono memorizzare la matricola e l'immobile presso cui 
 \newline
 Ogni tipo di utilizzo è caratterizzato da un nome, da un fattore di stima dei consumi pro capite e dall'eventuale possibilità di usufruire di sconti in base al reddito.
 \newline
-Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di visualizzare tutti i dettagli delle richieste e di aggiornarne lo stato (approvata o respinta). Una richiesta può essere assegnata a un solo operatore.
+Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di visualizzare tutti i dettagli delle richieste e di aggiornarne lo stato (approvata o respinta). Una richiesta può essere assegnata a un solo operatore. Un contratto è considerato attivo se la relativa richiesta è stata approvata e se non esiste una richiesta di cessazione approvata per quello stesso contratto. Si precisa che il fornitore ha la facoltà di cessare forzatamente un contratto se dovessero verificarsi ripetuti ritardi nei pagamenti delle bollette o altre problematiche.
 \newline
 L'approvazione di una richiesta di contratto porterà all'attivazione della fornitura. Uno stesso cliente può avere più contratti attivi per la fornitura della medesima materia prima, a patto che siano riferiti a immobili diversi. Per uno stesso immobile non sono ammesse due forniture della stessa materia prima contemporaneamente attive, neanche se intestate a clienti diversi. 
 \newline
@@ -143,7 +143,7 @@ Ogni \textbf{tipologia d'uso} è caratterizzata da un nome, da un fattore di sti
 \newline
 Gli \textbf{operatori} si occupano della \textit{gestione} delle \textbf{offerte}, delle \textbf{richieste}, dei \textbf{contratti} e della manutenzione della base di dati. Di ogni operatore si vogliono memorizzare dati anagrafici, un indirizzo e-mail, una password e lo stipendio attuale. Agli operatori non è concesso sottoscrivere contratti di fornitura con l'azienda.
 \newline
-Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di \textit{visualizzare tutti i dettagli} delle richieste e di \textit{aggiornarne} lo stato (approvata o respinta). Una richiesta può essere \textit{assegnata} a un solo operatore per volta. Un contratto è considerato attivo se la relativa richiesta è stata approvata e se non esiste una richiesta di cessazione approvata per quello stesso contratto.
+Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di \textit{visualizzare tutti i dettagli} delle richieste e di \textit{aggiornarne} lo stato (approvata o respinta). Una richiesta può essere \textit{assegnata} a un solo operatore per volta. Un contratto è considerato attivo se la relativa richiesta è stata approvata e se non esiste una richiesta di cessazione approvata per quello stesso contratto. Si precisa che il fornitore ha la facoltà di cessare forzatamente un contratto se dovessero verificarsi ripetuti ritardi nei pagamenti o altre problematiche.
 \newline
 Una richiesta di contratto è \textit{associata} anche a un \textbf{immobile}, di cui si vogliono memorizzare via, numero civico, comune, CAP e provincia. Esistono due tipi di immobili: fabbricati (con eventuale numero d'interno) e terreni.
 \newline
@@ -163,7 +163,7 @@ Le \textbf{letture} sono \textit{associate} a un singolo \textbf{contatore} e de
 \subsection{Esempio di richiesta di contratto}
 \begin{mdframed}
 \begin{itemize}
-    \item Cliente: Giorgio Travaglino, GRGTVG843R01O375L, codice cliente 4
+    \item Cliente: Giorgio Travaglino, GRGTVG84R01O375L, codice cliente 4
     \item Data di apertura della richiesta: 13/08/2021
     \item Offerta selezionata: A tutto gas
     \item Uso selezionato: Domestico residenziale
@@ -180,7 +180,7 @@ Come punto di riferimento iniziale, viene proposto uno schema scheletro (\cref{f
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{images/er_diagrams/barebones.png}}%
+%\makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{images/barebones.png}}%
 \caption{Schema scheletro.}
 \label{fig:barebones}
 \end{figure}
@@ -192,7 +192,7 @@ Il \textbf{reddito} dei clienti viene modellato come entità per poter associare
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/persons.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=0.71\textwidth]{images/personER.png}}%
 \caption{Generalizzazione di clienti e operatori.}
 \label{fig:persons}
 \end{figure}
@@ -201,36 +201,36 @@ In \cref{fig:plans-uses} sono rappresentate le modellazioni di offerte e tipolog
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/plans-uses.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{images/plan-useER.png}}%
 \caption{Offerte e usi.}
 \label{fig:plans-uses}
 \end{figure}
 
 
 Esistono due tipi di richieste: di \textbf{contratto} o di \textbf{cessazione}. Poiché entrambe hanno alcuni attributi in comune, si decide di modellarle per generalizzazione creando l'entità \texttt{RICHIESTA}. In \cref{fig:requests} sono inoltre rappresentate le associazioni delle richieste con clienti e operatori. Non è possibile rappresentare graficamente il fatto che lo stato di una richiesta già finalizzata non possa essere ulteriormente modificato.
-\newline
-Per \texttt{CONTRATTO}, viene esplicitato in una nota il vincolo per cui non possano esistere contemporaneamente due contratti attivi per la stessa materia prima presso un medesimo immobile.
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/requests.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{images/requestER.png}}%
 \caption{Modellizzazione delle richieste.}
 \label{fig:requests}
 \end{figure}
 
 
-In \cref{fig:requests-activation} sono mostrate le varie associazioni che coinvolgono le due tipologie di richieste. Una richiesta di cessazione è sempre associata a un solo contratto, mentre per uno stesso contratto possono essere create più richieste di cessazione.
+Nella stessa figura vengono inoltre mostrate le varie associazioni che coinvolgono le due tipologie di richieste. Una richiesta di cessazione è sempre associata a un solo contratto, mentre per uno stesso contratto possono essere create più richieste di cessazione.
 \newline
 Vengono esplicitati testualmente i seguenti vincoli:
 \begin{itemize}
-    \item se esiste già una richiesta di cessazione approvata per uno specifico contratto, per quel medesimo contratto non potranno essere create ulteriori richieste di cessazione
+    \item se esiste ed è già stata approvata una richiesta di cessazione per uno specifico contratto, non potranno essere approvate ulteriori richieste di cessazione per quel medesimo contratto
     \item un cliente non può richiedere la cessazione di contratti di cui non è intestatario
+    \item l'approvazione e il rifiuto di una richiesta sono azioni mutualmente esclusive
 \end{itemize}
-Ciascun \textbf{tipo} di attivazione presenta un costo diverso: si decide dunque di rappresentare i tipi con l'entità \texttt{TIPO\textunderscore ATTIVAZIONE} e gli attributi in figura.
+Ciascun \textbf{tipo} di attivazione presenta un costo diverso: si decide dunque di rappresentare i tipi con l'entità \texttt{TIPO\textunderscore ATTIVAZIONE} e gli attributi in figura.\\[10pt]
+In \cref{fig:requests-activation} sono rappresentate le associazioni tra contratti e offerte, tipologie d'uso e tipi di attivazione.
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/requests_activation.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{images/subscription_reqER.png}}%
 \caption{Richieste di attivazione e di cessazione.}
 \label{fig:requests-activation}
 \end{figure}
@@ -239,10 +239,12 @@ Ciascun \textbf{tipo} di attivazione presenta un costo diverso: si decide dunque
 In \cref{fig:meters_premises} viene mostrata la rappresentazione dei \textbf{contatori} e degli \textbf{immobili}. Un contatore è univocamente identificato dalla sua matricola o, alternativamente, dalla materia prima misurata e dall'immobile presso cui è installato; quest'ultima chiave permette di imporre il vincolo per cui in un immobile non possano essere installati più contatori misuranti la stessa materia prima.
 \newline
 Gli \textbf{immobili} vengono rappresentati tramite una semplice gerarchia che ne definisce il tipo.
+\newline
+Per quanto riguarda i \textbf{contratti}, viene esplicitato in una nota il vincolo per cui non possano esistere contemporaneamente due contratti attivi per la stessa materia prima presso un medesimo immobile.
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/meters_premises.png}}
+\makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{images/meterER.png}}
 \caption{Contatori e immobili.}
 \label{fig:meters_premises}
 \end{figure}
@@ -252,7 +254,7 @@ Per ogni fornitura attiva è prevista l'emissione di \textbf{bollette} (\cref{fi
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/er_diagrams/reports.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=0.4\textwidth]{images/reportER.png}}%
 \caption{Bollette.}
 \label{fig:reports}
 \end{figure}
@@ -262,7 +264,7 @@ Le \textbf{letture} (\cref{fig:measurements}) sono associate a un contatore e ve
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{images/er_diagrams/measurements.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{images/consumpER.png}}%
 \caption{Letture.}
 \label{fig:measurements}
 \end{figure}
@@ -272,7 +274,7 @@ Si propone in \cref{fig:full-schema} la versione finale dello schema concettuale
 
 \begin{sidewaysfigure}
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{images/er_diagrams/full-schema.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{images/finalER.png}}%
 \caption{Schema concettuale finale.}
 \label{fig:full-schema}
 \end{sidewaysfigure}
@@ -656,11 +658,11 @@ In \cref{fig:full-relational} viene proposto lo schema relazionale finale.
 
 \begin{sidewaysfigure}
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{images/relational/relational.png}}
+\makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{images/relational.png}}
 \caption{Schema relazionale finale.}
 \label{fig:full-relational}
 \end{sidewaysfigure}
-
+\newpage
 \section{Traduzione delle operazioni in query SQL}
 \paragraph{OP-1: Inserire un nuovo cliente}\mbox{}\\
 \begin{lstlisting}
@@ -809,17 +811,32 @@ and not exists (select C.NumeroRichiesta
 \end{lstlisting}
 
 \paragraph{OP-14: Comunicare una lettura}\mbox{}\\
-All'inserimento di ogni lettura bisogna verificare che i consumi rilevati siano maggiori di quelli riportati nell'ultima lettura salvata. Se si comunicano più letture nello stesso giorno, viene mantenuta solo quella più recente.
+All'inserimento di ogni lettura bisogna verificare che il cliente abbia un contratto attivo associato al contatore e che i consumi rilevati siano maggiori di quelli riportati nell'ultima lettura salvata. Se si comunicano più letture nello stesso giorno, viene mantenuta solo quella più recente.
 \begin{lstlisting}
-insert into letture (MatricolaContatore, DataEffettuazione, Consumi, Stato, Note, IdPersona)
-select :meterId, curdate(), :consumption, "In lavorazione", :notes, :personId
-from letture L
-where (select L2.Consumi
-        from letture L2
-        where L2.MatricolaContatore = :meterId
-        and L2.DataEffettuazione <= curdate()
-        order by L2.Consumi desc
-        limit 1) <= :consumption
+insert into letture (MatricolaContatore, DataEffettuazione, Consumi, Stato, Note, IdCliente)
+select :meterId, curdate(), :consumption, "In lavorazione", "", :clientId
+where exists (select CA.IdContratto
+            from `contratti attivi` CA, contatori C, immobili I, offerte O
+            where C.Matricola = :meterId
+            and C.IdImmobile = I.IdImmobile
+            and I.IdImmobile = CA.IdImmobile
+            and CA.IdCliente = :clientId
+            and CA.Offerta = O.CodOfferta
+            and O.MateriaPrima = C.MateriaPrima)
+and (not exists (select L.Consumi
+                from letture L
+                where L.MatricolaContatore = :meterId
+                and L.Stato = "Approvata"
+                and L.DataChiusuraRichiesta is not null
+                order by L.DataEffettuazione desc
+                limit 1)
+    or (select L.Consumi
+        from letture L
+        where L.MatricolaContatore = :meterId
+        and L.Stato = "Approvata"
+        and L.DataChiusuraRichiesta is not null
+        order by L.DataEffettuazione desc
+        limit 1) <= :consumption)
 on duplicate key update letture.Consumi = case when letture.Stato = "In lavorazione" then :consumption else letture.Consumi end;
 \end{lstlisting}
 
@@ -1000,11 +1017,34 @@ where year(C.DataChiusuraRichiesta) = ?;
 \end{lstlisting}
 
 \chapter{Progettazione dell'applicazione}
-Per lo sviluppo dell'applicazione si è scelto come DBMS di riferimento \textbf{MySQL}. Il front-end, sviluppato in Java, segue il pattern architetturale MVC e utilizza la libreria grafica \textbf{JavaFX}. Per la comunicazione col database si è optato per la libreria \textbf{jOOQ}, la quale offre un più alto livello di astrazione rispetto alla API \textbf{JDBC}.
+Per lo sviluppo dell'applicazione si è scelto come DBMS di riferimento \textbf{MySQL}. Il front-end, sviluppato in Java, segue il pattern architetturale MVC e utilizza la libreria grafica \textbf{JavaFX}. Per la comunicazione col database si è optato per la libreria \textbf{jOOQ}, la quale offre un più alto livello di astrazione rispetto alla API JDBC.
 \newline
-L'applicazione si presenta all'avvio con una schermata in cui è possibile consultare liberamente il catalogo delle offerte, effettuare l'accesso oppure, se non lo si è già fatto, registrarsi. Clienti e operatori hanno accesso a zone diverse dell'applicazione.
-\newline
-L'inserimento di una richiesta di contratto avviene mediante una procedura guidata in cui l'applicazione verifica a ogni passaggio la correttezza dei dati, così da garantire la massima integrità del database. In qualsiasi momento è possibile tornare a una schermata precedente per apportare modifiche ai dati già inseriti. Nel caso in cui l'utente decida di interrompere anticipatamente la procedura, nessun dato verrà inserito nel database.
+L'applicazione si presenta all'avvio con una schermata in cui è possibile consultare liberamente il catalogo delle offerte, effettuare l'accesso oppure, se non lo si è già fatto, registrarsi. Clienti e operatori hanno accesso a zone diverse dell'applicazione: ad esempio, l'accesso all'area clienti (\cref{fig:user-area}) non è permesso agli operatori, che, come da specifiche, non possono sottoscrivere contratti col fornitore.
+
+\begin{figure}[H]
+    \centering{}
+    \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{images/user-area.png}}%
+    \caption{Area clienti}
+    \label{fig:user-area}
+\end{figure}
+
+L'inserimento di una richiesta di contratto (\cref{fig:sub-wizard}) avviene mediante una procedura guidata in cui l'applicazione verifica a ogni passaggio la correttezza dei dati, così da garantire la massima integrità del database. In qualsiasi momento è possibile tornare a una schermata precedente per apportare modifiche ai dati già inseriti. Nel caso in cui l'utente decida di interrompere anticipatamente la procedura, nessun dato verrà inserito nel database.
+
+\begin{figure}[H]
+    \centering{}
+    \makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{images/sub-wizard.png}}%
+    \caption{Creazione di una richiesta di contratto}
+    \label{fig:sub-wizard}
+\end{figure}
+
+L'applicazione fornisce anche funzionalità non espressamente richieste nelle specifiche, come la possibilità filtrare i contratti in base allo stato dei pagamenti delle bollette (\cref{fig:sub-management}) o di aggiungere nuovi operatori.
+
+\begin{figure}[H]
+    \centering{}
+    \makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{images/sub-management.png}}%
+    \caption{Gestione dei contratti}
+    \label{fig:sub-management}
+\end{figure}
 
 \appendix
 \chapter{Creazione di tabelle e view in SQL}

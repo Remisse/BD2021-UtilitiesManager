@@ -25,6 +25,7 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
+import javax.swing.text.View;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
@@ -286,7 +287,7 @@ public class UserAreaController extends AbstractController implements Initializa
 
     @FXML
     private void doAddMeasurement() {
-        final var subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
+        final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
 
         if (subChoice != null) {
             Optional<Cessazioni> approvedEnd = Optional.empty();
@@ -295,22 +296,20 @@ public class UserAreaController extends AbstractController implements Initializa
                 approvedEnd = Queries.fetchApprovedEndRequestBySubscription(subChoice.getValue().getIdcontratto(), conn);
                 if (approvedEnd.isEmpty()) {
                     if (Checks.isValidConsumption(consumption.getText())) {
-                        final String meterId = Queries.fetchMeterBySubscription(subChoice.getValue().getIdcontratto(), conn)
+                        final String meterId = Queries.fetchMeterBySubscription(subChoice.getValue().getIdcontratto(),
+                                        conn)
                                 .orElseThrow()
                                 .getMatricola();
-                        final Letture measurement = new Letture(
-                                0,
-                                meterId,
-                                LocalDate.now(),
-                                null,
-                                StatusType.REVIEWING.toString(),
-                                "",
-                                new BigDecimal(consumption.getText()),
-                                getSessionHolder().session().orElseThrow().userId()
-                        );
+                        final int clientId = getSessionHolder().session().orElseThrow().userId();
+                        final BigDecimal cons = new BigDecimal(consumption.getText());
 
-                        Queries.insertMeasurement(measurement, conn);
-                        updateMeasurementsTable();
+                        final int result = Queries.insertMeasurement(meterId, cons, "", clientId, conn);
+                        if (result != 0) {
+                            updateMeasurementsTable();
+                            ViewUtils.showBlockingWarning("Lettura inserita.");
+                        } else {
+                            ViewUtils.showBlockingWarning("Errore nell'inserimento della lettura.");
+                        }
                     } else {
                         ViewUtils.showBlockingWarning("Controlla di aver inserito correttamente la lettura.");
                     }

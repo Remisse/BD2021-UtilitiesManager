@@ -26,13 +26,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -43,6 +43,7 @@ import static bdproject.Tables.*;
 public class CatalogueController extends AbstractController implements Initializable {
 
     private static final String FXML_FILE = "catalogue.fxml";
+    private static final DecimalFormat DECIMAL_FORMAT = LocaleUtils.getItDecimalFormat();
     private SubscriptionProcess process;
     private final Map<String, String> measurementUnit = LocaleUtils.getItPriceUnits();
 
@@ -77,10 +78,10 @@ public class CatalogueController extends AbstractController implements Initializ
     private void initializePlanTable() {
         nameColumn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNome()));
         descColumn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDescrizione()));
-        costColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getCostomateriaprima()
-                        + " "
-                        + measurementUnit.get(cellData.getValue().getMateriaprima()))
+        costColumn.setCellValueFactory(c -> new SimpleStringProperty(DECIMAL_FORMAT.format(c.getValue()
+                .getCostomateriaprima()) +
+                " " +
+                measurementUnit.get(c.getValue().getMateriaprima()))
         );
         try (Connection conn = dataSource().getConnection()) {
             populateComboBoxes(conn);

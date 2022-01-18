@@ -130,17 +130,17 @@ public class LettureRecord extends UpdatableRecordImpl<LettureRecord> implements
     }
 
     /**
-     * Setter for <code>utenze.letture.IdPersona</code>.
+     * Setter for <code>utenze.letture.IdCliente</code>.
      */
-    public LettureRecord setIdpersona(Integer value) {
+    public LettureRecord setIdcliente(Integer value) {
         set(7, value);
         return this;
     }
 
     /**
-     * Getter for <code>utenze.letture.IdPersona</code>.
+     * Getter for <code>utenze.letture.IdCliente</code>.
      */
-    public Integer getIdpersona() {
+    public Integer getIdcliente() {
         return (Integer) get(7);
     }
 
@@ -204,7 +204,7 @@ public class LettureRecord extends UpdatableRecordImpl<LettureRecord> implements
 
     @Override
     public Field<Integer> field8() {
-        return Letture.LETTURE.IDPERSONA;
+        return Letture.LETTURE.IDCLIENTE;
     }
 
     @Override
@@ -244,7 +244,7 @@ public class LettureRecord extends UpdatableRecordImpl<LettureRecord> implements
 
     @Override
     public Integer component8() {
-        return getIdpersona();
+        return getIdcliente();
     }
 
     @Override
@@ -284,7 +284,7 @@ public class LettureRecord extends UpdatableRecordImpl<LettureRecord> implements
 
     @Override
     public Integer value8() {
-        return getIdpersona();
+        return getIdcliente();
     }
 
     @Override
@@ -331,7 +331,7 @@ public class LettureRecord extends UpdatableRecordImpl<LettureRecord> implements
 
     @Override
     public LettureRecord value8(Integer value) {
-        setIdpersona(value);
+        setIdcliente(value);
         return this;
     }
 
@@ -362,7 +362,7 @@ public class LettureRecord extends UpdatableRecordImpl<LettureRecord> implements
     /**
      * Create a detached, initialised LettureRecord
      */
-    public LettureRecord(Integer numerolettura, String matricolacontatore, LocalDate dataeffettuazione, LocalDate datachiusurarichiesta, String stato, String note, BigDecimal consumi, Integer idpersona) {
+    public LettureRecord(Integer numerolettura, String matricolacontatore, LocalDate dataeffettuazione, LocalDate datachiusurarichiesta, String stato, String note, BigDecimal consumi, Integer idcliente) {
         super(Letture.LETTURE);
 
         setNumerolettura(numerolettura);
@@ -372,7 +372,7 @@ public class LettureRecord extends UpdatableRecordImpl<LettureRecord> implements
         setStato(stato);
         setNote(note);
         setConsumi(consumi);
-        setIdpersona(idpersona);
+        setIdcliente(idcliente);
     }
 
     /**
@@ -389,7 +389,7 @@ public class LettureRecord extends UpdatableRecordImpl<LettureRecord> implements
             setStato(value.getStato());
             setNote(value.getNote());
             setConsumi(value.getConsumi());
-            setIdpersona(value.getIdpersona());
+            setIdcliente(value.getIdcliente());
         }
     }
 }

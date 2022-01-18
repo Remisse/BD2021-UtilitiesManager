@@ -88,9 +88,9 @@ public class Letture extends TableImpl<LettureRecord> {
     public final TableField<LettureRecord, BigDecimal> CONSUMI = createField(DSL.name("Consumi"), SQLDataType.DECIMAL(20, 4).nullable(false), this, "");
 
     /**
-     * The column <code>utenze.letture.IdPersona</code>.
+     * The column <code>utenze.letture.IdCliente</code>.
      */
-    public final TableField<LettureRecord, Integer> IDPERSONA = createField(DSL.name("IdPersona"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LettureRecord, Integer> IDCLIENTE = createField(DSL.name("IdCliente"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Letture(Name alias, Table<LettureRecord> aliased) {
         this(alias, aliased, null);
@@ -151,7 +151,7 @@ public class Letture extends TableImpl<LettureRecord> {
     }
 
     private transient Contatori _contatori;
-    private transient Persone _persone;
+    private transient Clienti _clienti;
 
     public Contatori contatori() {
         if (_contatori == null)
@@ -160,11 +160,11 @@ public class Letture extends TableImpl<LettureRecord> {
         return _contatori;
     }
 
-    public Persone persone() {
-        if (_persone == null)
-            _persone = new Persone(this, Keys.FK_EFFETTUAZIONE);
+    public Clienti clienti() {
+        if (_clienti == null)
+            _clienti = new Clienti(this, Keys.FK_EFFETTUAZIONE);
 
-        return _persone;
+        return _clienti;
     }
 
     @Override
