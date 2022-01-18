@@ -35,8 +35,6 @@ public class UserSignUpController extends AbstractSignUpController {
 
     @FXML private Label salaryLabel;
     @FXML private TextField salary;
-    @FXML private Label roleLabel;
-    @FXML private ComboBox<String> role;
 
     private UserSignUpController(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
         super(stage, dataSource, holder);
@@ -47,8 +45,6 @@ public class UserSignUpController extends AbstractSignUpController {
         Platform.runLater(() -> {
             salaryLabel.setVisible(false);
             salary.setVisible(false);
-            roleLabel.setVisible(false);
-            role.setVisible(false);
         });
     }
 

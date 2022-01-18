@@ -140,6 +140,7 @@ public class RequestManagementController extends AbstractController implements I
     @FXML
     private void doShowDetails() {
         final RichiesteContratto activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+
         if (activRequest != null) {
             createSubWindow(OperatorActivationRequestDetailsController.create(
                     null, dataSource(), getSessionHolder(), activRequest));
@@ -161,6 +162,7 @@ public class RequestManagementController extends AbstractController implements I
     @FXML
     private void doAccept() {
         final RichiesteContratto activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        final int operatorId = getSessionHolder().session().orElseThrow().userId();
         int result = 0;
 
         if (activRequest != null) {
@@ -169,7 +171,7 @@ public class RequestManagementController extends AbstractController implements I
                 if (meter.isEmpty()) {
                     ViewUtils.showBlockingWarning("Non è stato ancora aggiunto il contatore.");
                 } else {
-                    result = Queries.approveSubscriptionRequest(activRequest.getIdcontratto(), conn);
+                    result = Queries.approveSubscriptionRequest(activRequest.getIdcontratto(), operatorId, conn);
                     if (result == 1) {
                         ViewUtils.showBlockingWarning("Contratto attivato.");
                     } else {
@@ -185,7 +187,7 @@ public class RequestManagementController extends AbstractController implements I
             if (endRequest != null) {
                 try (Connection conn = dataSource().getConnection()) {
                     result = Queries.markEndRequestAsApproved(endRequest.getNumerorichiesta(),
-                            endRequest.getNoterichiesta(), conn);
+                            endRequest.getNoterichiesta(), operatorId, conn);
                     if (result == 1) {
                         ViewUtils.showBlockingWarning("Contratto cessato.");
                     } else {
@@ -203,12 +205,13 @@ public class RequestManagementController extends AbstractController implements I
     @FXML
     private void doRefuse() {
         final RichiesteContratto activRequest = activationRequestTable.getSelectionModel().getSelectedItem();
+        final int operatorId = getSessionHolder().session().orElseThrow().userId();
         int result = 0;
 
         if (activRequest != null) {
             try (Connection conn = dataSource().getConnection()) {
                 result = Queries.markSubscriptionRequestAsRejected(activRequest.getIdcontratto(),
-                        activRequest.getNoterichiesta(), conn);
+                        activRequest.getNoterichiesta(), operatorId, conn);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -217,7 +220,7 @@ public class RequestManagementController extends AbstractController implements I
             if (endRequest != null) {
                 try (Connection conn = dataSource().getConnection()) {
                     result = Queries.markEndRequestAsRejected(endRequest.getNumerorichiesta(),
-                            endRequest.getNoterichiesta(), conn);
+                            endRequest.getNoterichiesta(), operatorId, conn);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

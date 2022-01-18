@@ -116,11 +116,5 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Label fx:id="roleLabel" layoutX="964.0" layoutY="328.0" text="Ruolo">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-      <ComboBox fx:id="role" layoutX="964.0" layoutY="363.0" prefHeight="30.0" prefWidth="150.0" />
    </children>
 </AnchorPane>

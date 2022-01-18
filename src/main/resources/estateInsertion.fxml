@@ -42,7 +42,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0">
          <children>
@@ -103,7 +103,7 @@
             <Separator orientation="VERTICAL" prefHeight="200.0" />
             <AnchorPane prefHeight="720.0" prefWidth="1267.0">
                <children>
-                  <Label layoutX="222.0" layoutY="60.0" text="Inserisci i dati dell'immobile presso cui attivare la fornitura">
+                  <Label layoutX="333.0" layoutY="59.0" text="Inserisci i dati dell'immobile">
                      <font>
                         <Font size="19.0" />
                      </font>

@@ -25,7 +25,6 @@ public class Bollette implements Serializable {
     private final BigDecimal importo;
     private final BigDecimal consumi;
     private final byte[]     documentodettagliato;
-    private final Byte       stimata;
     private final Integer    idoperatore;
     private final Integer    idcontratto;
 
@@ -38,7 +37,6 @@ public class Bollette implements Serializable {
         this.importo = value.importo;
         this.consumi = value.consumi;
         this.documentodettagliato = value.documentodettagliato;
-        this.stimata = value.stimata;
         this.idoperatore = value.idoperatore;
         this.idcontratto = value.idcontratto;
     }
@@ -52,7 +50,6 @@ public class Bollette implements Serializable {
         BigDecimal importo,
         BigDecimal consumi,
         byte[]     documentodettagliato,
-        Byte       stimata,
         Integer    idoperatore,
         Integer    idcontratto
     ) {
@@ -64,7 +61,6 @@ public class Bollette implements Serializable {
         this.importo = importo;
         this.consumi = consumi;
         this.documentodettagliato = documentodettagliato;
-        this.stimata = stimata;
         this.idoperatore = idoperatore;
         this.idcontratto = idcontratto;
     }
@@ -126,13 +122,6 @@ public class Bollette implements Serializable {
     }
 
     /**
-     * Getter for <code>utenze.bollette.Stimata</code>.
-     */
-    public Byte getStimata() {
-        return this.stimata;
-    }
-
-    /**
      * Getter for <code>utenze.bollette.IdOperatore</code>.
      */
     public Integer getIdoperatore() {
@@ -158,7 +147,6 @@ public class Bollette implements Serializable {
         sb.append(", ").append(importo);
         sb.append(", ").append(consumi);
         sb.append(", ").append("[binary...]");
-        sb.append(", ").append(stimata);
         sb.append(", ").append(idoperatore);
         sb.append(", ").append(idcontratto);
 

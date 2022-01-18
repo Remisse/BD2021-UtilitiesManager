@@ -98,41 +98,42 @@ L'approvazione di una richiesta di contratto porterà all'attivazione della forn
 \newline
 Gli utenti registrati possono accedere alla propria area personale inserendo l'indirizzo e-mail e la password forniti al momento della registrazione. Si vuole dare la possibilità agli utenti di annullare in qualsiasi momento le richieste in attesa di approvazione. I clienti con un contratto attivo potranno visualizzare l'elenco delle bollette emesse e procedere al loro pagamento. Potranno inoltre modificare i propri dati anagrafici, comunicare letture e richiedere la cessazione dei propri contratti di fornitura attivi. Le richieste di cessazione verranno esaminate dagli operatori alla stessa maniera di quelle di attivazione.
 \newline
-Si vuole anche dare la possibilità al cliente di visualizzare alcuni dati statistici riguardanti i propri consumi: in particolare, si potranno visualizzare sia l'andamento dei consumi in un dato anno, sia la differenza in percentuale tra la media dei propri consumi e quella dei clienti residenti nello stesso comune in cui è sito l'immobile. Nel calcolo della media sono considerati anche i consumi stimati.
+Inoltre, all'interno della propria area personale i clienti potranno visualizzare alcuni dati statistici riguardanti i propri consumi: in particolare, si vogliono mostrare l'andamento dei consumi in un dato anno, la media dei consumi prodotti in uno specifico periodo e la media aggregata dei consumi di tutti i contratti attivi nello stesso comune in cui la fornitura del cliente è attiva.
 \newline
-Le bollette sono associate a uno specifico contratto e possono essere di due tipi: calcolate sui consumi effettivi oppure calcolate attraverso stime pro capite. Per ciascuna bolletta vengono memorizzati data di emissione, periodo di riferimento (con data di inizio e di fine), data di scadenza, eventuale data di pagamento, importo da pagare, consumi e un documento contenente informazioni di dettaglio che verrà caricato manualmente dagli operatori.
+Le bollette sono associate a uno specifico contratto e per ciascuna vengono memorizzati data di emissione, periodo di riferimento (con data di inizio e di fine), data di scadenza, eventuale data di pagamento, importo da pagare, consumi e un documento contenente informazioni di dettaglio (consumi reali e stimati, imposte aggiuntive, ecc.) che verrà generato esternamente e caricato manualmente dagli operatori.
 \newline
 Le letture sono associate a un singolo contatore e devono riportare la data di effettuazione e i consumi rilevati. Per un contatore può essere comunicata una sola lettura al giorno. Un cliente può comunicare una lettura per un contatore se esiste un contratto attivo a lui intestato e collegato a quel medesimo contatore. Un operatore si occuperà di esaminare la lettura e deciderà se approvarla o respingerla.
 \end{mdframed}
 
 
-\section{Glossario dei termini e testo finale}
+\section{Glossario dei termini}
 Dal testo dell'intervista si è cercato di estrarre i concetti principali del dominio, descrivendoli opportunamente e rilevando eventuali sinonimi.
 \rowcolors{1}{lightergray}{}
 \begin{longtable}{@{}p{3cm}| p{10cm} |p{3cm}@{}}
     \textbf{Termine} & \textbf{Descrizione} & \textbf{Sinonimi} \\ [0.5ex]
     \hline
     fornitore & Azienda che offre servizi di fornitura & azienda \\ 
-    fornitura & Processo di distribuzione di una materia prima presso un immobile & utenza \\
-    cliente & Persona che ha sottoscritto un contratto & persona fisica, utente \\
+    fornitura & Processo di distribuzione di una materia prima presso un immobile & \\
+    contratto & Accordo tra cliente e fornitore & \\
+    cliente & Persona che ha sottoscritto un contratto & utente \\
     operatore & Dipendente che si occupa della gestione di richieste e contratti & \\
     materia prima & Gas o acqua & \\
     offerta & Piano per la fornitura di una materia prima & \\
     tipologia d'uso & Uso a cui la fornitura è dedicata & \\
-    tipo di attivazione & Procedimento che definisce quali dati siano necessari per attivare una fornitura & \\
+    attivazione & Processo mediante il quale il fornitore effettua verifiche preliminari e predispone l'inizio della fornitura & \\
+    tipo di attivazione & Procedimento che stabilisce quali dati siano necessari per attivare una fornitura & \\
     immobile & Fabbricato o terreno presso cui attivare la fornitura & \\
     contatore & Dispositivo che misura la quantità di materia prima consumata presso un determinato immobile & \\
     lettura & Rilevazione dei consumi totali misurati da un contatore & \\
-    contratto & Accordo tra cliente e fornitore & \\
     cessazione & Terminazione di un contratto & \\
-    attivazione & Processo mediante il quale il fornitore effettua verifiche preliminari e predispone l'inizio della fornitura & \\
     bolletta & Resoconto dei consumi e dell'importo da pagare & \\
 \end{longtable}
 
-Il testo riporta già molte delle informazioni necessarie alla progettazione della base di dati, ma alcuni punti necessitano di chiarimenti. Con l'ausilio del glossario appena costruito e chiedendo delucidazioni, si propone una versione leggermente più dettagliata del testo con evidenziate le possibili entità e le relazioni tra di esse. Infine, viene mostrato un esempio di richiesta di contratto.
+\section{Testo finale}
+Il testo riporta già molte delle informazioni necessarie alla progettazione della base di dati, ma diversi punti necessitano di chiarimenti: ad esempio, la descrizione degli operatori è piuttosto vaga e il significato di alcuni termini utilizzati nel testo è talvolta ambiguo. Con l'ausilio del glossario appena costruito e chiedendo delucidazioni, si propone una versione leggermente più dettagliata del testo con evidenziate le possibili entità e le relazioni tra di esse. Infine, viene mostrato un esempio di richiesta di contratto.
 
 \begin{mdframed}
-Ogni \textbf{persona}, anche se non in possesso di un account, può \textit{consultare} liberamente un catalogo di \textbf{offerte} dedicate alla fornitura di gas o acqua. Ogni offerta è caratterizzata da nome, descrizione, materia prima di interesse, costo della materia prima e tipi di uso con cui è compatibile. Il catalogo può essere aggiornato in qualsiasi momento dagli \textit{operatori} (dipendenti dell'azienda), che aggiungeranno nuove offerte o renderanno non più sottoscrivibili quelle già esistenti.
+Ogni \textbf{persona}, anche se non in possesso di un account, può \textit{consultare} liberamente un catalogo di \textbf{offerte} dedicate alla fornitura di gas o acqua. Ogni offerta è caratterizzata da nome, descrizione, materia prima di interesse, costo della materia prima e tipi di uso con cui è compatibile. Il catalogo può essere aggiornato in qualsiasi momento dagli \textit{operatori}, che aggiungeranno nuove offerte o renderanno non più sottoscrivibili quelle già esistenti.
 \newline
 Prima di poter richiedere l'attivazione di un contratto, la persona interessata deve \textit{registrarsi} fornendo i propri dati anagrafici (nome, cognome, data di nascita, codice fiscale e indirizzo di residenza), un indirizzo e-mail, una password e la propria fascia di reddito, informazione che verrà usata dal fornitore per l'eventuale applicazione di uno sconto in bolletta. Fatto ciò, l'utente potrà procedere con l'\textit{invio} della \textbf{richiesta} indicando uso dedicato, modalità di attivazione, numero di componenti del nucleo familiare e, a seconda del metodo di attivazione scelto, anche offerta, dati dell'immobile e matricola del contatore.
 \newline
@@ -142,7 +143,7 @@ Ogni \textbf{tipologia d'uso} è caratterizzata da un nome, da un fattore di sti
 \newline
 Gli \textbf{operatori} si occupano della \textit{gestione} delle \textbf{offerte}, delle \textbf{richieste}, dei \textbf{contratti} e della manutenzione della base di dati. Di ogni operatore si vogliono memorizzare dati anagrafici, un indirizzo e-mail, una password e lo stipendio attuale. Agli operatori non è concesso sottoscrivere contratti di fornitura con l'azienda.
 \newline
-Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di \textit{visualizzare tutti i dettagli} delle richieste e di \textit{aggiornarne} lo stato (approvata o respinta). Una richiesta può essere \textit{assegnata} a un solo operatore per volta. Un contratto è considerato attivo se la relativa richiesta è stata approvata e se non è presente una richiesta di cessazione approvata relativa a quello stesso contratto.
+Al fine di effettuare le dovute verifiche prima dell'attivazione di una fornitura, gli operatori dovranno avere modo di \textit{visualizzare tutti i dettagli} delle richieste e di \textit{aggiornarne} lo stato (approvata o respinta). Una richiesta può essere \textit{assegnata} a un solo operatore per volta. Un contratto è considerato attivo se la relativa richiesta è stata approvata e se non esiste una richiesta di cessazione approvata per quello stesso contratto.
 \newline
 Una richiesta di contratto è \textit{associata} anche a un \textbf{immobile}, di cui si vogliono memorizzare via, numero civico, comune, CAP e provincia. Esistono due tipi di immobili: fabbricati (con eventuale numero d'interno) e terreni.
 \newline
@@ -152,22 +153,30 @@ L'approvazione di una richiesta di contratto porterà all'attivazione della forn
 \newline
 Gli utenti registrati possono accedere alla propria area personale inserendo l'indirizzo e-mail e la password forniti al momento della registrazione. Si vuole dare la possibilità agli utenti di \textit{annullare} in qualsiasi momento le richieste in attesa di approvazione. I clienti con un contratto attivo avranno la possibilità di visualizzare l'elenco delle \textbf{bollette} emesse e procedere al loro \textit{pagamento}. Avranno inoltre modo di modificare i propri dati anagrafici, \textit{comunicare} \textbf{letture} e \textit{richiedere} la \textbf{cessazione} dei propri contratti di fornitura attivi. Le richieste di cessazione verranno esaminate dagli operatori alla stessa maniera di quelle di attivazione.
 \newline
-All'interno dell'area personale si vuole dare la possibilità al cliente di visualizzare alcuni dati statistici riguardanti i propri consumi: in particolare, si vogliono mostrare sia l'andamento dei consumi in un dato anno, sia la differenza in percentuale tra la media dei propri consumi e quella dei clienti con una fornitura attiva nello stesso comune in cui è sito l'immobile. Nel calcolo della media sono considerati anche i consumi stimati.
+Inoltre, all'interno della propria area personale i clienti potranno visualizzare alcuni dati statistici riguardanti i consumi: in particolare, si vogliono mostrare l'andamento dei consumi in un dato anno, la media dei consumi prodotti in uno specifico periodo e la media aggregata dei consumi di tutti i contratti attivi nello stesso comune in cui la fornitura del cliente è attiva.
 \newline
-Le \textbf{bollette} sono \textit{associate} a uno specifico \textbf{contratto} e possono essere di due tipi: calcolate sui consumi effettivi oppure calcolate attraverso stime pro capite. Per ciascuna bolletta vengono memorizzati data di emissione, periodo di riferimento (con data di inizio e di fine), data di scadenza, eventuale data di pagamento, importo da pagare, consumi e un documento contenente informazioni di dettaglio che verrà caricato manualmente dagli operatori.
+Le \textbf{bollette} sono \textit{associate} a uno specifico \textbf{contratto} e per ciascuna vengono memorizzati data di emissione, periodo di riferimento (con data di inizio e di fine), data di scadenza, eventuale data di pagamento, importo da pagare, consumi e un documento contenente informazioni di dettaglio (consumi reali e stimati, imposte aggiuntive, ecc.) che verrà generato esternamente e caricato manualmente dagli operatori.
 \newline
 Le \textbf{letture} sono \textit{associate} a un singolo \textbf{contatore} e devono riportare la data di effettuazione e i consumi rilevati. Per un contatore può essere comunicata una sola lettura al giorno. Un \textbf{cliente} può \textit{comunicare} una lettura per un contatore se esiste un contratto attivo a lui intestato e collegato a quel medesimo contatore. Un operatore si occuperà di \textit{esaminare} la lettura e deciderà se approvarla o respingerla.
 \end{mdframed}
 
 \subsection{Esempio di richiesta di contratto}
 \begin{mdframed}
-\hl{DA SCRIVERE}
+\begin{itemize}
+    \item Cliente: Giorgio Travaglino, GRGTVG843R01O375L, codice cliente 4
+    \item Data di apertura della richiesta: 13/08/2021
+    \item Offerta selezionata: A tutto gas
+    \item Uso selezionato: Domestico residenziale
+    \item Tipo di attivazione scelto: subentro
+    \item Numero di componenti del nucleo familiare: 3
+    \item Immobile: Fabbricato, Via delle Viole 55, CAP 60020, Sirolo (AN)
+\end{itemize}
 \end{mdframed}
 
 \chapter{Progettazione concettuale}
 
 \section{Schema scheletro}
-Come punto di riferimento iniziale, viene proposto uno schema scheletro (\cref{fig:barebones}) contenente alcune delle entità e delle associazioni evidenziate nel testo finalizzato. Lo schema verrà discusso ed espanso nelle sezioni a seguire.
+Come punto di riferimento iniziale, viene proposto uno schema scheletro (\cref{fig:barebones}) contenente alcune delle entità e delle associazioni evidenziate nel testo finalizzato. Lo schema verrà espanso nelle sezioni a seguire.
 
 \begin{figure}[H]
 \centering{}
@@ -177,9 +186,9 @@ Come punto di riferimento iniziale, viene proposto uno schema scheletro (\cref{f
 \end{figure}
 
 \section{Raffinamenti proposti}
-Le entità \texttt{CLIENTI} e \texttt{OPERATORI} condividono numerosi attributi, per cui si sceglie di generalizzarle attraverso l'entità \texttt{PERSONA} (\cref{fig:persons}).
+Le entità \texttt{CLIENTI} e \texttt{OPERATORI} condividono numerosi attributi, per cui si sceglie di generalizzarle creando l'entità \texttt{PERSONA} (\cref{fig:persons}).
 \newline
-Il \textbf{reddito} dei clienti viene modellato come entità per poter associare a ogni fascia la relativa percentuale di sconto.
+Il \textbf{reddito} dei clienti viene modellato come entità per poter associare a ogni fascia la relativa percentuale di sconto decisa dal fornitore.
 
 \begin{figure}[H]
 \centering{}
@@ -197,9 +206,10 @@ In \cref{fig:plans-uses} sono rappresentate le modellazioni di offerte e tipolog
 \label{fig:plans-uses}
 \end{figure}
 
-Esistono due tipi di richieste: di \textbf{contratto} o di \textbf{cessazione}. Poiché entrambe hanno alcuni attributi in comune, si decide di modellarle per generalizzazione creando l'entità \texttt{RICHIESTA}. In \cref{fig:requests} sono inoltre rappresentate le associazioni delle richieste con clienti e operatori. Non è possibile rappresentare graficamente il fatto che una richiesta già approvata non può successivamente essere respinta o viceversa.
+
+Esistono due tipi di richieste: di \textbf{contratto} o di \textbf{cessazione}. Poiché entrambe hanno alcuni attributi in comune, si decide di modellarle per generalizzazione creando l'entità \texttt{RICHIESTA}. In \cref{fig:requests} sono inoltre rappresentate le associazioni delle richieste con clienti e operatori. Non è possibile rappresentare graficamente il fatto che lo stato di una richiesta già finalizzata non possa essere ulteriormente modificato.
 \newline
-Per \texttt{CONTRATTO}, viene esplicitato in una nota il vincolo per cui non possono esistere contemporaneamente due contratti attivi per la stessa materia prima presso un medesimo immobile.
+Per \texttt{CONTRATTO}, viene esplicitato in una nota il vincolo per cui non possano esistere contemporaneamente due contratti attivi per la stessa materia prima presso un medesimo immobile.
 
 \begin{figure}[H]
 \centering{}
@@ -216,7 +226,7 @@ Vengono esplicitati testualmente i seguenti vincoli:
     \item se esiste già una richiesta di cessazione approvata per uno specifico contratto, per quel medesimo contratto non potranno essere create ulteriori richieste di cessazione
     \item un cliente non può richiedere la cessazione di contratti di cui non è intestatario
 \end{itemize}
-Quanti e quali dati vadano inseriti durante la creazione della richiesta dipende dal \textbf{tipo} di attivazione scelto. \hl{Dall'intervista notiamo che gli unici dati a non essere sempre richiesti sono il codice cliente del vecchio intestatario, la matricola del contatore, la lettura e i dati dell'immobile}: si decide dunque di rappresentare i tipi di attivazione come istanze di una singola entità \texttt{TIPO\textunderscore ATTIVAZIONE} con gli attributi in figura.
+Ciascun \textbf{tipo} di attivazione presenta un costo diverso: si decide dunque di rappresentare i tipi con l'entità \texttt{TIPO\textunderscore ATTIVAZIONE} e gli attributi in figura.
 
 \begin{figure}[H]
 \centering{}
@@ -238,7 +248,7 @@ Gli \textbf{immobili} vengono rappresentati tramite una semplice gerarchia che n
 \end{figure}
 
 
-Per ogni fornitura attiva è prevista l'emissione di \textbf{bollette} con frequenza dettata dal fornitore. Come indicato nell'intervista, l'importo in bolletta può essere calcolato in base o ai consumi effettivi o a una stima che tiene conto del numero di persone e dell'uso scelto: ciò è rappresentato mediante la gerarchia visibile in \cref{fig:reports}.
+Per ogni fornitura attiva è prevista l'emissione di \textbf{bollette} (\cref{fig:reports}) con frequenza dettata dal fornitore. L'entità \texttt{BOLLETTA} presenta tutti gli attributi richiesti nelle specifiche.
 
 \begin{figure}[H]
 \centering{}
@@ -248,7 +258,7 @@ Per ogni fornitura attiva è prevista l'emissione di \textbf{bollette} con frequ
 \end{figure}
 
 
-Le \textbf{letture} (\cref{fig:measurements}) sono associate a un contatore e vengono sempre controllate da un operatore prima di essere approvate o respinte; quest'ultimo aspetto ricorda esattamente le specifiche delle \textbf{richieste} e, dunque, nonostante non sia del tutto corretto da un punto di vista semantico, si decide di modellare l'entità \texttt{LETTURA} come specializzazione di \texttt{RICHIESTA} per evitare di ripetere una seconda volta le medesime associazioni con \texttt{OPERATORE}. Poiché è anche necessario limitare il numero di letture giornaliere a una per ogni contatore, l'attributo \texttt{DataApertura} viene spostato da \texttt{RICHIESTA} alle entità figlie e viene scelto come identificatore secondario la coppia \texttt{(DataApertura, Matricola)}.
+Le \textbf{letture} (\cref{fig:measurements}) sono associate a un contatore e vengono sempre esaminate da un operatore prima di essere approvate o respinte; quest'ultimo aspetto ricorda esattamente le specifiche delle \textbf{richieste} e, dunque, nonostante non sia del tutto corretto da un punto di vista semantico, si decide di modellare l'entità \texttt{LETTURA} come specializzazione di \texttt{RICHIESTA} per evitare di ripetere una seconda volta le medesime associazioni con \texttt{OPERATORE}. Poiché è anche necessario limitare il numero di letture giornaliere a una per ogni contatore, l'attributo \texttt{DataApertura} viene spostato da \texttt{RICHIESTA} alle entità figlie e viene scelto come identificatore secondario la coppia \texttt{(DataApertura, Matricola)}.
 
 \begin{figure}[H]
 \centering{}
@@ -343,8 +353,8 @@ Dal testo è stata estratta una lista di possibili operazioni che verranno svolt
     \textbf{OP-24} & Eliminare una richiesta non finalizzata & 1/settimana \\
     \textbf{OP-25} & Visualizzare il numero di contratti stipulati in un dato anno & 3/anno \\
     \textbf{OP-26} & Visualizzare l'andamento dei consumi relativi a un contratto in un dato anno & 1.000/mese \\
-    \textbf{OP-27} & Visualizzare la media dei consumi (reali e stimati) per un contratto in un dato periodo & 1.000/mese \\
-    \textbf{OP-28} & Visualizzare la media aggregata dei consumi (reali e stimati) di una data materia prima prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune & 1.000/mese \\
+    \textbf{OP-27} & Visualizzare la media dei consumi per un contratto in un dato periodo & 1.000/mese \\
+    \textbf{OP-28} & Visualizzare la media aggregata dei consumi di una data materia prima prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune & 1.000/mese \\
     \textbf{OP-29} & Visualizzare il numero di richieste di contratto finalizzate da un dato operatore & 1/mese \\
     \textbf{OP-30} & Visualizzare il numero di richieste di cessazione finalizzate da un dato operatore & 1/mese \\
     \textbf{OP-31} & Data una materia prima, visualizzare l'offerta più richiesta & 1/mese \\
@@ -381,7 +391,7 @@ Dal testo è stata estratta una lista di possibili operazioni che verranno svolt
 \end{tabular}
 \end{center}
 \underline{Totale}: $6 \text{S} \times 6 = 72$ accessi al giorno 
-\paragraph{OP-6: Selezionare l’eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}\mbox{}\\
+\paragraph{OP-6: Selezionare l'eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}\mbox{}\\
 Per trovare il contratto attualmente attivo e procedere con la voltura, l'utente è tenuto a comunicare il codice cliente dell'attuale intestatario e la matricola del contatore.
 \rowcolors{1}{lightergray}{}
 \begin{center}
@@ -465,7 +475,7 @@ Per trovare il contratto attualmente attivo e procedere con la voltura, l'utente
 \end{tabular}
 \end{center}
 \underline{Totale}: $3,52\text{L} \times 300 = 1.056$ accessi al giorno
-\paragraph{OP-29: Visualizzare la media aggregata dei consumi (reali e stimati) relativi a tutti i contratti attivi in un dato comune}\mbox{}\\
+\paragraph{OP-29: Visualizzare la media aggregata dei consumi relativi a tutti i contratti attivi in un dato comune}\mbox{}\\
     Per rendere meno caotico il processo di analisi, si suddivide l'operazione in due fasi.\\
     Prima di tutto, bisogna trovare tutti i contratti con una fornitura attiva nel comune di interesse. Sapendo che in Italia sono presenti 7.903 comuni e supponendo per semplicità che il numero di immobili sia uniformemente distribuito tra i comuni:
     \rowcolors{1}{lightergray}{}
@@ -530,7 +540,6 @@ In termini di accessi, si ha un beneficio quasi trascurabile in OP-18 e un legge
 \begin{itemize}
     \item Le entità \texttt{CLIENTE} e \texttt{OPERATORE}, entrambe specializzazioni di \texttt{PERSONA}, hanno ruoli diametralmente opposti e si relazionano alle altre entità con associazioni tutte diverse. Poiché la loro copertura è totale ed esclusiva, avrebbe senso procedere con un collasso verso il basso, ma ciò significherebbe anche replicare la grande quantità di attributi di \texttt{PERSONA} in due tabelle diverse e costringerebbe a effettuare controlli aggiuntivi per evitare che i dati di una stessa persona compaiano in entrambe le tabelle. Si preferisce, dunque, effettuare una trasformazione per associazioni: \texttt{CLIENTE} e \texttt{OPERATORE} vengono relazionati a \texttt{PERSONA} e da essa ricaveranno la chiave primaria e tutti gli altri attributi. Dovremo solo assicurarci che lo stesso codice identificativo di una persona venga inserito solo in una tabella tra \texttt{CLIENTE} e \texttt{OPERATORE}.
     \item Il caso di \texttt{IMMOBILE} è l'esatto opposto: nessuna delle due specializzazioni possiede associazioni con le altre entità del dominio, per cui si procede aggiungendo a \texttt{IMMOBILE} gli attributi \texttt{Tipo} e \texttt{Interno}.
-    \item La gerarchia di \texttt{BOLLETTA} viene eliminata e si aggiunge l'attributo booleano \texttt{Stimata}.
     \item Per la gerarchia di \texttt{RICHIESTA} si procede con una trasformazione verso il basso: l'entità \texttt{RICHIESTA} viene eliminata e i suoi attributi integrati in \texttt{CONTRATTO}, \texttt{CESSAZIONE} e \texttt{LETTURA}.
 \end{itemize}
 
@@ -572,7 +581,7 @@ Si procede alla trasformazione delle associazioni:
 
 \section{Traduzione di entità e associazioni in relazioni}
 \begin{itemize}
-    \item \texttt{BOLLETTE(\underline{NumeroBolletta}, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore, IdContratto) \\
+    \item \texttt{BOLLETTE(\underline{NumeroBolletta}, DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, IdOperatore, IdContratto) \\
     FK: IdOperatore REFERENCES OPERATORI \\
     FK: IdContratto REFERENCES CONTRATTI}
     
@@ -720,23 +729,36 @@ update contratti
 set StatoRichiesta = "Respinta", DataChiusuraRichiesta = curdate(), NoteRichiesta = ?
 where IdContratto = ?
 and StatoRichiesta = "In lavorazione"
-and DataChiusuraRichiesta is null;
+and DataChiusuraRichiesta is null
+and exists (select *
+            from `operatori contratti` OC
+            where OC.NumeroRichiesta = ?
+            and OC.IdOperatore = ?)
 
 -- In caso di richiesta di cessazione
 update cessazioni
 set StatoRichiesta = "Respinta", DataChiusuraRichiesta = curdate(), NoteRichiesta = ?
 where NumeroRichiesta = ?
 and StatoRichiesta = "In lavorazione"
-and DataChiusuraRichiesta is null;
+and DataChiusuraRichiesta is null
+and exists (select *
+            from `operatori cessazioni` OC
+            where OC.NumeroRichiesta = ?
+            and OC.IdOperatore = ?)
 \end{lstlisting}
 
 \paragraph{OP-10: Approvare una richiesta di contratto}\mbox{}\\
+La richiesta viene approvata se non è già presente un contratto attivo per la fornitura della stessa materia prima presso lo stesso immobile.
 \begin{lstlisting}
 update contratti
 set DataChiusuraRichiesta = curdate(), StatoRichiesta = "Approvata", NoteRichiesta = :notes
 where IdContratto = :subId
 and StatoRichiesta = "In lavorazione"
 and DataChiusuraRichiesta is null
+and exists (select *
+            from `operatori contratti` OC
+            where OC.NumeroRichiesta = ?
+            and OC.IdOperatore = ?)
 and not exists (select C.IdContratto
                 from `contratti attivi` C, immobili I, offerte O, contatori M
                 where I.IdImmobile = (select distinct(C2.IdImmobile)
@@ -766,12 +788,17 @@ where CodOfferta = ?;
 \end{lstlisting}
 
 \paragraph{OP-13: Approvare una richiesta di cessazione}\mbox{}\\
+La richiesta viene approvata se non esiste un'altra richiesta di cessazione già approvata per lo stesso contratto.
 \begin{lstlisting}
 update cessazioni
 set StatoRichiesta = "Approvata", NoteRichiesta = :notes, DataChiusuraRichiesta = curdate()
 where cessazioni.NumeroRichiesta = :requestId
 and cessazioni.StatoRichiesta = "In lavorazione"
 and cessazioni.DataChiusuraRichiesta is null
+and exists (select *
+            from `operatori cessazioni` OC
+            where OC.NumeroRichiesta = ?
+            and OC.IdOperatore = ?)
 and not exists (select C.NumeroRichiesta
                 from cessazioni C
                 where C.IdContratto = (select C2.IdContratto
@@ -782,6 +809,7 @@ and not exists (select C.NumeroRichiesta
 \end{lstlisting}
 
 \paragraph{OP-14: Comunicare una lettura}\mbox{}\\
+All'inserimento di ogni lettura bisogna verificare che i consumi rilevati siano maggiori di quelli riportati nell'ultima lettura salvata. Se si comunicano più letture nello stesso giorno, viene mantenuta solo quella più recente.
 \begin{lstlisting}
 insert into letture (MatricolaContatore, DataEffettuazione, Consumi, Stato, Note, IdPersona)
 select :meterId, curdate(), :consumption, "In lavorazione", :notes, :personId
@@ -837,8 +865,8 @@ on duplicate key ignore;
     
 \paragraph{OP-18: Inserire una nuova bolletta per un contratto attivo}\mbox{}\\
 \begin{lstlisting}
-insert into bollette (DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, Stimata, IdOperatore, IdContratto)
-select curdate(), :intervalStartDate, :intervalEndDate, :deadline, :finalCost, :consumption, :reportFile, :estimated, :operatorId, :subId
+insert into bollette (DataEmissione, DataInizioPeriodo, DataFinePeriodo, DataScadenza, Importo, Consumi, DocumentoDettagliato, IdOperatore, IdContratto)
+select curdate(), :intervalStartDate, :intervalEndDate, :deadline, :finalCost, :consumption, :reportFile, :operatorId, :subId
 from `contratti attivi`
 where `contratti attivi`.IdContratto = :subId;
 \end{lstlisting}
@@ -911,7 +939,7 @@ where B.IdContratto = ?
 and year(B.DataFinePeriodo) = ?;
 \end{lstlisting}
 
-\paragraph{OP-27: Visualizzare la media dei consumi (reali e stimati) per un contratto in un dato periodo}\mbox{}\\
+\paragraph{OP-27: Visualizzare la media dei consumi per un contratto in un dato periodo}\mbox{}\\
 \begin{lstlisting}
 select avg(B.Consumi) as MediaContratto
 from bollette B, `contratti approvati` C
@@ -920,7 +948,7 @@ and B.IdContratto = C.IdContratto
 and B.DataFinePeriodo between ? and ?;
 \end{lstlisting}
 
-\paragraph{OP-28: Visualizzare la media aggregata dei consumi (reali e stimati) di una data materia prima prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune}\mbox{}\\
+\paragraph{OP-28: Visualizzare la media aggregata dei consumi di una data materia prima prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune}\mbox{}\\
 \begin{lstlisting}
 select avg(B.Consumi) as MediaComune
 from bollette B, `contratti approvati` C, immobili I, offerte O
@@ -955,16 +983,16 @@ and C.DataChiusuraRichiesta is not null;
 
 \paragraph{OP-31: Data una materia prima, visualizzare l'offerta più richiesta}\mbox{}\\
 \begin{lstlisting}
-select O1.CodOfferta, O1.Nome, count(C1.IdContratto) as NumeroContratti
-from offerte O1, contratti C1
-where C1.Offerta = O1.CodOfferta
-group by O1.CodOfferta
-order by Conteggio desc
+select O.CodOfferta, O.Nome, count(C.IdContratto) as NumeroContratti
+from offerte O, contratti C
+where C.Offerta = O.CodOfferta
+group by O.CodOfferta
+order by NumeroContratti desc
 limit 1;
 
 \end{lstlisting}
 
-\paragraph{OP-32: Visualizzare il numero di contratti attivati in un dato anno}
+\paragraph{OP-32: Visualizzare il numero di contratti attivati in un dato anno}\mbox{}\\
 \begin{lstlisting}
 select count(*)
 from `contratti approvati` C
@@ -972,11 +1000,11 @@ where year(C.DataChiusuraRichiesta) = ?;
 \end{lstlisting}
 
 \chapter{Progettazione dell'applicazione}
-Per lo sviluppo dell'applicazione si è scelto come DBMS di riferimento \textit{MySQL}. Il front-end, sviluppato in Java, segue il pattern architetturale MVC e utilizza la libreria grafica \textit{JavaFX}. Per la comunicazione col database si è optato per la libreria \textit{jOOQ}, basata sull'API \textit{JDBC} e rispetto alla quale offre un più alto livello di astrazione.
+Per lo sviluppo dell'applicazione si è scelto come DBMS di riferimento \textbf{MySQL}. Il front-end, sviluppato in Java, segue il pattern architetturale MVC e utilizza la libreria grafica \textbf{JavaFX}. Per la comunicazione col database si è optato per la libreria \textbf{jOOQ}, la quale offre un più alto livello di astrazione rispetto alla API \textbf{JDBC}.
 \newline
-L'applicazione si presenta all'avvio con una schermata in cui è possibile consultare liberamente il catalogo delle offerte, effettuare l'accesso oppure, se non lo si è già fatto, registrarsi.
+L'applicazione si presenta all'avvio con una schermata in cui è possibile consultare liberamente il catalogo delle offerte, effettuare l'accesso oppure, se non lo si è già fatto, registrarsi. Clienti e operatori hanno accesso a zone diverse dell'applicazione.
 \newline
-L'inserimento di una richiesta di contratto avviene mediante una serie di passaggi consecutivi in cui l'applicazione verifica a ogni nuova schermata la correttezza dei dati inseriti dall'utente, così da garantire la massima integrità dei dati. Nel caso in cui l'inserimento non vada a buon fine o venga interrotto, nessun dato verrà inserito nel database.
+L'inserimento di una richiesta di contratto avviene mediante una procedura guidata in cui l'applicazione verifica a ogni passaggio la correttezza dei dati, così da garantire la massima integrità del database. In qualsiasi momento è possibile tornare a una schermata precedente per apportare modifiche ai dati già inseriti. Nel caso in cui l'utente decida di interrompere anticipatamente la procedura, nessun dato verrà inserito nel database.
 
 \appendix
 \chapter{Creazione di tabelle e view in SQL}
@@ -991,7 +1019,6 @@ create table bollette (
     Importo decimal(20, 2) not null,
     Consumi decimal(20, 4) not null,
     DocumentoDettagliato mediumblob not null,
-    Stimata boolean not null,
     IdOperatore integer not null,
     IdContratto integer not null,
     check (DataScadenza > DataEmissione),

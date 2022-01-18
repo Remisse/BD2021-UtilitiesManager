@@ -8,10 +8,8 @@ import org.jooq.impl.SQLDataType;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Connection;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -198,7 +196,8 @@ public class Queries {
                 .execute();
     }
 
-    public static int markSubscriptionRequestAsRejected(final int requestId, final String requestNotes, final Connection conn) {
+    public static int markSubscriptionRequestAsRejected(final int requestId, final String requestNotes, final int operatorId,
+            final Connection conn) {
         final DSLContext query = createContext(conn);
 
         return query
@@ -208,10 +207,14 @@ public class Queries {
                 .set(CONTRATTI.DATACHIUSURARICHIESTA, LocalDate.now())
                 .where(CONTRATTI.IDCONTRATTO.eq(requestId))
                 .and(CONTRATTI.DATACHIUSURARICHIESTA.isNull())
+                .andExists(selectFrom(OPERATORI_CONTRATTI)
+                        .where(OPERATORI_CONTRATTI.NUMERORICHIESTA.eq(requestId))
+                        .and(OPERATORI_CONTRATTI.IDOPERATORE.eq(operatorId)))
                 .execute();
     }
 
-    public static int markEndRequestAsApproved(final int requestId, final String requestNotes, final Connection conn) {
+    public static int markEndRequestAsApproved(final int requestId, final String requestNotes, final int operatorId,
+            final Connection conn) {
         final DSLContext query = createContext(conn);
 
         return query
@@ -222,6 +225,9 @@ public class Queries {
                 .where(CESSAZIONI.NUMERORICHIESTA.eq(requestId))
                 .and(CESSAZIONI.STATORICHIESTA.eq(StatusType.REVIEWING.toString()))
                 .and(CESSAZIONI.DATACHIUSURARICHIESTA.isNull())
+                .andExists(selectFrom(OPERATORI_CESSAZIONI)
+                        .where(OPERATORI_CESSAZIONI.NUMERORICHIESTA.eq(requestId))
+                        .and(OPERATORI_CESSAZIONI.IDOPERATORE.eq(operatorId)))
                 .andNotExists(query.select(CESSAZIONI.NUMERORICHIESTA)
                         .from(CESSAZIONI)
                         .where(CESSAZIONI.IDCONTRATTO.eq(query.select(CESSAZIONI.IDCONTRATTO)
@@ -232,7 +238,8 @@ public class Queries {
                 .execute();
     }
 
-    public static int markEndRequestAsRejected(final int requestId, final String requestNotes, final Connection conn) {
+    public static int markEndRequestAsRejected(final int requestId, final String requestNotes, final int operatorId,
+            final Connection conn) {
         final DSLContext query = createContext(conn);
 
         return query
@@ -242,6 +249,9 @@ public class Queries {
                 .set(CESSAZIONI.DATACHIUSURARICHIESTA, LocalDate.now())
                 .where(CESSAZIONI.NUMERORICHIESTA.eq(requestId))
                 .and(CESSAZIONI.DATACHIUSURARICHIESTA.isNull())
+                .andExists(selectFrom(OPERATORI_CESSAZIONI)
+                        .where(OPERATORI_CESSAZIONI.NUMERORICHIESTA.eq(requestId))
+                        .and(OPERATORI_CESSAZIONI.IDOPERATORE.eq(operatorId)))
                 .execute();
     }
 
@@ -467,7 +477,6 @@ public class Queries {
                                 r.get(BOLLETTE.IMPORTO),
                                 r.get(BOLLETTE.CONSUMI),
                                 r.get(BOLLETTE.DOCUMENTODETTAGLIATO),
-                                r.get(BOLLETTE.STIMATA),
                                 r.get(BOLLETTE.IDOPERATORE),
                                 r.get(BOLLETTE.IDCONTRATTO)))
                 );
@@ -556,8 +565,7 @@ public class Queries {
 
     public static int publishReport(final LocalDate intervalStartDate, final LocalDate intervalEndDate,
                                     final LocalDate deadline, final BigDecimal finalCost, final BigDecimal consumption,
-                                    final byte[] reportFile, final byte estimated, final int operatorId, final int subId,
-                                    final Connection conn) {
+                                    final byte[] reportFile, final int operatorId, final int subId, final Connection conn) {
         Objects.requireNonNull(finalCost);
         Objects.requireNonNull(reportFile);
         final DSLContext query = createContext(conn);
@@ -565,8 +573,8 @@ public class Queries {
         return query
                 .insertInto(BOLLETTE)
                 .columns(BOLLETTE.DATAEMISSIONE, BOLLETTE.DATAINIZIOPERIODO, BOLLETTE.DATAFINEPERIODO, BOLLETTE.DATASCADENZA,
-                        BOLLETTE.IMPORTO, BOLLETTE.CONSUMI, BOLLETTE.DOCUMENTODETTAGLIATO, BOLLETTE.STIMATA,
-                        BOLLETTE.IDOPERATORE, BOLLETTE.IDCONTRATTO)
+                        BOLLETTE.IMPORTO, BOLLETTE.CONSUMI, BOLLETTE.DOCUMENTODETTAGLIATO, BOLLETTE.IDOPERATORE,
+                        BOLLETTE.IDCONTRATTO)
                 .select(query.select(
                             val(LocalDate.now()),
                             val(intervalStartDate),
@@ -575,7 +583,6 @@ public class Queries {
                             val(finalCost),
                             val(consumption),
                             val(reportFile),
-                            val(estimated),
                             val(operatorId),
                             val(subId))
                         .from(CONTRATTI_ATTIVI)
@@ -817,7 +824,7 @@ public class Queries {
                 .fetchInto(Cessazioni.class);
     }
 
-    public static int approveSubscriptionRequest(final int requestId, final Connection conn) {
+    public static int approveSubscriptionRequest(final int requestId, final int operatorId, final Connection conn) {
         final DSLContext ctx = createContext(conn);
 
         return ctx.update(CONTRATTI)
@@ -826,9 +833,12 @@ public class Queries {
                 .where(CONTRATTI.IDCONTRATTO.eq(requestId))
                 .and(CONTRATTI.STATORICHIESTA.eq(StatusType.REVIEWING.toString()))
                 .and(CONTRATTI.DATACHIUSURARICHIESTA.isNull())
-                .andNotExists(ctx.select(CONTRATTI_ATTIVI.IDCONTRATTO)
+                .andExists(selectFrom(OPERATORI_CONTRATTI)
+                        .where(OPERATORI_CONTRATTI.NUMERORICHIESTA.eq(requestId))
+                        .and(OPERATORI_CONTRATTI.IDOPERATORE.eq(operatorId)))
+                .andNotExists(select()
                         .from(CONTRATTI_ATTIVI, IMMOBILI, OFFERTE, CONTATORI)
-                        .where(IMMOBILI.IDIMMOBILE.eq(ctx.selectDistinct(CONTRATTI.IDIMMOBILE)
+                        .where(IMMOBILI.IDIMMOBILE.eq(selectDistinct(CONTRATTI.IDIMMOBILE)
                                 .from(CONTRATTI)
                                 .where(CONTRATTI.IDCONTRATTO.eq(requestId))))
                         .and(CONTRATTI_ATTIVI.IDIMMOBILE.eq(IMMOBILI.IDIMMOBILE))
@@ -947,7 +957,7 @@ public class Queries {
             throw new IllegalStateException("Assignment insertion failed.");
         }
 
-        result += Queries.markEndRequestAsApproved(endRequestId, notes, conn);
+        result += Queries.markEndRequestAsApproved(endRequestId, notes, opId, conn);
 
         return result == 3;
     }

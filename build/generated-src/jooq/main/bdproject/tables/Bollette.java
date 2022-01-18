@@ -19,7 +19,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -91,11 +91,6 @@ public class Bollette extends TableImpl<BolletteRecord> {
      * The column <code>utenze.bollette.DocumentoDettagliato</code>.
      */
     public final TableField<BolletteRecord, byte[]> DOCUMENTODETTAGLIATO = createField(DSL.name("DocumentoDettagliato"), SQLDataType.BLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>utenze.bollette.Stimata</code>.
-     */
-    public final TableField<BolletteRecord, Byte> STIMATA = createField(DSL.name("Stimata"), SQLDataType.TINYINT.nullable(false), this, "");
 
     /**
      * The column <code>utenze.bollette.IdOperatore</code>.
@@ -212,11 +207,11 @@ public class Bollette extends TableImpl<BolletteRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Integer, LocalDate, LocalDate, LocalDate, LocalDate, BigDecimal, BigDecimal, byte[], Byte, Integer, Integer> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row10<Integer, LocalDate, LocalDate, LocalDate, LocalDate, BigDecimal, BigDecimal, byte[], Integer, Integer> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

@@ -54,7 +54,6 @@ public class UserAreaController extends AbstractController implements Initializa
     @FXML private TableColumn<Bollette, String> paid;
     @FXML private TableColumn<Bollette, String> amount;
     @FXML private TableColumn<Bollette, String> reportConsumptionCol;
-    @FXML private TableColumn<Bollette, String> estimatedCol;
 
     @FXML private TableView<RichiesteContratto> activationReqTable;
     @FXML private TableColumn<RichiesteContratto, String> reqCreationDateCol;
@@ -206,8 +205,6 @@ public class UserAreaController extends AbstractController implements Initializa
                         .format(DATE_FORMAT)));
                 amount.setCellValueFactory(cellData -> new SimpleStringProperty(
                         "€" + DECIMAL_FORMAT.format(cellData.getValue().getImporto())));
-                estimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
-                        StringUtils.byteToYesNo(c.getValue().getStimata())));
                 reportConsumptionCol.setCellValueFactory(c ->
                         new SimpleStringProperty(DECIMAL_FORMAT.format(c.getValue().getConsumi()) + " " + unit));
             });

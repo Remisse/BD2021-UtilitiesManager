@@ -79,7 +79,6 @@ public class SubscriptionManagementController extends AbstractController impleme
     @FXML private TableColumn<Bollette, String> repDeadlineCol;
     @FXML private TableColumn<Bollette, String> repPaidDateCol;
     @FXML private TableColumn<Bollette, String> repCostCol;
-    @FXML private TableColumn<Bollette, String> repEstimatedCol;
     @FXML private TableColumn<Bollette, String> repIntervalStartCol;
     @FXML private TableColumn<Bollette, String> repIntervalEndCol;
     @FXML private TableColumn<Bollette, String> repConsumptionCol;
@@ -87,7 +86,6 @@ public class SubscriptionManagementController extends AbstractController impleme
     @FXML private DatePicker intervalStartDatePicker;
     @FXML private DatePicker intervalEndDatePicker;
     @FXML private DatePicker deadlineDatePicker;
-    @FXML private CheckBox estimatedCheckbox;
     @FXML private TextField finalCostField;
     @FXML private TextField consumptionField;
     @FXML private Label reportFileStatus;
@@ -287,8 +285,6 @@ public class SubscriptionManagementController extends AbstractController impleme
                     .getDatascadenza())));
             repCostCol.setCellValueFactory(c -> new SimpleStringProperty("€ " + decimalFormat.format(c.getValue()
                     .getImporto())));
-            repEstimatedCol.setCellValueFactory(c -> new SimpleStringProperty(
-                    StringUtils.byteToYesNo(c.getValue().getStimata())));
             repIntervalStartCol.setCellValueFactory(c -> new SimpleStringProperty(dateIt.format(c.getValue()
                     .getDatainizioperiodo())));
             repIntervalEndCol.setCellValueFactory(c -> new SimpleStringProperty((dateIt.format(c.getValue()
@@ -377,7 +373,6 @@ public class SubscriptionManagementController extends AbstractController impleme
                             new BigDecimal(finalCostField.getText()),
                             new BigDecimal(consumptionField.getText()),
                             reportFile,
-                            (byte) (estimatedCheckbox.isSelected() ? 1 : 0),
                             getSessionHolder().session().orElseThrow().userId(),
                             sub.getIdcontratto(),
                             conn);
