@@ -4,6 +4,7 @@ import bdproject.controller.gui.AbstractSubscriptionDetailsController;
 import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
+import bdproject.model.types.StatusType;
 import bdproject.tables.pojos.Cessazioni;
 import bdproject.tables.pojos.ContrattiApprovati;
 import bdproject.tables.pojos.ContrattiAttivi;
@@ -73,7 +74,7 @@ public class UserSubDetailsController extends AbstractSubscriptionDetailsControl
     protected void abstractDoDeleteEndRequest() {
         final Cessazioni selected = endRequestTable.getSelectionModel().getSelectedItem();
 
-        if (selected != null && (selected.getStatorichiesta().equals("In gestione"))) {
+        if (selected != null && selected.getStatorichiesta().equals(StatusType.REVIEWING.toString())) {
             try (Connection conn = dataSource().getConnection()) {
                 final int result = Queries.deleteEndRequest(selected.getNumerorichiesta(), conn);
                 if (result == 1) {

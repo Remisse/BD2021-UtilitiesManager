@@ -151,7 +151,9 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     @FXML
     private void doRefreshSubs() {
-        final int clientId = clientIdFilter.getText().equals("") ? NO_CLIENT : Integer.parseInt(clientIdFilter.getText());
+        final Optional<Integer> clientId = !clientIdFilter.getText().equals("") && Checks.isIntegerNumber(clientIdFilter.getText()) ?
+                                           Optional.of(Integer.parseInt(clientIdFilter.getText())) :
+                                           Optional.empty();
         final String statusChoice = statusFilter.getValue();
 
         try (Connection conn = dataSource().getConnection()) {
@@ -160,7 +162,7 @@ public class SubscriptionManagementController extends AbstractController impleme
             subsList = subs.entrySet()
                     .stream()
                     .filter(p -> statuses.get(statusChoice).test(p.getKey(), conn))
-                    .filter(p -> clientId == NO_CLIENT || p.getKey().getIdcliente().equals(clientId))
+                    .filter(p -> clientId.isEmpty() || p.getKey().getIdcliente().equals(clientId.orElseThrow()))
                     .filter(p -> !lastReportFilter.isSelected()
                             || (p.getValue().getDataemissione().isBefore(LocalDate.now().minus(Period.ofMonths(
                                         REPORT_PERIOD_MONTHS)))))
@@ -340,6 +342,7 @@ public class SubscriptionManagementController extends AbstractController impleme
             try (Connection conn = dataSource().getConnection()) {
                 final int result = Queries.deleteReport(report.getNumerobolletta(), conn);
                 if (result != 0) {
+                    doRefreshReports();
                     ViewUtils.showBlockingWarning("Bolletta eliminata.");
                 } else {
                     ViewUtils.showBlockingWarning("Impossibile eliminare la bolletta.");

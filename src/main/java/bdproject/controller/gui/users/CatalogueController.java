@@ -109,7 +109,7 @@ public class CatalogueController extends AbstractController implements Initializ
         final List<String> utilityRecords = Queries.fetchAll(ctx, MATERIE_PRIME, MateriePrime.class)
                 .stream()
                 .map(MateriePrime::getNome)
-                .toList();
+                .collect(Collectors.toList());
 
         utilities.setItems(FXCollections.observableList(utilityRecords));
         utilities.setValue(utilityRecords.get(0));

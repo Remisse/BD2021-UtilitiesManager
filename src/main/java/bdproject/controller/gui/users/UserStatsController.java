@@ -1,15 +1,11 @@
 package bdproject.controller.gui.users;
 
-import bdproject.controller.Checks;
 import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
-import bdproject.tables.pojos.Bollette;
 import bdproject.tables.pojos.ContrattiApprovati;
-import bdproject.tables.pojos.ContrattiAttivi;
 import bdproject.tables.pojos.Immobili;
-import bdproject.utils.Converters;
 import bdproject.utils.ViewUtils;
 import bdproject.utils.LocaleUtils;
 import javafx.application.Platform;
@@ -64,19 +60,12 @@ public class UserStatsController extends AbstractController implements Initializ
     }
 
     private void populateYearSelection() {
-        try (final Connection conn = dataSource().getConnection()) {
-            if (Checks.isSubscriptionActive(Converters.approvedToOrdinarySub(subscription), conn)) {
-                final List<Integer> years = new ArrayList<>();
-                for (int year = LocalDate.now().getYear(); year >= subscription.getDatachiusurarichiesta().getYear(); year--) {
-                    years.add(year);
-                }
-
-                Platform.runLater(() -> yearSelect.setItems(FXCollections.observableList(years)));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            ViewUtils.showError(e.getMessage());
+        final List<Integer> years = new ArrayList<>();
+        for (int year = LocalDate.now().getYear(); year >= subscription.getDatachiusurarichiesta().getYear(); year--) {
+            years.add(year);
         }
+
+        Platform.runLater(() -> yearSelect.setItems(FXCollections.observableList(years)));
     }
 
     private void updateAverages() {

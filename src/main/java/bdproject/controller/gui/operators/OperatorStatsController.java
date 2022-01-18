@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import org.jooq.Record3;
 
 import javax.sql.DataSource;
 import java.net.URL;
@@ -31,6 +32,7 @@ public class OperatorStatsController extends AbstractController implements Initi
     @FXML private Label subsInYearCountLabel;
     @FXML private Label mostRequestedPlanLabel;
     @FXML private ComboBox<Integer> yearComboBox;
+    @FXML private ComboBox<String> utilityComboBox;
 
     private OperatorStatsController(Stage stage, DataSource dataSource, SessionHolder holder) {
         super(stage, dataSource, holder, FXML_FILE);
@@ -49,15 +51,13 @@ public class OperatorStatsController extends AbstractController implements Initi
             years.add(year);
         }
         yearComboBox.setItems(FXCollections.observableList(years));
-        yearComboBox.getSelectionModel().select(0);
 
         try (final Connection conn = dataSource().getConnection()) {
+            final List<String> utilities = Queries.fetchAllUtilities(conn);
+            utilityComboBox.setItems(FXCollections.observableList(utilities));
+
             subRequestsByOperatorLabel.setText(String.valueOf(Queries.countSubRequestsClosedByOperator(operatorId, conn)));
             endRequestsByOperatorLabel.setText(String.valueOf(Queries.countEndRequestsClosedByOperator(operatorId, conn)));
-            refreshSubsInYearLabel(conn);
-
-            final Offerte plan = Queries.fetchMostRequestedPlan(conn);
-            mostRequestedPlanLabel.setText(plan.getNome() + " (codice: " + plan.getCodofferta() + ")");
         } catch (SQLException e) {
             e.printStackTrace();
             ViewUtils.showError(e.getMessage());
@@ -77,6 +77,23 @@ public class OperatorStatsController extends AbstractController implements Initi
     private void refreshSubsInYearLabel(final Connection conn) {
         subsInYearCountLabel.setText(String.valueOf(Queries.countSubscriptionsActivatedInYear(yearComboBox.getSelectionModel()
                 .getSelectedItem(), conn)));
+    }
+
+    @FXML
+    private void onUtilitySelect() {
+        try (final Connection conn = dataSource().getConnection()) {
+            refreshMostRequestedPlanLabel(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            ViewUtils.showError(e.getMessage());
+        }
+    }
+
+    private void refreshMostRequestedPlanLabel(final Connection conn) {
+        final Record3<Integer, String, Integer> plan = Queries.fetchMostRequestedPlan(utilityComboBox.getSelectionModel()
+                .getSelectedItem(), conn);
+        mostRequestedPlanLabel.setText(plan.component2() + " (codice: " + plan.component1() +
+                "; numero di contratti: " + plan.component3() + ")");
     }
 
     @FXML

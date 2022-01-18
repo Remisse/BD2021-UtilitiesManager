@@ -344,7 +344,7 @@ Dal testo è stata estratta una lista di possibili operazioni che verranno svolt
     \textbf{OP-25} & Visualizzare il numero di contratti stipulati in un dato anno & 3/anno \\
     \textbf{OP-26} & Visualizzare l'andamento dei consumi relativi a un contratto in un dato anno & 1.000/mese \\
     \textbf{OP-27} & Visualizzare la media dei consumi (reali e stimati) per un contratto in un dato periodo & 1.000/mese \\
-    \textbf{OP-28} & Visualizzare la media aggregata dei consumi (reali e stimati) prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune & 1.000/mese \\
+    \textbf{OP-28} & Visualizzare la media aggregata dei consumi (reali e stimati) di una data materia prima prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune & 1.000/mese \\
     \textbf{OP-29} & Visualizzare il numero di richieste di contratto finalizzate da un dato operatore & 1/mese \\
     \textbf{OP-30} & Visualizzare il numero di richieste di cessazione finalizzate da un dato operatore & 1/mese \\
     \textbf{OP-31} & Data una materia prima, visualizzare l'offerta più richiesta & 1/mese \\
@@ -898,17 +898,85 @@ and DataChiusuraRichiesta is null;
 
 \paragraph{OP-25: Visualizzare il numero di contratti stipulati in un dato anno}\mbox{}\\
 \begin{lstlisting}
-select count(C.IdContratto)
+select count(C.IdContratto) as NumeroContratti
 from `contratti approvati` C
 where year(C.DataChiusuraRichiesta) = ?;
 \end{lstlisting}
 
 \paragraph{OP-26: Visualizzare l'andamento dei consumi relativi a un contratto in un dato anno}\mbox{}\\
 \begin{lstlisting}
+select B.DataFinePeriodo, B.Consumi
+from bollette B
+where B.IdContratto = ?
+and year(B.DataFinePeriodo) = ?;
+\end{lstlisting}
+
+\paragraph{OP-27: Visualizzare la media dei consumi (reali e stimati) per un contratto in un dato periodo}\mbox{}\\
+\begin{lstlisting}
+select avg(B.Consumi) as MediaContratto
+from bollette B, `contratti approvati` C
+where C.IdContratto = ?
+and B.IdContratto = C.IdContratto
+and B.DataFinePeriodo between ? and ?;
+\end{lstlisting}
+
+\paragraph{OP-28: Visualizzare la media aggregata dei consumi (reali e stimati) di una data materia prima prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune}\mbox{}\\
+\begin{lstlisting}
+select avg(B.Consumi) as MediaComune
+from bollette B, `contratti approvati` C, immobili I, offerte O
+where O.MateriaPrima = ?
+and C.Offerta = O.CodOfferta
+and I.Comune = ?
+and I.Provincia = ?
+and C.IdImmobile = I.IdImmobile
+and C.IdContratto = B.IdContratto
+and B.DataFinePeriodo between ? and ?;
+\end{lstlisting}
+
+\paragraph{OP-29: Visualizzare il numero di richieste di contratto finalizzate da un dato operatore}\mbox{}\\
+\begin{lstlisting}
+select count(*) as RichiesteTotali
+from `operatori contratti` OC, contratti C
+where OC.NumeroRichiesta = C.IdContratto
+and OC.IdOperatore = ?
+and C.StatoRichiesta != "In lavorazione"
+and C.DataChiusuraRichiesta is not null;
+\end{lstlisting}
+
+\paragraph{OP-30: Visualizzare il numero di richieste di cessazione finalizzate da un dato operatore}\mbox{}\\
+\begin{lstlisting}
+select count(*) as RichiesteTotali
+from `operatori cessazioni` OC, cessazioni C
+where OC.NumeroRichiesta = C.NumeroRichiesta
+and OC.IdOperatore = ?
+and C.StatoRichiesta != "In lavorazione"
+and C.DataChiusuraRichiesta is not null;
+\end{lstlisting}
+
+\paragraph{OP-31: Data una materia prima, visualizzare l'offerta più richiesta}\mbox{}\\
+\begin{lstlisting}
+select O1.CodOfferta, O1.Nome, count(C1.IdContratto) as NumeroContratti
+from offerte O1, contratti C1
+where C1.Offerta = O1.CodOfferta
+group by O1.CodOfferta
+order by Conteggio desc
+limit 1;
 
 \end{lstlisting}
 
+\paragraph{OP-32: Visualizzare il numero di contratti attivati in un dato anno}
+\begin{lstlisting}
+select count(*)
+from `contratti approvati` C
+where year(C.DataChiusuraRichiesta) = ?;
+\end{lstlisting}
+
 \chapter{Progettazione dell'applicazione}
+Per lo sviluppo dell'applicazione si è scelto come DBMS di riferimento \textit{MySQL}. Il front-end, sviluppato in Java, segue il pattern architetturale MVC e utilizza la libreria grafica \textit{JavaFX}. Per la comunicazione col database si è optato per la libreria \textit{jOOQ}, basata sull'API \textit{JDBC} e rispetto alla quale offre un più alto livello di astrazione.
+\newline
+L'applicazione si presenta all'avvio con una schermata in cui è possibile consultare liberamente il catalogo delle offerte, effettuare l'accesso oppure, se non lo si è già fatto, registrarsi.
+\newline
+L'inserimento di una richiesta di contratto avviene mediante una serie di passaggi consecutivi in cui l'applicazione verifica a ogni nuova schermata la correttezza dei dati inseriti dall'utente, così da garantire la massima integrità dei dati. Nel caso in cui l'inserimento non vada a buon fine o venga interrotto, nessun dato verrà inserito nel database.
 
 \appendix
 \chapter{Creazione di tabelle e view in SQL}

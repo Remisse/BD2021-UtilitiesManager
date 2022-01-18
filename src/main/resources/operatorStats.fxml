@@ -29,7 +29,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="58.0" layoutY="428.0" text="Offerta più richiesta:">
+      <Label layoutX="58.0" layoutY="428.0" text="Offerta più richiesta per">
          <font>
             <Font size="18.0" />
          </font>
@@ -39,17 +39,17 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="subsInYearCountLabel" layoutX="482.0" layoutY="334.0" text="Label" textFill="#006139">
+      <Label fx:id="subsInYearCountLabel" layoutX="482.0" layoutY="334.0" text="N.A." textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="mostRequestedPlanLabel" layoutX="264.0" layoutY="428.0" text="Label" textFill="#006139">
+      <Label fx:id="mostRequestedPlanLabel" layoutX="473.0" layoutY="428.0" text="N.A." textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="subRequestsByOperatorLabel" layoutX="427.0" layoutY="129.0" text="Label" textFill="#006139">
+      <Label fx:id="subRequestsByOperatorLabel" layoutX="427.0" layoutY="129.0" text="N.A." textFill="#006139">
          <font>
             <Font size="18.0" />
          </font>
@@ -59,7 +59,13 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="endRequestsByOperatorLabel" layoutX="441.0" layoutY="229.0" text="Label" textFill="#006139">
+      <Label fx:id="endRequestsByOperatorLabel" layoutX="441.0" layoutY="229.0" text="N.A." textFill="#006139">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="utilityComboBox" layoutX="283.0" layoutY="427.0" onAction="#onUtilitySelect" prefWidth="150.0" />
+      <Label alignment="TOP_LEFT" layoutX="443.0" layoutY="427.0" prefHeight="25.0" prefWidth="16.0" text=":">
          <font>
             <Font size="18.0" />
          </font>
