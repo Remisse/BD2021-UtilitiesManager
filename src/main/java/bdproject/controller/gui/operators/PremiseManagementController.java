@@ -264,9 +264,9 @@ public class PremiseManagementController extends AbstractController implements I
 
             if (utility != null) {
                 if (meterIdField.getText().length() > 0) {
-                    try (final Connection conn = dataSource().getConnection()) {
-                    ViewUtils.showConfirmationDialog("Stai per inserire o modificare un contatore. Vuoi davvero" +
+                    ViewUtils.showConfirmationDialog("Stai per inserire o modificare un contatore. Vuoi davvero " +
                             "continuare?", () -> {
+                        try (final Connection conn = dataSource().getConnection()) {
                             final int result = Queries.insertMeter(meterIdField.getText(), utility,
                                     selectedPremise.getIdimmobile(), conn);
                             if (result == 1) {
@@ -275,10 +275,10 @@ public class PremiseManagementController extends AbstractController implements I
                             } else {
                                 ViewUtils.showBlockingWarning("Impossibile inserire la matricola.");
                             }
-                        });
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 } else {
                     ViewUtils.showBlockingWarning("Verifica che la matricola sia stata scritta correttamente.");
                 }

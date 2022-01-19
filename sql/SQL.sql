@@ -430,7 +430,7 @@ alter table contratti add constraint FK_COLLEGAMENTO
     foreign key (IdImmobile) references immobili (IdImmobile);
 
 alter table letture add constraint FK_CORRISPONDENZA
-    foreign key (MatricolaContatore) references contatori (Matricola);
+    foreign key (MatricolaContatore) references contatori (Matricola) on update cascade;
      
 alter table letture add constraint FK_EFFETTUAZIONE
     foreign key (IdCliente) references clienti (CodiceCliente);

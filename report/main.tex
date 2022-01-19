@@ -130,7 +130,7 @@ Dal testo dell'intervista si è cercato di estrarre i concetti principali del do
 \end{longtable}
 
 \section{Testo finale}
-Il testo riporta già molte delle informazioni necessarie alla progettazione della base di dati, ma diversi punti necessitano di chiarimenti: ad esempio, la descrizione degli operatori è piuttosto vaga e il significato di alcuni termini utilizzati nel testo è talvolta ambiguo. Con l'ausilio del glossario appena costruito e chiedendo delucidazioni, si propone una versione leggermente più dettagliata del testo con evidenziate le possibili entità e le relazioni tra di esse. Infine, viene mostrato un esempio di richiesta di contratto.
+Il testo riporta già molte delle informazioni necessarie alla progettazione della base di dati, ma diversi punti necessitano di chiarimenti: ad esempio, la descrizione degli operatori è piuttosto vaga e il significato di alcuni termini utilizzati nel testo è talvolta ambiguo. Con l'ausilio del glossario appena costruito e chiedendo delucidazioni, si propone una versione leggermente più dettagliata del testo con evidenziate le possibili entità e le associazioni tra di esse. Infine, viene mostrato un esempio di richiesta di contratto.
 
 \begin{mdframed}
 Ogni \textbf{persona}, anche se non in possesso di un account, può \textit{consultare} liberamente un catalogo di \textbf{offerte} dedicate alla fornitura di gas o acqua. Ogni offerta è caratterizzata da nome, descrizione, materia prima di interesse, costo della materia prima e tipi di uso con cui è compatibile. Il catalogo può essere aggiornato in qualsiasi momento dagli \textit{operatori}, che aggiungeranno nuove offerte o renderanno non più sottoscrivibili quelle già esistenti.
@@ -540,8 +540,8 @@ In termini di accessi, si ha un beneficio quasi trascurabile in OP-18 e un legge
 \section{Raffinamento dello schema}
 \subsection{Eliminazione delle gerarchie}
 \begin{itemize}
-    \item Le entità \texttt{CLIENTE} e \texttt{OPERATORE}, entrambe specializzazioni di \texttt{PERSONA}, hanno ruoli diametralmente opposti e si relazionano alle altre entità con associazioni tutte diverse. Poiché la loro copertura è totale ed esclusiva, avrebbe senso procedere con un collasso verso il basso, ma ciò significherebbe anche replicare la grande quantità di attributi di \texttt{PERSONA} in due tabelle diverse e costringerebbe a effettuare controlli aggiuntivi per evitare che i dati di una stessa persona compaiano in entrambe le tabelle. Si preferisce, dunque, effettuare una trasformazione per associazioni: \texttt{CLIENTE} e \texttt{OPERATORE} vengono relazionati a \texttt{PERSONA} e da essa ricaveranno la chiave primaria e tutti gli altri attributi. Dovremo solo assicurarci che lo stesso codice identificativo di una persona venga inserito solo in una tabella tra \texttt{CLIENTE} e \texttt{OPERATORE}.
-    \item Il caso di \texttt{IMMOBILE} è l'esatto opposto: nessuna delle due specializzazioni possiede associazioni con le altre entità del dominio, per cui si procede aggiungendo a \texttt{IMMOBILE} gli attributi \texttt{Tipo} e \texttt{Interno}.
+    \item Le entità \texttt{CLIENTE} e \texttt{OPERATORE}, entrambe specializzazioni di \texttt{PERSONA}, hanno ruoli diametralmente opposti e si relazionano alle altre entità con associazioni tutte diverse. Poiché la loro copertura è totale ed esclusiva, avrebbe senso procedere con un collasso verso il basso, ma ciò significherebbe anche replicare la grande quantità di attributi di \texttt{PERSONA} in due relazioni diverse e costringerebbe a effettuare controlli aggiuntivi per evitare che i dati di una stessa persona compaiano in entrambe le relazioni. Si preferisce, dunque, effettuare una trasformazione per associazioni: \texttt{CLIENTE} e \texttt{OPERATORE} vengono associati a \texttt{PERSONA} e da essa ricaveranno la chiave primaria e tutti gli altri attributi. Dovremo solo assicurarci che lo stesso codice identificativo di una persona venga inserito o solo in \texttt{CLIENTE} o solo in \texttt{OPERATORE}.
+    \item Le specializzazioni di \texttt{IMMOBILE} non hanno associazioni con altre entità del dominio, per cui si procede con una trasformazione verso l'alto aggiungendo a \texttt{IMMOBILE} gli attributi \texttt{Tipo} e \texttt{Interno}.
     \item Per la gerarchia di \texttt{RICHIESTA} si procede con una trasformazione verso il basso: l'entità \texttt{RICHIESTA} viene eliminata e i suoi attributi integrati in \texttt{CONTRATTO}, \texttt{CESSAZIONE} e \texttt{LETTURA}.
 \end{itemize}
 
@@ -566,7 +566,7 @@ Si procede alla trasformazione delle associazioni:
 \begin{itemize}
     \item \texttt{POSSEDIMENTO} viene eliminata e la chiave esterna \texttt{FasciaReddito} aggiunta a \texttt{CLIENTE}
     \item \texttt{CREAZIONE} viene eliminata e la chiave esterna \texttt{IdCliente} aggiunta a \texttt{RICHIESTA}
-    \item \texttt{PRESA\textunderscore IN \textunderscore CARICO} viene reificata. All'atto della creazione, una richiesta non risulta assegnata ad alcun operatore e contiene quindi un riferimento nullo a \texttt{OPERATORE}; per evitare ciò, gli assegnamenti delle richieste ai vari operatori verranno inseriti in tre tabelle distinte (\texttt{OPERATORI\textunderscore CESSAZIONI}, \texttt{OPERATORI\textunderscore CONTRATTI} e \texttt{OPERATORI\textunderscore LETTURE}), ognuna dedicata a una diversa tipologia di richiesta
+    \item \texttt{PRESA\textunderscore IN \textunderscore CARICO} viene reificata. All'atto della creazione, una richiesta non risulta assegnata ad alcun operatore e contiene quindi un riferimento nullo a \texttt{OPERATORE}; per evitare ciò, gli assegnamenti delle richieste ai vari operatori verranno inseriti in tre relazioni distinte (\texttt{OPERATORI\textunderscore CESSAZIONI}, \texttt{OPERATORI\textunderscore CONTRATTI} e \texttt{OPERATORI\textunderscore LETTURE}), ognuna dedicata a una diversa tipologia di richiesta
     \item \texttt{APPROVATA} e \texttt{RESPINTA} vengono eliminate
     \item \texttt{USO} viene eliminata e la chiave esterna \texttt{Uso} aggiunta a \texttt{CONTRATTO}
     \item \texttt{SOTTOSCRIZIONE} viene eliminata e la chiave esterna \texttt{Offerta} aggiunta all'entità \texttt{CONTRATTO}
@@ -574,12 +574,12 @@ Si procede alla trasformazione delle associazioni:
     \item \texttt{PRESSO} viene eliminata e la chiave esterna \texttt{IdImmobile} aggiunta all'entità \texttt{CONTRATTO}
     \item \texttt{APPARTENENZA} viene eliminata e la chiave esterna \texttt{IdContratto} aggiunta all'entità \texttt{BOLLETTA}
     \item \texttt{EMISSIONE} viene eliminata e la chiave esterna \texttt{IdOperatore} importata nell'entità \texttt{BOLLETTA}
-    \item \texttt{PAGAMENTO} viene reificata per evitare di aggiungere il campo opzionale \texttt{DataPagamento} in \texttt{BOLLETTA}; le tuple di \texttt{PAGAMENTO} conterranno ognuna, per le bollette saldate, una bolletta e la relativa data di pagamento
+    \item \texttt{PAGAMENTO} viene reificata per evitare di aggiungere il campo opzionale \texttt{DataPagamento} in \texttt{BOLLETTA}; le istanze di \texttt{PAGAMENTO} conterranno, per le bollette saldate, una bolletta e la relativa data di pagamento
     \item \texttt{CORRISPONDENZA} viene eliminata e la chiave esterna \texttt{MatricolaContatore} aggiunta a \texttt{LETTURA}
     \item \texttt{INSTALLAZIONE} viene eliminata e la chiave esterna \texttt{IdImmobile} aggiunta a \texttt{CONTATORE}
     \item \texttt{MISURAZIONE} viene eliminata e la chiave esterna \texttt{MateriaPrima} aggiunta a \texttt{CONTATORE}
     \item \texttt{FORNITURA} viene eliminata e la chiave esterna \texttt{MateriaPrima} aggiunta a \texttt{OFFERTA}
-    \item \texttt{COMPATIBILITÀ} viene reificata come traduzione di un'associazione molti a molti; le sue tuple conterranno ognuna un'offerta e una tipologia d'uso
+    \item \texttt{COMPATIBILITÀ} viene reificata come traduzione di un'associazione molti a molti; le sue istanze conterranno un'offerta e una tipologia d'uso
 \end{itemize}
 
 \section{Traduzione di entità e associazioni in relazioni}
@@ -726,6 +726,7 @@ values (?, curdate(), "In lavorazione", ?, "");
 \end{lstlisting}
 
 \paragraph{OP-9: Rifiutare una richiesta}\mbox{}\\
+L'operazione va a buon fine se l'operatore che sta rifiutando la richiesta è lo stesso che l'ha presa in carico.
 \begin{lstlisting}
 -- In caso di richiesta di contratto
 update contratti
@@ -751,26 +752,45 @@ and exists (select *
 \end{lstlisting}
 
 \paragraph{OP-10: Approvare una richiesta di contratto}\mbox{}\\
-La richiesta viene approvata se non è già presente un contratto attivo per la fornitura della stessa materia prima presso lo stesso immobile.
+La richiesta viene approvata se 
+\begin{itemize}
+    \item per l'immobile non esiste già un contratto attivo per la stessa materia prima
+    \item se l'immobile possiede un contatore adatto per la materia prima scelta
+    \item se l'operatore che sta approvando la richiesta è lo stesso che l'ha presa in carico
+\end{itemize}
 \begin{lstlisting}
 update contratti
 set DataChiusuraRichiesta = curdate(), StatoRichiesta = "Approvata", NoteRichiesta = :notes
-where IdContratto = :subId
+where IdContratto = :requestId
 and StatoRichiesta = "In lavorazione"
 and DataChiusuraRichiesta is null
 and exists (select *
             from `operatori contratti` OC
             where OC.NumeroRichiesta = ?
             and OC.IdOperatore = ?)
+and exists (select M.Matricola
+            from contratti C, immobili I, contatori M, offerte O
+            where C.IdContratto = :requestId
+            and I.IdImmobile = C.IdImmobile
+            and M.IdImmobile = I.IdImmobile
+            and C.CodOfferta = O.Offerta
+            and O.MateriaPrima = C.MateriaPrima)
 and not exists (select C.IdContratto
-                from `contratti attivi` C, immobili I, offerte O, contatori M
+                from contratti C, immobili I, offerte O, contatori M
                 where I.IdImmobile = (select distinct(C2.IdImmobile)
-                                        from contratti C2
-                                        where C2.IdContratto = :subId)
+                                    from contratti C2
+                                    where C2.IdContratto = :requestId)
                 and C.IdImmobile = I.IdImmobile
                 and M.IdImmobile = I.IdImmobile
                 and O.CodOfferta = C.Offerta
-                and O.MateriaPrima = M.MateriaPrima);
+                and O.MateriaPrima = M.MateriaPrima
+                and C.StatoRichiesta = "Approvata"
+                and C.DataChiusuraRichiesta is not null
+                and not exists (select E.NumeroRichiesta
+                                from cessazioni E
+                                where E.IdContratto = C.IdContratto
+                                and E.DataChiusuraRichiesta is not null
+                                and E.StatoRichiesta = "Approvata"));
 \end{lstlisting}
 
 \paragraph{OP-11: Inserire una nuova offerta}\mbox{}\\
@@ -842,6 +862,7 @@ on duplicate key update letture.Consumi = case when letture.Stato = "In lavorazi
 \end{lstlisting}
 
 \paragraph{OP-15: Approvare una lettura}\mbox{}\\
+L'operazione va a buon fine se l'operatore che sta approvando la lettura è lo stesso che l'ha presa in carico.
 \begin{lstlisting}
 update letture
 set Stato = "Approvata", DataChiusuraRichiesta = curdate(), Note = ?
@@ -855,6 +876,7 @@ and exists (select *
 \end{lstlisting}
 
 \paragraph{OP-16: Rifiutare una lettura}\mbox{}\\
+L'operazione va a buon fine se l'operatore che sta rifiutando la lettura è lo stesso che l'ha presa in carico.
 \begin{lstlisting}
 update letture
 set Stato = "Respinta", DataChiusuraRichiesta = curdate(), Note = ?
@@ -1020,7 +1042,7 @@ where year(C.DataChiusuraRichiesta) = ?;
 \chapter{Progettazione dell'applicazione}
 Per lo sviluppo dell'applicazione si è scelto come DBMS di riferimento \textbf{MySQL}. Il front-end, sviluppato in Java, segue il pattern architetturale MVC e utilizza la libreria grafica \textbf{JavaFX}. Per la comunicazione col database si è optato per la libreria \textbf{jOOQ}, la quale offre un più alto livello di astrazione rispetto alla API JDBC. La gestione delle librerie è stata agevolata dall'utilizzo del sistema di build automation \textbf{Gradle}.
 \newline
-L'applicazione si presenta all'avvio con una schermata in cui è possibile consultare liberamente il catalogo delle offerte, effettuare l'accesso oppure, se non lo si è già fatto, registrarsi. Clienti e operatori hanno accesso a zone diverse dell'applicazione: ad esempio, l'accesso all'area clienti (\cref{fig:user-area}) non è permesso agli operatori, che, come da specifiche, non possono sottoscrivere contratti col fornitore.
+L'applicazione si presenta all'avvio con una schermata in cui è possibile consultare liberamente il catalogo delle offerte, effettuare l'accesso oppure, se non lo si è già fatto, registrarsi. Clienti e operatori hanno accesso a zone diverse dell'applicazione: ad esempio, l'accesso all'area clienti (\cref{fig:user-area}) e al catalogo pubblico non è permesso agli operatori, che, come da specifiche, non possono sottoscrivere contratti col fornitore.
 
 \begin{figure}[H]
     \centering{}
@@ -1048,7 +1070,7 @@ L'applicazione fornisce anche funzionalità non espressamente richieste nelle sp
 \end{figure}
 
 \appendix
-\chapter{Creazione di tabelle e view in SQL}
+\chapter{Creazione di tabelle e viste in SQL}
 \section{Creazione delle tabelle}
 \begin{lstlisting}
 create table bollette (
@@ -1127,7 +1149,7 @@ create table letture (
     Stato varchar(30) not null check (Stato in ("In lavorazione", "Approvata", "Respinta")),
     Note varchar(500) not null,
     Consumi decimal(20, 4) not null check (Consumi >= 0),
-    IdPersona integer not null,
+    IdCliente integer not null,
     constraint PK_LETTURE primary key (NumeroLettura),
     constraint AK_LETTURE unique (MatricolaContatore, DataEffettuazione));
 
@@ -1251,10 +1273,10 @@ alter table contratti add constraint FK_COLLEGAMENTO
     foreign key (IdImmobile) references immobili (IdImmobile);
 
 alter table letture add constraint FK_CORRISPONDENZA
-    foreign key (MatricolaContatore) references contatori (Matricola);
+    foreign key (MatricolaContatore) references contatori (Matricola) on update cascade;
      
 alter table letture add constraint FK_EFFETTUAZIONE
-    foreign key (IdPersona) references persone (IdPersona);
+    foreign key (IdCliente) references clienti (CodiceCliente);
 
 alter table offerte add constraint FK_INTERESSE
     foreign key (MateriaPrima) references `materie prime` (Nome);
@@ -1284,7 +1306,7 @@ alter table pagamenti add constraint FK_PAGAMENTO
     foreign key (NumeroBolletta) references bollette (NumeroBolletta);
 \end{lstlisting}
 
-\section{Creazione delle view}
+\section{Creazione delle viste}
 \begin{lstlisting}
 create view `clienti dettagliati` as
 select P.*, C.FasciaReddito

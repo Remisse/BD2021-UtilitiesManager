@@ -34,7 +34,7 @@ public class AppLoader extends Application {
         loader.setController(HomeController.create(primaryStage, dataSource, SessionHolder.empty()));
         Pane pane = loader.load();
         primaryStage.setScene(new Scene(pane));
-        primaryStage.setResizable(false);
+        primaryStage.setResizable(true);
         primaryStage.setTitle("Utenze");
         primaryStage.show();
     }
