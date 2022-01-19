@@ -732,7 +732,8 @@ public class Queries {
         DSLContext query = createContext(conn);
         return query.insertInto(CONTATORI, CONTATORI.MATRICOLA, CONTATORI.MATERIAPRIMA, CONTATORI.IDIMMOBILE)
                 .values(meterId, utility, premiseId)
-                .onDuplicateKeyIgnore()
+                .onDuplicateKeyUpdate()
+                .set(CONTATORI.MATRICOLA, meterId)
                 .execute();
     }
 
@@ -833,12 +834,14 @@ public class Queries {
                 .fetchInto(Cessazioni.class);
     }
 
-    public static int approveSubscriptionRequest(final int requestId, final int operatorId, final Connection conn) {
+    public static int approveSubscriptionRequest(final int requestId, final int operatorId, final String notes,
+            final Connection conn) {
         final DSLContext ctx = createContext(conn);
 
         return ctx.update(CONTRATTI)
                 .set(CONTRATTI.DATACHIUSURARICHIESTA, LocalDate.now())
                 .set(CONTRATTI.STATORICHIESTA, StatusType.APPROVED.toString())
+                .set(CONTRATTI.NOTERICHIESTA, notes)
                 .where(CONTRATTI.IDCONTRATTO.eq(requestId))
                 .and(CONTRATTI.STATORICHIESTA.eq(StatusType.REVIEWING.toString()))
                 .and(CONTRATTI.DATACHIUSURARICHIESTA.isNull())

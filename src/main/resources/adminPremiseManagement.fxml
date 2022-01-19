@@ -51,111 +51,111 @@
             <Separator orientation="VERTICAL" prefHeight="200.0" />
             <AnchorPane prefHeight="720.0" prefWidth="1267.0">
                <children>
-                  <Label layoutX="492.0" layoutY="16.0" text="Gestione immobili e contatori">
+                  <Label layoutX="471.0" layoutY="16.0" text="Gestione immobili e contatori">
                      <font>
                         <Font size="22.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="streetField" layoutX="102.0" layoutY="509.0">
+                  <TextField fx:id="streetField" layoutX="45.0" layoutY="512.0">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </TextField>
-                  <Label layoutX="102.0" layoutY="480.0" text="Via">
+                  <Label layoutX="46.0" layoutY="488.0" prefHeight="20.0" prefWidth="32.0" text="Via">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="streetNoField" layoutX="315.0" layoutY="509.0">
+                  <TextField fx:id="streetNoField" layoutX="258.0" layoutY="512.0">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </TextField>
-                  <Label layoutX="315.0" layoutY="480.0" text="Numero civico">
+                  <Label layoutX="259.0" layoutY="488.0" text="Numero civico">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="apartmentNumberField" layoutX="102.0" layoutY="584.0">
+                  <TextField fx:id="apartmentNumberField" layoutX="45.0" layoutY="587.0">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </TextField>
-                  <Label layoutX="102.0" layoutY="553.0" text="Interno">
+                  <Label layoutX="47.0" layoutY="566.0" prefHeight="20.0" prefWidth="67.0" text="Interno">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="municipalityField" layoutX="529.0" layoutY="509.0">
+                  <TextField fx:id="municipalityField" layoutX="472.0" layoutY="512.0">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </TextField>
-                  <Label layoutX="529.0" layoutY="480.0" text="Comune">
+                  <Label layoutX="471.0" layoutY="488.0" text="Comune">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="provinceField" layoutX="315.0" layoutY="584.0">
+                  <TextField fx:id="provinceField" layoutX="258.0" layoutY="587.0">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </TextField>
-                  <TextField fx:id="postcodeField" layoutX="529.0" layoutY="584.0">
+                  <TextField fx:id="postcodeField" layoutX="472.0" layoutY="587.0">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </TextField>
-                  <Label layoutX="529.0" layoutY="553.0" text="CAP">
+                  <Label layoutX="471.0" layoutY="566.0" text="CAP">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="typeBox" layoutX="102.0" layoutY="653.0" prefHeight="30.0" prefWidth="150.0" />
-                  <Label layoutX="102.0" layoutY="627.0" text="Tipo">
+                  <ComboBox fx:id="typeBox" layoutX="45.0" layoutY="656.0" prefHeight="29.0" prefWidth="150.0" />
+                  <Label layoutX="45.0" layoutY="630.0" text="Tipo">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Label layoutX="339.0" layoutY="553.0" text="Provincia">
+                  <Label layoutX="258.0" layoutY="566.0" text="Provincia">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Button fx:id="editPremise" layoutX="315.0" layoutY="653.0" mnemonicParsing="false" onAction="#doEditPremise" text="Modifica dati">
+                  <Button fx:id="editPremise" layoutX="316.0" layoutY="656.0" mnemonicParsing="false" onAction="#doEditPremise" text="Modifica dati">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Button>
-                  <Button fx:id="back" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" text="Indietro">
+                  <Button fx:id="back" layoutX="21.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" text="Indietro">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Button>
-                  <TableView fx:id="premiseTable" layoutX="102.0" layoutY="78.0" prefHeight="347.0" prefWidth="666.0">
+                  <TableView fx:id="premiseTable" layoutX="45.0" layoutY="78.0" prefHeight="347.0" prefWidth="723.0">
                     <columns>
-                      <TableColumn fx:id="premiseIdCol" prefWidth="58.0" text="Id" />
-                      <TableColumn fx:id="premiseStreetAndCivicCol" prefWidth="202.0" text="Via e civico" />
-                        <TableColumn fx:id="premiseUnitCol" minWidth="0.0" prefWidth="54.0" text="Interno" />
+                      <TableColumn fx:id="premiseIdCol" prefWidth="72.0" text="Id" />
+                      <TableColumn fx:id="premiseStreetAndCivicCol" prefWidth="211.0" text="Indirizzo" />
+                        <TableColumn fx:id="premiseUnitCol" minWidth="0.0" prefWidth="67.0" text="Interno" />
                         <TableColumn fx:id="premiseMunicipCol" prefWidth="108.0" text="Comune" />
-                        <TableColumn fx:id="premisePostcodeCol" prefWidth="71.0" text="CAP" />
-                        <TableColumn fx:id="premiseProvinceCol" prefWidth="68.0" text="Provincia" />
-                        <TableColumn fx:id="premiseTypeCol" prefWidth="103.0" text="Tipo" />
+                        <TableColumn fx:id="premisePostcodeCol" prefWidth="81.0" text="CAP" />
+                        <TableColumn fx:id="premiseProvinceCol" prefWidth="76.0" text="Provincia" />
+                        <TableColumn fx:id="premiseTypeCol" prefWidth="107.0" text="Tipo" />
                     </columns>
                   </TableView>
-                  <Button layoutX="101.0" layoutY="432.0" mnemonicParsing="false" onAction="#copyRowIntoFields" prefHeight="30.0" prefWidth="102.0" text="Ricopia dati">
+                  <Button layoutX="45.0" layoutY="432.0" mnemonicParsing="false" onAction="#copyRowIntoFields" prefHeight="30.0" prefWidth="102.0" text="Ricopia dati">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <TableView fx:id="meterTable" layoutX="801.0" layoutY="78.0" prefHeight="347.0" prefWidth="384.0">
+                  <TableView fx:id="meterTable" layoutX="801.0" layoutY="78.0" prefHeight="347.0" prefWidth="423.0">
                     <columns>
-                      <TableColumn fx:id="meterIdCol" prefWidth="184.0" text="Matricola" />
-                        <TableColumn fx:id="meterPremiseCol" prefWidth="90.0" text="Immobile" />
+                      <TableColumn fx:id="meterIdCol" prefWidth="221.0" text="Matricola" />
+                        <TableColumn fx:id="meterPremiseCol" prefWidth="93.0" text="Immobile" />
                       <TableColumn fx:id="meterUtilityCol" prefWidth="108.0" text="Materia prima" />
                     </columns>
                   </TableView>
-                  <Label layoutX="102.0" layoutY="51.0" text="Immobili">
+                  <Label layoutX="47.0" layoutY="51.0" prefHeight="21.0" prefWidth="84.0" text="Immobili">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -171,6 +171,17 @@
                      </font>
                   </Button>
                   <ComboBox fx:id="findMeterUtilityBox" layoutX="606.0" layoutY="432.0" prefHeight="30.0" prefWidth="162.0" promptText="materia prima..." />
+                  <Button layoutX="892.0" layoutY="432.0" mnemonicParsing="false" onAction="#doSetMeter" prefHeight="30.0" prefWidth="162.0" text="Aggiorna contatore">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <ComboBox fx:id="setMeterUtilityBox" layoutX="1061.0" layoutY="432.0" prefHeight="30.0" prefWidth="162.0" promptText="materia prima..." />
+                  <TextField fx:id="meterIdField" layoutX="892.0" layoutY="468.0" prefHeight="30.0" prefWidth="332.0" promptText="Matricola">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
                </children>
             </AnchorPane>
          </children>

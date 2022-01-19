@@ -7,9 +7,11 @@ import bdproject.controller.gui.Controller;
 import bdproject.model.types.PremiseType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
+import bdproject.model.types.StatusType;
 import bdproject.tables.pojos.Contatori;
 import bdproject.tables.pojos.Immobili;
 import bdproject.tables.pojos.MateriePrime;
+import bdproject.tables.pojos.RichiesteContratto;
 import bdproject.utils.ViewUtils;
 import bdproject.view.StringUtils;
 import javafx.application.Platform;
@@ -63,6 +65,9 @@ public class PremiseManagementController extends AbstractController implements I
     @FXML private TableColumn<Contatori, String> meterIdCol;
     @FXML private TableColumn<Contatori, String> meterUtilityCol;
     @FXML private TableColumn<Contatori, String> meterPremiseCol;
+    @FXML private ComboBox<String> findMeterUtilityBox;
+    @FXML private TextField meterIdField;
+    @FXML private ComboBox<String> setMeterUtilityBox;
 
     @FXML private TextField streetField;
     @FXML private TextField municipalityField;
@@ -70,8 +75,6 @@ public class PremiseManagementController extends AbstractController implements I
     @FXML private TextField postcodeField;
     @FXML private TextField apartmentNumberField;
     @FXML private TextField provinceField;
-
-    @FXML private ComboBox<Choice<MateriePrime, String>> findMeterUtilityBox;
     @FXML private ComboBox<Choice<PremiseType, String>> typeBox;
 
 
@@ -90,12 +93,10 @@ public class PremiseManagementController extends AbstractController implements I
         initializeMeterTable();
 
         try (final Connection conn = dataSource().getConnection()) {
-            final List<MateriePrime> utilities = Queries.fetchAll(DSL.using(conn, SQLDialect.MYSQL), MATERIE_PRIME, MateriePrime.class);
-            final List<Choice<MateriePrime, String>> choices = utilities.stream()
-                    .map(u -> new ChoiceImpl<>(u, u.getNome(), (x, y) -> y))
-                    .collect(Collectors.toList());
+            final List<String> utilities = Queries.fetchAllUtilities(conn);
 
-            findMeterUtilityBox.setItems(FXCollections.observableList(choices));
+            findMeterUtilityBox.setItems(FXCollections.observableList(utilities));
+            setMeterUtilityBox.setItems(FXCollections.observableList(utilities));
         } catch (SQLException e) {
             e.printStackTrace();
             ViewUtils.showError(e.getMessage());
@@ -222,14 +223,12 @@ public class PremiseManagementController extends AbstractController implements I
         final Immobili selectedPremise = premiseTable.getSelectionModel().getSelectedItem();
 
         if (selectedPremise != null) {
-            final Choice<MateriePrime, String> selectedUtility = findMeterUtilityBox.getSelectionModel().getSelectedItem();
+            final String selectedUtility = findMeterUtilityBox.getSelectionModel().getSelectedItem();
 
             if (selectedUtility != null) {
                 try (final Connection conn = dataSource().getConnection()) {
                     final Optional<Contatori> meter = Queries.fetchMeterByPremiseIdAndUtility(
-                            selectedPremise.getIdimmobile(),
-                            selectedUtility.getValue(),
-                            conn);
+                            selectedPremise.getIdimmobile(), selectedUtility, conn);
 
                     meter.ifPresentOrElse(m -> {
                         final Contatori toSelect = meterTable.getItems()
@@ -253,6 +252,41 @@ public class PremiseManagementController extends AbstractController implements I
             }
         } else {
             ViewUtils.showBlockingWarning("Seleziona un immobile.");
+        }
+    }
+
+    @FXML
+    private void doSetMeter() {
+        final Immobili selectedPremise = premiseTable.getSelectionModel().getSelectedItem();
+
+        if (selectedPremise != null) {
+            final String utility = setMeterUtilityBox.getSelectionModel().getSelectedItem();
+
+            if (utility != null) {
+                if (meterIdField.getText().length() > 0) {
+                    try (final Connection conn = dataSource().getConnection()) {
+                    ViewUtils.showConfirmationDialog("Stai per inserire o modificare un contatore. Vuoi davvero" +
+                            "continuare?", () -> {
+                            final int result = Queries.insertMeter(meterIdField.getText(), utility,
+                                    selectedPremise.getIdimmobile(), conn);
+                            if (result == 1) {
+                                updateMeterTable();
+                                ViewUtils.showBlockingWarning("Matricola inserita.");
+                            } else {
+                                ViewUtils.showBlockingWarning("Impossibile inserire la matricola.");
+                            }
+                        });
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    ViewUtils.showBlockingWarning("Verifica che la matricola sia stata scritta correttamente.");
+                }
+            } else {
+                ViewUtils.showBlockingWarning("Seleziona una materia prima dal menu a tendina.");
+            }
+        } else {
+            ViewUtils.showBlockingWarning("Seleziona una richiesta di attivazione.");
         }
     }
 

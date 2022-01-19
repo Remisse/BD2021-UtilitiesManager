@@ -47,7 +47,7 @@ public class RequestManagementController extends AbstractController implements I
     @FXML private TableColumn<Cessazioni, String> endStatusCol;
     @FXML private TableColumn<Cessazioni, String> endCompletionDateCol;
 
-    @FXML private TextArea refusalNotes;
+    @FXML private TextArea requestNotesField;
     @FXML private TextField meterIdField;
 
     private RequestManagementController(final Stage stage, final DataSource dataSource, final SessionHolder holder) {
@@ -171,7 +171,8 @@ public class RequestManagementController extends AbstractController implements I
                 if (meter.isEmpty()) {
                     ViewUtils.showBlockingWarning("Non è stato ancora aggiunto il contatore.");
                 } else {
-                    result = Queries.approveSubscriptionRequest(activRequest.getIdcontratto(), operatorId, conn);
+                    result = Queries.approveSubscriptionRequest(activRequest.getIdcontratto(), operatorId,
+                            requestNotesField.getText(), conn);
                     if (result == 1) {
                         ViewUtils.showBlockingWarning("Contratto attivato.");
                     } else {
@@ -187,7 +188,7 @@ public class RequestManagementController extends AbstractController implements I
             if (endRequest != null) {
                 try (Connection conn = dataSource().getConnection()) {
                     result = Queries.markEndRequestAsApproved(endRequest.getNumerorichiesta(),
-                            endRequest.getNoterichiesta(), operatorId, conn);
+                            requestNotesField.getText(), operatorId, conn);
                     if (result == 1) {
                         ViewUtils.showBlockingWarning("Contratto cessato.");
                     } else {
@@ -211,7 +212,7 @@ public class RequestManagementController extends AbstractController implements I
         if (activRequest != null) {
             try (Connection conn = dataSource().getConnection()) {
                 result = Queries.markSubscriptionRequestAsRejected(activRequest.getIdcontratto(),
-                        activRequest.getNoterichiesta(), operatorId, conn);
+                        requestNotesField.getText(), operatorId, conn);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -220,7 +221,7 @@ public class RequestManagementController extends AbstractController implements I
             if (endRequest != null) {
                 try (Connection conn = dataSource().getConnection()) {
                     result = Queries.markEndRequestAsRejected(endRequest.getNumerorichiesta(),
-                            endRequest.getNoterichiesta(), operatorId, conn);
+                            requestNotesField.getText(), operatorId, conn);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -274,7 +275,8 @@ public class RequestManagementController extends AbstractController implements I
 
         if (activRequest != null) {
             try (Connection conn = dataSource().getConnection()) {
-                result = Queries.updateSubscriptionRequestNotes(activRequest.getIdcontratto(), refusalNotes.getText(), conn);
+                result = Queries.updateSubscriptionRequestNotes(activRequest.getIdcontratto(), requestNotesField.getText(),
+                        conn);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -282,7 +284,8 @@ public class RequestManagementController extends AbstractController implements I
             final Cessazioni endRequest = endRequestTable.getSelectionModel().getSelectedItem();
             if (endRequest != null) {
                 try (Connection conn = dataSource().getConnection()) {
-                    result = Queries.updateEndRequestNotes(endRequest.getNumerorichiesta(), refusalNotes.getText(), conn);
+                    result = Queries.updateEndRequestNotes(endRequest.getNumerorichiesta(), requestNotesField.getText(),
+                            conn);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
