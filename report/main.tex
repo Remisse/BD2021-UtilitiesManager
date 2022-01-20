@@ -573,13 +573,7 @@ Si procede alla trasformazione delle associazioni:
     \item \texttt{PAGAMENTO} viene reificata per evitare di aggiungere il campo opzionale \texttt{DataPagamento} in \texttt{BOLLETTA}; le tuple di \texttt{PAGAMENTO} conterranno, per le bollette saldate, una bolletta e la relativa data di pagamento
     \item \texttt{CORRISPONDENZA} viene eliminata e la chiave esterna \texttt{MatricolaContatore} aggiunta a \texttt{LETTURA}
     \item \texttt{INSTALLAZIONE} viene eliminata e la chiave esterna \texttt{IdImmobile} aggiunta a \texttt{CONTATORE}
-<<<<<<< HEAD
     \item \texttt{COMPATIBILITÀ} viene reificata come traduzione di un'associazione molti a molti; le sue istanze conterranno un'offerta e una tipologia d'uso
-=======
-    \item \texttt{MISURAZIONE} viene eliminata e la chiave esterna \texttt{MateriaPrima} aggiunta a \texttt{CONTATORE}
-    \item \texttt{FORNITURA} viene eliminata e la chiave esterna \texttt{MateriaPrima} aggiunta a \texttt{OFFERTA}
-    \item \texttt{COMPATIBILITÀ} viene reificata come traduzione di un'associazione molti a molti; le sue tuple conterranno un'offerta e una tipologia d'uso
->>>>>>> f058e5daf2910909f06ac1616e62dd6c8fb9c0bc
 \end{itemize}
 
 \section{Traduzione di entità e associazioni in relazioni}
@@ -1065,7 +1059,7 @@ L'applicazione fornisce anche funzionalità non espressamente richieste nelle sp
 \end{figure}
 
 \appendix
-\chapter{Creazione di tabelle e viste in SQL}
+\chapter{Tabelle e viste in SQL}
 \section{Creazione delle tabelle}
 \begin{lstlisting}
 create table bollette (
@@ -1147,10 +1141,6 @@ create table letture (
     IdCliente integer not null,
     constraint PK_LETTURE primary key (NumeroLettura),
     constraint AK_LETTURE unique (MatricolaContatore, DataEffettuazione));
-
-create table `materie prime` (
-    Nome varchar(20) not null,
-    constraint PK_MATERIA primary key (Nome));
 
 create table offerte (
     CodOfferta integer not null auto_increment,
