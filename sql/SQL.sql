@@ -87,10 +87,6 @@ create table letture (
     constraint PK_LETTURE primary key (NumeroLettura),
     constraint AK_LETTURE unique (MatricolaContatore, DataEffettuazione));
 
-create table `materie prime` (
-     Nome varchar(20) not null,
-     constraint PK_MATERIA primary key (Nome));
-
 create table offerte (
      CodOfferta integer not null auto_increment,
      Nome varchar(20) not null,
@@ -168,14 +164,6 @@ create table `tipologie uso` (
 -- ----------
 -- Add records
 -- ----------
-
--- Populate materie_prime
-insert into `materie prime`
-values("Gas");
-
-insert into `materie prime`
-values("Acqua");
-
 
 -- Populate "tipologie_uso"
 
@@ -407,9 +395,6 @@ alter table compatibilità add constraint FK_USOOFFERTA
 
 alter table compatibilità add constraint FK_OFFERTAUSO
     foreign key (Offerta) references offerte (CodOfferta) on delete cascade;
-     
-alter table contatori add constraint FK_MISURAZIONE
-    foreign key (MateriaPrima) references `materie prime` (Nome);
 
 alter table contatori add constraint FK_INSTALLAZIONE
     foreign key (IdImmobile) references immobili (IdImmobile);
@@ -434,9 +419,6 @@ alter table letture add constraint FK_CORRISPONDENZA
      
 alter table letture add constraint FK_EFFETTUAZIONE
     foreign key (IdCliente) references clienti (CodiceCliente);
-
-alter table offerte add constraint FK_INTERESSE
-    foreign key (MateriaPrima) references `materie prime` (Nome);
      
 alter table operatori add constraint FK_DATIANAGRAFICI
     foreign key (IdOperatore) references persone (IdPersona);

@@ -287,16 +287,15 @@ public class Queries {
                 .execute();
     }
 
-    public static MateriePrime fetchUtilityFromSubscription(final int subId, final Connection conn) {
+    public static String fetchUtilityFromSubscription(final int subId, final Connection conn) {
         final DSLContext query = createContext(conn);
 
         return query
-                .select(MATERIE_PRIME.asterisk())
-                .from(CONTRATTI, MATERIE_PRIME, OFFERTE)
+                .select(OFFERTE.MATERIAPRIMA)
+                .from(CONTRATTI, OFFERTE)
                 .where(CONTRATTI.IDCONTRATTO.eq(subId))
                 .and(OFFERTE.CODOFFERTA.eq(CONTRATTI.OFFERTA))
-                .and(MATERIE_PRIME.NOME.eq(OFFERTE.MATERIAPRIMA))
-                .fetchOneInto(MateriePrime.class);
+                .fetchOneInto(String.class);
     }
 
     public static TipologieUso fetchUsageFromSub(final int subId, final Connection conn) {
@@ -911,11 +910,10 @@ public class Queries {
         final DSLContext ctx = createContext(conn);
 
         return ctx.select(CONTATORI.asterisk())
-                .from(IMMOBILI, CONTATORI, MATERIE_PRIME)
+                .from(IMMOBILI, CONTATORI)
                 .where(IMMOBILI.IDIMMOBILE.eq(premiseId))
                 .and(IMMOBILI.IDIMMOBILE.eq(CONTATORI.IDIMMOBILE))
-                .and(MATERIE_PRIME.NOME.eq(utility))
-                .and(MATERIE_PRIME.NOME.eq(CONTATORI.MATERIAPRIMA))
+                .and(CONTATORI.MATERIAPRIMA.eq(utility))
                 .fetchOptionalInto(Contatori.class);
     }
 
@@ -1097,16 +1095,5 @@ public class Queries {
                 .and(LETTURE.NUMEROLETTURA.eq(OPERATORI_LETTURE.LETTURA))
                 .fetchStream()
                 .collect(Collectors.toMap(Record2::component1, Record2::component2));
-    }
-
-    public static List<String> fetchAllUtilities(final Connection conn) {
-        final DSLContext ctx = createContext(conn);
-
-        return ctx
-                .select()
-                .from(MATERIE_PRIME)
-                .fetchStreamInto(MateriePrime.class)
-                .map(MateriePrime::getNome)
-                .collect(Collectors.toList());
     }
 }

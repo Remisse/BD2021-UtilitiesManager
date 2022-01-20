@@ -12,7 +12,7 @@ import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
 import bdproject.model.SubscriptionProcess;
 import bdproject.model.SubscriptionProcessImpl;
-import bdproject.tables.pojos.MateriePrime;
+import bdproject.model.types.UtilityType;
 import bdproject.tables.pojos.Offerte;
 import bdproject.tables.pojos.TipiAttivazione;
 import bdproject.tables.pojos.TipologieUso;
@@ -33,6 +33,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -107,9 +108,8 @@ public class CatalogueController extends AbstractController implements Initializ
 
     private void populateComboBoxes(Connection conn) {
         final DSLContext ctx = Queries.createContext(conn);
-        final List<String> utilityRecords = Queries.fetchAll(ctx, MATERIE_PRIME, MateriePrime.class)
-                .stream()
-                .map(MateriePrime::getNome)
+        final List<String> utilityRecords = Arrays.stream(UtilityType.values())
+                .map(UtilityType::toString)
                 .collect(Collectors.toList());
 
         utilities.setItems(FXCollections.observableList(utilityRecords));

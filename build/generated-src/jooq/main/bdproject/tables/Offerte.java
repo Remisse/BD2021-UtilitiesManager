@@ -130,20 +130,6 @@ public class Offerte extends TableImpl<OfferteRecord> {
     }
 
     @Override
-    public List<ForeignKey<OfferteRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_INTERESSE);
-    }
-
-    private transient MateriePrime _materiePrime;
-
-    public MateriePrime materiePrime() {
-        if (_materiePrime == null)
-            _materiePrime = new MateriePrime(this, Keys.FK_INTERESSE);
-
-        return _materiePrime;
-    }
-
-    @Override
     public List<Check<OfferteRecord>> getChecks() {
         return Arrays.asList(
             Internal.createCheck(this, DSL.name("offerte_chk_1"), "(`CostoMateriaPrima` > 0.0)", true)

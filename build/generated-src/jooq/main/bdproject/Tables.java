@@ -15,7 +15,6 @@ import bdproject.tables.ContrattiApprovati;
 import bdproject.tables.ContrattiAttivi;
 import bdproject.tables.Immobili;
 import bdproject.tables.Letture;
-import bdproject.tables.MateriePrime;
 import bdproject.tables.Offerte;
 import bdproject.tables.Operatori;
 import bdproject.tables.OperatoriCessazioni;
@@ -90,11 +89,6 @@ public class Tables {
      * The table <code>utenze.letture</code>.
      */
     public static final Letture LETTURE = Letture.LETTURE;
-
-    /**
-     * The table <code>utenze.materie prime</code>.
-     */
-    public static final MateriePrime MATERIE_PRIME = MateriePrime.MATERIE_PRIME;
 
     /**
      * The table <code>utenze.offerte</code>.

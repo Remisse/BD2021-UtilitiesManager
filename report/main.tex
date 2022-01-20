@@ -180,13 +180,13 @@ Come punto di riferimento iniziale, viene proposto uno schema scheletro (\cref{f
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{images/barebones.png}}
+\makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{images/barebones.png}}
 \caption{Schema scheletro.}
 \label{fig:barebones}
 \end{figure}
 
 \section{Raffinamenti proposti}
-Le entità \texttt{CLIENTI} e \texttt{OPERATORI} condividono numerosi attributi, per cui si sceglie di generalizzarle creando l'entità \texttt{PERSONA} (\cref{fig:persons}).
+Le entità \texttt{CLIENTI} e \texttt{OPERATORI} condividono numerosi attributi, per cui si sceglie di generalizzarle creando l'entità \texttt{PERSONA} (\cref{fig:persons}). Naturalmente, si vuole impedire che uno stesso indirizzo e-mail venga usato da più individui, per cui l'attributo \texttt{Email} viene scelto come identificatore secondario di \texttt{PERSONA}.
 \newline
 Il \textbf{reddito} dei clienti viene modellato come entità per poter associare a ogni fascia la relativa percentuale di sconto decisa dal fornitore.
 
@@ -211,7 +211,7 @@ Esistono due tipi di richieste: di \textbf{contratto} o di \textbf{cessazione}. 
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{images/requestER.png}}
+\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/requestER.png}}
 \caption{Modellizzazione delle richieste.}
 \label{fig:requests}
 \end{figure}
@@ -230,7 +230,7 @@ In \cref{fig:requests-activation} sono rappresentate le associazioni tra contrat
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{images/subscription_reqER.png}}
+\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/subscription_reqER.png}}
 \caption{Richieste di attivazione e di cessazione.}
 \label{fig:requests-activation}
 \end{figure}
@@ -260,7 +260,7 @@ Per ogni fornitura attiva è prevista l'emissione di \textbf{bollette} (\cref{fi
 \end{figure}
 
 
-Le \textbf{letture} (\cref{fig:measurements}) sono associate a un contatore e vengono sempre esaminate da un operatore prima di essere approvate o respinte; quest'ultimo aspetto ricorda esattamente le specifiche delle \textbf{richieste} e, dunque, nonostante non sia del tutto corretto da un punto di vista semantico, si decide di modellare l'entità \texttt{LETTURA} come specializzazione di \texttt{RICHIESTA} per evitare di ripetere una seconda volta le medesime associazioni con \texttt{OPERATORE}. Poiché è anche necessario limitare il numero di letture giornaliere a una per ogni contatore, l'attributo \texttt{DataApertura} viene spostato da \texttt{RICHIESTA} alle entità figlie (rinominato \texttt{DataEffettuazione} in \texttt{LETTURA}) e viene scelto come identificatore secondario per \texttt{LETTURA} la coppia \texttt{(DataEffettuazione, CORRISPONDENZA.MATRICOLA)}.
+Le \textbf{letture} (\cref{fig:measurements}) sono associate a un contatore e vengono sempre esaminate da un operatore prima di essere approvate o respinte; quest'ultimo aspetto ricorda esattamente le specifiche delle \textbf{richieste} e, dunque, nonostante non sia del tutto corretto da un punto di vista semantico, si decide di modellare l'entità \texttt{LETTURA} come specializzazione di \texttt{RICHIESTA} per evitare di ripetere una seconda volta le medesime associazioni con \texttt{OPERATORE}. Poiché è anche necessario limitare il numero di letture giornaliere a una per ogni contatore, l'attributo \texttt{DataApertura} viene spostato da \texttt{RICHIESTA} alle entità figlie (rinominato \texttt{DataEffettuazione} in \texttt{LETTURA}) e viene scelto come identificatore secondario per \texttt{LETTURA} la coppia \texttt{(DataEffettuazione, CONTATORE.Matricola)}.
 
 \begin{figure}[H]
 \centering{}
@@ -302,8 +302,6 @@ Si propone in \cref{fig:full-schema} la versione finale dello schema concettuale
     PRESA\textunderscore IN\textunderscore CARICO & \noindent{\color{ForestGreen}{A}} & 2.000.000 \\
     SOTTOSCRIZIONE & \noindent{\color{ForestGreen}{A}} & 90.000 \\
     OFFERTA & \noindent{\color{blue}{E}} & 15 \\
-    MATERIA\textunderscore PRIMA & \noindent{\color{blue}{E}} & 2 \\
-    FORNITURA & \noindent{\color{blue}{E}} & 15 \\
     USO & \noindent{\color{ForestGreen}{A}} & 90.000 \\
     TIPOLOGIA\textunderscore USO & \noindent{\color{blue}{E}} & 2 \\
     COMPATIBILITÀ & \noindent{\color{ForestGreen}{A}} & 23 \\
@@ -312,8 +310,8 @@ Si propone in \cref{fig:full-schema} la versione finale dello schema concettuale
     RIFERIMENTO & \noindent{\color{ForestGreen}{A}} & 5.000 \\
     PRESSO & \noindent{\color{ForestGreen}{A}} & 85.000 \\
     CONTATORE & \noindent{\color{blue}{E}} & 70.000 \\
-    MISURAZIONE & \noindent{\color{ForestGreen}{A}} & 70.000 \\
     IMMOBILE & \noindent{\color{blue}{E}} & 50.000 \\
+    INSTALLAZIONE & \noindent{\color{ForestGreen}{A}} & 70.000 \\
     FABBRICATO & \noindent{\color{blue}{E}} & 38.000 \\
     TERRENO & \noindent{\color{blue}{E}} & 12.000 \\
     BOLLETTA & \noindent{\color{blue}{E}} & 1.000.000 \\
@@ -417,12 +415,11 @@ Per trovare il contratto attualmente attivo e procedere con la voltura, l'utente
         \hline
         \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
         OFFERTA & E & 1 & S \\
-        FORNITURA & A & 1 & S \\
         COMPATIBILITÀ & A & 1 & S \\
         \hline
     \end{tabular}
     \end{center}
-    \underline{Totale}: $3\text{S} \times 3 = 18$ accessi al mese
+    \underline{Totale}: $2\text{S} \times 3 = 12$ accessi al mese
 \paragraph{OP-13: Approvare una richiesta di cessazione}\mbox{}\\
 \rowcolors{1}{lightergray}{}
 \begin{center}
@@ -457,12 +454,11 @@ Per trovare il contratto attualmente attivo e procedere con la voltura, l'utente
         \hline
         \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
         COMPATIBILITÀ & A & $\frac{23}{2} = 11$ & L \\
-        FORNITURA & A & $\frac{15}{2} = 7$ & L \\ 
         OFFERTE & E & 7 & L \\
         \hline
     \end{tabular}
     \end{center}
-    \underline{Totale}: $25\text{L} \times 1.000 = 250.000$ accessi al giorno
+    \underline{Totale}: $18\text{L} \times 1.000 = 180.000$ accessi al giorno
 \paragraph{OP-22: Visualizzare i contratti attivi intestati a un dato cliente}\mbox{}\\
 \rowcolors{1}{lightergray}{}
 \begin{center}
@@ -577,8 +573,6 @@ Si procede alla trasformazione delle associazioni:
     \item \texttt{PAGAMENTO} viene reificata per evitare di aggiungere il campo opzionale \texttt{DataPagamento} in \texttt{BOLLETTA}; le istanze di \texttt{PAGAMENTO} conterranno, per le bollette saldate, una bolletta e la relativa data di pagamento
     \item \texttt{CORRISPONDENZA} viene eliminata e la chiave esterna \texttt{MatricolaContatore} aggiunta a \texttt{LETTURA}
     \item \texttt{INSTALLAZIONE} viene eliminata e la chiave esterna \texttt{IdImmobile} aggiunta a \texttt{CONTATORE}
-    \item \texttt{MISURAZIONE} viene eliminata e la chiave esterna \texttt{MateriaPrima} aggiunta a \texttt{CONTATORE}
-    \item \texttt{FORNITURA} viene eliminata e la chiave esterna \texttt{MateriaPrima} aggiunta a \texttt{OFFERTA}
     \item \texttt{COMPATIBILITÀ} viene reificata come traduzione di un'associazione molti a molti; le sue istanze conterranno un'offerta e una tipologia d'uso
 \end{itemize}
 
@@ -602,7 +596,6 @@ Si procede alla trasformazione delle associazioni:
     
     \item \texttt{CONTATORI(\underline{Matricola}, MateriaPrima, IdImmobile) \\
     UNIQUE(IdImmobile, MateriaPrima) \\
-    FK: MateriaPrima REFERENCES MATERIE\textunderscore PRIME \\
     FK: IdImmobile REFERENCES IMMOBILI}
     
     \item \texttt{CONTRATTI(\underline{IdContratto}, DataAperturaRichiesta, DataChiusuraRichiesta*, StatoRichiesta, NoteRichiesta, NumeroComponenti, Uso, Offerta, TipoAttivazione, IdImmobile, IdCliente) \\
@@ -610,8 +603,7 @@ Si procede alla trasformazione delle associazioni:
     FK: Offerta REFERENCES OFFERTE \\
     FK: TipoAttivazione REFERENCES TIPI\textunderscore ATTIVAZIONE \\
     FK: IdImmobile REFERENCES IMMOBILI \\
-    FK: IdCliente REFERENCES CLIENTI
-    }
+    FK: IdCliente REFERENCES CLIENTI}
     
     \item \texttt{IMMOBILI(\underline{IdImmobile}, Tipo, Via, NumCivico, Interno, Comune, CAP, Provincia) \\
     UNIQUE(Tipo, Via, NumCivico, Interno, Comune, CAP, Provincia)}
@@ -621,10 +613,7 @@ Si procede alla trasformazione delle associazioni:
     FK: IdCliente REFERENCES CLIENTI \\
     FK: MatricolaContatore REFERENCES CONTATORI}
     
-    \item \texttt{MATERIE\textunderscore PRIME(\underline{Nome})}
-    
-    \item \texttt{OFFERTE(\underline{CodOfferta}, Nome, Descrizione, CostoMateriaPrima, Attiva, MateriaPrima) \\
-    FK: MateriaPrima REFERENCES MATERIE\textunderscore PRIME}
+    \item \texttt{OFFERTE(\underline{CodOfferta}, Nome, Descrizione, MateriaPrima, CostoMateriaPrima, Attiva)}
     
     \item \texttt{OPERATORI(\underline{IdOperatore}, Stipendio) \\
     FK: IdOperatore REFERENCES PERSONE}
@@ -773,8 +762,8 @@ and exists (select M.Matricola
             where C.IdContratto = :requestId
             and I.IdImmobile = C.IdImmobile
             and M.IdImmobile = I.IdImmobile
-            and C.CodOfferta = O.Offerta
-            and O.MateriaPrima = C.MateriaPrima)
+            and O.CodOfferta = C.Offerta
+            and O.MateriaPrima = M.MateriaPrima)
 and not exists (select C.IdContratto
                 from contratti C, immobili I, offerte O, contatori M
                 where I.IdImmobile = (select distinct(C2.IdImmobile)
@@ -1250,9 +1239,6 @@ alter table compatibilità add constraint FK_USOOFFERTA
 
 alter table compatibilità add constraint FK_OFFERTAUSO
     foreign key (Offerta) references offerte (CodOfferta) on delete cascade;
-     
-alter table contatori add constraint FK_MISURAZIONE
-    foreign key (MateriaPrima) references `materie prime` (Nome);
 
 alter table contatori add constraint FK_INSTALLAZIONE
     foreign key (IdImmobile) references immobili (IdImmobile);
@@ -1277,9 +1263,6 @@ alter table letture add constraint FK_CORRISPONDENZA
      
 alter table letture add constraint FK_EFFETTUAZIONE
     foreign key (IdCliente) references clienti (CodiceCliente);
-
-alter table offerte add constraint FK_INTERESSE
-    foreign key (MateriaPrima) references `materie prime` (Nome);
      
 alter table operatori add constraint FK_DATIANAGRAFICI
     foreign key (IdOperatore) references persone (IdPersona);

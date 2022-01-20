@@ -192,7 +192,7 @@ public class UserAreaController extends AbstractController implements Initializa
 
             String utility = "";
             try (final Connection conn = dataSource().getConnection()) {
-                utility = Queries.fetchUtilityFromSubscription(subChoice.getValue().getIdcontratto(), conn).getNome();
+                utility = Queries.fetchUtilityFromSubscription(subChoice.getValue().getIdcontratto(), conn);
             } catch (SQLException e) {
                 e.printStackTrace();
                 ViewUtils.showError(e.getMessage());
@@ -330,8 +330,7 @@ public class UserAreaController extends AbstractController implements Initializa
         try (final Connection conn = dataSource().getConnection()) {
             final Choice<Integer, ContrattiApprovati> subChoice = subscriptionChoice.getSelectionModel().getSelectedItem();
             if (subChoice != null) {
-                utility = Queries.fetchUtilityFromSubscription(subChoice.getValue().getIdcontratto(), conn)
-                        .getNome();
+                utility = Queries.fetchUtilityFromSubscription(subChoice.getValue().getIdcontratto(), conn);
             }
         } catch (SQLException e) {
             e.printStackTrace();

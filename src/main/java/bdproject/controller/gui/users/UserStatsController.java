@@ -71,7 +71,7 @@ public class UserStatsController extends AbstractController implements Initializ
     private void updateAverages() {
         try (final Connection conn = dataSource().getConnection()) {
             final Immobili premise = Queries.fetchPremiseFromSubscription(subscription.getIdcontratto(), dataSource());
-            final String utility = Queries.fetchUtilityFromSubscription(subscription.getIdcontratto(), conn).getNome();
+            final String utility = Queries.fetchUtilityFromSubscription(subscription.getIdcontratto(), conn);
 
             final BigDecimal zoneAvgBigDecimal = Queries.avgConsumptionPerZone(premise, utility, startDate.getValue(),
                             endDate.getValue(), conn);

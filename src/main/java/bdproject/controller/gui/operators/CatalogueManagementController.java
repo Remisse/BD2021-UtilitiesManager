@@ -5,7 +5,7 @@ import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
-import bdproject.tables.pojos.MateriePrime;
+import bdproject.model.types.UtilityType;
 import bdproject.tables.pojos.Offerte;
 import bdproject.tables.pojos.TipologieUso;
 import bdproject.utils.ViewUtils;
@@ -21,22 +21,17 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.jooq.DSLContext;
 import org.jooq.Record4;
-import org.jooq.SQLDialect;
 import org.jooq.exception.DataAccessException;
-import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static bdproject.tables.MateriePrime.MATERIE_PRIME;
 import static bdproject.tables.Offerte.OFFERTE;
 import static bdproject.tables.TipologieUso.TIPOLOGIE_USO;
 
@@ -86,16 +81,9 @@ public class CatalogueManagementController extends AbstractController implements
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try (Connection conn = dataSource().getConnection()) {
-            final DSLContext ctx = Queries.createContext(conn);
-            utilityBox.setItems(FXCollections.observableList(
-                    Queries.fetchAll(ctx, MATERIE_PRIME, MateriePrime.class)
-                            .stream()
-                            .map(MateriePrime::getNome)
-                            .collect(Collectors.toList())));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        utilityBox.setItems(FXCollections.observableList(Arrays.stream(UtilityType.values())
+                .map(UtilityType::toString)
+                .collect(Collectors.toList())));
         descriptionArea.setWrapText(true);
         initPlanTable();
         refreshPlanTable();

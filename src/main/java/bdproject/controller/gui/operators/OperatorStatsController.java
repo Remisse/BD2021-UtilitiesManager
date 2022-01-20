@@ -4,7 +4,7 @@ import bdproject.controller.gui.AbstractController;
 import bdproject.controller.gui.Controller;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
-import bdproject.tables.pojos.Offerte;
+import bdproject.model.types.UtilityType;
 import bdproject.utils.ViewUtils;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -20,8 +20,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class OperatorStatsController extends AbstractController implements Initializable {
 
@@ -53,7 +55,9 @@ public class OperatorStatsController extends AbstractController implements Initi
         yearComboBox.setItems(FXCollections.observableList(years));
 
         try (final Connection conn = dataSource().getConnection()) {
-            final List<String> utilities = Queries.fetchAllUtilities(conn);
+            final List<String> utilities = Arrays.stream(UtilityType.values())
+                    .map(UtilityType::toString)
+                    .collect(Collectors.toList());
             utilityComboBox.setItems(FXCollections.observableList(utilities));
 
             subRequestsByOperatorLabel.setText(String.valueOf(Queries.countSubRequestsClosedByOperator(operatorId, conn)));

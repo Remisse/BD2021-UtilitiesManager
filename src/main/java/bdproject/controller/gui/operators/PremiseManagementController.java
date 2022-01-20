@@ -7,11 +7,9 @@ import bdproject.controller.gui.Controller;
 import bdproject.model.types.PremiseType;
 import bdproject.model.Queries;
 import bdproject.model.SessionHolder;
-import bdproject.model.types.StatusType;
+import bdproject.model.types.UtilityType;
 import bdproject.tables.pojos.Contatori;
 import bdproject.tables.pojos.Immobili;
-import bdproject.tables.pojos.MateriePrime;
-import bdproject.tables.pojos.RichiesteContratto;
 import bdproject.utils.ViewUtils;
 import bdproject.view.StringUtils;
 import javafx.application.Platform;
@@ -25,22 +23,16 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 
 import javax.sql.DataSource;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static bdproject.tables.Immobili.IMMOBILI;
 import static bdproject.tables.Contatori.CONTATORI;
-import static bdproject.tables.MateriePrime.MATERIE_PRIME;
 
 public class PremiseManagementController extends AbstractController implements Initializable {
 
@@ -89,26 +81,22 @@ public class PremiseManagementController extends AbstractController implements I
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        final List<String> utilities = Arrays.stream(UtilityType.values())
+                .map(UtilityType::toString)
+                .collect(Collectors.toList());
+        final List<Choice<PremiseType, String>> types = new ArrayList<>();
+        Arrays.stream(PremiseType.values())
+                .forEach(t -> types.add(new ChoiceImpl<>(t, t.toString(), (i, v) -> v)));
+
         initializePremiseTable();
         initializeMeterTable();
 
-        try (final Connection conn = dataSource().getConnection()) {
-            final List<String> utilities = Queries.fetchAllUtilities(conn);
-
+        Platform.runLater(() -> {
             findMeterUtilityBox.setItems(FXCollections.observableList(utilities));
             setMeterUtilityBox.setItems(FXCollections.observableList(utilities));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            ViewUtils.showError(e.getMessage());
-        }
-
-        final List<Choice<PremiseType, String>> types = new ArrayList<>();
-        for (PremiseType type : PremiseType.values()) {
-            types.add(new ChoiceImpl<>(type, type.toString(), (i, v) -> v));
-        }
-
-        typeBox.setItems(FXCollections.observableList(types));
-        typeBox.setValue(types.get(0));
+            typeBox.setItems(FXCollections.observableList(types));
+            typeBox.setValue(types.get(0));
+        });
     }
 
     private boolean areFieldsValid() {

@@ -15,7 +15,6 @@ import bdproject.tables.ContrattiApprovati;
 import bdproject.tables.ContrattiAttivi;
 import bdproject.tables.Immobili;
 import bdproject.tables.Letture;
-import bdproject.tables.MateriePrime;
 import bdproject.tables.Offerte;
 import bdproject.tables.Operatori;
 import bdproject.tables.OperatoriCessazioni;
@@ -106,11 +105,6 @@ public class Utenze extends SchemaImpl {
     public final Letture LETTURE = Letture.LETTURE;
 
     /**
-     * The table <code>utenze.materie prime</code>.
-     */
-    public final MateriePrime MATERIE_PRIME = MateriePrime.MATERIE_PRIME;
-
-    /**
      * The table <code>utenze.offerte</code>.
      */
     public final Offerte OFFERTE = Offerte.OFFERTE;
@@ -197,7 +191,6 @@ public class Utenze extends SchemaImpl {
             ContrattiAttivi.CONTRATTI_ATTIVI,
             Immobili.IMMOBILI,
             Letture.LETTURE,
-            MateriePrime.MATERIE_PRIME,
             Offerte.OFFERTE,
             Operatori.OPERATORI,
             OperatoriCessazioni.OPERATORI_CESSAZIONI,

@@ -243,8 +243,7 @@ public class RequestManagementController extends AbstractController implements I
             if (activRequest.getStatorichiesta().equals(StatusType.REVIEWING.toString())) {
                 if (meterIdField.getText().length() > 0) {
                     try (Connection conn = dataSource().getConnection()) {
-                        final String utility = Queries.fetchUtilityFromSubscription(activRequest.getIdcontratto(), conn)
-                                        .getNome();
+                        final String utility = Queries.fetchUtilityFromSubscription(activRequest.getIdcontratto(), conn);
 
                         final int result =
                                 Queries.insertMeter(meterIdField.getText(), utility, activRequest.getIdimmobile(), conn);

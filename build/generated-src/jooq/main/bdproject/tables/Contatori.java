@@ -112,18 +112,10 @@ public class Contatori extends TableImpl<ContatoriRecord> {
 
     @Override
     public List<ForeignKey<ContatoriRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_MISURAZIONE, Keys.FK_INSTALLAZIONE);
+        return Arrays.asList(Keys.FK_INSTALLAZIONE);
     }
 
-    private transient MateriePrime _materiePrime;
     private transient Immobili _immobili;
-
-    public MateriePrime materiePrime() {
-        if (_materiePrime == null)
-            _materiePrime = new MateriePrime(this, Keys.FK_MISURAZIONE);
-
-        return _materiePrime;
-    }
 
     public Immobili immobili() {
         if (_immobili == null)
