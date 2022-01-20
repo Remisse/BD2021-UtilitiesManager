@@ -574,12 +574,12 @@ Si procede alla trasformazione delle associazioni:
     \item \texttt{PRESSO} viene eliminata e la chiave esterna \texttt{IdImmobile} aggiunta all'entità \texttt{CONTRATTO}
     \item \texttt{APPARTENENZA} viene eliminata e la chiave esterna \texttt{IdContratto} aggiunta all'entità \texttt{BOLLETTA}
     \item \texttt{EMISSIONE} viene eliminata e la chiave esterna \texttt{IdOperatore} importata nell'entità \texttt{BOLLETTA}
-    \item \texttt{PAGAMENTO} viene reificata per evitare di aggiungere il campo opzionale \texttt{DataPagamento} in \texttt{BOLLETTA}; le istanze di \texttt{PAGAMENTO} conterranno, per le bollette saldate, una bolletta e la relativa data di pagamento
+    \item \texttt{PAGAMENTO} viene reificata per evitare di aggiungere il campo opzionale \texttt{DataPagamento} in \texttt{BOLLETTA}; le tuple di \texttt{PAGAMENTO} conterranno, per le bollette saldate, una bolletta e la relativa data di pagamento
     \item \texttt{CORRISPONDENZA} viene eliminata e la chiave esterna \texttt{MatricolaContatore} aggiunta a \texttt{LETTURA}
     \item \texttt{INSTALLAZIONE} viene eliminata e la chiave esterna \texttt{IdImmobile} aggiunta a \texttt{CONTATORE}
     \item \texttt{MISURAZIONE} viene eliminata e la chiave esterna \texttt{MateriaPrima} aggiunta a \texttt{CONTATORE}
     \item \texttt{FORNITURA} viene eliminata e la chiave esterna \texttt{MateriaPrima} aggiunta a \texttt{OFFERTA}
-    \item \texttt{COMPATIBILITÀ} viene reificata come traduzione di un'associazione molti a molti; le sue istanze conterranno un'offerta e una tipologia d'uso
+    \item \texttt{COMPATIBILITÀ} viene reificata come traduzione di un'associazione molti a molti; le sue tuple conterranno un'offerta e una tipologia d'uso
 \end{itemize}
 
 \section{Traduzione di entità e associazioni in relazioni}
