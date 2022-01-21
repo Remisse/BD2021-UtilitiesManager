@@ -181,7 +181,7 @@ Come punto di riferimento iniziale, viene proposto uno schema scheletro (\cref{f
 \begin{figure}[H]
 \centering{}
 \makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{images/barebones.png}}
-\caption{Schema scheletro.}
+\caption{Schema scheletro}
 \label{fig:barebones}
 \end{figure}
 
@@ -193,7 +193,7 @@ Il \textbf{reddito} dei clienti viene modellato come entità per poter associare
 \begin{figure}[H]
 \centering{}
 \makebox[\textwidth][c]{\includegraphics[width=0.71\textwidth]{images/personER.png}}
-\caption{Generalizzazione di clienti e operatori.}
+\caption{Generalizzazione di clienti e operatori}
 \label{fig:persons}
 \end{figure}
 
@@ -202,7 +202,7 @@ In \cref{fig:plans-uses} sono rappresentate le modellazioni di offerte e tipolog
 \begin{figure}[H]
 \centering{}
 \makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{images/plan-useER.png}}
-\caption{Offerte e usi.}
+\caption{Offerte e usi}
 \label{fig:plans-uses}
 \end{figure}
 
@@ -212,7 +212,7 @@ Esistono due tipi di richieste: di \textbf{contratto} o di \textbf{cessazione}. 
 \begin{figure}[H]
 \centering{}
 \makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/requestER.png}}
-\caption{Modellizzazione delle richieste.}
+\caption{Modellizzazione delle richieste}
 \label{fig:requests}
 \end{figure}
 
@@ -231,7 +231,7 @@ In \cref{fig:requests-activation} sono rappresentate le associazioni tra contrat
 \begin{figure}[H]
 \centering{}
 \makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{images/subscription_reqER.png}}
-\caption{Richieste di attivazione e di cessazione.}
+\caption{Richieste di attivazione e di cessazione}
 \label{fig:requests-activation}
 \end{figure}
 
@@ -245,7 +245,7 @@ Per quanto riguarda i \textbf{contratti}, viene esplicitato in una nota il vinco
 \begin{figure}[H]
 \centering{}
 \makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{images/meterER.png}}
-\caption{Contatori e immobili.}
+\caption{Contatori e immobili}
 \label{fig:meters_premises}
 \end{figure}
 
@@ -255,7 +255,7 @@ Per ogni fornitura attiva è prevista l'emissione di \textbf{bollette} (\cref{fi
 \begin{figure}[H]
 \centering{}
 \makebox[\textwidth][c]{\includegraphics[width=0.4\textwidth]{images/reportER.png}}
-\caption{Bollette.}
+\caption{Bollette}
 \label{fig:reports}
 \end{figure}
 
@@ -264,7 +264,7 @@ Le \textbf{letture} (\cref{fig:measurements}) sono associate a un contatore e ve
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{images/consumpER.png}}
+\makebox[\textwidth][c]{\includegraphics[width=0.65\textwidth]{images/consumpER.png}}
 \caption{Letture.}
 \label{fig:measurements}
 \end{figure}
@@ -321,8 +321,6 @@ Si propone in \cref{fig:full-schema} la versione finale dello schema concettuale
 \end{longtable}
 
 \section{Operazioni principali e stima della loro frequenza}
-Dal testo è stata estratta una lista di possibili operazioni che verranno svolte sulla base di dati.
-\\[2pt]
 \rowcolors{1}{lightergray}{}
 \begin{longtable}{l p{10cm} c r}
     \hline
@@ -359,6 +357,7 @@ Dal testo è stata estratta una lista di possibili operazioni che verranno svolt
     \textbf{OP-30} & Visualizzare il numero di richieste di cessazione finalizzate da un dato operatore & 1/mese \\
     \textbf{OP-31} & Data una materia prima, visualizzare l'offerta più richiesta & 1/mese \\
     \textbf{OP-32} & Visualizzare il numero di contratti attivati in un dato anno & 1/mese \\
+    \textbf{OP-33} & Inserire un nuovo operatore & 2/anno \\
     \hline
 \end{longtable}
 
@@ -537,7 +536,7 @@ In termini di accessi, si ha un beneficio quasi trascurabile in OP-18 e un legge
 \subsection{Eliminazione delle gerarchie}
 \begin{itemize}
     \item Le entità \texttt{CLIENTE} e \texttt{OPERATORE}, entrambe specializzazioni di \texttt{PERSONA}, hanno ruoli diametralmente opposti e si relazionano alle altre entità con associazioni tutte diverse. Poiché la loro copertura è totale ed esclusiva, avrebbe senso procedere con un collasso verso il basso, ma ciò significherebbe anche replicare la grande quantità di attributi di \texttt{PERSONA} in due relazioni diverse e costringerebbe a effettuare controlli aggiuntivi per evitare che i dati di una stessa persona compaiano in entrambe le relazioni. Si preferisce, dunque, effettuare una trasformazione per associazioni: \texttt{CLIENTE} e \texttt{OPERATORE} vengono associati a \texttt{PERSONA} e da essa ricaveranno la chiave primaria e tutti gli altri attributi. Dovremo solo assicurarci che lo stesso codice identificativo di una persona venga inserito o solo in \texttt{CLIENTE} o solo in \texttt{OPERATORE}.
-    \item Le specializzazioni di \texttt{IMMOBILE} non hanno associazioni con altre entità del dominio, per cui si procede con una trasformazione verso l'alto aggiungendo a \texttt{IMMOBILE} gli attributi \texttt{Tipo} e \texttt{Interno}.
+    \item Le specializzazioni di \texttt{IMMOBILE} non hanno associazioni con altre entità del dominio, per cui si procede con una trasformazione verso l'alto aggiungendo a \texttt{IMMOBILE} gli attributi \texttt{Tipo} e \texttt{Interno}. Questa rappresentazione non permette di imporre che solo immobili di tipo "fabbricato" possano avere un numero di interno: il vincolo verrà fatto rispettare a livello di query SQL.
     \item Per la gerarchia di \texttt{RICHIESTA} si procede con una trasformazione verso il basso: l'entità \texttt{RICHIESTA} viene eliminata e i suoi attributi integrati in \texttt{CONTRATTO}, \texttt{CESSAZIONE} e \texttt{LETTURA}.
 \end{itemize}
 
@@ -1018,7 +1017,6 @@ where C.Offerta = O.CodOfferta
 group by O.CodOfferta
 order by NumeroContratti desc
 limit 1;
-
 \end{lstlisting}
 
 \paragraph{OP-32: Visualizzare il numero di contratti attivati in un dato anno}\mbox{}\\
@@ -1026,6 +1024,15 @@ limit 1;
 select count(*)
 from `contratti approvati` C
 where year(C.DataChiusuraRichiesta) = ?;
+\end{lstlisting}
+
+\paragraph{OP-33: Inserire un nuovo operatore}\mbox{}\\
+\begin{lstlisting}
+insert into persone
+values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+insert into operatori
+values (last_insert_id(), ?);
 \end{lstlisting}
 
 \chapter{Progettazione dell'applicazione}
@@ -1049,7 +1056,7 @@ L'inserimento di una richiesta di contratto (\cref{fig:sub-wizard}) avviene medi
     \label{fig:sub-wizard}
 \end{figure}
 
-L'applicazione fornisce anche funzionalità non espressamente richieste nelle specifiche, come la possibilità filtrare i contratti in base allo stato dei pagamenti delle bollette (\cref{fig:sub-management}) o di aggiungere nuovi operatori.
+L'applicazione fornisce anche funzionalità non espressamente richieste nelle specifiche, come la possibilità filtrare i contratti in base allo stato dei pagamenti delle bollette (\cref{fig:sub-management}) o di modificare i dati anagrafici di clienti e operatori.
 
 \begin{figure}[H]
     \centering{}

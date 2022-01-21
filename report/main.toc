@@ -65,6 +65,7 @@
 \contentsline {paragraph}{OP-30: Visualizzare il numero di richieste di cessazione finalizzate da un dato operatore}{30}{section*.42}%
 \contentsline {paragraph}{OP-31: Data una materia prima, visualizzare l'offerta più richiesta}{30}{section*.43}%
 \contentsline {paragraph}{OP-32: Visualizzare il numero di contratti attivati in un dato anno}{30}{section*.44}%
+\contentsline {paragraph}{OP-33: Inserire un nuovo operatore}{30}{section*.45}%
 \contentsline {chapter}{\numberline {4}Progettazione dell'applicazione}{31}{chapter.4}%
 \contentsline {chapter}{\numberline {A}Tabelle e viste in SQL}{34}{appendix.Alph1}%
 \contentsline {section}{\numberline {A.1}Creazione delle tabelle}{34}{section.Alph1.1}%
