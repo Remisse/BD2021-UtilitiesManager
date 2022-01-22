@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import org.jooq.Record;
 import org.jooq.Record3;
 
 import javax.sql.DataSource;
@@ -94,10 +95,17 @@ public class OperatorStatsController extends AbstractController implements Initi
     }
 
     private void refreshMostRequestedPlanLabel(final Connection conn) {
-        final Record3<Integer, String, Integer> plan = Queries.fetchMostRequestedPlan(utilityComboBox.getSelectionModel()
-                .getSelectedItem(), conn);
-        mostRequestedPlanLabel.setText(plan.component2() + " (codice: " + plan.component1() +
-                "; numero di contratti: " + plan.component3() + ")");
+        final List<Record3<Integer, String, Integer>> plans = Queries.fetchMostRequestedPlan(
+                utilityComboBox.getSelectionModel().getSelectedItem(), conn);
+        StringBuilder text = new StringBuilder();
+
+        plans.forEach(plan -> text.append(plan.component2())
+                    .append(" (codice: ")
+                    .append(plan.component1())
+                    .append("; contratti: ")
+                    .append(plan.component3())
+                    .append("); "));
+        mostRequestedPlanLabel.setText(text.toString());
     }
 
     @FXML

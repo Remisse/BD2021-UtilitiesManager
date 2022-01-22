@@ -2,6 +2,7 @@ package bdproject.model;
 
 import bdproject.model.types.StatusType;
 import bdproject.tables.pojos.*;
+import io.r2dbc.spi.Parameter;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
@@ -1031,22 +1032,28 @@ public class Queries {
 
     /**
      *
-     * Returns a record with 3 fields: the first one contains OFFERTE.CODOFFERTA,
+     * Returns a list of records with 3 fields: the first one contains OFFERTE.CODOFFERTA,
      * the second one contains OFFERTE.NOME and the last one contains the number of
      * subscriptions for which the plan was chosen.
      */
-    public static Record3<Integer, String, Integer> fetchMostRequestedPlan(final String utility, final Connection conn) {
+    public static List<Record3<Integer, String, Integer>> fetchMostRequestedPlan(final String utility, final Connection conn) {
         final DSLContext ctx = createContext(conn);
-
-        return ctx
-                .select(OFFERTE.CODOFFERTA, OFFERTE.NOME, count(CONTRATTI.IDCONTRATTO).as("NUMEROCONTRATTI"))
+        final CommonTableExpression<Record3<Integer, String, Integer>> t1 = name("t1").as(ctx
+                .select(OFFERTE.CODOFFERTA.as("cod"), OFFERTE.NOME.as("nome"), count().as("NumeroContratti"))
                 .from(OFFERTE, CONTRATTI)
                 .where(CONTRATTI.OFFERTA.eq(OFFERTE.CODOFFERTA))
                 .and(OFFERTE.MATERIAPRIMA.eq(utility))
-                .groupBy(OFFERTE.CODOFFERTA)
-                .orderBy(field("NUMEROCONTRATTI").desc())
-                .limit(1)
-                .fetchOne();
+                .groupBy(OFFERTE.CODOFFERTA));
+
+        return ctx
+                .select(field("cod").cast(int.class), field("nome").cast(String.class),
+                        field("NumeroContratti").cast(int.class))
+                .from(ctx.with(t1)
+                        .select(t1.asterisk(), rank().over(orderBy(field("NumeroContratti").desc())).as("rk"))
+                        .from(t1))
+                .where(field("rk").eq(1))
+                .fetchStream()
+                .collect(Collectors.toList());
     }
 
     public static List<Offerte> fetchPlansByUtilityAndUse(final String utility, final int useId, final Connection conn) {

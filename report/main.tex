@@ -1011,12 +1011,11 @@ and C.DataChiusuraRichiesta is not null;
 
 \paragraph{OP-31: Data una materia prima, visualizzare l'offerta più richiesta}\mbox{}\\
 \begin{lstlisting}
-select O.CodOfferta, O.Nome, count(C.IdContratto) as NumeroContratti
+select top(1) with ties O.CodOfferta, O.Nome, count(*) as NumeroContratti
 from offerte O, contratti C
 where C.Offerta = O.CodOfferta
 group by O.CodOfferta
-order by NumeroContratti desc
-limit 1;
+order by NumeroContratti desc;
 \end{lstlisting}
 
 \paragraph{OP-32: Visualizzare il numero di contratti attivati in un dato anno}\mbox{}\\
@@ -1105,7 +1104,7 @@ create table compatibilità (
     
 create table contatori (
     Matricola varchar(20) not null,
-    MateriaPrima varchar(20) not null,
+    MateriaPrima varchar(20) not null check (MateriaPrima in ("Gas", "Acqua")),
     IdImmobile integer not null,
     constraint PK_CONTATORI primary key (Matricola),
     constraint AK_CONTATORI unique (IdImmobile, MateriaPrima));
@@ -1155,7 +1154,7 @@ create table offerte (
     Descrizione varchar(1000) not null,
     CostoMateriaPrima decimal(10, 4) not null check(CostoMateriaPrima > 0.0),
     Attiva boolean not null default true,
-    MateriaPrima varchar(20) not null,
+    MateriaPrima varchar(20) not null check (MateriaPrima in ("Gas", "Acqua")),
     constraint PK_OFFERTA primary key (CodOfferta));
 
 create table operatori (

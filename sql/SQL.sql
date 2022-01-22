@@ -43,7 +43,7 @@ create table compatibilità (
      
 create table contatori (
 	 Matricola varchar(20) not null,
-     MateriaPrima varchar(20) not null,
+     MateriaPrima varchar(20) not null check (MateriaPrima in ("Gas", "Acqua")),
      IdImmobile integer not null,
      constraint PK_CONTATORI primary key (Matricola),
      constraint AK_CONTATORI unique (IdImmobile, MateriaPrima));
@@ -93,7 +93,7 @@ create table offerte (
      Descrizione varchar(1000) not null,
      CostoMateriaPrima decimal(10, 4) not null check(CostoMateriaPrima > 0.0),
      Attiva boolean not null default true,
-     MateriaPrima varchar(20) not null,
+     MateriaPrima varchar(20) not null check (MateriaPrima in ("Gas", "Acqua")),
      constraint PK_OFFERTA primary key (CodOfferta));
 
 create table operatori (
