@@ -1,2 +1,0 @@
-{"rule":"GR_04_002","sentence":"^\\QNel caso in cui l'utente decida di interrompere la procedura, nessun dato verrà inserito nel database.\\E$"}
-{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qche verrà creato esternamente e caricato manualmente dagli operatori.\\E$"}
