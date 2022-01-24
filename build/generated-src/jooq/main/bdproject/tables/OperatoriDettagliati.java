@@ -108,7 +108,7 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     /**
      * The column <code>utenze.operatori dettagliati.Password</code>.
      */
-    public final TableField<OperatoriDettagliatiRecord, String> PASSWORD = createField(DSL.name("Password"), SQLDataType.VARCHAR(32).nullable(false), this, "");
+    public final TableField<OperatoriDettagliatiRecord, String> PASSWORD = createField(DSL.name("Password"), SQLDataType.VARCHAR(30).nullable(false), this, "");
 
     /**
      * The column <code>utenze.operatori dettagliati.Stipendio</code>.
@@ -120,7 +120,7 @@ public class OperatoriDettagliati extends TableImpl<OperatoriDettagliatiRecord> 
     }
 
     private OperatoriDettagliati(Name alias, Table<OperatoriDettagliatiRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `operatori dettagliati` as select `p`.`IdPersona` AS `IdPersona`,`p`.`Nome` AS `Nome`,`p`.`Cognome` AS `Cognome`,`p`.`CodiceFiscale` AS `CodiceFiscale`,`p`.`Via` AS `Via`,`p`.`NumCivico` AS `NumCivico`,`p`.`Comune` AS `Comune`,`p`.`CAP` AS `CAP`,`p`.`Provincia` AS `Provincia`,`p`.`DataNascita` AS `DataNascita`,`p`.`NumeroTelefono` AS `NumeroTelefono`,`p`.`Email` AS `Email`,`p`.`Password` AS `Password`,`o`.`Stipendio` AS `Stipendio` from `utenze`.`persone` `p` join `utenze`.`operatori` `o` where (`p`.`IdPersona` = `o`.`IdOperatore`)"));
+        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `operatori dettagliati` as select `P`.`IdPersona` AS `IdPersona`,`P`.`Nome` AS `Nome`,`P`.`Cognome` AS `Cognome`,`P`.`CodiceFiscale` AS `CodiceFiscale`,`P`.`Via` AS `Via`,`P`.`NumCivico` AS `NumCivico`,`P`.`Comune` AS `Comune`,`P`.`CAP` AS `CAP`,`P`.`Provincia` AS `Provincia`,`P`.`DataNascita` AS `DataNascita`,`P`.`NumeroTelefono` AS `NumeroTelefono`,`P`.`Email` AS `Email`,`P`.`Password` AS `Password`,`O`.`Stipendio` AS `Stipendio` from `utenze`.`persone` `P` join `utenze`.`operatori` `O` where (`P`.`IdPersona` = `O`.`IdOperatore`)"));
     }
 
     /**

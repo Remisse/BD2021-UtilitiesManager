@@ -636,7 +636,7 @@ In \cref{fig:full-relational} viene proposto lo schema relazionale finale.
 \paragraph{OP-1: Inserire un nuovo cliente}\mbox{}\\
 \begin{lstlisting}
 insert into persone
-values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, md5(?));
 
 insert into clienti
 values (last_insert_id(), ?);
@@ -991,11 +991,14 @@ and C.DataChiusuraRichiesta is not null;
 
 \paragraph{OP-31: Data una materia prima, visualizzare l'offerta più richiesta}\mbox{}\\
 \begin{lstlisting}
-select top(1) with ties O.CodOfferta, O.Nome, count(*) as NumeroContratti
-from offerte O, contratti C
-where C.Offerta = O.CodOfferta
-group by O.CodOfferta
-order by NumeroContratti desc;
+select cod, nome, NumeroContratti
+from (select t1.*, rank() over (order by NumeroContratti desc) as rk
+      from (select O.CodOfferta as cod, O.Nome as nome, count(*) as NumeroContratti
+            from offerte O, contratti C
+            where C.Offerta = O.CodOfferta
+            and O.MateriaPrima = "Gas"
+            group by O.CodOfferta) t1) t
+where rk = 1;
 \end{lstlisting}
 
 \paragraph{OP-32: Visualizzare il numero di contratti attivati in un dato anno}\mbox{}\\
@@ -1008,7 +1011,7 @@ where year(C.DataChiusuraRichiesta) = ?;
 \paragraph{OP-33: Inserire un nuovo operatore}\mbox{}\\
 \begin{lstlisting}
 insert into persone
-values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+values (default, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, md5(?));
 
 insert into operatori
 values (last_insert_id(), ?);
@@ -1105,7 +1108,7 @@ create table contratti (
 
 create table immobili (
     IdImmobile integer not null auto_increment,
-    Tipo varchar(20) not null check (Tipo = "Fabbricato" or Tipo = "Terreno"),
+    Tipo varchar(20) not null check (Tipo in ("Fabbricato", "Terreno")),
     Via varchar(50) not null,
     NumCivico varchar(10) not null,
     Interno varchar(10) not null default "",
@@ -1175,7 +1178,7 @@ create table persone (
     DataNascita date not null,
     NumeroTelefono varchar(10) not null,
     Email varchar(40) not null,
-    Password varchar(30) not null check(length(Password) >= 8),
+    Password varchar(32) not null,
     constraint AK_PERSONA unique (Email),
     constraint PK_PERSONA primary key (IdPersona));
     

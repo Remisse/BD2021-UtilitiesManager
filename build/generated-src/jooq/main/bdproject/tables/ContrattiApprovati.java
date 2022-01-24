@@ -104,7 +104,7 @@ public class ContrattiApprovati extends TableImpl<ContrattiApprovatiRecord> {
     }
 
     private ContrattiApprovati(Name alias, Table<ContrattiApprovatiRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `contratti approvati` as select `c`.`IdContratto` AS `IdContratto`,`c`.`DataAperturaRichiesta` AS `DataAperturaRichiesta`,`c`.`DataChiusuraRichiesta` AS `DataChiusuraRichiesta`,`c`.`StatoRichiesta` AS `StatoRichiesta`,`c`.`NoteRichiesta` AS `NoteRichiesta`,`c`.`NumeroComponenti` AS `NumeroComponenti`,`c`.`Uso` AS `Uso`,`c`.`Offerta` AS `Offerta`,`c`.`TipoAttivazione` AS `TipoAttivazione`,`c`.`IdImmobile` AS `IdImmobile`,`c`.`IdCliente` AS `IdCliente` from `utenze`.`contratti` `c` where ((`c`.`DataChiusuraRichiesta` is not null) and (`c`.`StatoRichiesta` = 'Approvata'))"));
+        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `contratti approvati` as select `C`.`IdContratto` AS `IdContratto`,`C`.`DataAperturaRichiesta` AS `DataAperturaRichiesta`,`C`.`DataChiusuraRichiesta` AS `DataChiusuraRichiesta`,`C`.`StatoRichiesta` AS `StatoRichiesta`,`C`.`NoteRichiesta` AS `NoteRichiesta`,`C`.`NumeroComponenti` AS `NumeroComponenti`,`C`.`Uso` AS `Uso`,`C`.`Offerta` AS `Offerta`,`C`.`TipoAttivazione` AS `TipoAttivazione`,`C`.`IdImmobile` AS `IdImmobile`,`C`.`IdCliente` AS `IdCliente` from `utenze`.`contratti` `C` where ((`C`.`DataChiusuraRichiesta` is not null) and (`C`.`StatoRichiesta` = 'Approvata'))"));
     }
 
     /**
