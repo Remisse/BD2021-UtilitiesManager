@@ -2,7 +2,6 @@ package bdproject.model;
 
 import bdproject.model.types.StatusType;
 import bdproject.tables.pojos.*;
-import io.r2dbc.spi.Parameter;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
