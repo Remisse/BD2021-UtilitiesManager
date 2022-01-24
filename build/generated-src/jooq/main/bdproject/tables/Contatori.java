@@ -11,6 +11,7 @@ import bdproject.tables.records.ContatoriRecord;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
@@ -22,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -122,6 +124,13 @@ public class Contatori extends TableImpl<ContatoriRecord> {
             _immobili = new Immobili(this, Keys.FK_INSTALLAZIONE);
 
         return _immobili;
+    }
+
+    @Override
+    public List<Check<ContatoriRecord>> getChecks() {
+        return Arrays.asList(
+            Internal.createCheck(this, DSL.name("contatori_chk_1"), "(`MateriaPrima` in (_utf8mb4\\'Gas\\',_utf8mb4\\'Acqua\\'))", true)
+        );
     }
 
     @Override

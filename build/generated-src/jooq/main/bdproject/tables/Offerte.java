@@ -132,7 +132,8 @@ public class Offerte extends TableImpl<OfferteRecord> {
     @Override
     public List<Check<OfferteRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("offerte_chk_1"), "(`CostoMateriaPrima` > 0.0)", true)
+            Internal.createCheck(this, DSL.name("offerte_chk_1"), "(`CostoMateriaPrima` > 0.0)", true),
+            Internal.createCheck(this, DSL.name("offerte_chk_2"), "(`MateriaPrima` in (_utf8mb4\\'Gas\\',_utf8mb4\\'Acqua\\'))", true)
         );
     }
 

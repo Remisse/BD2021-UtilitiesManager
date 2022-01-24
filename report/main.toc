@@ -14,17 +14,16 @@
 \contentsline {section}{\numberline {3.2}Operazioni principali e stima della loro frequenza}{15}{section.3.2}%
 \contentsline {paragraph}{OP-1: Inserire un nuovo cliente}{16}{section*.2}%
 \contentsline {paragraph}{OP-5: Inserire una richiesta di contratto}{16}{section*.3}%
-\contentsline {paragraph}{OP-6: Selezionare l'eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}{16}{section*.4}%
-\contentsline {paragraph}{OP-11: Inserire una nuova offerta}{16}{section*.5}%
-\contentsline {paragraph}{OP-13: Approvare una richiesta di cessazione}{16}{section*.6}%
-\contentsline {paragraph}{OP-18: Inserire una nuova bolletta per un contratto attivo}{17}{section*.7}%
-\contentsline {paragraph}{OP-20: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}{17}{section*.8}%
-\contentsline {paragraph}{OP-22: Visualizzare i contratti attivi intestati a un dato cliente}{17}{section*.9}%
-\contentsline {paragraph}{OP-29: Visualizzare la media aggregata dei consumi relativi a tutti i contratti attivi in un dato comune}{17}{section*.10}%
-\contentsline {section}{\numberline {3.3}Analisi delle ridondanze}{18}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Attributo \texttt {Attivo} in \texttt {CONTRATTO}}{18}{subsection.3.3.1}%
-\contentsline {paragraph}{OP-18 con l'uso dell'attributo ridondante}{18}{section*.11}%
-\contentsline {paragraph}{OP-22 con l'uso dell'attributo ridondante}{18}{section*.12}%
+\contentsline {paragraph}{OP-11: Inserire una nuova offerta}{16}{section*.4}%
+\contentsline {paragraph}{OP-13: Approvare una richiesta di cessazione}{16}{section*.5}%
+\contentsline {paragraph}{OP-18: Inserire una nuova bolletta per un contratto attivo}{16}{section*.6}%
+\contentsline {paragraph}{OP-20: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}{17}{section*.7}%
+\contentsline {paragraph}{OP-22: Visualizzare i contratti attivi intestati a un dato cliente}{17}{section*.8}%
+\contentsline {paragraph}{OP-29: Visualizzare la media aggregata dei consumi relativi a tutti i contratti attivi in un dato comune}{17}{section*.9}%
+\contentsline {section}{\numberline {3.3}Analisi delle ridondanze}{17}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Attributo \texttt {Attivo} in \texttt {CONTRATTO}}{17}{subsection.3.3.1}%
+\contentsline {paragraph}{OP-18 con l'uso dell'attributo ridondante}{18}{section*.10}%
+\contentsline {paragraph}{OP-22 con l'uso dell'attributo ridondante}{18}{section*.11}%
 \contentsline {section}{\numberline {3.4}Raffinamento dello schema}{18}{section.3.4}%
 \contentsline {subsection}{\numberline {3.4.1}Eliminazione delle gerarchie}{18}{subsection.3.4.1}%
 \contentsline {subsection}{\numberline {3.4.2}Eliminazione degli attributi multivalore}{19}{subsection.3.4.2}%
@@ -33,39 +32,39 @@
 \contentsline {section}{\numberline {3.5}Traduzione di entità e associazioni in relazioni}{20}{section.3.5}%
 \contentsline {section}{\numberline {3.6}Schema relazionale finale}{21}{section.3.6}%
 \contentsline {section}{\numberline {3.7}Traduzione delle operazioni in query SQL}{23}{section.3.7}%
-\contentsline {paragraph}{OP-1: Inserire un nuovo cliente}{23}{section*.13}%
-\contentsline {paragraph}{OP-2: Aggiornare i dati di un cliente}{23}{section*.14}%
-\contentsline {paragraph}{OP-3: Inserire un nuovo immobile}{23}{section*.15}%
-\contentsline {paragraph}{OP-4: Inserire un contatore}{23}{section*.16}%
-\contentsline {paragraph}{OP-5: Inserire una richiesta di contratto}{23}{section*.17}%
-\contentsline {paragraph}{OP-6: Selezionare l'eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}{23}{section*.18}%
-\contentsline {paragraph}{OP-7: Selezionare l'immobile associato a un dato contatore (subentro)}{24}{section*.19}%
-\contentsline {paragraph}{OP-8: Inserire una richiesta di cessazione}{24}{section*.20}%
-\contentsline {paragraph}{OP-9: Rifiutare una richiesta}{24}{section*.21}%
-\contentsline {paragraph}{OP-10: Approvare una richiesta di contratto}{24}{section*.22}%
-\contentsline {paragraph}{OP-11: Inserire una nuova offerta}{25}{section*.23}%
-\contentsline {paragraph}{OP-12: Aggiornare un'offerta}{25}{section*.24}%
-\contentsline {paragraph}{OP-13: Approvare una richiesta di cessazione}{25}{section*.25}%
-\contentsline {paragraph}{OP-14: Comunicare una lettura}{26}{section*.26}%
-\contentsline {paragraph}{OP-15: Approvare una lettura}{27}{section*.27}%
-\contentsline {paragraph}{OP-16: Rifiutare una lettura}{27}{section*.28}%
-\contentsline {paragraph}{OP-17: Assegnare una richiesta a un operatore}{27}{section*.29}%
-\contentsline {paragraph}{OP-18: Inserire una nuova bolletta per un contratto attivo}{27}{section*.30}%
-\contentsline {paragraph}{OP-19: Pagare una bolletta}{28}{section*.31}%
-\contentsline {paragraph}{OP-20: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}{28}{section*.32}%
-\contentsline {paragraph}{OP-21: Visualizzare i contratti intestati a un dato cliente}{28}{section*.33}%
-\contentsline {paragraph}{OP-22: Visualizzare i contratti attivi intestati a un dato cliente}{28}{section*.34}%
-\contentsline {paragraph}{OP-23: Dato un contratto, visualizzare lo storico delle bollette}{28}{section*.35}%
-\contentsline {paragraph}{OP-24: Eliminare una richiesta non finalizzata}{28}{section*.36}%
-\contentsline {paragraph}{OP-25: Visualizzare il numero di contratti stipulati in un dato anno}{29}{section*.37}%
-\contentsline {paragraph}{OP-26: Visualizzare l'andamento dei consumi relativi a un contratto in un dato anno}{29}{section*.38}%
-\contentsline {paragraph}{OP-27: Visualizzare la media dei consumi per un contratto in un dato periodo}{29}{section*.39}%
-\contentsline {paragraph}{OP-28: Visualizzare la media aggregata dei consumi di una data materia prima prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune}{29}{section*.40}%
-\contentsline {paragraph}{OP-29: Visualizzare il numero di richieste di contratto finalizzate da un dato operatore}{29}{section*.41}%
-\contentsline {paragraph}{OP-30: Visualizzare il numero di richieste di cessazione finalizzate da un dato operatore}{30}{section*.42}%
-\contentsline {paragraph}{OP-31: Data una materia prima, visualizzare l'offerta più richiesta}{30}{section*.43}%
-\contentsline {paragraph}{OP-32: Visualizzare il numero di contratti attivati in un dato anno}{30}{section*.44}%
-\contentsline {paragraph}{OP-33: Inserire un nuovo operatore}{30}{section*.45}%
+\contentsline {paragraph}{OP-1: Inserire un nuovo cliente}{23}{section*.12}%
+\contentsline {paragraph}{OP-2: Aggiornare i dati di un cliente}{23}{section*.13}%
+\contentsline {paragraph}{OP-3: Inserire un nuovo immobile}{23}{section*.14}%
+\contentsline {paragraph}{OP-4: Inserire un contatore}{23}{section*.15}%
+\contentsline {paragraph}{OP-5: Inserire una richiesta di contratto}{23}{section*.16}%
+\contentsline {paragraph}{OP-6: Selezionare l'eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}{23}{section*.17}%
+\contentsline {paragraph}{OP-7: Selezionare l'immobile associato a un dato contatore (subentro)}{24}{section*.18}%
+\contentsline {paragraph}{OP-8: Inserire una richiesta di cessazione}{24}{section*.19}%
+\contentsline {paragraph}{OP-9: Rifiutare una richiesta}{24}{section*.20}%
+\contentsline {paragraph}{OP-10: Approvare una richiesta di contratto}{24}{section*.21}%
+\contentsline {paragraph}{OP-11: Inserire una nuova offerta}{25}{section*.22}%
+\contentsline {paragraph}{OP-12: Aggiornare un'offerta}{25}{section*.23}%
+\contentsline {paragraph}{OP-13: Approvare una richiesta di cessazione}{25}{section*.24}%
+\contentsline {paragraph}{OP-14: Comunicare una lettura}{26}{section*.25}%
+\contentsline {paragraph}{OP-15: Approvare una lettura}{27}{section*.26}%
+\contentsline {paragraph}{OP-16: Rifiutare una lettura}{27}{section*.27}%
+\contentsline {paragraph}{OP-17: Assegnare una richiesta a un operatore}{27}{section*.28}%
+\contentsline {paragraph}{OP-18: Inserire una nuova bolletta per un contratto attivo}{27}{section*.29}%
+\contentsline {paragraph}{OP-19: Pagare una bolletta}{28}{section*.30}%
+\contentsline {paragraph}{OP-20: Visualizzare le offerte dedicate a una data materia prima e compatibili con un dato utilizzo}{28}{section*.31}%
+\contentsline {paragraph}{OP-21: Visualizzare i contratti intestati a un dato cliente}{28}{section*.32}%
+\contentsline {paragraph}{OP-22: Visualizzare i contratti attivi intestati a un dato cliente}{28}{section*.33}%
+\contentsline {paragraph}{OP-23: Dato un contratto, visualizzare lo storico delle bollette}{28}{section*.34}%
+\contentsline {paragraph}{OP-24: Eliminare una richiesta non finalizzata}{28}{section*.35}%
+\contentsline {paragraph}{OP-25: Visualizzare il numero di contratti stipulati in un dato anno}{29}{section*.36}%
+\contentsline {paragraph}{OP-26: Visualizzare l'andamento dei consumi relativi a un contratto in un dato anno}{29}{section*.37}%
+\contentsline {paragraph}{OP-27: Visualizzare la media dei consumi per un contratto in un dato periodo}{29}{section*.38}%
+\contentsline {paragraph}{OP-28: Visualizzare la media aggregata dei consumi di una data materia prima prodotti in un dato periodo e relativi a tutti i contratti attivi in un dato comune}{29}{section*.39}%
+\contentsline {paragraph}{OP-29: Visualizzare il numero di richieste di contratto finalizzate da un dato operatore}{29}{section*.40}%
+\contentsline {paragraph}{OP-30: Visualizzare il numero di richieste di cessazione finalizzate da un dato operatore}{30}{section*.41}%
+\contentsline {paragraph}{OP-31: Data una materia prima, visualizzare l'offerta più richiesta}{30}{section*.42}%
+\contentsline {paragraph}{OP-32: Visualizzare il numero di contratti attivati in un dato anno}{30}{section*.43}%
+\contentsline {paragraph}{OP-33: Inserire un nuovo operatore}{30}{section*.44}%
 \contentsline {chapter}{\numberline {4}Progettazione dell'applicazione}{31}{chapter.4}%
 \contentsline {chapter}{\numberline {A}Tabelle e viste in SQL}{34}{appendix.Alph1}%
 \contentsline {section}{\numberline {A.1}Creazione delle tabelle}{34}{section.Alph1.1}%

@@ -186,18 +186,18 @@ Come punto di riferimento iniziale, viene proposto uno schema scheletro (\cref{f
 \end{figure}
 
 \section{Raffinamenti proposti}
-Le entità \texttt{CLIENTI} e \texttt{OPERATORI} condividono numerosi attributi, per cui si sceglie di generalizzarle creando l'entità \texttt{PERSONA} (\cref{fig:persons}). Naturalmente, si vuole impedire che uno stesso indirizzo e-mail venga usato da più individui, per cui l'attributo \texttt{Email} viene scelto come identificatore secondario di \texttt{PERSONA}.
+Le entità \texttt{CLIENTE} e \texttt{OPERATORE} condividono numerosi attributi, per cui si sceglie di generalizzarle creando l'entità \texttt{PERSONA} (\cref{fig:persons}). Naturalmente, si vuole impedire che uno stesso indirizzo e-mail venga usato da più individui, dunque l'attributo \texttt{Email} viene scelto come identificatore secondario di \texttt{PERSONA}.
 \newline
 Il \textbf{reddito} dei clienti viene modellato come entità per poter associare a ogni fascia la relativa percentuale di sconto decisa dal fornitore.
 
 \begin{figure}[H]
 \centering{}
-\makebox[\textwidth][c]{\includegraphics[width=0.71\textwidth]{images/personER.png}}
+\makebox[\textwidth][c]{\includegraphics[width=0.65\textwidth]{images/personER.png}}
 \caption{Generalizzazione di clienti e operatori}
 \label{fig:persons}
 \end{figure}
 
-In \cref{fig:plans-uses} sono rappresentate le modellazioni di offerte e tipologie d'uso. Ogni offerta è dedicata alla fornitura di una singola materia prima. Poiché nel testo è specificato che una singola offerta può essere compatibile con uno o più usi, l'associazione tra le due entità ha cardinalità molti a molti.
+In \cref{fig:plans-uses} sono rappresentate le modellazioni di offerte e tipologie d'uso. Ogni offerta è dedicata alla fornitura di una singola materia prima. Poiché una singola offerta può essere compatibile con uno o più usi, l'associazione tra le due entità ha cardinalità molti a molti.
 
 \begin{figure}[H]
 \centering{}
@@ -205,7 +205,6 @@ In \cref{fig:plans-uses} sono rappresentate le modellazioni di offerte e tipolog
 \caption{Offerte e usi}
 \label{fig:plans-uses}
 \end{figure}
-
 
 Esistono due tipi di richieste: di \textbf{contratto} o di \textbf{cessazione}. Poiché entrambe hanno alcuni attributi in comune, si decide di modellarle per generalizzazione creando l'entità \texttt{RICHIESTA}. In \cref{fig:requests} sono inoltre rappresentate le associazioni delle richieste con clienti e operatori. Non è possibile rappresentare graficamente il fatto che lo stato di una richiesta già finalizzata non possa essere ulteriormente modificato.
 
@@ -215,7 +214,6 @@ Esistono due tipi di richieste: di \textbf{contratto} o di \textbf{cessazione}. 
 \caption{Modellizzazione delle richieste}
 \label{fig:requests}
 \end{figure}
-
 
 Nella stessa figura vengono inoltre mostrate le varie associazioni che coinvolgono le due tipologie di richieste. Una richiesta di cessazione è sempre associata a un solo contratto, mentre per uno stesso contratto possono essere create più richieste di cessazione.
 \newline
@@ -235,7 +233,6 @@ In \cref{fig:requests-activation} sono rappresentate le associazioni tra contrat
 \label{fig:requests-activation}
 \end{figure}
 
-
 In \cref{fig:meters_premises} viene mostrata la rappresentazione dei \textbf{contatori} e degli \textbf{immobili}. Un contatore è univocamente identificato dalla sua matricola o, alternativamente, dalla materia prima misurata e dall'immobile presso cui è installato; quest'ultima chiave permette di imporre il vincolo per cui in un immobile non possano essere installati più contatori misuranti la stessa materia prima.
 \newline
 Gli \textbf{immobili} vengono rappresentati tramite una semplice gerarchia che ne definisce il tipo.
@@ -249,7 +246,6 @@ Per quanto riguarda i \textbf{contratti}, viene esplicitato in una nota il vinco
 \label{fig:meters_premises}
 \end{figure}
 
-
 Per ogni fornitura attiva è prevista l'emissione di \textbf{bollette} (\cref{fig:reports}) con frequenza dettata dal fornitore. L'entità \texttt{BOLLETTA} presenta tutti gli attributi richiesti nelle specifiche.
 
 \begin{figure}[H]
@@ -259,8 +255,7 @@ Per ogni fornitura attiva è prevista l'emissione di \textbf{bollette} (\cref{fi
 \label{fig:reports}
 \end{figure}
 
-
-Le \textbf{letture} (\cref{fig:measurements}) sono associate a un contatore e vengono sempre esaminate da un operatore prima di essere approvate o respinte; quest'ultimo aspetto ricorda esattamente le specifiche delle \textbf{richieste} e, dunque, nonostante non sia del tutto corretto da un punto di vista semantico, si decide di modellare l'entità \texttt{LETTURA} come specializzazione di \texttt{RICHIESTA} per evitare di ripetere una seconda volta le medesime associazioni con \texttt{OPERATORE}. Poiché è anche necessario limitare il numero di letture giornaliere a una per ogni contatore, l'attributo \texttt{DataApertura} viene spostato da \texttt{RICHIESTA} alle entità figlie (rinominato \texttt{DataEffettuazione} in \texttt{LETTURA}) e viene scelto come identificatore secondario per \texttt{LETTURA} la coppia \texttt{(DataEffettuazione, CONTATORE.Matricola)}.
+Le \textbf{letture} (\cref{fig:measurements}) sono associate a un contatore e vengono sempre esaminate da un operatore prima di essere approvate o respinte; quest'ultimo aspetto ricorda esattamente le specifiche delle \textbf{richieste} e, dunque, nonostante non sia semanticamente corretto, si modella l'entità \texttt{LETTURA} come specializzazione di \texttt{RICHIESTA} per evitare di ripetere una seconda volta le medesime associazioni con \texttt{OPERATORE}. Poiché è anche necessario limitare il numero di letture giornaliere a una per ogni contatore, l'attributo \texttt{DataApertura} viene spostato da \texttt{RICHIESTA} alle entità figlie (rinominato \texttt{DataEffettuazione} in \texttt{LETTURA}) e viene scelto come identificatore secondario per \texttt{LETTURA} la coppia \texttt{(DataEffettuazione, CONTATORE.Matricola)}.
 
 \begin{figure}[H]
 \centering{}
@@ -390,22 +385,6 @@ Si propone in \cref{fig:full-schema} la versione finale dello schema concettuale
 \end{tabular}
 \end{center}
 \underline{Totale}: $6 \text{S} \times 6 = 72$ accessi al giorno 
-\paragraph{OP-6: Selezionare l'eventuale contratto attivo intestato a un dato cliente e associato a un dato contatore (voltura)}\mbox{}\\
-Per trovare il contratto attualmente attivo e procedere con la voltura, l'utente è tenuto a comunicare il codice cliente dell'attuale intestatario e la matricola del contatore.
-\rowcolors{1}{lightergray}{}
-\begin{center}
-\begin{tabular}{@{}l c  c  c@{}}
-    \hline
-    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\ [0.5ex]
-    CREAZIONE & A & $\frac{85.000}{49.970} = 1,17$ & L \\
-    INSTALLAZIONE & A & 1 & L \\
-    IMMOBILE & E & 1 & L \\
-    PRESSO & A & 1 & L \\
-    CONTRATTO & E & 1 & L \\
-    \hline
-\end{tabular}
-\end{center}
-\underline{Totale}: $5,17\text{L} \times 3 \simeq 15$ accessi al giorno
 \paragraph{OP-11: Inserire una nuova offerta}\mbox{}\\
     Vanno specificati gli usi con cui l'offerta è compatibile e la materia prima a cui fa riferimento. Si suppone che un'offerta sia in media compatibile con una tipologia d'uso.
     \rowcolors{1}{lightergray}{}
@@ -486,7 +465,7 @@ Per trovare il contratto attualmente attivo e procedere con la voltura, l'utente
         \hline
     \end{tabular}
     \end{center}
-    Notiamo che, per ogni comune italiano, sono registrati in media circa sei immobili. Supponiamo ora che per tutti e sei gli immobili sia presente almeno un contratto (anche non attivo). In questa seconda fase ricaviamo i consumi prodotti nel periodo specificato leggendo le bollette\footnote{Non leggiamo da \texttt{LETTURA} sia perché le specifiche richiedono che vengano considerati anche i consumi stimati, sia perché il numero medio di letture per ogni contratto supera di gran lunga quello delle bollette.} emesse in quello stesso periodo.
+    Notiamo che, per ogni comune italiano, sono registrati in media circa sei immobili. Supponiamo ora che per tutti e sei gli immobili sia presente almeno un contratto (anche non attivo). In questa seconda fase ricaviamo i consumi prodotti nel periodo specificato leggendo le bollette\footnote{Non leggiamo da \texttt{LETTURA} perché il numero medio di letture per ogni contratto supera di gran lunga quello delle bollette.} emesse in quello stesso periodo.
     \rowcolors{1}{lightergray}{}
     \begin{center}
     \begin{tabular}{@{}l c  c  c@{}}
@@ -528,15 +507,16 @@ Verranno ora analizzati gli effetti dell'aggiunta all'entità \texttt{CONTRATTO}
     \hline
 \end{tabular}
 \end{center}
-\underline{Totale}: $3,4\text{L} \times 300 = 1.020$ accessi al giorno (contro i $1.056$ senza ridondanza)
+\underline{Totale}: $3,4\text{L} \times 300 \simeq 1.020$ accessi al giorno (contro i $1.056$ senza ridondanza)
 \\[10pt]
-In termini di accessi, si ha un beneficio quasi trascurabile in OP-18 e un leggerissimo peggioramento in OP-22; pertanto, si decide di non aggiungere l'attributo \texttt{Attivo}.
+In termini di accessi, si ha un peggioramento in OP-18 e un leggerissimo miglioramento in OP-22; pertanto, si decide di non aggiungere l'attributo \texttt{Attivo}.
 
 \section{Raffinamento dello schema}
 \subsection{Eliminazione delle gerarchie}
 \begin{itemize}
-    \item Le entità \texttt{CLIENTE} e \texttt{OPERATORE}, entrambe specializzazioni di \texttt{PERSONA}, hanno ruoli diametralmente opposti e si relazionano alle altre entità con associazioni tutte diverse. Poiché la loro copertura è totale ed esclusiva, avrebbe senso procedere con un collasso verso il basso, ma ciò significherebbe anche replicare la grande quantità di attributi di \texttt{PERSONA} in due relazioni diverse e costringerebbe a effettuare controlli aggiuntivi per evitare che i dati di una stessa persona compaiano in entrambe le relazioni. Si preferisce, dunque, effettuare una trasformazione per associazioni: \texttt{CLIENTE} e \texttt{OPERATORE} vengono associati a \texttt{PERSONA} e da essa ricaveranno la chiave primaria e tutti gli altri attributi. Dovremo solo assicurarci che lo stesso codice identificativo di una persona venga inserito o solo in \texttt{CLIENTE} o solo in \texttt{OPERATORE}.
+    \item Le entità \texttt{CLIENTE} e \texttt{OPERATORE}, entrambe specializzazioni di \texttt{PERSONA}, hanno ruoli diametralmente opposti e si relazionano alle altre entità con associazioni tutte diverse. Poiché la loro copertura è totale ed esclusiva, avrebbe senso procedere con un collasso verso il basso, ma ciò significherebbe anche replicare la grande quantità di attributi di \texttt{PERSONA} in due relazioni diverse e costringerebbe a effettuare controlli aggiuntivi per evitare che i dati e l'indirizzo e-mail di una stessa persona compaiano in entrambe le relazioni. Per questo motivo, si preferisce effettuare una trasformazione per associazioni: \texttt{CLIENTE} e \texttt{OPERATORE} vengono associati a \texttt{PERSONA} e da essa ricaveranno tutti gli attributi. Bisognerà solo assicurarsi che lo stesso codice identificativo di una persona venga inserito o solo in \texttt{CLIENTE} o solo in \texttt{OPERATORE}.
     \item Le specializzazioni di \texttt{IMMOBILE} non hanno associazioni con altre entità del dominio, per cui si procede con una trasformazione verso l'alto aggiungendo a \texttt{IMMOBILE} gli attributi \texttt{Tipo} e \texttt{Interno}. Questa rappresentazione non permette di imporre che solo immobili di tipo "fabbricato" possano avere un numero di interno: il vincolo verrà fatto rispettare a livello di query SQL.
+    \newline Inoltre, sempre riguardo al numero di interno, si sceglie di rendere l'attributo non opzionale, al contrario di quanto mostrato nel diagramma E-R: se fosse opzionale, l'assenza di un numero di interno la si potrebbe rappresentare sia con un valore \texttt{NULL}, sia con una stringa vuota (""). Si preferisce eliminare questa ridondanza di significato e imporre il solo utilizzo della stringa vuota.
     \item Per la gerarchia di \texttt{RICHIESTA} si procede con una trasformazione verso il basso: l'entità \texttt{RICHIESTA} viene eliminata e i suoi attributi integrati in \texttt{CONTRATTO}, \texttt{CESSAZIONE} e \texttt{LETTURA}.
 \end{itemize}
 
@@ -561,7 +541,7 @@ Si procede alla trasformazione delle associazioni:
 \begin{itemize}
     \item \texttt{POSSEDIMENTO} viene eliminata e la chiave esterna \texttt{FasciaReddito} aggiunta a \texttt{CLIENTE}
     \item \texttt{CREAZIONE} viene eliminata e la chiave esterna \texttt{IdCliente} aggiunta a \texttt{RICHIESTA}
-    \item \texttt{PRESA\textunderscore IN \textunderscore CARICO} viene reificata. All'atto della creazione, una richiesta non risulta assegnata ad alcun operatore e contiene quindi un riferimento nullo a \texttt{OPERATORE}; per evitare ciò, gli assegnamenti delle richieste ai vari operatori verranno inseriti in tre relazioni distinte (\texttt{OPERATORI\textunderscore CESSAZIONI}, \texttt{OPERATORI\textunderscore CONTRATTI} e \texttt{OPERATORI\textunderscore LETTURE}), ognuna dedicata a una diversa tipologia di richiesta
+    \item \texttt{PRESA\textunderscore IN \textunderscore CARICO} viene reificata. All'atto della creazione, una richiesta non risulta assegnata ad alcun operatore; al fine di limitare il numero di attributi che accettano valori nulli, gli assegnamenti delle richieste ai vari operatori verranno inseriti in tre relazioni distinte (\texttt{OPERATORI\textunderscore CESSAZIONI}, \texttt{OPERATORI\textunderscore CONTRATTI} e \texttt{OPERATORI\textunderscore LETTURE}), ognuna dedicata a una diversa tipologia di richiesta
     \item \texttt{APPROVATA} e \texttt{RESPINTA} vengono eliminate
     \item \texttt{USO} viene eliminata e la chiave esterna \texttt{Uso} aggiunta a \texttt{CONTRATTO}
     \item \texttt{SOTTOSCRIZIONE} viene eliminata e la chiave esterna \texttt{Offerta} aggiunta all'entità \texttt{CONTRATTO}
