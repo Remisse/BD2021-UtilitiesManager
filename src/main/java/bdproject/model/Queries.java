@@ -69,7 +69,7 @@ public class Queries {
 
         return query
                 .update(PERSONE)
-                .set(PERSONE.PASSWORD, password)
+                .set(PERSONE.PASSWORD, md5(password))
                 .where(PERSONE.IDPERSONA.eq(personId))
                 .execute();
     }
@@ -104,7 +104,7 @@ public class Queries {
                         birthdate,
                         phone,
                         email,
-                        password)
+                        md5(password))
                 .returningResult(PERSONE.IDPERSONA)
                 .execute();
     }
@@ -742,7 +742,7 @@ public class Queries {
        return ctx.select(PERSONE.IDPERSONA, PERSONE.NOME)
                 .from(PERSONE)
                 .where(PERSONE.EMAIL.eq(email))
-                .and(PERSONE.PASSWORD.eq(password))
+                .and(PERSONE.PASSWORD.eq(md5(password)))
                 .fetchOptional();
     }
 
@@ -1102,5 +1102,17 @@ public class Queries {
                 .and(LETTURE.NUMEROLETTURA.eq(OPERATORI_LETTURE.LETTURA))
                 .fetchStream()
                 .collect(Collectors.toMap(Record2::component1, Record2::component2));
+    }
+
+    public static boolean doesPasswordMatch(final int personId, final String password, final Connection conn) {
+        final DSLContext ctx = createContext(conn);
+
+        return ctx
+                .select()
+                .from(PERSONE)
+                .where(PERSONE.IDPERSONA.eq(personId))
+                .and(PERSONE.PASSWORD.eq(md5(password)))
+                .fetchOptional()
+                .isPresent();
     }
 }

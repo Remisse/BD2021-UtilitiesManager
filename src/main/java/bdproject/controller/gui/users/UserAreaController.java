@@ -37,6 +37,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static bdproject.Tables.*;
+import static org.jooq.impl.DSL.md5;
 
 public class UserAreaController extends AbstractController implements Initializable {
 
@@ -437,6 +438,7 @@ public class UserAreaController extends AbstractController implements Initializa
     private void doUpdatePassword() {
         if (!isAtLeastOnePasswordFieldBlank() && isNewPasswordCorrectlySet()) {
             final int clientId = getSessionHolder().session().orElseThrow().userId();
+
             try (Connection conn = dataSource().getConnection()) {
                 final int resultUpdatePw = Queries.updatePersonPassword(clientId, newPw.getText(), conn);
                 if (resultUpdatePw == 1) {
@@ -484,16 +486,15 @@ public class UserAreaController extends AbstractController implements Initializa
     }
 
     private boolean isNewPasswordCorrectlySet() {
-        Persone person = null;
+        final int clientId = getSessionHolder().session().orElseThrow().userId();
+        boolean oldPasswordMatches = false;
+
         try (Connection conn = dataSource().getConnection()) {
-            person = Queries.fetchPersonById(getSessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
+            oldPasswordMatches = Queries.doesPasswordMatch(clientId, currentPw.getText(), conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if (person == null) {
-            throw new IllegalStateException("Fetched client in their own user area should not be null!");
-        }
-        return currentPw.getText().equals(person.getPassword()) &&
+        return oldPasswordMatches &&
                 newPw.getText().length() >= PASSWORD_MIN && newPw.getText().length() <= PASSWORD_MAX &&
                 confirmPw.getText().equals(newPw.getText());
     }

@@ -64,7 +64,7 @@ create table contratti (
 
 create table immobili (
      IdImmobile integer not null auto_increment,
-     Tipo varchar(20) not null check (Tipo = "Fabbricato" or Tipo = "Terreno"),
+     Tipo varchar(20) not null check (Tipo in ("Fabbricato", "Terreno")),
      Via varchar(50) not null,
      NumCivico varchar(10) not null,
      Interno varchar(10) not null default "",
@@ -134,7 +134,7 @@ create table persone (
      DataNascita date not null,
      NumeroTelefono varchar(10) not null,
      Email varchar(40) not null,
-     Password varchar(30) not null check(length(Password) >= 8),
+     Password varchar(32) not null,
      constraint AK_PERSONA unique (Email),
      constraint PK_PERSONA primary key (IdPersona));
      
@@ -251,16 +251,16 @@ values (4, 3);
 
 -- Populate "persone", "clienti" and "operatori"
 insert into persone
-values (default, "Mario", "Maria Mario", "MRMMRA55R08B963X", "Via Mario", 64, "Forlì", "47121", "FC", 19551005, "3542632412", "trallallero@boh.it", "ucciucci");
+values (default, "Mario", "Maria Mario", "MRMMRA55R08B963X", "Via Mario", 64, "Forlì", "47121", "FC", 19551005, "3542632412", "mariamario@gmail.com", md5("password"));
 
 insert into persone
-values (default, "Bartolomeo", "Bartolucci", "BRTBBB25T87R762U", "Via delle Vie", 12, "Cesena", "47521", "FC", 19860621, "3801985090", "bartolomeo@gmail.com", "uffiuffi");
+values (default, "Bartolomeo", "Bartolucci", "BRTBBB25T87R762U", "Via delle Vie", 12, "Cesena", "47521", "FC", 19860621, "3801985090", "bartolomeo@gmail.com", md5("password"));
 
 insert into persone
-values (default, "Osvaldo", "Ostrazio", "GAGGUG92F28U275P", "Viale Vialone", 73, "Catanzaro", "88100", "CZ", 19910717, "3472850772", "operatore@op.com", "password");
+values (default, "Osvaldo", "Ostrazio", "GAGGUG92F28U275P", "Viale Vialone", 73, "Catanzaro", "88100", "CZ", 19910717, "3472850772", "operatore@op.com", md5("password"));
 
 insert into persone
-values (default, "Giorgio", "Travaglino", "GRGTVG84R01O375L", "Via delle Viole", 55, "Sirolo", "60020", "AN", 19460412, "3339937492", "travaglino@gmail.com", "ucciucci");
+values (default, "Giorgio", "Travaglino", "GRGTVG84R01O375L", "Via delle Viole", 55, "Sirolo", "60020", "AN", 19460412, "3339937492", "travaglino@gmail.com", md5("password"));
 
 insert into clienti
 values (1, 3);

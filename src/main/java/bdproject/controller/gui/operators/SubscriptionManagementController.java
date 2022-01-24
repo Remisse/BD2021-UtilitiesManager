@@ -39,7 +39,6 @@ public class SubscriptionManagementController extends AbstractController impleme
 
     private static final String FXML_FILE = "adminSubManagement.fxml";
     private static final int REPORT_PERIOD_MONTHS = 2;
-    private static final int NO_CLIENT = -1;
 
     private Map<Integer, Integer> measurementsWithAssignment = Map.of();
     private List<ContrattiApprovati> subsList = Collections.emptyList();

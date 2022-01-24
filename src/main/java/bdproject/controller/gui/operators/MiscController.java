@@ -93,16 +93,15 @@ public class MiscController extends AbstractController implements Initializable 
     }
 
     private boolean isNewPasswordCorrectlySet() {
-        Persone person = null;
+        final int operatorId = getSessionHolder().session().orElseThrow().userId();
+        boolean oldPasswordMatches = false;
+
         try (Connection conn = dataSource().getConnection()) {
-            person = Queries.fetchPersonById(getSessionHolder().session().orElseThrow().userId(), conn).orElseThrow();
+            oldPasswordMatches = Queries.doesPasswordMatch(operatorId, currentPw.getText(), conn);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if (person == null) {
-            throw new IllegalStateException("Fetched operator in their own area should not be null!");
-        }
-        return currentPw.getText().equals(person.getPassword()) &&
+        return oldPasswordMatches &&
                 newPw.getText().length() >= PASSWORD_MIN && newPw.getText().length() <= PASSWORD_MAX &&
                 confirmPw.getText().equals(newPw.getText());
     }
