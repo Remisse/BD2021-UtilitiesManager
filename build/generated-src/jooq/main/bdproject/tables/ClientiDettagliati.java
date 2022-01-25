@@ -107,7 +107,7 @@ public class ClientiDettagliati extends TableImpl<ClientiDettagliatiRecord> {
     /**
      * The column <code>utenze.clienti dettagliati.Password</code>.
      */
-    public final TableField<ClientiDettagliatiRecord, String> PASSWORD = createField(DSL.name("Password"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+    public final TableField<ClientiDettagliatiRecord, String> PASSWORD = createField(DSL.name("Password"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>utenze.clienti dettagliati.FasciaReddito</code>.
@@ -119,7 +119,7 @@ public class ClientiDettagliati extends TableImpl<ClientiDettagliatiRecord> {
     }
 
     private ClientiDettagliati(Name alias, Table<ClientiDettagliatiRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `clienti dettagliati` as select `P`.`IdPersona` AS `IdPersona`,`P`.`Nome` AS `Nome`,`P`.`Cognome` AS `Cognome`,`P`.`CodiceFiscale` AS `CodiceFiscale`,`P`.`Via` AS `Via`,`P`.`NumCivico` AS `NumCivico`,`P`.`Comune` AS `Comune`,`P`.`CAP` AS `CAP`,`P`.`Provincia` AS `Provincia`,`P`.`DataNascita` AS `DataNascita`,`P`.`NumeroTelefono` AS `NumeroTelefono`,`P`.`Email` AS `Email`,`P`.`Password` AS `Password`,`C`.`FasciaReddito` AS `FasciaReddito` from `utenze`.`persone` `P` join `utenze`.`clienti` `C` where (`P`.`IdPersona` = `C`.`CodiceCliente`)"));
+        super(alias, null, aliased, parameters, DSL.comment("VIEW"), TableOptions.view("create view `clienti dettagliati` as select `p`.`IdPersona` AS `IdPersona`,`p`.`Nome` AS `Nome`,`p`.`Cognome` AS `Cognome`,`p`.`CodiceFiscale` AS `CodiceFiscale`,`p`.`Via` AS `Via`,`p`.`NumCivico` AS `NumCivico`,`p`.`Comune` AS `Comune`,`p`.`CAP` AS `CAP`,`p`.`Provincia` AS `Provincia`,`p`.`DataNascita` AS `DataNascita`,`p`.`NumeroTelefono` AS `NumeroTelefono`,`p`.`Email` AS `Email`,`p`.`Password` AS `Password`,`c`.`FasciaReddito` AS `FasciaReddito` from `utenze`.`persone` `p` join `utenze`.`clienti` `c` where (`p`.`IdPersona` = `c`.`CodiceCliente`)"));
     }
 
     /**

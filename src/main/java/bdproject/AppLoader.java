@@ -20,7 +20,7 @@ public class AppLoader extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         final String username = "root";
-        final String password = "BDFC4JKX4hefpJBUqDO1";
+        final String password = "";
         final String serverName = "localhost";
 
         MysqlDataSource dataSource = new MysqlDataSource();
@@ -35,7 +35,7 @@ public class AppLoader extends Application {
         Pane pane = loader.load();
         primaryStage.setScene(new Scene(pane));
         primaryStage.setResizable(true);
-        primaryStage.setTitle("Utenze");
+        primaryStage.setTitle("Utilities Manager");
         primaryStage.show();
     }
 }

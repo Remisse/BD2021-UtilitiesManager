@@ -1,12 +1,13 @@
 val javaFxVersion = "17"
-val fxModules = listOf("base", "controls", "fxml", "media", "graphics", "swing")
-val platforms = listOf("win", "linux", "mac")
+val fxModules = listOf("base", "controls", "fxml", "media", "graphics")
+val platforms = listOf("win", "linux")
 
 plugins {
     java
     application
     id("org.openjfx.javafxplugin") version "0.0.9" // https://github.com/openjfx/javafx-gradle-plugin
     id("nu.studer.jooq") version "6.0.1"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 repositories {
@@ -20,7 +21,7 @@ java {
 
 javafx {
     version = javaFxVersion
-    modules("javafx.base", "javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.swing")
+    modules("javafx.base", "javafx.controls", "javafx.fxml", "javafx.graphics")
 }
 
 dependencies {
@@ -49,7 +50,7 @@ jooq {
                     driver = "com.mysql.cj.jdbc.Driver"
                     url = "jdbc:mysql://localhost:3306/utenze"
                     user = "root"
-                    password = "BDFC4JKX4hefpJBUqDO1"
+                    password = ""
                     properties.add(org.jooq.meta.jaxb.Property().withKey("ssl").withValue("true"))
                 }
                 generator.apply {
@@ -86,7 +87,15 @@ jooq {
 }
 
 application {
-    mainClass.set("bdproject.AppLoader")
+    mainClass.set("bdproject.GUILoader")
+
+    /*
+     * mainClassName was deprecated by Gradle, but it is still required by John Engelman's Shadow plugin.
+     * A pull request with a fix was already merged, but it hasn't been released yet;
+     * see https://github.com/johnrengelman/shadow/issues/609 and https://github.com/johnrengelman/shadow/pull/612
+     */
+    @Suppress("DEPRECATION")
+    mainClassName = mainClass.get()
 }
 
 tasks.withType<JavaCompile> {

@@ -146,7 +146,7 @@ public class Immobili extends TableImpl<ImmobiliRecord> {
     @Override
     public List<Check<ImmobiliRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("immobili_chk_1"), "((`Tipo` = _utf8mb4\\'Fabbricato\\') or (`Tipo` = _utf8mb4\\'Terreno\\'))", true),
+            Internal.createCheck(this, DSL.name("immobili_chk_1"), "(`Tipo` in (_utf8mb4\\'Fabbricato\\',_utf8mb4\\'Terreno\\'))", true),
             Internal.createCheck(this, DSL.name("immobili_chk_2"), "(length(`CAP`) = 5)", true),
             Internal.createCheck(this, DSL.name("TERRAIN_NO_UNIT"), "(((`Tipo` = _utf8mb4\\'Terreno\\') and (`Interno` = _utf8mb4\\'\\')) or (`Tipo` = _utf8mb4\\'Fabbricato\\'))", true)
         );

@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jooq.Check;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
@@ -25,7 +24,6 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
-import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -114,7 +112,7 @@ public class Persone extends TableImpl<PersoneRecord> {
     /**
      * The column <code>utenze.persone.Password</code>.
      */
-    public final TableField<PersoneRecord, String> PASSWORD = createField(DSL.name("Password"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+    public final TableField<PersoneRecord, String> PASSWORD = createField(DSL.name("Password"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     private Persone(Name alias, Table<PersoneRecord> aliased) {
         this(alias, aliased, null);
@@ -167,13 +165,6 @@ public class Persone extends TableImpl<PersoneRecord> {
     @Override
     public List<UniqueKey<PersoneRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.KEY_PERSONE_AK_PERSONA);
-    }
-
-    @Override
-    public List<Check<PersoneRecord>> getChecks() {
-        return Arrays.asList(
-            Internal.createCheck(this, DSL.name("persone_chk_1"), "(length(`Password`) >= 8)", true)
-        );
     }
 
     @Override

@@ -1,2 +1,2 @@
-rootProject.name = "BD2020-DBUtenze"
+rootProject.name = "bdproject"
 
